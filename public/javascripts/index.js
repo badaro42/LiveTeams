@@ -101,9 +101,7 @@ $(document).ready(function () {
     });
     map.addControl(drawControl);
 
-
     /* GPS enabled geolocation control set to follow the user's location */
-//var locateControl =
     new L.control.locate({
         position: "bottomright",
         drawCircle: true,
@@ -138,7 +136,6 @@ $(document).ready(function () {
     /* controlo do zoom do mapa  */
     new L.Control.Zoom({position: 'bottomright'}).addTo(map);
 
-
     /* listener invocado quando é criada uma feature */
     map.on('draw:created', function (e) {
         var type = e.layerType,
@@ -158,7 +155,6 @@ $(document).ready(function () {
             //do whatever you want, most likely save back to db
         });
     });
-
 });
 
 

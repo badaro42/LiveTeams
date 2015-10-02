@@ -50,7 +50,8 @@
       <div class="list_wrapper">
         <div class="row valign-wrapper" style="margin-top: 20px">
           <div class="col s5">
-            <img src="images/sec-estado-jorge-barreto-xavier.jpg" alt="" class="circle responsive-img">
+            <!--<img src="images/sec-estado-jorge-barreto-xavier.jpg" alt="" class="circle responsive-img">-->
+            <%= image_tag 'sec-estado-jorge-barreto-xavier.jpg', class: 'circle responsive-img' %>
           </div>
           <div class="col s7">
             <h5>Rafael Bizarra</h5>
@@ -97,7 +98,7 @@
             <div class="collapsible-body">
               <ul class="collection">
                 <li class="collection-item avatar" style="background: #f8f8f8;">
-                  <img src="images/renato_alexandre.jpg" alt="" class="circle">
+                  <%= image_tag 'renato_alexandre.jpg', class: 'circle' %>
                   <span class="title">Renato Alexandre</span><br>
                                     <span>Administrador<br>
                                         Responsável pela equipa
@@ -105,7 +106,7 @@
                   <!--<a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>-->
                 </li>
                 <li class="collection-item avatar" style="background: #f8f8f8;">
-                  <img src="images/renato_alexandre.jpg" alt="" class="circle">
+                  <%= image_tag 'renato_alexandre.jpg', class: 'circle' %>
                   <span class="title">Renato Alexandre</span><br>
                                     <span>Administrador<br>
                                         Responsável pela equipa
@@ -113,7 +114,7 @@
                   <!--<a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>-->
                 </li>
                 <li class="collection-item avatar" style="background: #f8f8f8;">
-                  <img src="images/renato_alexandre.jpg" alt="" class="circle">
+                  <%= image_tag 'renato_alexandre.jpg', class: 'circle' %>
                   <span class="title">Renato Alexandre</span><br>
                                     <span>Administrador<br>
                                         Responsável pela equipa
@@ -410,20 +411,20 @@
 <!-- Modal Structure -->
 <div id="create_team_modal" class="modal modal-fixed-footer">
   <div class="modal-header">
-    <h5>Editar definições de equipa</h5>
+    <h5>Criar nova equipa</h5>
   </div>
 
   <div class="modal-content">
     <div class="row">
       <form class="col s12">
         <div class="row">
-          <div class="input-field col s6">
-            <input placeholder="Placeholder" id="first_name" type="text" class="validate">
-            <label for="first_name">First Name</label>
-          </div>
-          <div class="input-field col s6">
-            <input id="last_name" type="text" class="validate">
-            <label for="last_name">Last Name</label>
+          <!--<div class="input-field col s6">-->
+            <!--<input placeholder="Placeholder" id="first_name" type="text" class="validate">-->
+            <!--<label for="first_name">First Name</label>-->
+          <!--</div>-->
+          <div class="input-field col s12">
+            <input id="team_name" type="text" class="validate">
+            <label for="team_name">Nome da equipa</label>
           </div>
         </div>
         <div class="row">
