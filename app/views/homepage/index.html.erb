@@ -1,0 +1,454 @@
+<%# encoding: utf-8 %>
+
+<!--<h1>Homepage#index</h1>-->
+<!--<p>Find me in app/views/homepage/index.html.erb</p>-->
+
+<!-- TODO: MARGIN-BOTTOM A 150PX OU MAIS PEQUENO E MUDAR CONTROLOS DE ZOOM DE LUGAR!? -->
+<div id="sidebar" class="sidebar sidebar-right collapsed" style="max-height: 75%; min-height: 200px;">
+  <!-- Nav tabs -->
+  <div class="sidebar-tabs">
+    <ul role="tablist">
+      <li>
+        <a href="#profile" role="tab">
+          <!-- TODO: COLOCAR AQUI O NOME DO UTILIZADOR AUTENTICADO -->
+          <img data-name="rafael" class="profile_name"/>
+        </a>
+      </li>
+      <li>
+        <a href="#team" role="tab">
+          <i class="fa fa-users"></i>
+        </a>
+      </li>
+      <li>
+        <a href="#warnings" role="tab">
+          <i class="fa fa-exclamation-triangle"></i>
+        </a>
+      </li>
+    </ul>
+
+    <ul role="tablist">
+      <li>
+        <a href="#settings" role="tab">
+          <i class="fa fa-gear"></i>
+        </a>
+      </li>
+      <li>
+        <a href="#about_sidebar" role="tab">
+          <i class="fa fa-question-circle"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Tab panes -->
+  <div class="sidebar-content">
+    <div class="sidebar-pane" id="profile">
+      <h1 class="sidebar-header">Bem vindo Rafael!
+        <div class="sidebar-close"><i class="fa fa-caret-right"></i></div>
+      </h1>
+
+      <div class="list_wrapper">
+        <div class="row valign-wrapper" style="margin-top: 20px">
+          <div class="col s5">
+            <img src="images/sec-estado-jorge-barreto-xavier.jpg" alt="" class="circle responsive-img">
+          </div>
+          <div class="col s7">
+            <h5>Rafael Bizarra</h5>
+            <hr>
+            <span>Administrador</span><br>
+            <span>Registado há 100 dias</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar-pane" id="team">
+      <h1 class="sidebar-header">Equipas
+        <a class="waves-effect waves-teal btn modal-trigger right" style="width: 53px; height: 33px;
+                padding-left: 7px; padding-right: 10px; margin-top: 3px;" href="#create_team_modal">
+          <i class="material-icons md-24 md-light">group_add</i>
+        </a>
+        <!-- botao que apresenta/esconde as checkboxes -->
+        <a class="waves-effect waves-teal btn right" style="width: 53px; height: 33px;
+                padding-left: 7px; padding-right: 7px; margin-top: 3px; margin-right: 10px;">
+          <i class="fa fa-check-square-o"></i>
+        </a>
+
+        <div class="sidebar-close">
+          <i class="fa fa-caret-right"></i>
+        </div>
+      </h1>
+
+
+      <div class="list_wrapper">
+        <ul id="hover_test" class="collapsible" data-collapsible="accordion" style="margin-right: 10px;">
+          <li>
+            <div class="collapsible-header">
+              <!--<div style="display: inline;">-->
+              <!--<input type="checkbox" id="test1" />-->
+              <!--<label for="test1">Equipa principal</label>-->
+              <!--</div>-->
+              Administradores
+              <a class="edit-team-btn waves-effect waves-teal btn-flat modal-trigger right"
+                 href="#edit_team_modal">
+                <i class="material-icons md-18">build</i>
+              </a>
+            </div>
+            <div class="collapsible-body">
+              <ul class="collection">
+                <li class="collection-item avatar" style="background: #f8f8f8;">
+                  <img src="images/renato_alexandre.jpg" alt="" class="circle">
+                  <span class="title">Renato Alexandre</span><br>
+                                    <span>Administrador<br>
+                                        Responsável pela equipa
+                                    </span>
+                  <!--<a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>-->
+                </li>
+                <li class="collection-item avatar" style="background: #f8f8f8;">
+                  <img src="images/renato_alexandre.jpg" alt="" class="circle">
+                  <span class="title">Renato Alexandre</span><br>
+                                    <span>Administrador<br>
+                                        Responsável pela equipa
+                                    </span>
+                  <!--<a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>-->
+                </li>
+                <li class="collection-item avatar" style="background: #f8f8f8;">
+                  <img src="images/renato_alexandre.jpg" alt="" class="circle">
+                  <span class="title">Renato Alexandre</span><br>
+                                    <span>Administrador<br>
+                                        Responsável pela equipa
+                                    </span>
+                  <!--<a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>-->
+                </li>
+              </ul>
+            </div>
+          </li>
+          <li>
+            <div class="collapsible-header">
+              <!--<div style="display: inline;">-->
+              <!--<input type="Regimento dos bombeiros de Cacilhas" id="test2" />-->
+              <!--<label for="test2"></label>-->
+              <!--</div>-->
+              Regimento bombeiros Cacilhas
+              <a class="edit-team-btn waves-effect waves-teal btn-flat modal-trigger right"
+                 href="#edit_team_modal">
+                <i class="material-icons md-18">build</i>
+              </a>
+            </div>
+            <div class="collapsible-body"><p>Lorem ipsum dolor sit amet.</p></div>
+          </li>
+          <li>
+            <div class="collapsible-header">
+              <!--<div style="display: inline;">-->
+              <!--<input type="checkbox" id="test3"/>-->
+              <!--<label for="test3">Proteção Civil Almada</label>-->
+              <!--</div>-->
+              Proteção Civil Almada
+              <a class="edit-team-btn waves-effect waves-teal btn-flat modal-trigger right"
+                 href="#edit_team_modal">
+                <i class="material-icons md-18">build</i>
+              </a>
+            </div>
+            <div class="collapsible-body"><p>Lorem ipsum dolor sit amet.</p></div>
+          </li>
+          <li>
+            <div class="collapsible-header">
+              <!--<div style="display: inline;">-->
+              <!--<input type="checkbox" id="test4"/>-->
+              <!--<label for="test4">PSP Feijó</label>-->
+              <!--</div>-->
+              PSP Feijó
+              <a class="edit-team-btn waves-effect waves-teal btn-flat modal-trigger right"
+                 href="#edit_team_modal">
+                <i class="material-icons md-18">build</i>
+              </a>
+            </div>
+            <div class="collapsible-body"><p>Lorem ipsum dolor sit amet.</p></div>
+          </li>
+          <li>
+            <div class="collapsible-header">
+              <!--<div style="display: inline;">-->
+              <!--<input type="checkbox" id="test5"/>-->
+              <!--<label for="test5">GNR Sesimbra</label>-->
+              <!--</div>-->
+              GNR Sesimbra
+              <a class="edit-team-btn waves-effect waves-teal btn-flat modal-trigger right"
+                 href="#edit_team_modal">
+                <i class="material-icons md-18">build</i>
+              </a>
+            </div>
+            <div class="collapsible-body"><p>Lorem ipsum dolor sit amet.</p></div>
+          </li>
+          <li>
+            <div class="collapsible-header">
+              <!--<div style="display: inline;">-->
+              <!--<input type="checkbox" id="test6"/>-->
+              <!--<label for="test6">Posto de Comando Sta. Eugénia</label>-->
+              <!--</div>-->
+              Posto de Comando Sta. Eugénia
+              <a class="edit-team-btn waves-effect waves-teal btn-flat modal-trigger right"
+                 href="#edit_team_modal">
+                <i class="material-icons md-18">build</i>
+              </a>
+            </div>
+            <div class="collapsible-body"><p>Lorem ipsum dolor sit amet.</p></div>
+          </li>
+          <li>
+            <div class="collapsible-header">
+              <!--<div style="display: inline;">-->
+              <!--<input type="checkbox" id="test7"/>-->
+              <!--<label for="test7">B. Voluntários Trafaria</label>-->
+              <!--</div>-->
+              B. Voluntários Trafaria
+              <a class="edit-team-btn waves-effect waves-teal btn-flat modal-trigger right"
+                 href="#edit_team_modal">
+                <i class="material-icons md-18">build</i>
+              </a>
+            </div>
+            <div class="collapsible-body"><p>Lorem ipsum dolor sit amet.</p></div>
+          </li>
+          <li>
+            <div class="collapsible-header">
+              <!--<div style="display: inline;">-->
+              <!--<input type="checkbox" id="test8"/>-->
+              <!--<label for="test8">Equipa de reconhecimento</label>-->
+              <!--</div>-->
+              Equipa de reconhecimento
+              <a class="edit-team-btn waves-effect waves-teal btn-flat modal-trigger right"
+                 href="#edit_team_modal">
+                <i class="material-icons md-18">build</i>
+              </a>
+            </div>
+            <div class="collapsible-body"><p>Lorem ipsum dolor sit amet.</p></div>
+          </li>
+          <li>
+            <div class="collapsible-header">
+              <!--<div style="display: inline;">-->
+              <!--<input type="checkbox" id="test9"/>-->
+              <!--<label for="test9">Salvamento nº1</label>-->
+              <!--</div>-->
+              Salvamento nº1
+              <a class="edit-team-btn waves-effect waves-teal btn-flat modal-trigger right"
+                 href="#edit_team_modal">
+                <i class="material-icons md-18">build</i>
+              </a>
+            </div>
+            <div class="collapsible-body"><p>Lorem ipsum dolor sit amet.</p></div>
+          </li>
+          <li>
+            <div class="collapsible-header">
+              <!--<div style="display: inline;">-->
+              <!--<input type="checkbox" id="test10"/>-->
+              <!--<label for="test10">Mergulhadores</label>-->
+              <!--</div>-->
+              Mergulhadores
+              <a class="edit-team-btn waves-effect waves-teal btn-flat modal-trigger right"
+                 href="#edit_team_modal">
+                <i class="material-icons md-18">build</i>
+              </a>
+            </div>
+            <div class="collapsible-body"><p>Lorem ipsum dolor sit amet.</p></div>
+          </li>
+          <li>
+            <div class="collapsible-header">
+              <!--<div style="display: inline;">-->
+              <!--<input type="checkbox" id="test11"/>-->
+              <!--<label for="test11">PJ Lisboa</label>-->
+              <!--</div>-->
+              PJ Lisboa
+              <a class="edit-team-btn waves-effect waves-teal btn-flat modal-trigger right"
+                 href="#edit_team_modal">
+                <i class="material-icons md-18">build</i>
+              </a>
+            </div>
+            <div class="collapsible-body"><p>Lorem ipsum dolor sit amet.</p></div>
+          </li>
+          <li>
+            <div class="collapsible-header">
+              <!--<div style="display: inline;">-->
+              <!--<input type="checkbox" id="test12"/>-->
+              <!--<label for="test12">Grupo de populares entusiasmados</label>-->
+              <!--</div>-->
+              Grupo de populares entusiasmados
+              <a class="edit-team-btn waves-effect waves-teal btn-flat modal-trigger right"
+                 href="#edit_team_modal">
+                <i class="material-icons md-18">build</i>
+              </a>
+            </div>
+            <div class="collapsible-body"><p>Lorem ipsum dolor sit amet.</p></div>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="sidebar-pane" id="warnings">
+      <h1 class="sidebar-header">
+        Alertas ativos
+        <span class="badge new" style="line-height: 30px; margin-top: 5px;">4</span>
+
+        <div class="sidebar-close">
+          <i class="fa fa-caret-right"></i>
+        </div>
+      </h1>
+
+      <div class="list_wrapper" style="padding-right: 10px;">
+        <div class="card green">
+          <div class="card-content card-reduced-padding-top">
+            <h5 class="black-text">Situação regularizada</h5>
+            <span><i class="material-icons md-18">schedule</i> 20 Out, 12h - infinito</span>
+            <br>
+            <span><i class="material-icons md-18">map</i> Todo o território nacional</span>
+          </div>
+        </div>
+        <div class="card yellow">
+          <div class="card-content">
+            <h5 class="black-text">Agitação Marítima</h5>
+            <span><i class="material-icons md-18">schedule</i> 21 Set, 17h - 25 Set, 12h</span>
+            <br>
+            <span><i class="material-icons md-18">map</i> Setúbal, Lisboa, Santarém</span>
+            <br>
+            <span><i class="material-icons md-18">comment</i> São esperadas ondas com cerca de 7 metros de altura.</span>
+          </div>
+        </div>
+        <div class="card red">
+          <div class="card-content">
+            <h5 class="black-text">Temperaturas Elevadas</h5>
+            <span><i class="material-icons md-18">schedule</i> 25 Set, 12h - 30 Set, 12h</span>
+            <br>
+            <span><i class="material-icons md-18">map</i> Vila Real, Viseu, Guarda, Portalegre, Beja, Setúbal</span>
+            <br>
+            <span><i class="material-icons md-18">comment</i> Temperaturas superiores a 40ºC.</span>
+          </div>
+        </div>
+        <div class="card orange">
+          <div class="card-content">
+            <h5 class="black-text">Vento Forte</h5>
+            <span><i class="material-icons md-18">schedule</i> 30 Set, 12h - 20 Out, 12h</span>
+            <br>
+            <span><i class="material-icons md-18">map</i> Évora, Faro, Beja</span>
+            <br>
+            <span><i class="material-icons md-18">comment</i> Vai tar uma ventania dos diabos, é melhor um gajo ter cuidado.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar-pane" id="settings">
+      <h1 class="sidebar-header">Definições
+        <div class="sidebar-close"><i class="fa fa-caret-right"></i></div>
+      </h1>
+    </div>
+
+    <div class="sidebar-pane" id="about_sidebar">
+      <h1 class="sidebar-header">Acerca do projeto
+        <div class="sidebar-close"><i class="fa fa-caret-right"></i></div>
+      </h1>
+    </div>
+  </div>
+</div>
+
+<div id="map"></div>
+
+<div id="location_div">
+  <div id="location_symbol">
+    <i class="material-icons">my_location</i>
+  </div>
+  <div id="curr_location">
+    <div>
+      <span>Santa Eugénia, Alijó. </span>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal Structure -->
+<div id="edit_team_modal" class="modal modal-fixed-footer">
+  <div class="modal-header">
+    <h5>Editar definições de equipa</h5>
+  </div>
+
+  <div class="modal-content">
+    <div class="row">
+      <form class="col s12">
+        <div class="row">
+          <div class="input-field col s6">
+            <input placeholder="Placeholder" id="first_name" type="text" class="validate">
+            <label for="first_name">First Name</label>
+          </div>
+          <div class="input-field col s6">
+            <input id="last_name" type="text" class="validate">
+            <label for="last_name">Last Name</label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="input-field col s12">
+            <input disabled value="I am not editable" id="disabled" type="text" class="validate">
+            <label for="disabled">Disabled</label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="input-field col s12">
+            <input id="password" type="password" class="validate">
+            <label for="password">Password</label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="input-field col s12">
+            <input id="email" type="email" class="validate">
+            <label for="email">Email</label>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Confirmar</a>
+    <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Cancelar</a>
+  </div>
+</div>
+
+<!-- Modal Structure -->
+<div id="create_team_modal" class="modal modal-fixed-footer">
+  <div class="modal-header">
+    <h5>Editar definições de equipa</h5>
+  </div>
+
+  <div class="modal-content">
+    <div class="row">
+      <form class="col s12">
+        <div class="row">
+          <div class="input-field col s6">
+            <input placeholder="Placeholder" id="first_name" type="text" class="validate">
+            <label for="first_name">First Name</label>
+          </div>
+          <div class="input-field col s6">
+            <input id="last_name" type="text" class="validate">
+            <label for="last_name">Last Name</label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="input-field col s12">
+            <input disabled value="I am not editable" id="disabled" type="text" class="validate">
+            <label for="disabled">Disabled</label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="input-field col s12">
+            <input id="password" type="password" class="validate">
+            <label for="password">Password</label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="input-field col s12">
+            <input id="email" type="email" class="validate">
+            <label for="email">Email</label>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Confirmar</a>
+    <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Cancelar</a>
+  </div>
+</div>

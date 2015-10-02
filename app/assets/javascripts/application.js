@@ -10,7 +10,14 @@
 // Read Sprockets README (https://github.com/rails/sprockets#sprockets-directives) for details
 // about supported directives.
 //
-//= require jquery
+//= require jquery2
 //= require jquery_ujs
 //= require turbolinks
+//= require materialize-sprockets
+//= require leaflet
+//= require leaflet-sidebar
+//= require leaflet.groupedlayercontrol.min
+//= require leaflet.draw
+//= require L.Control.Locate.min
+//= require initial
 //= require_tree .

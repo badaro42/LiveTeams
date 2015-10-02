@@ -24,6 +24,7 @@ gem 'jbuilder', '~> 2.0'
 gem 'sdoc', '~> 0.4.0', group: :doc
 
 
+# -------------- GEMS ADICIONADAS --------------
 
 # gema que ativa o leaflet!
 gem 'leaflet-rails'
@@ -31,6 +32,13 @@ gem 'leaflet-rails'
 # materialize css :)
 gem 'materialize-sass'
 
+# ativa o font-awesome
+gem 'font-awesome-rails'
+
+# material icons!
+gem 'material_icons'
+
+# ----------------------------------------------
 
 
 # Use ActiveModel has_secure_password

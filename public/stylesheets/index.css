@@ -1,0 +1,202 @@
+/* ******************** INDEX.HTML ******************** */
+
+html, body, #container {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    font-family: "Roboto", sans-serif;
+}
+
+/* ********************* REGRAS PARA PERSONALIZAR OS ICONES DA GOOGLE ********************** */
+/*Rules for sizing the icon.*/
+.material-icons.md-18 {
+    font-size: 18px;
+}
+
+.material-icons.md-24 {
+    font-size: 24px;
+}
+
+.material-icons.md-36 {
+    font-size: 36px;
+}
+
+.material-icons.md-48 {
+    font-size: 48px;
+}
+
+/*Rules for using icons as black on a light background.*/
+.material-icons.md-dark {
+    color: rgba(0, 0, 0, 0.54);
+}
+
+.material-icons.md-dark.md-inactive {
+    color: rgba(0, 0, 0, 0.26);
+}
+
+/*Rules for using icons as white on a dark background.*/
+.material-icons.md-light {
+    color: rgba(255, 255, 255, 1);
+}
+
+.material-icons.md-light.md-inactive {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+/* ******************************************************************************************* */
+
+/* ********************* MODAL HEADER PERSONALIZADO (BASEADO NO FOOTER) ********************** */
+.modal-header {
+    position: absolute;
+    height: 56px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    background: #fafafa;
+    overflow: hidden;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    line-height: 56px;
+}
+
+.modal-header > h5 {
+    line-height: 56px;
+    margin: 0px;
+    padding-left: 36px;
+}
+
+.modal.modal-fixed-footer .modal-content {
+    top: 56px;
+    height: calc(100% - 112px);
+}
+
+/* ******************************************************************************************* */
+
+/* ************************* OVERRIDE DO Z-INDEX DA SIDEBAR LATERAL ************************** */
+.sidebar {
+    z-index: 99;
+}
+
+/* ******************************************************************************************* */
+
+/* ******************* USADO DA RODAR OS CONTROLOS DA CRIAÇÃO DE ENTIDADES ******************* */
+.leaflet-bottom.leaflet-left {
+    transform: rotate(90deg);
+    left: 85px;
+    bottom: -70px;
+}
+
+.leaflet-draw-section a:first-child {
+    border-top-left-radius: 0px;
+    border-bottom-right-radius: 4px;
+    border-top-right-radius: 4px;
+}
+
+.leaflet-draw-section a:last-child {
+    border-top-left-radius: 4px;
+    border-bottom-right-radius: 0px;
+    border-bottom: 1px solid #ccc;
+}
+
+.leaflet-draw-section a {
+    border-left: 1px solid #ccc;
+}
+
+.leaflet-draw-actions.leaflet-draw-actions-bottom,
+.leaflet-draw-actions.leaflet-draw-actions-top {
+    left: -102px;
+    bottom: 1px;
+}
+
+.leaflet-draw-actions.leaflet-draw-actions-bottom li,
+.leaflet-draw-actions.leaflet-draw-actions-top li {
+    transform: rotate(270deg);
+}
+
+.leaflet-draw-actions.leaflet-draw-actions-bottom a,
+.leaflet-draw-actions.leaflet-draw-actions-top a {
+    border-bottom: none;
+    border-right: 1px solid #ccc;
+}
+
+/* ******************************************************************************************* */
+
+.card .card-content {
+    padding-top: 10px;
+}
+
+.edit-team-btn {
+    padding-left: 3px;
+    padding-right: 3px;
+    margin-top: 4px;
+}
+
+.edit-team-btn > i {
+    line-height: 36px;
+    margin: 0px;
+}
+
+.list_wrapper {
+    position: absolute;
+    top: 40px;
+    left: 10px;
+    right: 0px;
+    bottom: 0px;
+    overflow-y: auto;
+}
+
+#map {
+    width: auto;
+    height: 100%;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+/* regras para ecras com no maximo 600px de largura */
+@media only screen and (max-width: 600px) {
+
+}
+
+/* regras para ecras com no maximo 992px de largura */
+@media (max-width: 992px) {
+
+}
+
+/* regras para ecras com no maximo 767px de largura */
+@media (max-width: 767px) {
+
+}
+
+/* Print Handling */
+@media print {
+    .leaflet-control-container {
+        display: none !important;
+    }
+}
+
+#location_div {
+    top: 10px;
+    left: 10px;
+    width: 450px;
+    height: 40px;
+    position: absolute;
+    z-index: 99;
+    background: white;
+    font-size: 15px;
+    border-radius: 2px;
+    box-shadow: 1px 2px 5px -1px rgba(56, 56, 56, 1);
+    /*max-width: 600px;*/
+}
+
+#curr_location {
+    line-height: 40px;
+    float: left;
+    width: 400px;
+    height: 40px;
+    overflow: hidden;
+}
+
+#location_symbol {
+    float: left;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 8px;
+}
