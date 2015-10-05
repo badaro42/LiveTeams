@@ -150,6 +150,13 @@ html, body, #container {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
+#create_team_map,
+#edit_team_map {
+    /*width: auto;*/
+    height: 200px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
 /* regras para ecras com no maximo 600px de largura */
 @media only screen and (max-width: 600px) {
 

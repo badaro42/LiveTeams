@@ -1,4 +1,5 @@
-var map, osmUrl, osmAttrib, osm;
+var map, create_team_map, edit_team_map, osmUrl, osmAttrib, osm, osm2;
+var map_to_init;
 
 $(document).ready(function () {
     // DOM ready
@@ -51,7 +52,7 @@ $(document).ready(function () {
     osmAttrib = '&copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap</a> contributors';
     osm = L.tileLayer(osmUrl, {maxZoom: 18, attribution: osmAttrib});
 
-    /* mapa em si */
+    /* mapa principal */
     map = L.map("map", {
         zoom: 10,
         center: [38.627881, -9.161007],
@@ -155,7 +156,63 @@ $(document).ready(function () {
             //do whatever you want, most likely save back to db
         });
     });
+
+    // inicializa as dropdowns que existem na pagina!
+    $('select').material_select();
 });
+
+/*
+ * workaround para inicializar o mapa correspondente,
+ * uma vez que se o mapa do modal fosse inicializado no document.ready,
+ * como a largura do modal é inexistente, o mapa fica com tamanho bastante reduzido e
+ * só ficava correcto com o resize do viewport
+ */
+function initMap() {
+    osm2 = L.tileLayer(osmUrl, {maxZoom: 18});
+
+    if (map_to_init == 1) {
+        //alert("criar equipa");
+        /* mapa apresentado na modal para criar equipa */
+        create_team_map = L.map("create_team_map", {
+            zoom: 12,
+            center: [38.627881, -9.161007],
+            layers: [osm2],
+            zoomControl: true,
+            attributionControl: false
+        });
+    }
+    else if (map_to_init == 2) {
+        //alert("editar equipa");
+        /* mapa apresentado na modal para editar equipa */
+        create_team_map = L.map("edit_team_map", {
+            zoom: 12,
+            center: [38.627881, -9.161007],
+            layers: [osm2],
+            zoomControl: true,
+            attributionControl: false
+        });
+    }
+    map_to_init = -1;
+}
+
+/*
+ * o parametro indica se estamos a editar ou a criar uma equipa nova
+ * dps verifica se o mapa ja esta desenhado ou se é necessario inicializar
+ */
+function drawMapOnModal(number) {
+    if (number == 1) {
+        if (typeof create_team_map === "undefined") {
+            map_to_init = number;
+            setTimeout(initMap, 500);
+        }
+    }
+    else if (number == 2) {
+        if (typeof edit_team_map === "undefined") {
+            map_to_init = number;
+            setTimeout(initMap, 500);
+        }
+    }
+}
 
 
 //$(window).resize(function () {

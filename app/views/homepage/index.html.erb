@@ -65,7 +65,7 @@
 
     <div class="sidebar-pane" id="team">
       <h1 class="sidebar-header">Equipas
-        <a class="waves-effect waves-teal btn modal-trigger right" style="width: 53px; height: 33px;
+        <a class="waves-effect waves-teal btn modal-trigger right"  onclick="drawMapOnModal(1)" style="width: 53px; height: 33px;
                 padding-left: 7px; padding-right: 10px; margin-top: 3px;" href="#create_team_modal">
           <i class="material-icons md-24 md-light">group_add</i>
         </a>
@@ -90,7 +90,7 @@
               <!--<label for="test1">Equipa principal</label>-->
               <!--</div>-->
               Administradores
-              <a class="edit-team-btn waves-effect waves-teal btn-flat modal-trigger right"
+              <a class="edit-team-btn waves-effect waves-teal btn-flat modal-trigger right" onclick="drawMapOnModal(2)"
                  href="#edit_team_modal">
                 <i class="material-icons md-18">build</i>
               </a>
@@ -131,7 +131,7 @@
               <!--<label for="test2"></label>-->
               <!--</div>-->
               Regimento bombeiros Cacilhas
-              <a class="edit-team-btn waves-effect waves-teal btn-flat modal-trigger right"
+              <a class="edit-team-btn waves-effect waves-teal btn-flat modal-trigger right" onclick="drawMapOnModal(2)"
                  href="#edit_team_modal">
                 <i class="material-icons md-18">build</i>
               </a>
@@ -145,7 +145,7 @@
               <!--<label for="test3">Proteção Civil Almada</label>-->
               <!--</div>-->
               Proteção Civil Almada
-              <a class="edit-team-btn waves-effect waves-teal btn-flat modal-trigger right"
+              <a class="edit-team-btn waves-effect waves-teal btn-flat modal-trigger right" onclick="drawMapOnModal(2)"
                  href="#edit_team_modal">
                 <i class="material-icons md-18">build</i>
               </a>
@@ -159,7 +159,7 @@
               <!--<label for="test4">PSP Feijó</label>-->
               <!--</div>-->
               PSP Feijó
-              <a class="edit-team-btn waves-effect waves-teal btn-flat modal-trigger right"
+              <a class="edit-team-btn waves-effect waves-teal btn-flat modal-trigger right" onclick="drawMapOnModal(2)"
                  href="#edit_team_modal">
                 <i class="material-icons md-18">build</i>
               </a>
@@ -173,7 +173,7 @@
               <!--<label for="test5">GNR Sesimbra</label>-->
               <!--</div>-->
               GNR Sesimbra
-              <a class="edit-team-btn waves-effect waves-teal btn-flat modal-trigger right"
+              <a class="edit-team-btn waves-effect waves-teal btn-flat modal-trigger right" onclick="drawMapOnModal(2)"
                  href="#edit_team_modal">
                 <i class="material-icons md-18">build</i>
               </a>
@@ -187,7 +187,7 @@
               <!--<label for="test6">Posto de Comando Sta. Eugénia</label>-->
               <!--</div>-->
               Posto de Comando Sta. Eugénia
-              <a class="edit-team-btn waves-effect waves-teal btn-flat modal-trigger right"
+              <a class="edit-team-btn waves-effect waves-teal btn-flat modal-trigger right" onclick="drawMapOnModal(2)"
                  href="#edit_team_modal">
                 <i class="material-icons md-18">build</i>
               </a>
@@ -201,7 +201,7 @@
               <!--<label for="test7">B. Voluntários Trafaria</label>-->
               <!--</div>-->
               B. Voluntários Trafaria
-              <a class="edit-team-btn waves-effect waves-teal btn-flat modal-trigger right"
+              <a class="edit-team-btn waves-effect waves-teal btn-flat modal-trigger right" onclick="drawMapOnModal(2)"
                  href="#edit_team_modal">
                 <i class="material-icons md-18">build</i>
               </a>
@@ -215,7 +215,7 @@
               <!--<label for="test8">Equipa de reconhecimento</label>-->
               <!--</div>-->
               Equipa de reconhecimento
-              <a class="edit-team-btn waves-effect waves-teal btn-flat modal-trigger right"
+              <a class="edit-team-btn waves-effect waves-teal btn-flat modal-trigger right" onclick="drawMapOnModal(2)"
                  href="#edit_team_modal">
                 <i class="material-icons md-18">build</i>
               </a>
@@ -229,7 +229,7 @@
               <!--<label for="test9">Salvamento nº1</label>-->
               <!--</div>-->
               Salvamento nº1
-              <a class="edit-team-btn waves-effect waves-teal btn-flat modal-trigger right"
+              <a class="edit-team-btn waves-effect waves-teal btn-flat modal-trigger right" onclick="drawMapOnModal(2)"
                  href="#edit_team_modal">
                 <i class="material-icons md-18">build</i>
               </a>
@@ -243,7 +243,7 @@
               <!--<label for="test10">Mergulhadores</label>-->
               <!--</div>-->
               Mergulhadores
-              <a class="edit-team-btn waves-effect waves-teal btn-flat modal-trigger right"
+              <a class="edit-team-btn waves-effect waves-teal btn-flat modal-trigger right" onclick="drawMapOnModal(2)"
                  href="#edit_team_modal">
                 <i class="material-icons md-18">build</i>
               </a>
@@ -257,7 +257,7 @@
               <!--<label for="test11">PJ Lisboa</label>-->
               <!--</div>-->
               PJ Lisboa
-              <a class="edit-team-btn waves-effect waves-teal btn-flat modal-trigger right"
+              <a class="edit-team-btn waves-effect waves-teal btn-flat modal-trigger right" onclick="drawMapOnModal(2)"
                  href="#edit_team_modal">
                 <i class="material-icons md-18">build</i>
               </a>
@@ -271,7 +271,7 @@
               <!--<label for="test12">Grupo de populares entusiasmados</label>-->
               <!--</div>-->
               Grupo de populares entusiasmados
-              <a class="edit-team-btn waves-effect waves-teal btn-flat modal-trigger right"
+              <a class="edit-team-btn waves-effect waves-teal btn-flat modal-trigger right" onclick="drawMapOnModal(2)"
                  href="#edit_team_modal">
                 <i class="material-icons md-18">build</i>
               </a>
@@ -370,36 +370,70 @@
 
   <div class="modal-content">
     <div class="row">
-      <form class="col s12">
-        <div class="row">
-          <div class="input-field col s6">
-            <input placeholder="Placeholder" id="first_name" type="text" class="validate">
-            <label for="first_name">First Name</label>
-          </div>
-          <div class="input-field col s6">
-            <input id="last_name" type="text" class="validate">
-            <label for="last_name">Last Name</label>
-          </div>
-        </div>
-        <div class="row">
-          <div class="input-field col s12">
-            <input disabled value="I am not editable" id="disabled" type="text" class="validate">
-            <label for="disabled">Disabled</label>
-          </div>
-        </div>
-        <div class="row">
-          <div class="input-field col s12">
-            <input id="password" type="password" class="validate">
-            <label for="password">Password</label>
-          </div>
-        </div>
-        <div class="row">
-          <div class="input-field col s12">
-            <input id="email" type="email" class="validate">
-            <label for="email">Email</label>
-          </div>
-        </div>
-      </form>
+      <div class="input-field col s12">
+        <input id="team_name" value="Equipa de Sapadores de Corroios" type="text" class="validate">
+        <label for="team_name"><strong>Nome da equipa</strong></label>
+      </div>
+    </div>
+    <div class="row">
+      <label style="padding-left: 10px;"><strong>Utilizadores na equipa</strong></label>
+
+      <div class="input-field col s12" style="padding: 0px; height: 150px; overflow-y: auto; width: 100%;">
+        <form action="#">
+              <span>
+                <input type="checkbox" checked id="usr1"/>
+                <label for="usr1">Utilizador numero 1</label>
+              </span>
+          <br>
+              <span>
+                <input type="checkbox" id="usr2"/>
+                <label for="usr2">Utilizador numero 2</label>
+              </span>
+          <br>
+              <span>
+                <input type="checkbox" checked id="usr3"/>
+                <label for="usr3">Utilizador numero 3</label>
+              </span>
+          <br>
+              <span>
+                <input type="checkbox" checked id="usr4"/>
+                <label for="usr4">Utilizador numero 4</label>
+              </span>
+          <br>
+              <span>
+                <input type="checkbox" id="usr5"/>
+                <label for="usr5">Utilizador numero 6</label>
+              </span>
+          <br>
+              <span>
+                <input type="checkbox" checked id="usr6"/>
+                <label for="usr6">Utilizador numero 7</label>
+              </span>
+          <br>
+              <span>
+                <input type="checkbox" id="usr7"/>
+                <label for="usr7">Utilizador numero 8</label>
+              </span>
+        </form>
+      </div>
+    </div>
+    <div class="row" style="padding-top: 10px;">
+      <div class="input-field col s12">
+        <select style="z-index: 10000;">
+          <option value="">Escolha um dos utilizadores</option>
+          <option value="1">Utilizador 1</option>
+          <option value="2" selected>Utilizador 2</option>
+          <option value="3">Utilizador 3</option>
+        </select>
+        <label><strong>Escolher responsável da equipa</strong></label>
+      </div>
+    </div>
+    <div class="row">
+      <label style="padding-left: 10px;"><strong>Destacar equipa para local</strong></label>
+
+      <div class="input-field col s12">
+        <div id="edit_team_map"></div>
+      </div>
     </div>
   </div>
   <div class="modal-footer">
@@ -413,39 +447,72 @@
   <div class="modal-header">
     <h5>Criar nova equipa</h5>
   </div>
-
   <div class="modal-content">
     <div class="row">
-      <form class="col s12">
-        <div class="row">
-          <!--<div class="input-field col s6">-->
-            <!--<input placeholder="Placeholder" id="first_name" type="text" class="validate">-->
-            <!--<label for="first_name">First Name</label>-->
-          <!--</div>-->
-          <div class="input-field col s12">
-            <input id="team_name" type="text" class="validate">
-            <label for="team_name">Nome da equipa</label>
-          </div>
-        </div>
-        <div class="row">
-          <div class="input-field col s12">
-            <input disabled value="I am not editable" id="disabled" type="text" class="validate">
-            <label for="disabled">Disabled</label>
-          </div>
-        </div>
-        <div class="row">
-          <div class="input-field col s12">
-            <input id="password" type="password" class="validate">
-            <label for="password">Password</label>
-          </div>
-        </div>
-        <div class="row">
-          <div class="input-field col s12">
-            <input id="email" type="email" class="validate">
-            <label for="email">Email</label>
-          </div>
-        </div>
-      </form>
+      <div class="input-field col s12">
+        <input id="team_name" value="" type="text" class="validate">
+        <label for="team_name"><strong>Nome da equipa</strong></label>
+      </div>
+    </div>
+    <div class="row">
+      <label style="padding-left: 10px;"><strong>Utilizadores na equipa</strong></label>
+
+      <div class="input-field col s12" style="padding: 0px; height: 150px; overflow-y: auto; width: 100%;">
+        <form action="#">
+              <span>
+                <input type="checkbox" id="usr1"/>
+                <label for="usr1">Utilizador numero 1</label>
+              </span>
+          <br>
+              <span>
+                <input type="checkbox" id="usr2"/>
+                <label for="usr2">Utilizador numero 2</label>
+              </span>
+          <br>
+              <span>
+                <input type="checkbox" id="usr3"/>
+                <label for="usr3">Utilizador numero 3</label>
+              </span>
+          <br>
+              <span>
+                <input type="checkbox" id="usr4"/>
+                <label for="usr4">Utilizador numero 4</label>
+              </span>
+          <br>
+              <span>
+                <input type="checkbox" id="usr5"/>
+                <label for="usr5">Utilizador numero 6</label>
+              </span>
+          <br>
+              <span>
+                <input type="checkbox" id="usr6"/>
+                <label for="usr6">Utilizador numero 7</label>
+              </span>
+          <br>
+              <span>
+                <input type="checkbox" id="usr7"/>
+                <label for="usr7">Utilizador numero 8</label>
+              </span>
+        </form>
+      </div>
+    </div>
+    <div class="row" style="padding-top: 10px;">
+      <div class="input-field col s12">
+        <select style="z-index: 10000;">
+          <option value="" selected>Escolha um dos utilizadores</option>
+          <option value="1">Utilizador 1</option>
+          <option value="2">Utilizador 2</option>
+          <option value="3">Utilizador 3</option>
+        </select>
+        <label><strong>Escolher responsável da equipa</strong></label>
+      </div>
+    </div>
+    <div class="row">
+      <label style="padding-left: 10px;"><strong>Destacar equipa para local</strong></label>
+
+      <div class="input-field col s12">
+        <div id="create_team_map"></div>
+      </div>
     </div>
   </div>
   <div class="modal-footer">
