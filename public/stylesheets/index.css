@@ -117,8 +117,56 @@ html, body, #container {
     border-bottom: none;
     border-right: 1px solid #ccc;
 }
-
 /* ******************************************************************************************* */
+
+/* ******************* RIBBON PARA INDICAR O CHEFE DA EQUIPA ******************* */
+.corner-ribbon {
+    width: 100px;
+    background: #e43;
+    position: absolute;
+    top: 25px;
+    left: -50px;
+    text-align: center;
+    line-height: 30px;
+    letter-spacing: 1px;
+    color: #f0f0f0;
+    transform: rotate(-45deg);
+    -webkit-transform: rotate(-45deg);
+}
+
+/* Custom styles */
+
+.corner-ribbon.sticky {
+    position: fixed;
+}
+
+.corner-ribbon.shadow {
+    box-shadow: 0 0 3px rgba(0, 0, 0, .3);
+}
+
+.corner-ribbon.top-right {
+    top: 10px;
+    right: -30px;
+    left: auto;
+    transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
+}
+/* ******************************************************************************************* */
+
+.collection-item.avatar p {
+    padding: 0px;
+    line-height: 14px;
+    font-size: 14px;
+}
+
+.collection-item.avatar p:first-child {
+    padding: 3px 0px 3px;
+}
+
+.collection .collection-item.avatar {
+    min-height: 65px;
+    background: #f8f8f8;
+}
 
 .card .card-content {
     padding-top: 10px;
