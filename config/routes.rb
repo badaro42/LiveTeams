@@ -1,7 +1,23 @@
 Rails.application.routes.draw do
-  get 'homepage/index'
+  devise_for :users
 
-  root 'homepage#index'
+  resources :users
+
+  get 'homepage/index'
+  #get 'login' => 'devise/sessions#new'
+
+  # root 'homepage#index'
+
+  authenticated :user do
+    root to: 'homepage#index', as: :authenticated_root
+  end
+  root to: redirect('/login')
+
+  devise_scope :user do
+    get "/login" => "devise/sessions#new"
+    get "/register" => "devise/registrations#new"
+    get "/forgot_password" => "devise/passwords#new"
+  end
 
 
   # get 'homepage/index'

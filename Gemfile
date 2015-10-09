@@ -38,11 +38,17 @@ gem 'font-awesome-rails'
 # material icons!
 gem 'material_icons'
 
+# autenticação e cenas
+gem 'devise'
+
+#gem 'bcrypt', '~> 3.1.10'
+#gem 'bcrypt-ruby', '3.1.5'
+
 # ----------------------------------------------
 
 
 # Use ActiveModel has_secure_password
-# gem 'bcrypt', '~> 3.1.7'
+gem 'bcrypt', '~> 3.1.7'
 
 # Use Unicorn as the app server
 # gem 'unicorn'
