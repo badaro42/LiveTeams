@@ -67,17 +67,20 @@
       <h1 class="sidebar-header">Equipas
         <a class="waves-effect waves-teal btn modal-trigger right" onclick="drawMapOnModal(1)" style="width: 53px;
                 height: 33px; padding-left: 7px; padding-right: 10px; margin-top: 3px;" href="#create_team_modal">
-          <i class="material-icons md-24 md-light">group_add</i>
-        </a>
-        <!-- botao que apresenta/esconde as checkboxes -->
-        <a class="waves-effect waves-teal btn right" style="width: 53px; height: 33px;
-                padding-left: 7px; padding-right: 7px; margin-top: 3px; margin-right: 10px;">
-          <i class="fa fa-check-square-o"></i>
-        </a>
+          <a class="waves-effect waves-teal btn modal-trigger right" onclick="drawMapOnModal(1)" style="width: 53px; height: 33px;
+                  padding-left: 7px; padding-right: 10px; margin-top: 3px;"
+             href="#create_team_modal">
+            <i class="material-icons md-24 md-light">group_add</i>
+          </a>
+          <!-- botao que apresenta/esconde as checkboxes -->
+          <a class="waves-effect waves-teal btn right" style="width: 53px; height: 33px;
+                  padding-left: 7px; padding-right: 7px; margin-top: 3px; margin-right: 10px;">
+            <i class="fa fa-check-square-o"></i>
+          </a>
 
-        <div class="sidebar-close">
-          <i class="fa fa-caret-right"></i>
-        </div>
+          <div class="sidebar-close">
+            <i class="fa fa-caret-right"></i>
+          </div>
       </h1>
 
 
@@ -97,29 +100,25 @@
             </div>
             <div class="collapsible-body">
               <ul class="collection">
-                <li class="collection-item avatar" style="background: #f8f8f8;">
+                <li class="collection-item avatar team-list-item">
+                  <!-- RIBBON PARA INDICAR O CHEFE DE EQUIPA -->
+                  <div class="corner-ribbon top-right red shadow">Chefe</div>
                   <%= image_tag 'renato_alexandre.jpg', class: 'circle' %>
-                  <span class="title">Renato Alexandre</span><br>
-                                    <span>Administrador<br>
-                                        Responsável pela equipa
-                                    </span>
-                  <!--<a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>-->
+                  <span class="title"><strong>Renato Alexandre</strong></span><br>
+
+                  <p>Administrador</p>
                 </li>
-                <li class="collection-item avatar" style="background: #f8f8f8;">
+                <li class="collection-item avatar">
                   <%= image_tag 'renato_alexandre.jpg', class: 'circle' %>
-                  <span class="title">Renato Alexandre</span><br>
-                                    <span>Administrador<br>
-                                        Responsável pela equipa
-                                    </span>
-                  <!--<a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>-->
+                  <span class="title"><strong>Homem do Bussaco</strong></span><br>
+
+                  <p>Jardineiro</p>
                 </li>
-                <li class="collection-item avatar" style="background: #f8f8f8;">
+                <li class="collection-item avatar">
                   <%= image_tag 'renato_alexandre.jpg', class: 'circle' %>
-                  <span class="title">Renato Alexandre</span><br>
-                                    <span>Administrador<br>
-                                        Responsável pela equipa
-                                    </span>
-                  <!--<a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>-->
+                  <span class="title"><strong>Bruno Aleixo</strong></span><br>
+
+                  <p>Reputado escritor</p>
                 </li>
               </ul>
             </div>
