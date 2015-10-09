@@ -48,7 +48,8 @@ gem 'devise'
 
 
 # Use ActiveModel has_secure_password
-gem 'bcrypt', '~> 3.1.7'
+# gem 'bcrypt-ruby', '~> 3.0.0', platforms: :ruby
+gem 'bcrypt', '~> 3.1.7', platforms: :ruby
 
 # Use Unicorn as the app server
 # gem 'unicorn'

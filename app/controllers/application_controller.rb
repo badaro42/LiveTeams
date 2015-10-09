@@ -12,6 +12,6 @@ class ApplicationController < ActionController::Base
 
   # Overwriting the sign_up redirect path method
   def after_sign_up_path_for(resource)
-    root_path(resource) # Or :prefix_to_your_route
+    root_path(resource)
   end
 end
