@@ -17,6 +17,7 @@ Rails.application.routes.draw do
     get "/login" => "devise/sessions#new"
     get "/register" => "devise/registrations#new"
     get "/forgot_password" => "devise/passwords#new"
+    get "/logout" => "devise/sessions#destroy"
   end
 
 
