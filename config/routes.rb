@@ -5,7 +5,6 @@ Rails.application.routes.draw do
   resources :users
 
   get 'homepage/index'
-  #get 'login' => 'devise/sessions#new'
 
   # root 'homepage#index'
 

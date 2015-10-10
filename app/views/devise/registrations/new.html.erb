@@ -1,8 +1,5 @@
 <%# encoding: utf-8 %>
 
-<!--<h2>Sign up</h2>-->
-
-
 <div class="row">
   <div class="col s8 m6 l4 offset-l4 offset-m3 offset-s2">
     <div class="card-panel" style="padding-bottom: 10px; margin-top: 15px;">
@@ -13,13 +10,8 @@
       <hr>
       <h5 class="center-align">Criação de novo perfil</h5>
 
-      <div class="center-align">Já tem conta? <%= render "devise/shared/links" %></div>
-      <hr style="margin-bottom: 17.5px;">
-      <!--<span role="separator" class="divider"></span>-->
-
-      <!--<hr>-->
-      <!--<p id="profile-name" class="profile-name-card"></p>-->
-
+      <h6 class="center-align">Já tem conta? <%= render "devise/shared/links" %></h6>
+      <hr style="margin-bottom: 17.5px; margin-top: 15px;">
 
       <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
           <%= devise_error_messages! %>
@@ -55,9 +47,7 @@
 
       <% end %>
 
-      <!--<div class="actions col s6 m6 l6" style="margin-top: 10px; margin-bottom: 10px;">-->
       <hr style="margin: 0px; border-bottom-width: 0px; border-top-width: 0px;">
-      <!--</div>-->
 
     </div>
   </div>
