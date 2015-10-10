@@ -10,8 +10,7 @@
     <ul role="tablist">
       <li>
         <a href="#profile" role="tab">
-          <!-- TODO: COLOCAR AQUI O NOME DO UTILIZADOR AUTENTICADO -->
-          <img data-name="rafael" class="profile_name"/>
+          <%= tag("img", class: 'profile_name', data: {name: current_user.first_name}) %>
         </a>
       </li>
       <li>
@@ -43,7 +42,7 @@
   <!-- Tab panes -->
   <div class="sidebar-content">
     <div class="sidebar-pane" id="profile">
-      <h1 class="sidebar-header">Bem vindo Rafael!
+      <h1 class="sidebar-header">Bem vindo <%= current_user.first_name %>!
         <div class="sidebar-close"><i class="fa fa-caret-right"></i></div>
       </h1>
 
@@ -54,7 +53,7 @@
             <%= image_tag 'sec-estado-jorge-barreto-xavier.jpg', class: 'circle responsive-img' %>
           </div>
           <div class="col s7">
-            <h5>Rafael Bizarra</h5>
+            <h5><%= current_user.first_name %> <%= current_user.last_name %></h5>
             <hr>
             <span>Administrador</span><br>
             <span>Registado há 100 dias</span>

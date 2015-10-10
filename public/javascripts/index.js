@@ -50,11 +50,11 @@ $(document).ready(function () {
 
     osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
     osmAttrib = '&copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap</a> contributors';
-    osm = L.tileLayer(osmUrl, {maxZoom: 18, attribution: osmAttrib});
+    osm = L.tileLayer(osmUrl, {maxZoom: 20, attribution: osmAttrib});
 
     /* mapa principal */
     map = L.map("map", {
-        zoom: 10,
+        zoom: 12,
         center: [38.627881, -9.161007],
         layers: [osm],
         zoomControl: false,
@@ -126,7 +126,7 @@ $(document).ready(function () {
             outsideMapBoundsMsg: "You seem located outside the boundaries of the map"
         },
         locateOptions: {
-            maxZoom: 18,
+            maxZoom: 20,
             watch: true,
             enableHighAccuracy: true,
             maximumAge: 10000,
