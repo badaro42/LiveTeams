@@ -5,35 +5,59 @@
 
 <div class="row">
   <div class="col s8 m6 l4 offset-l4 offset-m3 offset-s2">
-    <div class="card-panel">
-        <!--<span class="white-text">I am a very simple card. I am good at containing small bits of information.-->
-        <!--I am convenient because I require little markup to use effectively. I am similar to what is called a panel in other frameworks.-->
-        <!--</span>-->
+    <div class="card-panel" style="padding-bottom: 10px; margin-top: 15px;">
 
-      <p style="font-size: 25px; text-align: center;">Bem vindo ao projeto <strong>GestãoEmergência</strong></p>
+      <h4 class="center-align" style="margin-top: 5px; margin-bottom: 25px;">
+        Projeto <strong>Gestão de Emergência</strong>
+      </h4>
+      <hr>
+      <h5 class="center-align">Criação de novo perfil</h5>
+
+      <div class="center-align">Já tem conta? <%= render "devise/shared/links" %></div>
+      <hr style="margin-bottom: 17.5px;">
       <!--<span role="separator" class="divider"></span>-->
 
-      <hr>
+      <!--<hr>-->
       <!--<p id="profile-name" class="profile-name-card"></p>-->
 
-      <form class="form-signin">
-        <!--<span id="reauth-email" class="reauth-email"></span>-->
-        <input type="email" id="inputEmail" class="form-control" placeholder="Endereço de email" required autofocus>
-        <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
 
-        <div id="remember" class="checkbox">
-          <label>
-            <input type="checkbox" value="remember-me"> Guardar dados
-          </label>
-        </div>
-        <button class="btn btn-lg btn-primary btn-block btn-signin" type="submit"
-                onclick="window.location.href='index.html'">Confirmar
-        </button>
-      </form>
-      <!-- /form -->
-      <hr>
-      <span>Não tem conta? Registe-se <a href="#" class="forgot-password">aqui!</a></span><br>
-      <a href="#" class="forgot-password">Recuperar palavra-chave?</a>
+      <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+          <%= devise_error_messages! %>
+
+          <div class="input-field col s6 m6 l6">
+            <%= f.label "Primeiro Nome" %>
+            <%= f.text_field :first_name, autofocus: true %>
+          </div>
+
+          <div class="input-field col s6 m6 l6">
+            <%= f.label "Último Nome" %>
+            <%= f.text_field :last_name %>
+          </div>
+
+          <div class="input-field col s12 m12 l12">
+            <%= f.label "Endereço de email" %>
+            <%= f.email_field :email %>
+          </div>
+
+          <div class="input-field col s12 m12 l12">
+            <%= f.label "Password (mínimo 8 caracteres)" %>
+            <%= f.password_field :password, autocomplete: "off" %>
+          </div>
+
+          <div class="input-field col s12 m12 l12">
+            <%= f.label "Introduza novamente a password" %>
+            <%= f.password_field :password_confirmation, autocomplete: "off" %>
+          </div>
+
+          <div class="actions col s12 m12 l12" style="margin-top: 10px; margin-bottom: 20px;">
+            <%= f.button 'Registar!', class: "btn waves-effect waves-light" %>
+          </div>
+
+      <% end %>
+
+      <!--<div class="actions col s6 m6 l6" style="margin-top: 10px; margin-bottom: 10px;">-->
+      <hr style="margin: 0px; border-bottom-width: 0px; border-top-width: 0px;">
+      <!--</div>-->
 
     </div>
   </div>
