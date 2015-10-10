@@ -1,12 +1,13 @@
 Rails.application.routes.draw do
-  # devise_for :users
-  devise_for :users, :controllers => { registrations: 'registrations' }
+
+  # altera as rotas predefinidas do devise
+  devise_for :users, :controllers => { registrations: 'registrations' }, :path => 'account', :path_names =>
+                       { :sign_in => 'login', :sign_up => 'new', :sign_out => 'logout', :password => 'password',
+                         :confirmation => 'confirmation' }
 
   resources :users
 
   get 'homepage/index'
-
-  # root 'homepage#index'
 
   authenticated :user do
     root to: 'homepage#index', as: :authenticated_root
