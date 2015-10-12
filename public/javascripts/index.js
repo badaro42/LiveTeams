@@ -104,7 +104,7 @@ $(document).ready(function () {
 
     /* GPS enabled geolocation control set to follow the user's location */
     new L.control.locate({
-        position: "bottomright",
+        position: "bottomleft",
         drawCircle: true,
         follow: true,
         setView: true,
@@ -126,7 +126,7 @@ $(document).ready(function () {
             outsideMapBoundsMsg: "You seem located outside the boundaries of the map"
         },
         locateOptions: {
-            maxZoom: 20,
+            maxZoom: 19,
             watch: true,
             enableHighAccuracy: true,
             maximumAge: 10000,
@@ -135,7 +135,7 @@ $(document).ready(function () {
     }).addTo(map);
 
     /* controlo do zoom do mapa  */
-    new L.Control.Zoom({position: 'bottomright'}).addTo(map);
+    new L.Control.Zoom({position: 'bottomleft'}).addTo(map);
 
     /* listener invocado quando é criada uma feature */
     map.on('draw:created', function (e) {
