@@ -79,16 +79,80 @@ html, body, #container {
 /* ******************************************************************************************* */
 
 /* ******************* USADO DA RODAR OS CONTROLOS DA CRIAÇÃO DE ENTIDADES ******************* */
-.leaflet-control-zoom {
-    transform: rotate(270deg);
-    bottom: -253px;
-    right: 86px;
+/* SMARTPHONES E ECRAS PEQUENOS */
+@media only screen and (max-width: 600px) {
+    .leaflet-bottom.leaflet-left {
+        transform: rotate(90deg);
+        left: 134px;
+        bottom: -120px;
+        z-index: 98;
+    }
+
+    .leaflet-control-zoom {
+        transform: rotate(270deg);
+        bottom: -277px;
+        left: -73px;
+    }
+
+    .leaflet-control-locate {
+        transform: rotate(270deg);
+        bottom: -218px;
+        left: -15px;
+    }
+
+    .leaflet-draw {
+        bottom: 22px;
+        left: 29px;
+    }
 }
 
-.leaflet-control-locate {
-    transform: rotate(270deg);
-    bottom: -204px;
-    left: -37px;
+/* TABLES E ECRAS MEDIOS */
+@media only screen and (min-width: 601px) and (max-width: 991px) {
+    .leaflet-bottom.leaflet-left {
+        transform: rotate(90deg);
+        left: 134px;
+        bottom: -120px;
+        z-index: 98;
+    }
+
+    .leaflet-control-zoom {
+        transform: rotate(270deg);
+        bottom: -277px;
+        left: -73px;
+    }
+
+    .leaflet-control-locate {
+        transform: rotate(270deg);
+        bottom: -218px;
+        left: -15px;
+    }
+
+    .leaflet-draw {
+        bottom: 22px;
+        left: 29px;
+    }
+}
+
+/* DESKTOPS E ECRAS GRANDES */
+@media only screen and (min-width: 992px) {
+    .leaflet-bottom.leaflet-left {
+        transform: rotate(90deg);
+        left: 134px;
+        bottom: -120px;
+        z-index: 98;
+    }
+
+    .leaflet-control-zoom {
+        transform: rotate(270deg);
+        bottom: -253px;
+        right: 86px;
+    }
+
+    .leaflet-control-locate {
+        transform: rotate(270deg);
+        bottom: -204px;
+        left: -37px;
+    }
 }
 
 /*botao para ampliar*/
@@ -104,13 +168,6 @@ html, body, #container {
 .leaflet-control-zoom a:last-child {
     transform: rotate(270deg);
     border-top-left-radius: 4px;
-}
-
-
-.leaflet-bottom.leaflet-left {
-    transform: rotate(90deg);
-    left: 134px;
-    bottom: -120px;
 }
 
 .leaflet-draw-section a:first-child {
@@ -145,6 +202,7 @@ html, body, #container {
     border-bottom: none;
     border-right: 1px solid #ccc;
 }
+
 /* ******************************************************************************************* */
 
 /* ******************* RIBBON PARA INDICAR O CHEFE DA EQUIPA ******************* */
@@ -179,6 +237,7 @@ html, body, #container {
     transform: rotate(45deg);
     -webkit-transform: rotate(45deg);
 }
+
 /* ******************************************************************************************* */
 
 .collection-item.avatar p {
@@ -258,10 +317,11 @@ html, body, #container {
 #location_div {
     top: 10px;
     left: 10px;
-    width: 450px;
+    max-width: 450px;
+    width: 60%;
     height: 40px;
     position: absolute;
-    z-index: 99;
+    z-index: 98;
     background: white;
     font-size: 15px;
     border-radius: 2px;
@@ -272,7 +332,6 @@ html, body, #container {
 #curr_location {
     line-height: 40px;
     float: left;
-    width: 400px;
     height: 40px;
     overflow: hidden;
 }

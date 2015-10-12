@@ -49,8 +49,7 @@ $(document).ready(function () {
     });
 
     osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-    osmAttrib = '&copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap</a> contributors';
-    osm = L.tileLayer(osmUrl, {maxZoom: 20, attribution: osmAttrib});
+    osm = L.tileLayer(osmUrl, {maxZoom: 20});
 
     /* mapa principal */
     map = L.map("map", {
@@ -58,7 +57,7 @@ $(document).ready(function () {
         center: [38.627881, -9.161007],
         layers: [osm],
         zoomControl: false,
-        attributionControl: true
+        attributionControl: false
     });
 
     var sidebar = L.control.sidebar('sidebar', {position: 'right'}).addTo(map);
