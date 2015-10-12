@@ -14,13 +14,18 @@
         </a>
       </li>
       <li>
-        <a href="#team" role="tab">
+        <a href="#teams" role="tab">
           <i class="fa fa-users"></i>
         </a>
       </li>
       <li>
         <a href="#warnings" role="tab">
           <i class="fa fa-exclamation-triangle"></i>
+        </a>
+      </li>
+      <li>
+        <a href="#users" role="tab">
+          <i class="fa fa-user"></i>
         </a>
       </li>
     </ul>
@@ -66,7 +71,7 @@
 
     </div>
 
-    <div class="sidebar-pane" id="team">
+    <div class="sidebar-pane" id="teams">
       <h1 class="sidebar-header">Equipas
         <a class="waves-effect waves-teal btn modal-trigger right" onclick="drawMapOnModal(1)" style="width: 53px;
                 height: 33px; padding-left: 7px; padding-right: 10px; margin-top: 3px;" href="#create_team_modal">
@@ -331,6 +336,26 @@
           </div>
         </div>
       </div>
+    </div>
+
+    <div class="sidebar-pane" id="users">
+      <h1 class="sidebar-header">Lista de utilizadores
+        <div class="sidebar-close"><i class="fa fa-caret-right"></i></div>
+      </h1>
+
+      <div class="list_wrapper" style="padding-right: 10px;">
+        <ul class="collection">
+          <% User.all.each do |user| %>
+              <li class="collection-item avatar">
+                <%= image_tag 'sec-estado-jorge-barreto-xavier.jpg', class: 'circle responsive-img' %>
+                <span class="title"><%= user.first_name %> <%= user.last_name %></span>
+
+                <p><%= user.email %></p>
+              </li>
+          <% end %>
+        </ul>
+      </div>
+
     </div>
 
     <div class="sidebar-pane" id="settings">
