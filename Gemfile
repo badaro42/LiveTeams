@@ -41,6 +41,9 @@ gem 'material_icons'
 # autenticação e cenas
 gem 'devise'
 
+# imagens para os utilizadores
+gem 'paperclip', '~> 4.3'
+
 
 # ----------------------------------------------
 

@@ -106,7 +106,7 @@ html, body, #container {
     }
 }
 
-/* TABLES E ECRAS MEDIOS */
+/* TABLETS E ECRAS MEDIOS */
 @media only screen and (min-width: 601px) and (max-width: 991px) {
     .leaflet-bottom.leaflet-left {
         transform: rotate(90deg);

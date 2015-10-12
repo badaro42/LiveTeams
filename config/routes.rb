@@ -1,9 +1,9 @@
 Rails.application.routes.draw do
 
   # altera as rotas predefinidas do devise
-  devise_for :users, :controllers => { registrations: 'registrations' }, :path => 'account', :path_names =>
-                       { :sign_in => 'login', :sign_up => 'new', :sign_out => 'logout', :password => 'password',
-                         :confirmation => 'confirmation' }
+  devise_for :users, :controllers => { registrations: 'registrations' },
+             :path => 'account', :path_names => { :sign_in => 'login', :sign_up => 'new', :sign_out => 'logout',
+                                                  :password => 'password', :confirmation => 'confirmation' }
 
   resources :users
 
