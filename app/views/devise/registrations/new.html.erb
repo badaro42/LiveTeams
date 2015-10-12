@@ -20,15 +20,15 @@
       <%= f.text_field :last_name %>
     </div>
 
-    <div class="file-field input-field col s12 m12 l12">
-      <div class="btn">
-        <span>Ficheiro</span>
-        <input type="file">
-      </div>
-      <div class="file-path-wrapper">
-        <%= f.file_field :avatar, class: 'file-path validate', type: 'text', placeholder: "Imagem de perfil" %>
-      </div>
-    </div>
+    <!--<div class="file-field input-field col s12 m12 l12">-->
+      <!--<div class="btn">-->
+        <!--<span>Ficheiro</span>-->
+        <!--<input type="file">-->
+      <!--</div>-->
+      <!--<div class="file-path-wrapper">-->
+        <%= f.file_field :avatar %>
+      <!--</div>-->
+    <!--</div>-->
 
     <div class="input-field col s12 m12 l12">
       <%= f.label "Endereço de email" %>

@@ -8,9 +8,10 @@ class RegistrationsController < Devise::RegistrationsController
     # super
 
     @user = User.new(sign_up_params)
-    @user.avatar = params[:user][:avatar]
+    # @user.avatar = params[:user][:avatar]
     @user.save
     respond_with @user
+
     # super
   end
 
