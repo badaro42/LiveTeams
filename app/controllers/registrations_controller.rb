@@ -5,12 +5,13 @@ class RegistrationsController < Devise::RegistrationsController
   end
 
   def create
-    # super
+    super
 
-    @user = User.new(sign_up_params)
-    # @user.avatar = params[:user][:avatar]
-    @user.save
-    respond_with @user
+    # @user = User.new(sign_up_params)
+    # # @user.avatar = params[:user][:avatar]
+    # @user.save
+
+    # respond_with @user
 
     # super
   end

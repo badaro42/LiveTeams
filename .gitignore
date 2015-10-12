@@ -12,3 +12,6 @@
 !/log/.keep
 /tmp
 .idea/
+
+# ignorar as imagens dos utilizadores
+/public/images/users/*
