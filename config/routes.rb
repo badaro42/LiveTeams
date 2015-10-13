@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
 
+
   # altera as rotas predefinidas do devise
   devise_for :users, :controllers => { registrations: 'registrations' },
              :path => 'account', :path_names => { :sign_in => 'login', :sign_up => 'new', :sign_out => 'logout',
@@ -21,8 +22,6 @@ Rails.application.routes.draw do
     get "/logout" => "devise/sessions#destroy"
   end
 
-
-  # get 'homepage/index'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

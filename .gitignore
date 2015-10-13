@@ -11,7 +11,7 @@
 /log/*
 !/log/.keep
 /tmp
-.idea/
+/.idea/*
 
-# ignorar as imagens dos utilizadores
+# ignorar as imagens de perfil dos utilizadores
 /public/images/users/*
