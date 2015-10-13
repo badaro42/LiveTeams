@@ -14,15 +14,14 @@
     </div>
 
     <div class="input-field col s12 m12 l12">
-      <%= f.label "Password (mínimo 8 caracteres)" %>
+      <%= f.label "Password" %>
       <%= f.password_field :password, autocomplete: "off" %>
     </div>
 
-    <!-- TODO: BUG NA CHECKBOX, IMPOSSIVEL SELECIONAR!! -->
     <% if devise_mapping.rememberable? -%>
         <div class="col s12 m12 l12" style="margin-top: 10px;">
           <%= f.check_box :remember_me %>
-          <%= f.label "Guardar dados?" %>
+          <%= f.label "Guardar dados?", for: :user_remember_me %>
         </div>
     <% end -%>
 
