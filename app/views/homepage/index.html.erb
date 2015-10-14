@@ -1,8 +1,5 @@
 <%# encoding: utf-8 %>
 
-<!--<h1>Homepage#index</h1>-->
-<!--<p>Find me in app/views/homepage/index.html.erb</p>-->
-
 <!-- TODO: MARGIN-BOTTOM A 150PX OU MAIS PEQUENO E MUDAR CONTROLOS DE ZOOM DE LUGAR!? -->
 <div id="sidebar" class="sidebar sidebar-right collapsed" style="max-height: 75%; min-height: 200px;">
   <!-- Nav tabs -->
@@ -92,7 +89,7 @@
       <div class="list_wrapper">
         <ul id="hover_test" class="collapsible" data-collapsible="accordion" style="margin-right: 10px;">
 
-          <% Team.all.each do |team| %>
+          <% @all_teams.each do |team| %>
               <li>
                 <div class="collapsible-header">
                   <!--<div style="display: inline;">-->
@@ -111,7 +108,6 @@
                   <ul class="collection">
 
                     <% TeamMember.where(team_id: team.id).each do |t_member| %>
-
                         <% @t_user = User.find_by(id: t_member.user_id) %>
 
                         <li class="collection-item avatar team-list-item">
@@ -128,23 +124,11 @@
                             </strong>
                           </span><br>
 
+                          <!-- TODO: CRIAR TABELA PARA PERFIS E MUDAR ISTO! -->
                           <p>Administrador</p>
                         </li>
-
                     <% end %>
 
-                    <!--<li class="collection-item avatar">-->
-                    <!--<%#= image_tag 'renato_alexandre.jpg', class: 'circle' %>-->
-                    <!--<span class="title"><strong>Homem do Bussaco</strong></span><br>-->
-
-                    <!--<p>Jardineiro</p>-->
-                    <!--</li>-->
-                    <!--<li class="collection-item avatar">-->
-                    <!--<%#= image_tag 'renato_alexandre.jpg', class: 'circle' %>-->
-                    <!--<span class="title"><strong>Bruno Aleixo</strong></span><br>-->
-
-                    <!--<p>Reputado escritor</p>-->
-                    <!--</li>-->
                   </ul>
                 </div>
               </li>
@@ -214,7 +198,7 @@
 
       <div class="list_wrapper" style="padding-right: 10px;">
         <ul class="collection">
-          <% User.all.each do |user| %>
+          <% @all_users.each do |user| %>
               <li class="collection-item avatar">
                 <%= image_tag user.avatar.url, class: 'circle responsive-img' %>
                 <span class="title"><%= user.first_name %> <%= user.last_name %></span>
