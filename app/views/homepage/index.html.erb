@@ -32,9 +32,9 @@
 
     <ul role="tablist">
       <!--<li>-->
-        <!--<a href="#settings" role="tab">-->
-          <!--<i class="fa fa-gear"></i>-->
-        <!--</a>-->
+      <!--<a href="#settings" role="tab">-->
+      <!--<i class="fa fa-gear"></i>-->
+      <!--</a>-->
       <!--</li>-->
       <li>
         <a href="#about_sidebar" role="tab">
@@ -91,197 +91,65 @@
 
       <div class="list_wrapper">
         <ul id="hover_test" class="collapsible" data-collapsible="accordion" style="margin-right: 10px;">
-          <li>
-            <div class="collapsible-header">
-              <!--<div style="display: inline;">-->
-              <!--<input type="checkbox" id="test1" />-->
-              <!--<label for="test1">Equipa principal</label>-->
-              <!--</div>-->
-              Administradores
-              <a class="edit-team-btn waves-effect waves-teal btn-flat modal-trigger right" onclick="drawMapOnModal(2)"
-                 href="#edit_team_modal">
-                <i class="material-icons md-18">build</i>
-              </a>
-            </div>
-            <div class="collapsible-body">
-              <ul class="collection">
-                <li class="collection-item avatar team-list-item">
-                  <!-- RIBBON PARA INDICAR O CHEFE DE EQUIPA -->
-                  <div class="corner-ribbon top-right red shadow">Chefe</div>
-                  <%= image_tag 'renato_alexandre.jpg', class: 'circle' %>
-                  <span class="title"><strong>Renato Alexandre</strong></span><br>
 
-                  <p>Administrador</p>
-                </li>
-                <li class="collection-item avatar">
-                  <%= image_tag 'renato_alexandre.jpg', class: 'circle' %>
-                  <span class="title"><strong>Homem do Bussaco</strong></span><br>
+          <% Team.all.each do |team| %>
+              <li>
+                <div class="collapsible-header">
+                  <!--<div style="display: inline;">-->
+                  <!--<input type="checkbox" id="test1" />-->
+                  <!--<label for="test1">Equipa principal</label>-->
+                  <!--</div>-->
 
-                  <p>Jardineiro</p>
-                </li>
-                <li class="collection-item avatar">
-                  <%= image_tag 'renato_alexandre.jpg', class: 'circle' %>
-                  <span class="title"><strong>Bruno Aleixo</strong></span><br>
+                  <%= team.name %>
 
-                  <p>Reputado escritor</p>
-                </li>
-              </ul>
-            </div>
-          </li>
-          <li>
-            <div class="collapsible-header">
-              <!--<div style="display: inline;">-->
-              <!--<input type="Regimento dos bombeiros de Cacilhas" id="test2" />-->
-              <!--<label for="test2"></label>-->
-              <!--</div>-->
-              Regimento bombeiros Cacilhas
-              <a class="edit-team-btn waves-effect waves-teal btn-flat modal-trigger right" onclick="drawMapOnModal(2)"
-                 href="#edit_team_modal">
-                <i class="material-icons md-18">build</i>
-              </a>
-            </div>
-            <div class="collapsible-body"><p>Lorem ipsum dolor sit amet.</p></div>
-          </li>
-          <li>
-            <div class="collapsible-header">
-              <!--<div style="display: inline;">-->
-              <!--<input type="checkbox" id="test3"/>-->
-              <!--<label for="test3">Proteção Civil Almada</label>-->
-              <!--</div>-->
-              Proteção Civil Almada
-              <a class="edit-team-btn waves-effect waves-teal btn-flat modal-trigger right" onclick="drawMapOnModal(2)"
-                 href="#edit_team_modal">
-                <i class="material-icons md-18">build</i>
-              </a>
-            </div>
-            <div class="collapsible-body"><p>Lorem ipsum dolor sit amet.</p></div>
-          </li>
-          <li>
-            <div class="collapsible-header">
-              <!--<div style="display: inline;">-->
-              <!--<input type="checkbox" id="test4"/>-->
-              <!--<label for="test4">PSP Feijó</label>-->
-              <!--</div>-->
-              PSP Feijó
-              <a class="edit-team-btn waves-effect waves-teal btn-flat modal-trigger right" onclick="drawMapOnModal(2)"
-                 href="#edit_team_modal">
-                <i class="material-icons md-18">build</i>
-              </a>
-            </div>
-            <div class="collapsible-body"><p>Lorem ipsum dolor sit amet.</p></div>
-          </li>
-          <li>
-            <div class="collapsible-header">
-              <!--<div style="display: inline;">-->
-              <!--<input type="checkbox" id="test5"/>-->
-              <!--<label for="test5">GNR Sesimbra</label>-->
-              <!--</div>-->
-              GNR Sesimbra
-              <a class="edit-team-btn waves-effect waves-teal btn-flat modal-trigger right" onclick="drawMapOnModal(2)"
-                 href="#edit_team_modal">
-                <i class="material-icons md-18">build</i>
-              </a>
-            </div>
-            <div class="collapsible-body"><p>Lorem ipsum dolor sit amet.</p></div>
-          </li>
-          <li>
-            <div class="collapsible-header">
-              <!--<div style="display: inline;">-->
-              <!--<input type="checkbox" id="test6"/>-->
-              <!--<label for="test6">Posto de Comando Sta. Eugénia</label>-->
-              <!--</div>-->
-              Posto de Comando Sta. Eugénia
-              <a class="edit-team-btn waves-effect waves-teal btn-flat modal-trigger right" onclick="drawMapOnModal(2)"
-                 href="#edit_team_modal">
-                <i class="material-icons md-18">build</i>
-              </a>
-            </div>
-            <div class="collapsible-body"><p>Lorem ipsum dolor sit amet.</p></div>
-          </li>
-          <li>
-            <div class="collapsible-header">
-              <!--<div style="display: inline;">-->
-              <!--<input type="checkbox" id="test7"/>-->
-              <!--<label for="test7">B. Voluntários Trafaria</label>-->
-              <!--</div>-->
-              B. Voluntários Trafaria
-              <a class="edit-team-btn waves-effect waves-teal btn-flat modal-trigger right" onclick="drawMapOnModal(2)"
-                 href="#edit_team_modal">
-                <i class="material-icons md-18">build</i>
-              </a>
-            </div>
-            <div class="collapsible-body"><p>Lorem ipsum dolor sit amet.</p></div>
-          </li>
-          <li>
-            <div class="collapsible-header">
-              <!--<div style="display: inline;">-->
-              <!--<input type="checkbox" id="test8"/>-->
-              <!--<label for="test8">Equipa de reconhecimento</label>-->
-              <!--</div>-->
-              Equipa de reconhecimento
-              <a class="edit-team-btn waves-effect waves-teal btn-flat modal-trigger right" onclick="drawMapOnModal(2)"
-                 href="#edit_team_modal">
-                <i class="material-icons md-18">build</i>
-              </a>
-            </div>
-            <div class="collapsible-body"><p>Lorem ipsum dolor sit amet.</p></div>
-          </li>
-          <li>
-            <div class="collapsible-header">
-              <!--<div style="display: inline;">-->
-              <!--<input type="checkbox" id="test9"/>-->
-              <!--<label for="test9">Salvamento nº1</label>-->
-              <!--</div>-->
-              Salvamento nº1
-              <a class="edit-team-btn waves-effect waves-teal btn-flat modal-trigger right" onclick="drawMapOnModal(2)"
-                 href="#edit_team_modal">
-                <i class="material-icons md-18">build</i>
-              </a>
-            </div>
-            <div class="collapsible-body"><p>Lorem ipsum dolor sit amet.</p></div>
-          </li>
-          <li>
-            <div class="collapsible-header">
-              <!--<div style="display: inline;">-->
-              <!--<input type="checkbox" id="test10"/>-->
-              <!--<label for="test10">Mergulhadores</label>-->
-              <!--</div>-->
-              Mergulhadores
-              <a class="edit-team-btn waves-effect waves-teal btn-flat modal-trigger right" onclick="drawMapOnModal(2)"
-                 href="#edit_team_modal">
-                <i class="material-icons md-18">build</i>
-              </a>
-            </div>
-            <div class="collapsible-body"><p>Lorem ipsum dolor sit amet.</p></div>
-          </li>
-          <li>
-            <div class="collapsible-header">
-              <!--<div style="display: inline;">-->
-              <!--<input type="checkbox" id="test11"/>-->
-              <!--<label for="test11">PJ Lisboa</label>-->
-              <!--</div>-->
-              PJ Lisboa
-              <a class="edit-team-btn waves-effect waves-teal btn-flat modal-trigger right" onclick="drawMapOnModal(2)"
-                 href="#edit_team_modal">
-                <i class="material-icons md-18">build</i>
-              </a>
-            </div>
-            <div class="collapsible-body"><p>Lorem ipsum dolor sit amet.</p></div>
-          </li>
-          <li>
-            <div class="collapsible-header">
-              <!--<div style="display: inline;">-->
-              <!--<input type="checkbox" id="test12"/>-->
-              <!--<label for="test12">Grupo de populares entusiasmados</label>-->
-              <!--</div>-->
-              Grupo de populares entusiasmados
-              <a class="edit-team-btn waves-effect waves-teal btn-flat modal-trigger right" onclick="drawMapOnModal(2)"
-                 href="#edit_team_modal">
-                <i class="material-icons md-18">build</i>
-              </a>
-            </div>
-            <div class="collapsible-body"><p>Lorem ipsum dolor sit amet.</p></div>
-          </li>
+                  <a class="edit-team-btn waves-effect waves-teal btn-flat modal-trigger right" onclick="drawMapOnModal(2)"
+                     href="#edit_team_modal">
+                    <i class="material-icons md-18">build</i>
+                  </a>
+                </div>
+                <div class="collapsible-body">
+                  <ul class="collection">
+
+                    <% TeamMember.where(team_id: team.id).each do |t_member| %>
+
+                        <% @t_user = User.find_by(id: t_member.user_id) %>
+
+                        <li class="collection-item avatar team-list-item">
+
+                          <% if (t_member.is_leader) %>
+                              <!-- RIBBON PARA INDICAR O CHEFE DE EQUIPA -->
+                              <div class="corner-ribbon top-right red shadow">Chefe</div>
+                          <% end %>
+
+                          <%= image_tag @t_user.avatar.url, class: 'circle' %>
+                          <span class="title">
+                            <strong>
+                              <%= @t_user.first_name %> <%= @t_user.last_name %>
+                            </strong>
+                          </span><br>
+
+                          <p>Administrador</p>
+                        </li>
+
+                    <% end %>
+
+                    <!--<li class="collection-item avatar">-->
+                    <!--<%#= image_tag 'renato_alexandre.jpg', class: 'circle' %>-->
+                    <!--<span class="title"><strong>Homem do Bussaco</strong></span><br>-->
+
+                    <!--<p>Jardineiro</p>-->
+                    <!--</li>-->
+                    <!--<li class="collection-item avatar">-->
+                    <!--<%#= image_tag 'renato_alexandre.jpg', class: 'circle' %>-->
+                    <!--<span class="title"><strong>Bruno Aleixo</strong></span><br>-->
+
+                    <!--<p>Reputado escritor</p>-->
+                    <!--</li>-->
+                  </ul>
+                </div>
+              </li>
+          <% end %>
+
         </ul>
       </div>
     </div>
@@ -360,9 +228,9 @@
     </div>
 
     <!--<div class="sidebar-pane" id="settings">-->
-      <!--<h1 class="sidebar-header">Definições-->
-        <!--<div class="sidebar-close"><i class="fa fa-caret-right"></i></div>-->
-      <!--</h1>-->
+    <!--<h1 class="sidebar-header">Definições-->
+    <!--<div class="sidebar-close"><i class="fa fa-caret-right"></i></div>-->
+    <!--</h1>-->
     <!--</div>-->
 
     <div class="sidebar-pane" id="about_sidebar">
@@ -473,72 +341,75 @@
     <h5>Criar nova equipa</h5>
   </div>
   <div class="modal-content">
-    <div class="row">
-      <div class="input-field col s12">
-        <input id="team_name" value="" type="text" class="validate">
-        <label for="team_name"><strong>Nome da equipa</strong></label>
-      </div>
-    </div>
-    <div class="row">
-      <label style="padding-left: 10px;"><strong>Utilizadores na equipa</strong></label>
+    <!--<div class="row">-->
+    <!--<div class="input-field col s12">-->
+    <!--<input id="team_name" value="" type="text" class="validate">-->
+    <!--<label for="team_name"><strong>Nome da equipa</strong></label>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--<div class="row">-->
+    <!--<label style="padding-left: 10px;"><strong>Utilizadores na equipa</strong></label>-->
 
-      <div class="input-field col s12" style="padding: 0px; height: 150px; overflow-y: auto; width: 100%;">
-        <form action="#">
-              <span>
-                <input type="checkbox" id="usr1"/>
-                <label for="usr1">Utilizador numero 1</label>
-              </span>
-          <br>
-              <span>
-                <input type="checkbox" id="usr2"/>
-                <label for="usr2">Utilizador numero 2</label>
-              </span>
-          <br>
-              <span>
-                <input type="checkbox" id="usr3"/>
-                <label for="usr3">Utilizador numero 3</label>
-              </span>
-          <br>
-              <span>
-                <input type="checkbox" id="usr4"/>
-                <label for="usr4">Utilizador numero 4</label>
-              </span>
-          <br>
-              <span>
-                <input type="checkbox" id="usr5"/>
-                <label for="usr5">Utilizador numero 6</label>
-              </span>
-          <br>
-              <span>
-                <input type="checkbox" id="usr6"/>
-                <label for="usr6">Utilizador numero 7</label>
-              </span>
-          <br>
-              <span>
-                <input type="checkbox" id="usr7"/>
-                <label for="usr7">Utilizador numero 8</label>
-              </span>
-        </form>
-      </div>
-    </div>
-    <div class="row" style="padding-top: 10px;">
-      <div class="input-field col s12">
-        <select style="z-index: 10000;">
-          <option value="" selected>Escolha um dos utilizadores</option>
-          <option value="1">Utilizador 1</option>
-          <option value="2">Utilizador 2</option>
-          <option value="3">Utilizador 3</option>
-        </select>
-        <label><strong>Escolher responsável da equipa</strong></label>
-      </div>
-    </div>
-    <div class="row">
-      <label style="padding-left: 10px;"><strong>Destacar equipa para local</strong></label>
+    <!--<div class="input-field col s12" style="padding: 0px; height: 150px; overflow-y: auto; width: 100%;">-->
+    <!--<form action="#">-->
+    <!--<span>-->
+    <!--<input type="checkbox" id="usr1"/>-->
+    <!--<label for="usr1">Utilizador numero 1</label>-->
+    <!--</span>-->
+    <!--<br>-->
+    <!--<span>-->
+    <!--<input type="checkbox" id="usr2"/>-->
+    <!--<label for="usr2">Utilizador numero 2</label>-->
+    <!--</span>-->
+    <!--<br>-->
+    <!--<span>-->
+    <!--<input type="checkbox" id="usr3"/>-->
+    <!--<label for="usr3">Utilizador numero 3</label>-->
+    <!--</span>-->
+    <!--<br>-->
+    <!--<span>-->
+    <!--<input type="checkbox" id="usr4"/>-->
+    <!--<label for="usr4">Utilizador numero 4</label>-->
+    <!--</span>-->
+    <!--<br>-->
+    <!--<span>-->
+    <!--<input type="checkbox" id="usr5"/>-->
+    <!--<label for="usr5">Utilizador numero 6</label>-->
+    <!--</span>-->
+    <!--<br>-->
+    <!--<span>-->
+    <!--<input type="checkbox" id="usr6"/>-->
+    <!--<label for="usr6">Utilizador numero 7</label>-->
+    <!--</span>-->
+    <!--<br>-->
+    <!--<span>-->
+    <!--<input type="checkbox" id="usr7"/>-->
+    <!--<label for="usr7">Utilizador numero 8</label>-->
+    <!--</span>-->
+    <!--</form>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--<div class="row" style="padding-top: 10px;">-->
+    <!--<div class="input-field col s12">-->
+    <!--<select style="z-index: 10000;">-->
+    <!--<option value="" selected>Escolha um dos utilizadores</option>-->
+    <!--<option value="1">Utilizador 1</option>-->
+    <!--<option value="2">Utilizador 2</option>-->
+    <!--<option value="3">Utilizador 3</option>-->
+    <!--</select>-->
+    <!--<label><strong>Escolher responsável da equipa</strong></label>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--<div class="row">-->
+    <!--<label style="padding-left: 10px;"><strong>Destacar equipa para local</strong></label>-->
 
-      <div class="input-field col s12">
-        <div id="create_team_map"></div>
-      </div>
-    </div>
+    <!--<div class="input-field col s12">-->
+    <!--<div id="create_team_map"></div>-->
+    <!--</div>-->
+    <!--</div>-->
+
+    <%= render :partial => '/teams/form', :locals => {:team => Team.new} %>
+
   </div>
   <div class="modal-footer">
     <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Confirmar</a>
