@@ -39,11 +39,14 @@ gem 'font-awesome-rails'
 # material icons!
 gem 'material_icons'
 
-# autenticaçao e cenas
+# autenticaï¿½ao e cenas
 gem 'devise'
 
 # imagens para os utilizadores
 gem 'paperclip', '~> 4.3'
+
+# postgres adapter para ativar cenas espaciais
+gem 'activerecord-postgis-adapter'
 
 # ----------------------------------------------
 
