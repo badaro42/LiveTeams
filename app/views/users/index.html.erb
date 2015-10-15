@@ -1,0 +1,37 @@
+<%# encoding: utf-8 %>
+
+<% content_for :title, "Utilizadores :: GestãoEmergência" %>
+
+<div class="row">
+  <div class="col l6 m6 s12 input-field">
+    <input id="search" type="search"required>
+    <label for="search"><i class="material-icons">search</i> Pesquisar por nome de utilizador</label>
+    <i class="material-icons">close</i>
+  </div>
+</div>
+
+
+<div class="row">
+  <% @users.each do |user| %>
+
+      <div class="col l2 m3 s6">
+        <div class="card small">
+          <div class="card-image">
+            <%= image_tag user.avatar.url %>
+          </div>
+          <div class="card-content" style="padding-top: 10px;">
+            <span class="card-title grey-text text-darken-4 truncate">
+              <%= user.first_name %> <%= user.last_name %>
+            </span>
+
+            <p class="truncate">Administrador</p>
+          </div>
+          <div class="card-action">
+            <%= link_to "Ver perfil", user_path(user) %>
+            <!--<a href="#" style="margin: 0px;">Ver perfil</a>-->
+          </div>
+        </div>
+      </div>
+
+  <% end %>
+</div>
