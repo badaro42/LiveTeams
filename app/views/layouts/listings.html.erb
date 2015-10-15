@@ -12,6 +12,46 @@
 </head>
 <body>
 
+<header id="header" class="page-topbar">
+  <!-- start header nav-->
+  <div class="navbar-fixed">
+
+    <nav class="cyan" style="height: 75px; line-height: 75px; box-shadow: none;">
+      <div class="nav-wrapper row">
+
+        <div class="col m1 l1 s1">
+          <%= link_to root_path do %>
+              <i class="material-icons md-36 white-text">arrow_back</i>
+          <% end %>
+        </div>
+
+        <div class="col m8 l8 s8 offset-l1 offset-s1 offset-m1">
+          <h2 class="center-align" style="margin-top: 8px; font-family: Roboto; font-weight: 200;">UTILIZADORES</h2>
+        </div>
+
+      </div>
+    </nav>
+
+    <nav class="cyan" style="height: 80px; line-height: 75px; margin-top: 75px; box-shadow: none;">
+      <div class="nav-wrapper row">
+
+        <div class="col m8 l8 s8 offset-l2 offset-s2 offset-m2">
+          <form>
+            <div class="input-field">
+              <input id="search" type="search" placeholder="Insira o nome de um utilizador" required>
+              <label for="search"><i class="material-icons">search</i></label>
+              <i class="material-icons">close</i>
+            </div>
+          </form>
+        </div>
+
+      </div>
+    </nav>
+    <!-- HORIZONTL NAV END-->
+  </div>
+  <!-- end header nav-->
+</header>
+
 <%= yield %>
 
 </body>

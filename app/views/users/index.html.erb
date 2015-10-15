@@ -2,16 +2,7 @@
 
 <% content_for :title, "Utilizadores :: GestãoEmergência" %>
 
-<div class="row">
-  <div class="col l6 m6 s12 input-field">
-    <input id="search" type="search"required>
-    <label for="search"><i class="material-icons">search</i> Pesquisar por nome de utilizador</label>
-    <i class="material-icons">close</i>
-  </div>
-</div>
-
-
-<div class="row">
+<div class="row" style="margin-top: 100px;">
   <% @users.each do |user| %>
 
       <div class="col l2 m3 s6">
@@ -28,7 +19,6 @@
           </div>
           <div class="card-action">
             <%= link_to "Ver perfil", user_path(user) %>
-            <!--<a href="#" style="margin: 0px;">Ver perfil</a>-->
           </div>
         </div>
       </div>
