@@ -87,9 +87,10 @@
 
 
       <div class="list_wrapper">
+        <p class="center" style="font-weight: 300;">A mostrar as 15 equipas alteradas recentemente</p>
         <ul id="hover_test" class="collapsible" data-collapsible="accordion" style="margin-right: 10px;">
 
-          <% @all_teams.each do |team| %>
+          <% @recently_changed_teams.each do |team| %>
               <li>
                 <div class="collapsible-header">
                   <!--<div style="display: inline;">-->
@@ -107,7 +108,7 @@
                 <div class="collapsible-body">
                   <ul class="collection">
 
-                    <% TeamMember.where(team_id: team.id).each do |t_member| %>
+                    <% TeamMember.where(team_id: team.id).order(is_leader: :desc).each do |t_member| %>
                         <% @t_user = User.find_by(id: t_member.user_id) %>
 
                         <li class="collection-item avatar team-list-item">
@@ -133,6 +134,11 @@
           <% end %>
 
         </ul>
+        <div class="center" style="margin-bottom: 10px;">
+          <%= link_to teams_url, method: :get, class: 'waves-effect waves-light btn' do %>
+              Ver todas
+          <% end %>
+        </div>
       </div>
     </div>
 
@@ -398,7 +404,7 @@
     <!--</div>-->
     <!--</div>-->
 
-    <%= render :partial => '/teams/form', :locals => {:team => Team.new} %>
+    <%#= render :partial => '/teams/form', :locals => {:team => Team.new} %>
 
   </div>
   <div class="modal-footer">

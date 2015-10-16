@@ -1,4 +1,16 @@
-<p id="notice"><%= notice %></p>
+<%# encoding: utf-8 %>
+
+<% @show_search_stuff = false %>
+<% content_for :title, "Equipas :: GestãoEmergência" %>
+<% content_for :page_purpose, "Equipas" %>
+
+<% content_for :back_page do %>
+    <%= link_to teams_path, id: 'back-button', method: :get do %>
+        <i class="material-icons md-36 white-text">arrow_back</i>
+    <% end %>
+<% end %>
+
+<!--<p id="notice"><%= notice %></p>-->
 
 <p>
   <strong>Name:</strong>
