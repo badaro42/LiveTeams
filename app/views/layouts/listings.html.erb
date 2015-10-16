@@ -7,50 +7,123 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <%= stylesheet_link_tag 'application', media: 'all' %>
+  <%= stylesheet_link_tag 'listings_test' %>
   <%= javascript_include_tag 'application' %>
+  <%= javascript_include_tag 'listings_test' %>
   <%= csrf_meta_tags %>
 </head>
 <body>
 
-<header id="header" class="page-topbar">
-  <!-- start header nav-->
-  <div class="navbar-fixed">
-
-    <nav class="cyan" style="height: 75px; line-height: 75px; box-shadow: none;">
-      <div class="nav-wrapper row">
-
-        <div class="col m1 l1 s1">
-          <%= link_to root_path, method: :get do %>
-              <i class="material-icons md-36 white-text">arrow_back</i>
-          <% end %>
-        </div>
-
-        <div class="col m8 l8 s8 offset-l1 offset-s1 offset-m1">
-          <h2 class="center-align" style="margin-top: 8px; font-family: Roboto; font-weight: 200;">UTILIZADORES</h2>
-        </div>
-
-      </div>
-    </nav>
-
-    <nav class="cyan" style="height: 80px; line-height: 75px; margin-top: 75px; box-shadow: none;">
-      <div class="nav-wrapper row">
-
-        <div class="col m8 l8 s8 offset-l2 offset-s2 offset-m2">
-          <form>
-            <div class="input-field">
-              <input id="search" type="search" placeholder="Insira o nome de um utilizador" required>
-              <label for="search"><i class="material-icons">search</i></label>
-              <i class="material-icons">close</i>
-            </div>
-          </form>
-        </div>
-
-      </div>
-    </nav>
-    <!-- HORIZONTL NAV END-->
+<nav id="nav" class="cyan">
+  <div class="container">
+    <div class="nav-wrapper">
+      <ul id="nav-mobile" class="left">
+        <!--<li><a href="http://makoframework.com/docs">Documentation</a></li>-->
+        <!--<li><a href="http://api.makoframework.com">API</a></li>-->
+        <!--<li>-->
+        <!--<a class="dropdown-button" href="#!" data-activates="source-dropdown">Source<i class="mdi-navigation-arrow-drop-down right"></i></a>-->
+        <!--</li>-->
+        <!--<li><a href="https://github.com/mako-framework/framework/issues">Issues</a></li>-->
+        <!--<li><a href="http://forum.makoframework.com/">Community</a></li>-->
+        <%= link_to root_path, method: :get do %>
+            <i class="material-icons md-36 white-text">arrow_back</i>
+        <% end %>
+      </ul>
+      <h2 class="brand-logo center">Utilizadores</h2>
+      <ul id="nav-mobile" class="right">
+        <!--<li><a href="http://makoframework.com/docs">Documentation</a></li>-->
+        <!--<li><a href="http://api.makoframework.com">API</a></li>-->
+        <!--<li>-->
+          <!--<a class="dropdown-button" href="#!" data-activates="source-dropdown">Source<i class="mdi-navigation-arrow-drop-down right"></i></a>-->
+        <!--</li>-->
+        <!--<li><a href="https://github.com/mako-framework/framework/issues">Issues</a></li>-->
+        <!--<li><a href="http://forum.makoframework.com/">Community</a></li>-->
+        <li><a href="#!" id="toggle-search"><i class="large mdi-action-search"></i></a></li>
+      </ul>
+    </div>
   </div>
-  <!-- end header nav-->
-</header>
+</nav>
+<div class="row white-text cyan" id="search" style="display: none;">
+
+  <div class="container">
+    <form action="#" method="get">
+      <input class="form-control" type="text" name="q" placeholder="Introduza o nome do utilizador...">
+      <input type="hidden" name="as_sitesearch" value="makoframework.com">
+    </form>
+  </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--<header id="header" class="page-topbar">-->
+  <!--&lt;!&ndash; start header nav&ndash;&gt;-->
+
+  <!--<div class="cyan row">-->
+
+    <!--<div class="col m1 l1 s1">-->
+      <!--<%= link_to root_path, method: :get do %>-->
+          <!--<i class="material-icons md-36 white-text">arrow_back</i>-->
+      <!--<% end %>-->
+    <!--</div>-->
+
+    <!--<div class="col m8 l8 s8 offset-l1 offset-s1 offset-m1">-->
+      <!--<h2 class="center-align" style="margin-top: 8px; font-family: Roboto; font-weight: 200;">UTILIZADORES</h2>-->
+    <!--</div>-->
+
+  <!--</div>-->
+
+
+
+  <!--<div class="navbar-fixed">-->
+
+    <!--&lt;!&ndash;<nav class="cyan" style="height: 75px; line-height: 75px; box-shadow: none;">&ndash;&gt;-->
+      <!--&lt;!&ndash;<div class="nav-wrapper row">&ndash;&gt;-->
+
+        <!--&lt;!&ndash;<div class="col m1 l1 s1">&ndash;&gt;-->
+          <!--&lt;!&ndash;<%= link_to root_path, method: :get do %>&ndash;&gt;-->
+              <!--&lt;!&ndash;<i class="material-icons md-36 white-text">arrow_back</i>&ndash;&gt;-->
+          <!--&lt;!&ndash;<% end %>&ndash;&gt;-->
+        <!--&lt;!&ndash;</div>&ndash;&gt;-->
+
+        <!--&lt;!&ndash;<div class="col m8 l8 s8 offset-l1 offset-s1 offset-m1">&ndash;&gt;-->
+          <!--&lt;!&ndash;<h2 class="center-align" style="margin-top: 8px; font-family: Roboto; font-weight: 200;">UTILIZADORES</h2>&ndash;&gt;-->
+        <!--&lt;!&ndash;</div>&ndash;&gt;-->
+
+      <!--&lt;!&ndash;</div>&ndash;&gt;-->
+    <!--&lt;!&ndash;</nav>&ndash;&gt;-->
+
+    <!--<nav class="cyan" style="height: 80px; line-height: 75px; box-shadow: none;">-->
+      <!--<div class="nav-wrapper row">-->
+
+        <!--<div class="col m8 l8 s8 offset-l2 offset-s2 offset-m2">-->
+          <!--<form>-->
+            <!--<div class="input-field">-->
+              <!--<input id="search" type="search" placeholder="Insira o nome de um utilizador" required>-->
+              <!--<label for="search"><i class="material-icons">search</i></label>-->
+              <!--<i class="material-icons">close</i>-->
+            <!--</div>-->
+          <!--</form>-->
+        <!--</div>-->
+
+      <!--</div>-->
+    <!--</nav>-->
+    <!--&lt;!&ndash; HORIZONTL NAV END&ndash;&gt;-->
+  <!--</div>-->
+  <!--&lt;!&ndash; end header nav&ndash;&gt;-->
+<!--</header>-->
 
 <%= yield %>
 
