@@ -44,7 +44,7 @@
   <!-- Tab panes -->
   <div class="sidebar-content">
     <div class="sidebar-pane" id="profile">
-      <h1 class="sidebar-header">Bem vindo <%= current_user.first_name %>!
+      <h1 class="sidebar-header" style="font-weight: 300">Bem vindo <%= current_user.first_name %>!
         <div class="sidebar-close"><i class="fa fa-caret-right"></i></div>
       </h1>
 
@@ -55,7 +55,7 @@
             <%= image_tag current_user.avatar.url, class: 'circle responsive-img' %>
           </div>
           <div class="col s7">
-            <h5><%= current_user.first_name %> <%= current_user.last_name %></h5>
+            <h5 style="font-weight: 300"><%= current_user.first_name %> <%= current_user.last_name %></h5>
             <hr>
             <span>Administrador</span><br>
             <span>Registado há 100 dias</span>
@@ -69,7 +69,7 @@
     </div>
 
     <div class="sidebar-pane" id="teams">
-      <h1 class="sidebar-header">Equipas
+      <h1 class="sidebar-header" style="font-weight: 300">Equipas
         <a class="waves-effect waves-teal btn modal-trigger right" onclick="drawMapOnModal(1)" style="width: 53px;
                 height: 33px; padding-left: 7px; padding-right: 10px; margin-top: 3px;" href="#create_team_modal">
           <i class="material-icons md-24 md-light">group_add</i>
@@ -118,10 +118,8 @@
                           <% end %>
 
                           <%= image_tag @t_user.avatar.url, class: 'circle' %>
-                          <span class="title">
-                            <strong>
+                          <span class="title" style="font-weight: 300">
                               <%= @t_user.first_name %> <%= @t_user.last_name %>
-                            </strong>
                           </span><br>
 
                           <!-- TODO: CRIAR TABELA PARA PERFIS E MUDAR ISTO! -->
@@ -139,7 +137,7 @@
     </div>
 
     <div class="sidebar-pane" id="warnings">
-      <h1 class="sidebar-header">
+      <h1 class="sidebar-header" style="font-weight: 300">
         Alertas ativos
         <span class="badge new" style="line-height: 30px; margin-top: 5px;">4</span>
 
@@ -151,7 +149,7 @@
       <div class="list_wrapper" style="padding-right: 10px;">
         <div class="card green">
           <div class="card-content card-reduced-padding-top">
-            <h5 class="black-text">Situação regularizada</h5>
+            <h5 class="black-text" style="font-weight: 300">Situação regularizada</h5>
             <span><i class="material-icons md-18">schedule</i> 20 Out, 12h - infinito</span>
             <br>
             <span><i class="material-icons md-18">map</i> Todo o território nacional</span>
@@ -159,7 +157,7 @@
         </div>
         <div class="card yellow">
           <div class="card-content">
-            <h5 class="black-text">Agitação Marítima</h5>
+            <h5 class="black-text" style="font-weight: 300">Agitação Marítima</h5>
             <span><i class="material-icons md-18">schedule</i> 21 Set, 17h - 25 Set, 12h</span>
             <br>
             <span><i class="material-icons md-18">map</i> Setúbal, Lisboa, Santarém</span>
@@ -169,7 +167,7 @@
         </div>
         <div class="card red">
           <div class="card-content">
-            <h5 class="black-text">Temperaturas Elevadas</h5>
+            <h5 class="black-text" style="font-weight: 300">Temperaturas Elevadas</h5>
             <span><i class="material-icons md-18">schedule</i> 25 Set, 12h - 30 Set, 12h</span>
             <br>
             <span><i class="material-icons md-18">map</i> Vila Real, Viseu, Guarda, Portalegre, Beja, Setúbal</span>
@@ -179,7 +177,7 @@
         </div>
         <div class="card orange">
           <div class="card-content">
-            <h5 class="black-text">Vento Forte</h5>
+            <h5 class="black-text" style="font-weight: 300">Vento Forte</h5>
             <span><i class="material-icons md-18">schedule</i> 30 Set, 12h - 20 Out, 12h</span>
             <br>
             <span><i class="material-icons md-18">map</i> Évora, Faro, Beja</span>
@@ -190,23 +188,31 @@
       </div>
     </div>
 
-    <!-- TODO: ESTA TAB APENAS VISIVEL PARA OS ADMINISTRADORES!? -->
     <div class="sidebar-pane" id="users">
-      <h1 class="sidebar-header">Lista de utilizadores
+      <h1 class="sidebar-header" style="font-weight: 300">Utilizadores mais ativos
         <div class="sidebar-close"><i class="fa fa-caret-right"></i></div>
       </h1>
-
       <div class="list_wrapper" style="padding-right: 10px;">
-        <ul class="collection">
-          <% @all_users.each do |user| %>
+        <p class="center" style="font-weight: 300;">A mostrar os 15 utilizadores mais ativos</p>
+        <ul class="collection" style="margin-bottom: 7.5px;">
+          <% @most_active_users.each do |user| %>
               <li class="collection-item avatar">
                 <%= image_tag user.avatar.url, class: 'circle responsive-img' %>
-                <span class="title"><%= user.first_name %> <%= user.last_name %></span>
+                <span class="title" style="font-weight: 300">
+                  <!--<strong>-->
+                  <%= user.first_name %> <%= user.last_name %>
+                  <!--</strong>-->
+                </span>
 
                 <p><%= user.email %></p>
               </li>
           <% end %>
         </ul>
+        <div class="center" style="margin-bottom: 10px;">
+          <%= link_to users_path, class: 'waves-effect waves-light btn' do %>
+              Ver todos
+          <% end %>
+        </div>
       </div>
 
     </div>
@@ -218,7 +224,7 @@
     <!--</div>-->
 
     <div class="sidebar-pane" id="about_sidebar">
-      <h1 class="sidebar-header">Acerca do projeto
+      <h1 class="sidebar-header" style="font-weight: 300">Acerca do projeto
         <div class="sidebar-close"><i class="fa fa-caret-right"></i></div>
       </h1>
     </div>
@@ -233,7 +239,7 @@
   </div>
   <div id="curr_location">
     <div>
-      <span class="truncate">Santa Eugénia, Alijó. </span>
+      <span class="truncate">Santa Eugénia, Alijó.</span>
     </div>
   </div>
 </div>

@@ -5,6 +5,7 @@ html, body, #container {
     width: 100%;
     overflow: hidden;
     font-family: "Roboto", sans-serif;
+    font-weight: 300;
 }
 
 /* ********************* REGRAS PARA PERSONALIZAR OS ICONES DA GOOGLE ********************** */
