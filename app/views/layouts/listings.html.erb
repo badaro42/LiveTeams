@@ -18,15 +18,25 @@
   <div class="container">
     <div class="nav-wrapper">
       <ul id="nav-mobile" class="left">
-        <%= yield(:back_page) %>
+        <li>
+          <%= yield(:back_page) %>
+        </li>
       </ul>
       <h2 id="page-title-center" class="brand-logo center"><%= yield(:page_purpose) %></h2>
 
-      <% if @show_search_stuff %>
-          <ul id="nav-mobile" class="right">
-            <li><a href="#!" id="toggle-search"><i class="large mdi-action-search"></i></a></li>
-          </ul>
-      <% end %>
+
+      <ul id="nav-mobile" class="right">
+        <% if @show_search_stuff %>
+            <li>
+              <a href="#!" class="tooltipped navbar-button" data-position="bottom" data-delay="15"
+                 data-tooltip="Pesquisar" id="toggle-search"><i class="material-icons md-36">search</i></a>
+            </li>
+        <% end %>
+        <li>
+          <%= yield(:model_actions) %>
+        </li>
+      </ul>
+
 
     </div>
   </div>

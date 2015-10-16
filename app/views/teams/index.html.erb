@@ -4,36 +4,39 @@
 <% content_for :title, "Equipas :: GestãoEmergência" %>
 <% content_for :page_purpose, "Equipas" %>
 
+<% content_for :model_actions do %>
+    <%= link_to new_team_path, :data => {:position => 'bottom', :delay => '15',
+                                         :tooltip => 'Adicionar equipa'},
+                class: 'tooltipped navbar-button', method: :get do %>
+        <i class="material-icons md-36">add</i>
+    <% end %>
+<% end %>
+
 <% content_for :back_page do %>
-    <%= link_to root_path, id: 'back-button', method: :get do %>
+    <%= link_to root_path, :data => {:position => 'bottom', :delay => '15', :tooltip => 'Voltar para o mapa'},
+                class: 'tooltipped navbar-button', method: :get do %>
         <i class="material-icons md-36 white-text">arrow_back</i>
     <% end %>
 <% end %>
 
-<h1>Listing Teams</h1>
+<!--<h1>Listing Teams</h1>-->
 
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Latlon</th>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
 
-  <tbody>
-    <% @teams.each do |team| %>
-      <tr>
-        <td><%= team.name %></td>
-        <td><%= team.latlon %></td>
-        <td><%= link_to 'Show', team %></td>
-        <td><%= link_to 'Edit', edit_team_path(team) %></td>
-        <td><%= link_to 'Destroy', team, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+<ul class="collapsible popout" data-collapsible="accordion" style="margin-left: 10px; margin-right: 10px;">
+  <li>
+    <div class="collapsible-header"><i class="material-icons">filter_drama</i>First</div>
+    <div class="collapsible-body"><p>Lorem ipsum dolor sit amet.</p></div>
+  </li>
+  <li>
+    <div class="collapsible-header"><i class="material-icons">place</i>Second</div>
+    <div class="collapsible-body"><p>Lorem ipsum dolor sit amet.</p></div>
+  </li>
+  <li>
+    <div class="collapsible-header"><i class="material-icons">whatshot</i>Third</div>
+    <div class="collapsible-body"><p>Lorem ipsum dolor sit amet.</p></div>
+  </li>
+</ul>
 
-<br>
+
 
 <%= link_to 'New Team', new_team_path %>

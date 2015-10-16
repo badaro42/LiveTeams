@@ -5,8 +5,10 @@
 <% content_for :page_purpose, "Utilizadores" %>
 
 <% content_for :back_page do %>
-    <%= link_to root_path, id: 'back-button', method: :get do %>
-        <i class="material-icons md-36 white-text">arrow_back</i>
+    <%= link_to root_path, :data => {:position => 'bottom', :delay => '15',
+                                                 :tooltip => 'Voltar para o mapa'},
+                class: 'tooltipped navbar-button', method: :get do %>
+        <i class="material-icons md-36">arrow_back</i>
     <% end %>
 <% end %>
 
@@ -26,7 +28,7 @@
             <p class="truncate">Administrador</p>
           </div>
           <div class="card-action">
-            <%= link_to "Ver perfil", user_path(user) %>
+            <%= link_to "Ver perfil", user_path(user), method: :get %>
           </div>
         </div>
       </div>

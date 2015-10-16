@@ -4,8 +4,18 @@
 <% content_for :title, "Utilizadores :: GestãoEmergência" %>
 <% content_for :page_purpose, "Utilizadores" %>
 
+<% content_for :model_actions do %>
+    <%= link_to edit_user_path(@user), :data => {:position => 'bottom', :delay => '15',
+                                                 :tooltip => 'Editar utilizador'},
+                class: 'tooltipped navbar-button', method: :get do %>
+        <i class="material-icons md-36">edit</i>
+    <% end %>
+<% end %>
+
 <% content_for :back_page do %>
-    <%= link_to users_path, id: 'back-button', method: :get do %>
+    <%= link_to users_path, :data => {:position => 'bottom', :delay => '15',
+                                      :tooltip => 'Voltar para utilizadores'},
+                class: 'tooltipped navbar-button', method: :get do %>
         <i class="material-icons md-36 white-text">arrow_back</i>
     <% end %>
 <% end %>

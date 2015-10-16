@@ -6,8 +6,9 @@
 }
 
 @media only screen and (max-width: 601px) {
-    #back-button {
-        padding-top: 9px;
+    .navbar-button {
+        padding-top: 10px;
+        padding-bottom: 10px;
     }
 
     #page-title-center {

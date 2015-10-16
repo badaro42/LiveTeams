@@ -5,7 +5,9 @@
 <% content_for :page_purpose, "Utilizadores" %>
 
 <% content_for :back_page do %>
-    <%= link_to @user, id: 'back-button', method: :get do %>
+    <%= link_to user_path(@user), :data => {:position => 'bottom', :delay => '15',
+                                      :tooltip => 'Voltar para o utilizador '+@user.id.to_s},
+                class: 'tooltipped navbar-button', method: :get do %>
         <i class="material-icons md-36 white-text">arrow_back</i>
     <% end %>
 <% end %>
