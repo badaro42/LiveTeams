@@ -24,9 +24,12 @@
       <div class="col m12 l12 s12">
         <% @all_users.each do |user| %>
             <% username = user.first_name + " " + user.last_name %>
-            <%= puts username %>
             <p>
-              <%= f.check_box("users", {:multiple => true}, user.id.to_s, nil) %>
+              <% if @users_in_team.include?(user) %>
+                  <%= f.check_box("users", {:multiple => true, :checked => "checked"}, user.id.to_s, nil) %>
+              <% else %>
+                  <%= f.check_box("users", {:multiple => true}, user.id.to_s, nil) %>
+              <% end %>
               <%= f.label username, for: "team_users_"+user.id.to_s %>
             </p>
         <% end %>
