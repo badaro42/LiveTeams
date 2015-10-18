@@ -1,3 +1,5 @@
+<%# encoding: utf-8 %>
+
 <%= form_for(@team) do |f| %>
     <% if @team.errors.any? %>
         <div id="error_explanation">
@@ -11,18 +13,21 @@
         </div>
     <% end %>
 
-    <div class="field">
-      <%= f.label :name %><br>
-      <%= f.text_field :name %>
+    <div class="row input-field col s12 m12 l12" style="margin-top: 20px;">
+      <%= f.label "Nome da equipa" %>
+      <%= f.text_field :name, required: true %>
     </div>
-    <div class="field">
-      <%= f.label :latlon %><br>
+    <div class="row input-field col s12 m12 l12" style="margin-bottom: 30px; margin-top: 0px;">
+      <%= f.label "Coordenadas" %>
       <%= f.text_field :latlon %>
     </div>
 
     <div class="row">
-      <div class="col m12 l12 s12">
-        <% @all_users.each do |user| %>
+      <p style="font-weight: 300; padding-left: 10px; font-size: 20px; margin-bottom: 0px;">
+        Adicione utilizadores à equipa
+      </p>
+      <% @all_users.each do |user| %>
+          <div class="col m3 l3 s3">
             <% username = user.first_name + " " + user.last_name %>
             <p>
               <% if @users_in_team.include?(user) %>
@@ -32,11 +37,16 @@
               <% end %>
               <%= f.label username, for: "team_users_"+user.id.to_s %>
             </p>
-        <% end %>
-      </div>
+          </div>
+      <% end %>
+
     </div>
 
-    <div class="actions">
-      <%= f.submit %>
+    <div class="actions col m12 l12 s12" style="margin-top: 30px;">
+      <% if @create_new_team %>
+          <%= f.button 'Criar equipa', class: "btn waves-effect waves-light" %>
+      <% else %>
+          <%= f.button 'Atualizar', class: "btn waves-effect waves-light" %>
+      <% end %>
     </div>
 <% end %>

@@ -1,9 +1,10 @@
 <%# encoding: utf-8 %>
 
+<% @create_new_team = true %>
 <% @show_search_stuff = false %>
 <% @show_new_team_btn = false %>
-<% content_for :title, "Equipas :: GestãoEmergência" %>
-<% content_for :page_purpose, "Equipas" %>
+<% content_for :title, "Nova equipa :: GestãoEmergência" %>
+<% content_for :page_purpose, "Nova equipa" %>
 
 <% content_for :back_page do %>
     <%= link_to teams_path, :data => { :position => 'bottom', :delay => '15', :tooltip => 'Voltar para as equipas' },
@@ -12,8 +13,6 @@
     <% end %>
 <% end %>
 
-<h1>New Team</h1>
-
-<%= render 'form' %>
-
-<%= link_to 'Back', teams_path %>
+<div class="row" style="margin: 20px;">
+  <%= render 'form' %>
+</div>

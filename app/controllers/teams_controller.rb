@@ -18,13 +18,12 @@ class TeamsController < ApplicationController
   # GET /teams/new
   def new
     @team = Team.new
-    # @all_users = User.all
+    @users_in_team = @team.users
   end
 
   # GET /teams/1/edit
   def edit
     @users_in_team = @team.users
-    # puts @users_in_team.ids.to_a
   end
 
   # POST /teams
@@ -34,9 +33,6 @@ class TeamsController < ApplicationController
 
     respond_to do |format|
       if @team.save
-
-        puts "EQUIPA DO CRL1!!!!!!!!!!!!"
-        puts @team.id
 
         # adicionar os vários membros da equipa, colocar aqui um FOR!
         # todos os elementos sao adicionados como nao sendo lider
@@ -104,8 +100,6 @@ class TeamsController < ApplicationController
 
           # se ainda estiver algum id em users_id, essas entradas sao removidas da tabela de membros
           users_id.each do |u_id|
-            # puts TeamMember.where(user_id: u_id).where(team_id: @team.id)
-
             TeamMember.delete_all(["user_id = ? AND team_id = ?", u_id.to_s, @team.id.to_s])
           end
         else
