@@ -1,4 +1,8 @@
 class User < ActiveRecord::Base
+
+  PROFILES = ['Administrador', 'Gestor', 'Operacional', 'Basico']
+
+
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
@@ -21,4 +25,8 @@ class User < ActiveRecord::Base
 
   has_many :team_members
   has_many :teams, through: :team_members
+
+  def full_name
+    "#{first_name} #{last_name}"
+  end
 end

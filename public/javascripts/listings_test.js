@@ -40,4 +40,19 @@ $(document).ready(function () {
         });
         return false;
     });
+
+    /**
+     * Listener para quando uma checkbox é marcada ou desmarcada
+     */
+    $('input:checkbox').change(
+        function () {
+            if ($(this).is(':checked')) {
+                console.log($(this));
+            }
+        });
+
+
+    $(document).ready(function() {
+        $('select').material_select();
+    });
 });
