@@ -18,7 +18,7 @@
   <div class="container">
     <div class="nav-wrapper">
       <ul id="nav-mobile" class="left">
-        <li>
+        <li id="nav-back-btn">
           <%= yield(:back_page) %>
         </li>
       </ul>
@@ -27,12 +27,12 @@
 
       <ul id="nav-mobile" class="right">
         <% if @show_search_stuff %>
-            <li>
+            <li id="nav-search-btn">
               <a href="#!" class="tooltipped navbar-button" data-position="bottom" data-delay="15"
                  data-tooltip="Pesquisar" id="toggle-search"><i class="material-icons md-36">search</i></a>
             </li>
         <% end %>
-        <li>
+        <li id="nav-add-edit-btn">
           <%= yield(:model_actions) %>
         </li>
       </ul>

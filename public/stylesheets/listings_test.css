@@ -87,6 +87,19 @@ label {
     nav img {
         margin-top: 3px;
     }
+
+    #nav-back-btn a {
+        padding-left: 0px;
+    }
+
+    #nav-search-btn a {
+        padding-right: 0px;
+    }
+
+    #nav-add-edit-btn a {
+        padding-left: 10px;
+        padding-right: 0px;
+    }
 }
 
 @media only screen and (min-width: 600px) and (max-width: 992px) {
