@@ -132,7 +132,7 @@ class TeamsController < ApplicationController
   end
 
   def set_all_users
-    @all_users = User.all
+    @all_users = User.all.order(id: :asc)
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.

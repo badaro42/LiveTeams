@@ -24,26 +24,9 @@
 
     <div id="choose_leader_dropdown" class="row input-field col s12 m12 l12"
          style="margin-bottom: 30px; padding-top: 40px;">
-
-      <label for="teste">Escolha o capitão</label>
-      <select id="teste" class="browser-default">
-        <!--<option value="" disabled>Choose your option</option>-->
-        <option value="1" selected>User 1</option>
-        <option value="2">User 2</option>
-        <option value="3">User 3</option>
-      </select>
-
-
-
-      <%#= f.select("leader", User.all.collect {|p| [ p.first_name, p.id ] }, { include_blank: true }) %>
-      <%#= f.select(:leader, options_for_select([['Lisbon', 1], ['Madrid', 2]])) %>
-      <%#= f.collection_select(:leader_id, @all_users, :id, :first_name, {:prompt => true}) %>
-      <%#= f.select "team[leader]", options_from_collection_for_select(@all_users, "id", "first_name") %>
-      <%#= label_tag "Nome da equipa", for: "team_leader" %>
-      <%#= f.select(:team, :leader, User.all, :id, :first_name, {disabled: lambda{|category| category.archived?}) %>
-      <%#= f.collection_select(:team_members, User.all.order(id: :asc), :id, :full_name) %>
-      <%#= select_tag 'team[leader]', options_from_collection_for_select(@all_users, 'id', 'first_name', 'last_name') %>
-      <%#= f.label "Teste", for: "team_leader" %>
+      <%= select_tag 'team[leader]', options_from_collection_for_select(@all_users, :id, :full_name),
+                     {prompt: 'Escolha um utilizador', class: 'browser-default'} %>
+      <%= f.label "Responsável pela equipa", for: "team_leader" %>
     </div>
 
     <div class="row">
@@ -51,15 +34,15 @@
         Adicione utilizadores à equipa
       </p>
       <% @all_users.each do |user| %>
-          <div class="col m3 l3 s3">
-            <% username = user.first_name + " " + user.last_name %>
+          <div class="col m4 l3 s6">
+            <% full_name = user.first_name + " " + user.last_name %>
             <p>
               <% if @users_in_team.include?(user) %>
                   <%= f.check_box("users", {:multiple => true, :checked => "checked"}, user.id.to_s, nil) %>
               <% else %>
                   <%= f.check_box("users", {:multiple => true}, user.id.to_s, nil) %>
               <% end %>
-              <%= f.label username, for: "team_users_"+user.id.to_s %>
+              <%= f.label :full_name, full_name, for: "team_users_"+user.id.to_s %>
             </p>
           </div>
       <% end %>
