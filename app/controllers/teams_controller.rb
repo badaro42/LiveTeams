@@ -24,6 +24,12 @@ class TeamsController < ApplicationController
   # GET /teams/1/edit
   def edit
     @users_in_team = @team.users
+
+
+    # puts @team.team_members.inspect
+    @team_leader = TeamMember.find_by(team_id: @team.id, is_leader: true)
+    puts @team_leader.nil?
+
   end
 
   # POST /teams
@@ -38,18 +44,21 @@ class TeamsController < ApplicationController
         # todos os elementos sao adicionados como nao sendo lider
         params[:team][:users].each do |u_id|
           puts "LOOOOOOOOOOOOOOOL"
+
           puts u_id
           puts params[:team][:id]
-          puts "LOOOOOOOOOOOOOOOL"
 
-          team_member = TeamMember.new(:user_id => u_id, :team_id => @team.id, :is_leader => false)
+          puts "LEADER LEADER LEADER LEADER"
+
+          puts params[:team][:is_leader]
+
+          # é o lider, adiciona-se com o parametro a true
+          if u_id == params[:team][:is_leader]
+            team_member = TeamMember.new(:user_id => u_id, :team_id => @team.id, :is_leader => true)
+          else
+            team_member = TeamMember.new(:user_id => u_id, :team_id => @team.id, :is_leader => false)
+          end
           team_member.save
-
-          # dps dos elementos todos inseridos, procura-se aquele que tem um ID igual ao passado no parametro de lider
-          # esse registo é entao atualizado e passa a ser o lider da equipa
-          #@team_member = TeamMember.all.find_by(:user_id => , :team_id => )
-          #@team_member.is_leader = true
-          #@team_member.save
         end
 
         format.html { redirect_to @team, notice: 'Team was successfully created.' }
@@ -72,39 +81,70 @@ class TeamsController < ApplicationController
     respond_to do |format|
       if @team.update(team_params)
 
+        # começamos por remover todas as entradas da tabela para esta equipa
+        TeamMember.delete_all(["team_id = ?", @team.id.to_s])
+
+        params[:team][:users].each do |u_id|
+
+          if u_id == params[:team][:is_leader]
+            team_member = TeamMember.new(:user_id => u_id, :team_id => @team.id, :is_leader => true)
+          else
+            team_member = TeamMember.new(:user_id => u_id, :team_id => @team.id, :is_leader => false)
+          end
+          team_member.save
+
+
+
+          # if !(users_id.include? u_id.to_i)
+          #   puts u_id
+          #   team_member = TeamMember.new(:user_id => u_id, :team_id => @team.id, :is_leader => false)
+          #   team_member.save
+          # else
+          #   users_id.delete(u_id.to_i)
+          # end
+        end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         # se nao for passado nenhum user como parametro, é porque nenhum esta seleccionado
         # e assim são removidos todos os elementos desta equipa
-        if !params[:team][:users].nil?
-
-          # percorre todos os elementos passados como parametro
-          # se o parametro nao estiver em users_id, cria-se uma nova entrada na tabela TeamMembers
-          # se estiver em users_id, o mesmo id é removido do array.
-          # todos os ids que estiverem no array no final do ciclo sao removidos da tabela de membros
-          params[:team][:users].each do |u_id|
-            if !(users_id.include? u_id.to_i)
-              puts u_id
-              team_member = TeamMember.new(:user_id => u_id, :team_id => @team.id, :is_leader => false)
-              team_member.save
-            else
-              users_id.delete(u_id.to_i)
-            end
-
-            # dps dos elementos todos inseridos, procura-se aquele que tem um ID igual ao passado no parametro de lider
-            # esse registo é entao atualizado e passa a ser o lider da equipa
-            #@team_member = TeamMember.all.find_by(:user_id => , :team_id => )
-            #@team_member.is_leader = true
-            #@team_member.save
-          end
-
-          puts users_id.count
-
-          # se ainda estiver algum id em users_id, essas entradas sao removidas da tabela de membros
-          users_id.each do |u_id|
-            TeamMember.delete_all(["user_id = ? AND team_id = ?", u_id.to_s, @team.id.to_s])
-          end
-        else
-          TeamMember.delete_all(["team_id = ?", @team.id.to_s])
-        end
+        # if !params[:team][:users].nil?
+        #
+        #   # percorre todos os elementos passados como parametro
+        #   # se o parametro nao estiver em users_id, cria-se uma nova entrada na tabela TeamMembers
+        #   # se estiver em users_id, o mesmo id é removido do array.
+        #   # todos os ids que estiverem no array no final do ciclo sao removidos da tabela de membros
+        #   params[:team][:users].each do |u_id|
+        #     if !(users_id.include? u_id.to_i)
+        #       puts u_id
+        #       team_member = TeamMember.new(:user_id => u_id, :team_id => @team.id, :is_leader => false)
+        #       team_member.save
+        #     else
+        #       users_id.delete(u_id.to_i)
+        #     end
+        #   end
+        #
+        #   puts users_id.count
+        #
+        #   # se ainda estiver algum id em users_id, essas entradas sao removidas da tabela de membros
+        #   users_id.each do |u_id|
+        #     TeamMember.delete_all(["user_id = ? AND team_id = ?", u_id.to_s, @team.id.to_s])
+        #   end
+        # else
+        #   TeamMember.delete_all(["team_id = ?", @team.id.to_s])
+        # end
 
         format.html { redirect_to @team, notice: 'Team was successfully updated.' }
         format.json { render :show, status: :ok, location: @team }
@@ -137,6 +177,6 @@ class TeamsController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def team_params
-    params.require(:team).permit(:name, :latlon , :leader, users: [:id])
+    params.require(:team).permit(:name, :latlon, :is_leader, users: [:id])
   end
 end

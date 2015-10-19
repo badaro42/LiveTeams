@@ -46,13 +46,46 @@ $(document).ready(function () {
      */
     $('input:checkbox').change(
         function () {
+            var select_leader = $('#select_team_leader');
+            var i_value, i_text;
+            //console.log(select_leader);
+
+            var len = $("input[name='team[users][]']:checked").length;
+            console.log(len);
+
+            if(len > 0)
+                $('#team-submit-form').removeClass("disabled");
+            else if(len == 0)
+                $('#team-submit-form').addClass("disabled");
+
             if ($(this).is(':checked')) {
-                console.log($(this));
+                i_value = $(this).prop('value');
+                i_text = $(this).next("label").text();
+
+                console.log("++++++ CHECKED ++++++");
+                console.log(i_value);
+                console.log(i_text);
+
+                select_leader.append($("<option/>", {
+                    value: i_value,
+                    text: i_text
+                }));
+            }
+            else if (!($(this).is(':checked'))) {
+                i_value = $(this).prop('value');
+
+                console.log("------ UNCHECKED ------");
+                //console.log(#select_team_leader option[value=i_value]);
+
+                $("#select_team_leader option[value="+i_value+"]").remove();
+
+                //select_leader.prop("value", i_value).remove();
+                //console.log(i_value);
             }
         });
 
 
-    $(document).ready(function() {
+    $(document).ready(function () {
         $('select').material_select();
     });
 });

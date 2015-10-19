@@ -15,7 +15,7 @@
 
     <div class="row input-field col s12 m12 l12" style="margin-top: 20px;">
       <%= f.label "Nome da equipa" %>
-      <%= f.text_field :name, required: true %>
+      <%= f.text_field :name, required: true, autofocus: true %>
     </div>
     <div class="row input-field col s12 m12 l12" style="margin-bottom: 0px; margin-top: 0px;">
       <%= f.label "Coordenadas" %>
@@ -24,9 +24,19 @@
 
     <div id="choose_leader_dropdown" class="row input-field col s12 m12 l12"
          style="margin-bottom: 30px; padding-top: 40px;">
-      <%= select_tag 'team[leader]', options_from_collection_for_select(@all_users, :id, :full_name),
-                     {prompt: 'Escolha um utilizador', class: 'browser-default'} %>
-      <%= f.label "Responsável pela equipa", for: "team_leader" %>
+      <!-- A equipa não tem lider. P.e: quando estamos a criar uma nova equipa hehe -->
+      <% if @team_leader.nil? %>
+          <%= select_tag 'team[is_leader]', options_from_collection_for_select(@users_in_team, :id, :full_name),
+                         {prompt: 'Escolha um utilizador', class: 'browser-default', id: "select_team_leader",
+                          required: true} %>
+      <% else %>
+          <%= select_tag 'team[is_leader]', options_from_collection_for_select(
+                                                  @users_in_team, :id, :full_name, @team_leader.user_id),
+                         {prompt: 'Escolha um utilizador', class: 'browser-default', id: "select_team_leader",
+                          required: true} %>
+      <% end %>
+
+      <%= f.label "Responsável pela equipa", for: "select_team_leader" %>
     </div>
 
     <div class="row">
@@ -51,9 +61,9 @@
 
     <div class="actions col m12 l12 s12" style="margin-top: 30px;">
       <% if @create_new_team %>
-          <%= f.button 'Criar equipa', class: "btn waves-effect waves-light" %>
+          <%= f.button 'Criar equipa', class: "btn waves-effect waves-light disabled", id: "team-submit-form" %>
       <% else %>
-          <%= f.button 'Atualizar', class: "btn waves-effect waves-light" %>
+          <%= f.button 'Atualizar', class: "btn waves-effect waves-light", id: "team-submit-form" %>
       <% end %>
     </div>
 <% end %>
