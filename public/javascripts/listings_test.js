@@ -53,9 +53,9 @@ $(document).ready(function () {
             var len = $("input[name='team[users][]']:checked").length;
             console.log(len);
 
-            if(len > 0)
+            if (len > 0)
                 $('#team-submit-form').removeClass("disabled");
-            else if(len == 0)
+            else if (len == 0)
                 $('#team-submit-form').addClass("disabled");
 
             if ($(this).is(':checked')) {
@@ -77,7 +77,7 @@ $(document).ready(function () {
                 console.log("------ UNCHECKED ------");
                 //console.log(#select_team_leader option[value=i_value]);
 
-                $("#select_team_leader option[value="+i_value+"]").remove();
+                $("#select_team_leader option[value=" + i_value + "]").remove();
 
                 //select_leader.prop("value", i_value).remove();
                 //console.log(i_value);

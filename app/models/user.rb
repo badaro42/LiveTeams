@@ -26,6 +26,7 @@ class User < ActiveRecord::Base
   has_many :team_members
   has_many :teams, through: :team_members
 
+  # concatena o primeiro com o ultimo para as labels e afins
   def full_name
     "#{first_name} #{last_name}"
   end

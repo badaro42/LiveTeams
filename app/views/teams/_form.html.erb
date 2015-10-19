@@ -17,26 +17,9 @@
       <%= f.label "Nome da equipa" %>
       <%= f.text_field :name, required: true, autofocus: true %>
     </div>
-    <div class="row input-field col s12 m12 l12" style="margin-bottom: 0px; margin-top: 0px;">
+    <div class="row input-field col s12 m12 l12" style="margin-bottom: 15px; margin-top: 0px;">
       <%= f.label "Coordenadas" %>
       <%= f.text_field :latlon %>
-    </div>
-
-    <div id="choose_leader_dropdown" class="row input-field col s12 m12 l12"
-         style="margin-bottom: 30px; padding-top: 40px;">
-      <!-- A equipa não tem lider. P.e: quando estamos a criar uma nova equipa hehe -->
-      <% if @team_leader.nil? %>
-          <%= select_tag 'team[is_leader]', options_from_collection_for_select(@users_in_team, :id, :full_name),
-                         {prompt: 'Escolha um utilizador', class: 'browser-default', id: "select_team_leader",
-                          required: true} %>
-      <% else %>
-          <%= select_tag 'team[is_leader]', options_from_collection_for_select(
-                                                  @users_in_team, :id, :full_name, @team_leader.user_id),
-                         {prompt: 'Escolha um utilizador', class: 'browser-default', id: "select_team_leader",
-                          required: true} %>
-      <% end %>
-
-      <%= f.label "Responsável pela equipa", for: "select_team_leader" %>
     </div>
 
     <div class="row">
@@ -58,8 +41,24 @@
       <% end %>
     </div>
 
+    <div id="choose_leader_dropdown" class="row input-field col s12 m12 l6"
+         style="margin-bottom: 20px; padding-top: 40px; margin-top: 0px;">
+      <!-- A equipa não tem lider. P.e: quando estamos a criar uma nova equipa hehe -->
+      <% if @team_leader.nil? %>
+          <%= select_tag 'team[is_leader]', options_from_collection_for_select(@users_in_team, :id, :full_name),
+                         {prompt: 'Escolha um utilizador', class: 'browser-default', id: "select_team_leader",
+                          required: true} %>
+      <% else %>
+          <%= select_tag 'team[is_leader]', options_from_collection_for_select(
+                                                  @users_in_team, :id, :full_name, @team_leader.user_id),
+                         {prompt: 'Escolha um utilizador', class: 'browser-default', id: "select_team_leader",
+                          required: true} %>
+      <% end %>
 
-    <div class="actions col m12 l12 s12" style="margin-top: 30px;">
+      <%= f.label "Responsável pela equipa", for: "select_team_leader" %>
+    </div>
+
+    <div class="actions col m12 l12 s12" style="margin-top: 5px;">
       <% if @create_new_team %>
           <%= f.button 'Criar equipa', class: "btn waves-effect waves-light disabled", id: "team-submit-form" %>
       <% else %>
