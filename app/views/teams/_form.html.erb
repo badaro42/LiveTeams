@@ -13,50 +13,64 @@
         </div>
     <% end %>
 
-    <div class="row input-field col s12 m12 l12" style="margin-top: 20px;">
+    <div class="row input-field col s12 m12 l12" style="margin-top: 20px; margin-bottom: 15px;">
       <%= f.label "Nome da equipa" %>
       <%= f.text_field :name, required: true, autofocus: true %>
     </div>
-    <div class="row input-field col s12 m12 l12" style="margin-bottom: 15px; margin-top: 0px;">
-      <%= f.label "Coordenadas" %>
-      <%= f.text_field :latlon %>
+
+    <!--<div class="row input-field col s12 m12 l12" style="margin-bottom: 15px; margin-top: 0px;">-->
+    <!--<%= f.label "Coordenadas" %>-->
+    <!--<%= f.text_field :latlon %>-->
+    <!--</div>-->
+
+    <div class="row" style="margin-bottom: 35px;">
+      <label style="padding-left: 10px;">Clique no mapa para criar um marcador (a equipa será destacada para esse
+        ponto).</label>
+      <%= f.text_field :latlon, hidden: true %>
+      <div class="input-field col s12">
+        <div id="team_map"></div>
+      </div>
     </div>
 
     <div class="row">
-      <p style="font-weight: 300; padding-left: 10px; font-size: 20px; margin-bottom: 0px;">
-        Adicione utilizadores à equipa
-      </p>
-      <% @all_users.each do |user| %>
-          <div class="col m4 l3 s6">
-            <% full_name = user.first_name + " " + user.last_name %>
-            <p>
-              <% if @users_in_team.include?(user) %>
-                  <%= f.check_box("users", {:multiple => true, :checked => "checked"}, user.id.to_s, nil) %>
-              <% else %>
-                  <%= f.check_box("users", {:multiple => true}, user.id.to_s, nil) %>
-              <% end %>
-              <%= f.label :full_name, full_name, for: "team_users_"+user.id.to_s %>
-            </p>
-          </div>
-      <% end %>
+      <%= f.label "Adicionar utilizadores à equipa", for: "add_users", style: "padding-left: 10px;" %>
+
+      <div class="add_users">
+        <% @all_users.each do |user| %>
+            <div class="col m4 l3 s6">
+              <% full_name = user.first_name + " " + user.last_name %>
+              <p>
+                <% if @users_in_team.include?(user) %>
+                    <%= f.check_box("users", {:multiple => true, :checked => "checked"}, user.id.to_s, nil) %>
+                <% else %>
+                    <%= f.check_box("users", {:multiple => true}, user.id.to_s, nil) %>
+                <% end %>
+                <%= f.label :full_name, full_name, for: "team_users_"+user.id.to_s %>
+              </p>
+            </div>
+        <% end %>
+      </div>
     </div>
 
-    <div id="choose_leader_dropdown" class="row input-field col s12 m12 l6"
-         style="margin-bottom: 20px; padding-top: 40px; margin-top: 0px;">
-      <!-- A equipa não tem lider. P.e: quando estamos a criar uma nova equipa hehe -->
-      <% if @team_leader.nil? %>
-          <%= select_tag 'team[is_leader]', options_from_collection_for_select(@users_in_team, :id, :full_name),
-                         {prompt: 'Escolha um utilizador', class: 'browser-default', id: "select_team_leader",
-                          required: true} %>
-      <% else %>
-          <%= select_tag 'team[is_leader]', options_from_collection_for_select(
-                                                  @users_in_team, :id, :full_name, @team_leader.user_id),
-                         {prompt: 'Escolha um utilizador', class: 'browser-default', id: "select_team_leader",
-                          required: true} %>
-      <% end %>
+    <div class="row">
+      <div id="choose_leader_dropdown" class="input-field col s12 m12 l6"
+           style="margin-bottom: 20px; padding-top: 40px; margin-top: 0px;">
+        <!-- A equipa não tem lider. P.e: quando estamos a criar uma nova equipa hehe -->
+        <% if @team_leader.nil? %>
+            <%= select_tag 'team[is_leader]', options_from_collection_for_select(@users_in_team, :id, :full_name),
+                           {prompt: 'Escolha um utilizador', class: 'browser-default', id: "select_team_leader",
+                            required: true} %>
+        <% else %>
+            <%= select_tag 'team[is_leader]', options_from_collection_for_select(
+                                                    @users_in_team, :id, :full_name, @team_leader.user_id),
+                           {prompt: 'Escolha um utilizador', class: 'browser-default', id: "select_team_leader",
+                            required: true} %>
+        <% end %>
 
-      <%= f.label "Responsável pela equipa", for: "select_team_leader" %>
+        <%= f.label "Responsável pela equipa", for: "select_team_leader", style: "font-size: 13px;" %>
+      </div>
     </div>
+
 
     <div class="actions col m12 l12 s12" style="margin-top: 5px;">
       <% if @create_new_team %>

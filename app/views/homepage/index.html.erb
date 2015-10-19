@@ -70,7 +70,8 @@
 
     <div class="sidebar-pane" id="teams">
       <h1 class="sidebar-header" style="font-weight: 300">Equipas
-        <a class="waves-effect waves-teal btn modal-trigger right" onclick="drawMapOnModal(1)" style="width: 53px;
+        <a class="waves-effect waves-teal btn modal-trigger right"
+           onclick="drawMapOnModal(1)" style="width: 53px;
                 height: 33px; padding-left: 7px; padding-right: 10px; margin-top: 3px;" href="#create_team_modal">
           <i class="material-icons md-24 md-light">group_add</i>
         </a>
@@ -94,11 +95,10 @@
               <li>
                 <div class="collapsible-header">
                   <%= team.name %>
-
-                  <a class="edit-team-btn waves-effect waves-teal btn-flat modal-trigger right" onclick="drawMapOnModal(2)"
-                     href="#edit_team_modal">
-                    <i class="material-icons md-18">build</i>
-                  </a>
+                  <%= link_to team, method: :get,
+                              class: 'edit-team-btn waves-effect waves-teal btn-flat modal-trigger right' do %>
+                      <i class="material-icons md-18">build</i>
+                  <% end %>
                 </div>
                 <div class="collapsible-body">
                   <ul class="collection">
@@ -196,18 +196,22 @@
       <div class="list_wrapper" style="padding-right: 10px;">
         <p class="center" style="font-weight: 300;">A mostrar os 15 utilizadores mais ativos</p>
         <ul class="collection" style="margin-bottom: 7.5px;">
+
           <% @most_active_users.each do |user| %>
               <li class="collection-item avatar">
                 <%= image_tag user.avatar.url, class: 'circle responsive-img' %>
                 <span class="title" style="font-weight: 300">
-                  <!--<strong>-->
-                  <%= user.first_name %> <%= user.last_name %>
-                  <!--</strong>-->
+
+                  <%= link_to user, method: :get,
+                              class: '' do %>
+                      <%= user.first_name %> <%= user.last_name %>
+                  <% end %>
                 </span>
 
                 <p><%= user.email %></p>
               </li>
           <% end %>
+
         </ul>
         <div class="center" style="margin-bottom: 10px;">
           <%= link_to users_url, method: :get, class: 'waves-effect waves-light btn' do %>

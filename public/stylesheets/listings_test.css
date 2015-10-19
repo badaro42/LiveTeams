@@ -1,5 +1,14 @@
 /* ------------------------------------------ */
 
+label {
+    font-size: 13px;
+}
+
+#team_map {
+    height: 250px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
 .brand-logo {
     margin-top: 15px;
     margin-bottom: 15px;

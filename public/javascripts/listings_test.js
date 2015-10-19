@@ -1,3 +1,5 @@
+var osm, team_map, osmUrl, curr_marker = undefined;
+
 $(document).ready(function () {
 
     /**
@@ -85,7 +87,43 @@ $(document).ready(function () {
         });
 
 
-    $(document).ready(function () {
-        $('select').material_select();
+    // inicializa a select box para escolher o lider
+    $('select').material_select();
+
+
+    // inicializa o mapa para destacar a equipa
+    osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+    osm = L.tileLayer(osmUrl, {maxZoom: 18});
+    team_map = L.map("team_map", {
+        zoom: 12,
+        center: [38.627881, -9.161007],
+        layers: [osm],
+        zoomControl: true,
+        attributionControl: false
     });
+
+    // adiciona um listener ao mapa para o evento "clique"
+    team_map.on('click', onMapClick);
 });
+
+/**
+ * Este método é executado quando o utilizador carrega no mapa no formulario das equipas
+ * Começa por verificar se ja há marcador no mapa: se sim, remove-o.
+ * A seguir cria um novo marcador no ponto em que o utilizador carregou e abre uma popup
+ * com a localização (USAR GEOCODING???)
+ */
+function onMapClick(e) {
+    // o marcador ja foi inicializado, vamos removê-lo
+    if (typeof curr_marker !== "undefined")
+        team_map.removeLayer(curr_marker);
+
+    console.log(e);
+
+    var popupContent = "<p>Localização atualizada com sucesso.<br />Nova localização: [" +
+        e.latlng.lat + "; " + e.latlng.lng + "]</p>";
+    curr_marker = L.marker([e.latlng.lat, e.latlng.lng]).addTo(team_map);
+    curr_marker.bindPopup(popupContent).openPopup();
+
+    var new_val = "POINT (" + e.latlng.lat + " " + e.latlng.lng + ")";
+    $("#team_latlon").attr("value", new_val);
+}
