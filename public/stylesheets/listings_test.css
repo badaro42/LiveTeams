@@ -1,5 +1,17 @@
 /* ------------------------------------------ */
 
+.center-btn {
+    text-align: center;
+}
+
+.test-alphabet {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+
+
+
 label {
     font-size: 13px;
 }
@@ -188,3 +200,79 @@ label {
         display: inline-block;
     }
 }
+
+
+
+
+
+.container {
+    padding: 0 0.5rem;
+    margin: 0 auto;
+    max-width: 100% !important;
+    width: 98%;
+}
+
+.card .card-content .card-title {
+    line-height: 30px;
+}
+
+#profile-page-header .card-image {
+    height: 250px;
+}
+#profile-page-header .card-profile-image {
+    width: 110px;
+    position: absolute;
+    top: 190px;
+    z-index: 1;
+    left: 40px;
+    cursor: pointer;
+    margin: 0;
+}
+#profile-page-header .card-content{
+    margin-top: -40px;
+}
+#profile-page-header .card-content .card-title{
+    margin-bottom: 0px;
+}
+
+/*profile-page-wall*/
+
+#profile-page-wall .profile-image-post{
+    width: 60px;
+    margin: 30px 10px;
+}
+#profile-page-wall .tab-profile .tab i{
+    font-size: 16px;
+}
+#profile-page-wall .tab-content{
+    padding: 10px;
+}
+#profile-page-wall .share-icons{
+    margin-top: 10px;
+}
+#profile-page-wall .share-icons i{
+    padding: 0px 5px;
+}
+
+
+#profile-page-wall-posts .profile-small{
+    height: 250px;
+    overflow: hidden;
+}
+#profile-page-wall-posts .profile-medium{
+    height: 350px;
+    overflow: hidden;
+}
+#profile-page-wall-posts .profile-large{
+    height: 450px;
+    overflow: hidden;
+}
+#profile-page-wall-posts .card-profile-title{
+    font-size: 16px;
+    padding: 20px;
+    border-radius: 0 0 2px 2px;
+}
+#profile-page-wall-posts .card-action-share{
+    padding: 16px;
+}
+

@@ -1,11 +1,11 @@
 <%# encoding: utf-8 %>
 
 <% @show_search_stuff = false %>
-<% content_for :title, "Utilizadores :: GestãoEmergência" %>
-<% content_for :page_purpose, "Utilizadores" %>
+<% content_for :title, "Utilizador " + @user.id.to_s + " :: GestãoEmergência" %>
+<% content_for :page_purpose, "Utilizador " + @user.id.to_s %>
 
 <% content_for :model_actions do %>
-    <%= link_to edit_user_path(@user), :data => {:position => 'bottom', :delay => '15',
+    <%= link_to edit_user_path(@user), :data => {:position => 'left', :delay => '15',
                                                  :tooltip => 'Editar utilizador'},
                 class: 'tooltipped navbar-button', method: :get do %>
         <i class="material-icons md-36">edit</i>
@@ -13,13 +13,61 @@
 <% end %>
 
 <% content_for :back_page do %>
-    <%= link_to users_path, :data => {:position => 'bottom', :delay => '15',
+    <%= link_to users_path, :data => {:position => 'right', :delay => '15',
                                       :tooltip => 'Voltar para utilizadores'},
                 class: 'tooltipped navbar-button', method: :get do %>
         <i class="material-icons md-36 white-text">arrow_back</i>
     <% end %>
 <% end %>
 
+<div class="container">
+  <div id="profile-page-header" class="card">
+    <div class="card-image waves-effect waves-block waves-light">
+      <!--<img class="activator" src="../../assets/images/cais_ginjal_cacilhas_blurred.jpg" alt="user background">-->
+      <%= image_tag ("cais_ginjal_cacilhas_blurred.jpg"), class: 'activator' %>
+    </div>
+    <figure class="card-profile-image">
+      <!--<img src="images/avatar.jpg" alt="profile image" class="circle z-depth-2 responsive-img activator">-->
+      <%= image_tag @user.avatar.url(:thumb), class: 'circle z-depth-2 responsive-img activator' %>
 
-<h1>Users#show</h1>
-<p>Find me in app/views/users/show.html.erb</p>
+    </figure>
+    <div class="card-content">
+      <div class="row" style="margin-top: 10px;">
+        <div class="col s3 l3 m3 offset-s5 offset-l5 offset-m5">
+          <h4 class="card-title grey-text text-darken-4">Administrador Poderoso</h4>
+          <p class="medium-small grey-text">Administrador</p>
+        </div>
+        <!--<div class="col s2 center-align">-->
+          <!--<h4 class="card-title grey-text text-darken-4">10+</h4>-->
+          <!--<p class="medium-small grey-text">Work Experience</p>-->
+        <!--</div>-->
+        <div class="col s2 center-align">
+          <h4 class="card-title grey-text text-darken-4">6</h4>
+          <p class="medium-small grey-text">Equipas a que pertence</p>
+        </div>
+        <!--<div class="col s2 center-align">-->
+          <!--<h4 class="card-title grey-text text-darken-4">$ 1,253,000</h4>-->
+          <!--<p class="medium-small grey-text">Busness Profit</p>-->
+        <!--</div>-->
+        <div class="col s1 right-align">
+          <a class="btn-floating activator waves-effect waves-light darken-2 right">
+            <i class="mdi-action-perm-identity"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="card-reveal">
+      <p>
+        <span class="card-title grey-text text-darken-4">Roger Waters <i class="mdi-navigation-close right"></i></span>
+        <span><i class="mdi-action-perm-identity cyan-text text-darken-2"></i> Project Manager</span>
+      </p>
+
+      <p>I am a very simple card. I am good at containing small bits of information. I am convenient because I require little markup to use effectively.</p>
+
+      <p><i class="mdi-action-perm-phone-msg cyan-text text-darken-2"></i> +1 (612) 222 8989</p>
+      <p><i class="mdi-communication-email cyan-text text-darken-2"></i> mail@domain.com</p>
+      <p><i class="mdi-social-cake cyan-text text-darken-2"></i> 18th June 1990</p>
+      <p><i class="mdi-device-airplanemode-on cyan-text text-darken-2"></i> BAR - AUS</p>
+    </div>
+  </div>
+</div>

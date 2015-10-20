@@ -5,7 +5,7 @@
 <% content_for :page_purpose, "Equipas" %>
 
 <% content_for :model_actions do %>
-    <%= link_to new_team_path, :data => {:position => 'bottom', :delay => '15',
+    <%= link_to new_team_path, :data => {:position => 'left', :delay => '15',
                                          :tooltip => 'Adicionar equipa'},
                 class: 'tooltipped navbar-button', method: :get do %>
         <i class="material-icons md-36">add</i>
@@ -13,13 +13,11 @@
 <% end %>
 
 <% content_for :back_page do %>
-    <%= link_to root_path, :data => {:position => 'bottom', :delay => '15', :tooltip => 'Voltar para o mapa'},
+    <%= link_to root_path, :data => {:position => 'right', :delay => '15', :tooltip => 'Voltar para o mapa'},
                 class: 'tooltipped navbar-button', method: :get do %>
         <i class="material-icons md-36 white-text">arrow_back</i>
     <% end %>
 <% end %>
-
-<!--<h1>Listing Teams</h1>-->
 
 
 <ul class="collapsible popout" data-collapsible="accordion" style="margin-left: 10px; margin-right: 10px;">
@@ -36,7 +34,3 @@
     <div class="collapsible-body"><p>Lorem ipsum dolor sit amet.</p></div>
   </li>
 </ul>
-
-
-
-<%= link_to 'New Team', new_team_path %>

@@ -7,7 +7,7 @@
 <% content_for :page_purpose, "Editar equipa" %>
 
 <% content_for :back_page do %>
-    <%= link_to @team, :data => {:position => 'bottom', :delay => '15', :tooltip => 'Voltar para a equipa '+@team.id.to_s},
+    <%= link_to @team, :data => {:position => 'right', :delay => '15', :tooltip => 'Voltar para a equipa '+@team.id.to_s},
                 class: 'tooltipped navbar-button', method: :get do %>
         <i class="material-icons md-36 white-text">arrow_back</i>
     <% end %>
