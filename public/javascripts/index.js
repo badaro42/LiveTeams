@@ -158,7 +158,42 @@ $(document).ready(function () {
 
     // inicializa as dropdowns que existem na pagina!
     $('select').material_select();
+
+    // obtem as posições da equipas que estao na BD
+    $.getJSON("/teams", function (json) {
+
+        var i, item, popup_content, coords_arr, marker;
+        for (i = 0; i < json.length; i++) {
+            item = json[i];
+            console.log(item);
+
+            if (item.latlon != null) {
+                coords_arr = parsePointCoordinates(item.latlon);
+
+                popup_content = "<p>" + item.name + "<br/>Latitude:" +
+                    coords_arr[0] + "<br/> Longitude:" + coords_arr[1] + "</p>";
+                marker = L.marker([coords_arr[0], coords_arr[1]]).addTo(map);
+                marker.bindPopup(popup_content);
+            }
+        }
+    });
 });
+
+
+// o parametro "coords" é da forma -> "POINT(33.333 11.111)"
+// retorna um vector com 2 posiçoes, uma para cada coordenada
+function parsePointCoordinates(coords) {
+    var split_res = coords.split("(");
+    var new_split_res = split_res[1].split(" ");
+
+    var res = [];
+    res.push(new_split_res[0]); //latitude
+    res.push(new_split_res[1].split(")")[0]); //longitude
+
+    return res;
+}
+
+
 
 /*
  * workaround para inicializar o mapa correspondente,
@@ -166,52 +201,52 @@ $(document).ready(function () {
  * como a largura do modal é inexistente, o mapa fica com tamanho bastante reduzido e
  * só ficava correcto com o resize do viewport
  */
-function initMap() {
-    osm2 = L.tileLayer(osmUrl, {maxZoom: 18});
-
-    if (map_to_init == 1) {
-        //alert("criar equipa");
-        /* mapa apresentado na modal para criar equipa */
-        create_team_map = L.map("create_team_map", {
-            zoom: 12,
-            center: [38.627881, -9.161007],
-            layers: [osm2],
-            zoomControl: true,
-            attributionControl: false
-        });
-    }
-    else if (map_to_init == 2) {
-        //alert("editar equipa");
-        /* mapa apresentado na modal para editar equipa */
-        create_team_map = L.map("edit_team_map", {
-            zoom: 12,
-            center: [38.627881, -9.161007],
-            layers: [osm2],
-            zoomControl: true,
-            attributionControl: false
-        });
-    }
-    map_to_init = -1;
-}
+//function initMap() {
+//    osm2 = L.tileLayer(osmUrl, {maxZoom: 18});
+//
+//    if (map_to_init == 1) {
+//        //alert("criar equipa");
+//        /* mapa apresentado na modal para criar equipa */
+//        create_team_map = L.map("create_team_map", {
+//            zoom: 12,
+//            center: [38.627881, -9.161007],
+//            layers: [osm2],
+//            zoomControl: true,
+//            attributionControl: false
+//        });
+//    }
+//    else if (map_to_init == 2) {
+//        //alert("editar equipa");
+//        /* mapa apresentado na modal para editar equipa */
+//        create_team_map = L.map("edit_team_map", {
+//            zoom: 12,
+//            center: [38.627881, -9.161007],
+//            layers: [osm2],
+//            zoomControl: true,
+//            attributionControl: false
+//        });
+//    }
+//    map_to_init = -1;
+//}
 
 /*
  * o parametro indica se estamos a editar ou a criar uma equipa nova
  * dps verifica se o mapa ja esta desenhado ou se é necessario inicializar
  */
-function drawMapOnModal(number) {
-    if (number == 1) {
-        if (typeof create_team_map === "undefined") {
-            map_to_init = number;
-            setTimeout(initMap, 500);
-        }
-    }
-    else if (number == 2) {
-        if (typeof edit_team_map === "undefined") {
-            map_to_init = number;
-            setTimeout(initMap, 500);
-        }
-    }
-}
+//function drawMapOnModal(number) {
+//    if (number == 1) {
+//        if (typeof create_team_map === "undefined") {
+//            map_to_init = number;
+//            setTimeout(initMap, 500);
+//        }
+//    }
+//    else if (number == 2) {
+//        if (typeof edit_team_map === "undefined") {
+//            map_to_init = number;
+//            setTimeout(initMap, 500);
+//        }
+//    }
+//}
 
 
 //$(window).resize(function () {

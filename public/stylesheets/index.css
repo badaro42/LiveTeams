@@ -343,3 +343,7 @@ html, body, #container {
     padding-right: 10px;
     padding-top: 8px;
 }
+
+.extra-padding {
+    padding-top: 8px;
+}
