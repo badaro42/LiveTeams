@@ -28,9 +28,15 @@ label {
 }
 
 @media only screen and (max-width: 601px) {
-    .navbar-button {
-        padding-top: 10px;
-        padding-bottom: 10px;
+    .navbar-btn-wrapper {
+        padding-top: 5px;        
+    }
+
+    .navbar-btn-wrapper a {
+        padding-top: 5px;
+        padding-left: 5px;
+        padding-right: 5px;
+        padding-bottom: 5px;
     }
 
     #page-title-center {
@@ -100,18 +106,18 @@ label {
         margin-top: 3px;
     }
 
-    #nav-back-btn a {
-        padding-left: 0px;
-    }
+    /*#nav-back-btn a {*/
+        /*padding-left: 0px;*/
+    /*}*/
 
-    #nav-search-btn a {
-        padding-right: 0px;
-    }
+    /*#nav-search-btn a {*/
+        /*padding-right: 0px;*/
+    /*}*/
 
-    #nav-add-edit-btn a {
-        padding-left: 10px;
-        padding-right: 0px;
-    }
+    /*#nav-add-edit-btn a {*/
+        /*padding-left: 10px;*/
+        /*padding-right: 0px;*/
+    /*}*/
 }
 
 @media only screen and (min-width: 600px) and (max-width: 992px) {

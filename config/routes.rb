@@ -18,6 +18,7 @@ Rails.application.routes.draw do
   get 'users/edit'
 
   get 'teams', to: 'teams#index'
+  get '/get_geo_stuff', to: 'homepage#get_geo_stuff'
 
 
   get 'homepage/index'

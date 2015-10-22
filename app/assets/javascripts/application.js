@@ -20,4 +20,3 @@
 //= require leaflet.draw
 //= require L.Control.Locate.min
 //= require initial
-//= require_tree .

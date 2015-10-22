@@ -64,6 +64,7 @@ class TeamsController < ApplicationController
           team_member.save
         end
 
+        # format.html { redirect_to action: "show", id: @team.id, status: "success" }
         format.html { redirect_to @team, notice: 'Team was successfully created.' }
         format.json { render :show, status: :created, location: @team }
       else

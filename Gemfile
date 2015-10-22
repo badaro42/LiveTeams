@@ -48,6 +48,16 @@ gem 'paperclip', '~> 4.3'
 # postgres adapter para ativar cenas espaciais
 gem 'activerecord-postgis-adapter'
 
+# codifica os dados espaciais em GeoJSON
+gem 'rgeo-geojson'
+
+gem 'ffi'
+# gem 'ffi-geos'
+
+
+# gem 'rgeo-activerecord'
+# gem 'rgeo'
+
 # ----------------------------------------------
 
 

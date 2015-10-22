@@ -11,11 +11,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151019132320) do
+ActiveRecord::Schema.define(version: 20151020162152) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "postgis"
+
+  create_table "geo_stuffs", force: :cascade do |t|
+    t.string   "name"
+    t.geometry "coords",     limit: {:srid=>0, :type=>"geometry"}
+    t.datetime "created_at",                                       null: false
+    t.datetime "updated_at",                                       null: false
+  end
 
   create_table "team_members", force: :cascade do |t|
     t.integer  "team_id"

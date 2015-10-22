@@ -66,6 +66,7 @@ GEM
       warden (~> 1.2.3)
     erubis (2.7.0)
     execjs (2.6.0)
+    ffi (1.9.10-x86-mingw32)
     font-awesome-rails (4.4.0.0)
       railties (>= 3.2, < 5.0)
     globalid (0.3.6)
@@ -137,6 +138,8 @@ GEM
     rgeo-activerecord (4.0.0)
       activerecord (~> 4.2)
       rgeo (~> 0.3)
+    rgeo-geojson (0.3.1)
+      rgeo (~> 0.3)
     sass (3.4.19)
     sass-rails (5.0.4)
       railties (>= 4.0.0, < 5.0)
@@ -182,6 +185,7 @@ DEPENDENCIES
   byebug
   coffee-rails (~> 4.1.0)
   devise
+  ffi
   font-awesome-rails
   jbuilder (~> 2.0)
   jquery-rails
@@ -191,6 +195,7 @@ DEPENDENCIES
   paperclip (~> 4.3)
   pg
   rails (= 4.2.4)
+  rgeo-geojson
   sass-rails (~> 5.0)
   sdoc (~> 0.4.0)
   turbolinks

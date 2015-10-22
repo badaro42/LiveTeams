@@ -1,5 +1,4 @@
-var map, create_team_map, edit_team_map, osmUrl, osmAttrib, osm, osm2;
-var map_to_init;
+var map, osmUrl, osmAttrib, osm;
 
 $(document).ready(function () {
     // DOM ready
@@ -159,7 +158,27 @@ $(document).ready(function () {
     // inicializa as dropdowns que existem na pagina!
     $('select').material_select();
 
+
+    var geojson = "";
     // obtem as posições da equipas que estao na BD
+    $.ajax({
+        type: "GET",
+        url: '/get_geo_stuff',
+        dataType: 'json',
+        success: function (data) {
+            console.log(data);
+            geojson = new L.geoJson(data).addTo(map);
+            geojson.addTo(map);
+            console.log(geojson);
+        },
+        error: function(err) {
+            console.log("FODA-SE, DEU ERRO!!!");
+            console.log(err);
+        }
+    });
+
+
+
     $.getJSON("/teams", function (json) {
 
         var i, item, popup_content, coords_arr, marker;
@@ -192,8 +211,6 @@ function parsePointCoordinates(coords) {
 
     return res;
 }
-
-
 
 /*
  * workaround para inicializar o mapa correspondente,
