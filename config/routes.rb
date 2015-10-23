@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
 
+  resources :geo_entities
   resources :team_members
   resources :teams
   resources :users

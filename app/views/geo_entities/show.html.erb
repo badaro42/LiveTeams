@@ -1,0 +1,24 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @geo_entity.name %>
+</p>
+
+<p>
+  <strong>Latlon:</strong>
+  <%= @geo_entity.latlon %>
+</p>
+
+<p>
+  <strong>User:</strong>
+  <%= @geo_entity.user_id %>
+</p>
+
+<p>
+  <strong>Description:</strong>
+  <%= @geo_entity.description %>
+</p>
+
+<%= link_to 'Edit', edit_geo_entity_path(@geo_entity) %> |
+<%= link_to 'Back', geo_entities_path %>

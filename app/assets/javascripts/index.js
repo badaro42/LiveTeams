@@ -159,28 +159,51 @@ $(document).ready(function () {
     $('select').material_select();
 
 
+    var team_icon = L.icon({
+        iconUrl: 'http://freeflaticons.net/wp-content/uploads/2014/11/group-copy-1416476921gn4k8.png',
+        //shadowUrl: 'leaf-shadow.png',
+
+        iconSize: [38, 38], // size of the icon
+        //shadowSize:   [50, 64], // size of the shadow
+        iconAnchor: [19, 30], // point of the icon which will correspond to marker's location
+        //shadowAnchor: [4, 62],  // the same for the shadow
+        popupAnchor: [-1, -30] // point from which the popup should open relative to the iconAnchor
+    });
+
+
+
+
     var geojson = "";
-    // obtem as posições da equipas que estao na BD
+    // retorna todas as entidades que estao na BD
     $.ajax({
         type: "GET",
-        url: '/get_geo_stuff',
+        url: '/get_geo_entities',
         dataType: 'json',
         success: function (data) {
             console.log(data);
-            geojson = new L.geoJson(data).addTo(map);
-            geojson.addTo(map);
-            console.log(geojson);
+            L.geoJson(data, {
+                pointToLayer: function (feature, latlng) {
+                    return L.marker(latlng);
+                },
+                onEachFeature: function (feature, layer) {
+                    popupOptions = {maxWidth: 600};
+                    //layer.bindLabel('<h4>' + feature.properties.name + '</h4>');
+                    //sidebar.setContent('<h4>'+feature.properties.musno+'</h4><br>'+'<h4>'+feature.properties.exchange_name+'</h4><br>'+feature.properties.pcp, popupOptions);
+                    layer.bindPopup('<p>' + feature.properties.name + '</p>' +
+                        '<p>' + feature.properties.desc + '</p>', popupOptions);
+                }
+            }).addTo(map);
         },
-        error: function(err) {
-            console.log("FODA-SE, DEU ERRO!!!");
+
+        //geojson.addTo(map);
+        //console.log(geojson);
+        error: function (err) {
             console.log(err);
         }
     });
 
 
-
     $.getJSON("/teams", function (json) {
-
         var i, item, popup_content, coords_arr, marker;
         for (i = 0; i < json.length; i++) {
             item = json[i];
@@ -191,12 +214,13 @@ $(document).ready(function () {
 
                 popup_content = "<p>" + item.name + "<br/>Latitude:" +
                     coords_arr[0] + "<br/> Longitude:" + coords_arr[1] + "</p>";
-                marker = L.marker([coords_arr[0], coords_arr[1]]).addTo(map);
+                marker = L.marker([coords_arr[0], coords_arr[1]], {icon: team_icon}).addTo(map);
                 marker.bindPopup(popup_content);
             }
         }
     });
-});
+})
+;
 
 
 // o parametro "coords" é da forma -> "POINT(33.333 11.111)"
