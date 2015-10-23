@@ -137,11 +137,23 @@ $(document).ready(function () {
 
     /* listener invocado quando é criada uma feature */
     map.on('draw:created', function (e) {
-        var type = e.layerType,
-            layer = e.layer;
+        console.log(e);
 
+        var type = e.layerType, layer = e.layer;
         if (type === 'marker') {
-            layer.bindPopup('Placeholder text!');
+            layer.bindPopup('NOVO MARCADOR!');
+        }
+        else if (type === 'circle') {
+            layer.bindPopup('NOVO CIRCULO!');
+        }
+        else if (type === 'polyline') {
+            layer.bindPopup('NOVA LINHA POLIGONAL!');
+        }
+        else if (type === 'rectangle') {
+            layer.bindPopup('NOVO RECTANGULO!');
+        }
+        else if (type === 'polygon') {
+            layer.bindPopup('NOVO POLIGONO!');
         }
 
         drawnItems.addLayer(layer);

@@ -111,21 +111,21 @@ html, body, #container {
 @media only screen and (min-width: 601px) and (max-width: 991px) {
     .leaflet-bottom.leaflet-left {
         transform: rotate(90deg);
-        left: 134px;
-        bottom: -120px;
+        left: 113px;
+        bottom: -91px;
         z-index: 98;
     }
 
     .leaflet-control-zoom {
         transform: rotate(270deg);
-        bottom: -277px;
-        left: -73px;
+        bottom: -231px;
+        left: -59px;
     }
 
     .leaflet-control-locate {
         transform: rotate(270deg);
-        bottom: -218px;
-        left: -15px;
+        bottom: -182px;
+        left: -9px;
     }
 
     .leaflet-draw {
