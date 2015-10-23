@@ -28,9 +28,9 @@ class GeoEntitiesController < ApplicationController
     @geo_entity.name = params[:geo_entity][:name]
     @geo_entity.entity_type = params[:geo_entity][:entity_type]
     @geo_entity.description = params[:geo_entity][:description]
-    @geo_entity.latlon = params[:geo_entity][:latlng]
+    @geo_entity.latlon = params[:geo_entity][:latlon]
     @geo_entity.user_id = params[:geo_entity][:user_id].to_i
-    @geo_entity.radius = params[:geo_entity][:radius].to_i
+    @geo_entity.radius = params[:geo_entity][:radius]
 
     puts @geo_entity.inspect
 
@@ -80,6 +80,6 @@ class GeoEntitiesController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def geo_entity_params
-    params.require(:geo_entity).permit(:name, :latlon, :user_id, :description)
+    params.require(:geo_entity).permit(:name, :latlon, :user_id, :description, :entity_type, :radius)
   end
 end

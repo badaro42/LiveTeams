@@ -141,35 +141,60 @@ $(document).ready(function () {
         var name = "", desc = "", coords = "", user_id = "",
             radius = 0, type = e.layerType, layer = e.layer;
 
-        if (type === 'marker') {
-            layer.bindPopup('NOVO MARCADOR!');
+        // ta porreiro
+        if (type === 'marker' || type === 'circle') {
+            if(type === 'circle')
+                radius = e.layer._mRadius;
+            else
+                radius = 0;
 
-            console.log(e.layer._latlng);
-            console.log(e.layer._latlng.lat);
-            console.log(e.layer._latlng.lng);
+            layer.bindPopup('NOVO ' + type +'!');
+            console.log(e.layer);
 
             coords = "POINT(" + e.layer._latlng.lng + " " + e.layer._latlng.lat + ")";
-            desc = "ADICIONADO ATRAVES DO MAPA";
-            name = "Marcador porreiro";
-            radius = 0;
+            desc = "[" + type + "] olha uma infowindow, ta engrassade.";
+            name = type + " porreiro";
+
+            console.log(e.layer._mRadius);
         }
-        else if (type === 'circle') {
-            layer.bindPopup('NOVO CIRCULO!');
-            console.log(e.layer._latlng);
-        }
+        // ta porreiro
         else if (type === 'polyline') {
             layer.bindPopup('NOVA LINHA POLIGONAL!');
             console.log(e.layer._latlngs);
+
+            coords = "LINESTRING(";
+            var c_arr = e.layer._latlngs;
+            $.each(c_arr, function (i, elem) {
+                coords += elem.lng + " " + elem.lat;
+                if(i < c_arr.length-1)
+                    coords += ",";
+            });
+            coords += ")";
+            desc = "[Polyline] olha uma infowindow, ta engrassade.";
+            name = "Linha poligonal porreira";
+            radius = 0;
+
+            console.log(coords);
         }
-        else if (type === 'rectangle') {
-            layer.bindPopup('NOVO RECTANGULO!');
+        // ta porreiro
+        else if (type === 'rectangle' || type === 'polygon') {
+            layer.bindPopup('NOVO ' + type +'!');
             console.log(e.layer._latlngs);
-        }
-        else if (type === 'polygon') {
-            layer.bindPopup('NOVO POLIGONO!');
-            console.log(e.layer._latlngs);
+
+            coords = "POLYGON((";
+            var c_arr = e.layer._latlngs;
+            $.each(c_arr, function (i, elem) {
+                coords += elem.lng + " " + elem.lat;
+                if(i < c_arr.length-1)
+                    coords += ",";
+            });
+            coords += "))";
+            desc = "[" + type + "] olha uma infowindow, ta engrassade.";
+            name = type + " porreiro";
+            radius = 0;
         }
 
+        // envia a entidade para o servidor
         $.ajax({
             type: "POST",
             url: "/geo_entities",
@@ -180,7 +205,7 @@ $(document).ready(function () {
                     entity_type: type,
                     radius: radius,
                     description: desc,
-                    latlng: coords,
+                    latlon: coords,
                     user_id: "1"
                 }
             },
