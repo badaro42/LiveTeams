@@ -138,6 +138,7 @@ $(document).ready(function () {
     /* listener invocado quando é criada uma feature */
     map.on('draw:created', function (e) {
         console.log(e);
+        var name = "", desc = "", coords = "", user_id = "", radius = 0;
 
         var type = e.layerType, layer = e.layer;
         if (type === 'marker') {
@@ -146,30 +147,10 @@ $(document).ready(function () {
             console.log(e.layer._latlng);
             console.log(e.layer._latlng.lat);
             console.log(e.layer._latlng.lng);
-            var coords = "POINT(" + e.layer._latlng.lng + " " + e.layer._latlng.lat + ")";
-            var desc = "ADICIONADO ATRAVÉS DO MAPA";
-            var name = "novo marcador 42424";
 
-            $.ajax({
-                type: "POST",
-                url: "/geo_entities",
-                dataType: "json",
-                data: {
-                    geo_entity: {
-                        name: name,
-                        description: desc,
-                        latlng: coords,
-                        user_id: "1"
-                    }
-                },
-                success: function (data) {
-                    console.log("MARCADOR ADICIONADO COM SUCESSO");
-                },
-                error: function (err) {
-                    console.log("erro a adicionar o marcador");
-                    console.log(err);
-                }
-            });
+            coords = "POINT(" + e.layer._latlng.lng + " " + e.layer._latlng.lat + ")";
+            desc = "ADICIONADO ATRAVÉS DO MAPA";
+            name = "novo marcador 42424";
         }
         else if (type === 'circle') {
             layer.bindPopup('NOVO CIRCULO!');
@@ -187,6 +168,29 @@ $(document).ready(function () {
             layer.bindPopup('NOVO POLIGONO!');
             console.log(e.layer._latlngs);
         }
+
+        $.ajax({
+            type: "POST",
+            url: "/geo_entities",
+            dataType: "json",
+            data: {
+                geo_entity: {
+                    name: name,
+                    type: type,
+                    radius: radius,
+                    description: desc,
+                    latlng: coords,
+                    user_id: "1"
+                }
+            },
+            success: function (data) {
+                console.log("MARCADOR ADICIONADO COM SUCESSO");
+            },
+            error: function (err) {
+                console.log("erro a adicionar o marcador");
+                console.log(err);
+            }
+        });
 
         drawnItems.addLayer(layer);
     });

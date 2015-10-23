@@ -1,6 +1,6 @@
 class User < ActiveRecord::Base
 
-  PROFILES = ['Administrador', 'Gestor', 'Operacional', 'Basico']
+  # PROFILES = ['Administrador', 'Gestor', 'Operacional', 'Basico']
 
 
   # Include default devise modules. Others available are:

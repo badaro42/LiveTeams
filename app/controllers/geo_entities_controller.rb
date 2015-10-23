@@ -34,11 +34,12 @@ class GeoEntitiesController < ApplicationController
 
     respond_to do |format|
       if @geo_entity.save
-        format.json {redirect_to root_path}
-        # format.html { redirect_to @geo_entity, notice: 'Geo entity was successfully created.' }
-        # format.json { render :show, status: :created, location: @geo_entity }
+        # format.json { redirect_to @geo_entity }
+        format.html { redirect_to @geo_entity, notice: 'Geo entity was successfully created.' }
+        format.json { render :show, status: :created, location: @geo_entity }
+        # format.json { render :nothing => true, :status => 200, :content_type => 'text/html' }
       else
-        format.json {redirect_to root_path}
+        # format.json { redirect_to @geo_entity }
         format.html { render :new }
         format.json { render json: @geo_entity.errors, status: :unprocessable_entity }
       end
@@ -70,13 +71,13 @@ class GeoEntitiesController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_geo_entity
-      @geo_entity = GeoEntity.find(params[:id])
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_geo_entity
+    @geo_entity = GeoEntity.find(params[:id])
+  end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def geo_entity_params
-      params.require(:geo_entity).permit(:name, :latlon, :user_id, :description)
-    end
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def geo_entity_params
+    params.require(:geo_entity).permit(:name, :latlon, :user_id, :description)
+  end
 end
