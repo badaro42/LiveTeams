@@ -25,12 +25,20 @@ class GeoEntitiesController < ApplicationController
   # POST /geo_entities.json
   def create
     @geo_entity = GeoEntity.new(geo_entity_params)
+    @geo_entity.name = params[:geo_entity][:name]
+    @geo_entity.description = params[:geo_entity][:description]
+    @geo_entity.latlon = params[:geo_entity][:latlng]
+    @geo_entity.user_id = params[:geo_entity][:user_id].to_i
+
+    puts @geo_entity.inspect
 
     respond_to do |format|
       if @geo_entity.save
-        format.html { redirect_to @geo_entity, notice: 'Geo entity was successfully created.' }
-        format.json { render :show, status: :created, location: @geo_entity }
+        format.json {redirect_to root_path}
+        # format.html { redirect_to @geo_entity, notice: 'Geo entity was successfully created.' }
+        # format.json { render :show, status: :created, location: @geo_entity }
       else
+        format.json {redirect_to root_path}
         format.html { render :new }
         format.json { render json: @geo_entity.errors, status: :unprocessable_entity }
       end

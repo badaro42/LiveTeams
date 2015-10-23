@@ -119,9 +119,9 @@ $(document).ready(function () {
         icon: "fa fa-location-arrow",
         metric: true,
         strings: {
-            title: "Show my location",
-            popup: "You are within {distance} {unit} from this point",
-            outsideMapBoundsMsg: "You seem located outside the boundaries of the map"
+            title: "Clique aqui para ativar a geolocalização",
+            popup: "Encontra-se a {distance} {unit} deste ponto",
+            outsideMapBoundsMsg: "Parece que se encontra fora dos limites do mapa"
         },
         locateOptions: {
             maxZoom: 19,
@@ -142,18 +142,50 @@ $(document).ready(function () {
         var type = e.layerType, layer = e.layer;
         if (type === 'marker') {
             layer.bindPopup('NOVO MARCADOR!');
+
+            console.log(e.layer._latlng);
+            console.log(e.layer._latlng.lat);
+            console.log(e.layer._latlng.lng);
+            var coords = "POINT(" + e.layer._latlng.lng + " " + e.layer._latlng.lat + ")";
+            var desc = "ADICIONADO ATRAVÉS DO MAPA";
+            var name = "novo marcador 42424";
+
+            $.ajax({
+                type: "POST",
+                url: "/geo_entities",
+                dataType: "json",
+                data: {
+                    geo_entity: {
+                        name: name,
+                        description: desc,
+                        latlng: coords,
+                        user_id: "1"
+                    }
+                },
+                success: function (data) {
+                    console.log("MARCADOR ADICIONADO COM SUCESSO");
+                },
+                error: function (err) {
+                    console.log("erro a adicionar o marcador");
+                    console.log(err);
+                }
+            });
         }
         else if (type === 'circle') {
             layer.bindPopup('NOVO CIRCULO!');
+            console.log(e.layer._latlng);
         }
         else if (type === 'polyline') {
             layer.bindPopup('NOVA LINHA POLIGONAL!');
+            console.log(e.layer._latlngs);
         }
         else if (type === 'rectangle') {
             layer.bindPopup('NOVO RECTANGULO!');
+            console.log(e.layer._latlngs);
         }
         else if (type === 'polygon') {
             layer.bindPopup('NOVO POLIGONO!');
+            console.log(e.layer._latlngs);
         }
 
         drawnItems.addLayer(layer);
@@ -181,8 +213,6 @@ $(document).ready(function () {
         //shadowAnchor: [4, 62],  // the same for the shadow
         popupAnchor: [-1, -30] // point from which the popup should open relative to the iconAnchor
     });
-
-
 
 
     var geojson = "";
