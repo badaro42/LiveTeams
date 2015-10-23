@@ -138,9 +138,9 @@ $(document).ready(function () {
     /* listener invocado quando é criada uma feature */
     map.on('draw:created', function (e) {
         console.log(e);
-        var name = "", desc = "", coords = "", user_id = "", radius = 0;
+        var name = "", desc = "", coords = "", user_id = "",
+            radius = 0, type = e.layerType, layer = e.layer;
 
-        var type = e.layerType, layer = e.layer;
         if (type === 'marker') {
             layer.bindPopup('NOVO MARCADOR!');
 
@@ -149,8 +149,9 @@ $(document).ready(function () {
             console.log(e.layer._latlng.lng);
 
             coords = "POINT(" + e.layer._latlng.lng + " " + e.layer._latlng.lat + ")";
-            desc = "ADICIONADO ATRAVÉS DO MAPA";
-            name = "novo marcador 42424";
+            desc = "ADICIONADO ATRAVES DO MAPA";
+            name = "Marcador porreiro";
+            radius = 0;
         }
         else if (type === 'circle') {
             layer.bindPopup('NOVO CIRCULO!');
@@ -176,7 +177,7 @@ $(document).ready(function () {
             data: {
                 geo_entity: {
                     name: name,
-                    type: type,
+                    entity_type: type,
                     radius: radius,
                     description: desc,
                     latlng: coords,

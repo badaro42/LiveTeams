@@ -24,7 +24,7 @@ ActiveRecord::Schema.define(version: 20151023155016) do
     t.text      "description"
     t.datetime  "created_at",                                                              null: false
     t.datetime  "updated_at",                                                              null: false
-    t.string    "type"
+    t.string    "entity_type"
     t.integer   "radius"
   end
 

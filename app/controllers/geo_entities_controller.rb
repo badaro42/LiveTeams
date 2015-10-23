@@ -26,9 +26,11 @@ class GeoEntitiesController < ApplicationController
   def create
     @geo_entity = GeoEntity.new(geo_entity_params)
     @geo_entity.name = params[:geo_entity][:name]
+    @geo_entity.entity_type = params[:geo_entity][:entity_type]
     @geo_entity.description = params[:geo_entity][:description]
     @geo_entity.latlon = params[:geo_entity][:latlng]
     @geo_entity.user_id = params[:geo_entity][:user_id].to_i
+    @geo_entity.radius = params[:geo_entity][:radius].to_i
 
     puts @geo_entity.inspect
 
