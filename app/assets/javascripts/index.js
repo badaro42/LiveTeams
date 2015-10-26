@@ -64,6 +64,8 @@ $(document).ready(function () {
     var drawnItems = new L.FeatureGroup();
     map.addLayer(drawnItems);
 
+    var cluster = L.markerClusterGroup();
+
     L.drawLocal.draw.toolbar.buttons.polygon = 'Desenhar um poligono';
     L.drawLocal.draw.toolbar.buttons.polyline = 'Desenhar uma linha poligonal';
     L.drawLocal.draw.toolbar.buttons.marker = 'Desenhar um marcador';
@@ -143,12 +145,12 @@ $(document).ready(function () {
 
         // ta porreiro
         if (type === 'marker' || type === 'circle') {
-            if(type === 'circle')
+            if (type === 'circle')
                 radius = e.layer._mRadius;
             else
                 radius = 0;
 
-            layer.bindPopup('NOVO ' + type +'!');
+            layer.bindPopup('NOVO ' + type + '!');
             console.log(e.layer);
 
             coords = "POINT(" + e.layer._latlng.lng + " " + e.layer._latlng.lat + ")";
@@ -166,7 +168,7 @@ $(document).ready(function () {
             var c_arr = e.layer._latlngs;
             $.each(c_arr, function (i, elem) {
                 coords += elem.lng + " " + elem.lat;
-                if(i < c_arr.length-1)
+                if (i < c_arr.length - 1)
                     coords += ",";
             });
             coords += ")";
@@ -178,14 +180,14 @@ $(document).ready(function () {
         }
         // ta porreiro
         else if (type === 'rectangle' || type === 'polygon') {
-            layer.bindPopup('NOVO ' + type +'!');
+            layer.bindPopup('NOVO ' + type + '!');
             console.log(e.layer._latlngs);
 
             coords = "POLYGON((";
             var c_arr = e.layer._latlngs;
             $.each(c_arr, function (i, elem) {
                 coords += elem.lng + " " + elem.lat;
-                if(i < c_arr.length-1)
+                if (i < c_arr.length - 1)
                     coords += ",";
             });
             coords += "))";
@@ -252,16 +254,24 @@ $(document).ready(function () {
         url: '/get_geo_entities',
         dataType: 'json',
         success: function (data) {
-            console.log(data);
-            L.geoJson(data, {
+            //console.log(data);
+            var geojson = L.geoJson(data, {
                 pointToLayer: function (feature, latlng) {
+                    //console.log("POINT POINT");
                     console.log(feature);
-                    if(feature.properties.radius > 0)
+                    //console.log("POINT POINT");
+                    if (feature.properties.radius > 0)
                         return L.circle(latlng, feature.properties.radius);
                     else
                         return L.marker(latlng);
                 },
                 onEachFeature: function (feature, layer) {
+                    console.log("EACH FEATURE");
+                    console.log(feature);
+                    console.log("EACH FEATURE");
+
+                    //cluster.addLayer(feature);
+
                     popupOptions = {maxWidth: 600};
                     //layer.bindLabel('<h4>' + feature.properties.name + '</h4>');
                     //sidebar.setContent('<h4>'+feature.properties.musno+'</h4><br>'+'<h4>'+feature.properties.exchange_name+'</h4><br>'+feature.properties.pcp, popupOptions);
@@ -269,6 +279,9 @@ $(document).ready(function () {
                         '<p>' + feature.properties.description + '</p>', popupOptions);
                 }
             }).addTo(map);
+
+            cluster.addLayer(geojson);
+            map.addLayer(cluster);
         },
 
         //geojson.addTo(map);
@@ -283,7 +296,7 @@ $(document).ready(function () {
         var i, item, popup_content, coords_arr, marker;
         for (i = 0; i < json.length; i++) {
             item = json[i];
-            console.log(item);
+            //console.log(item);
 
             if (item.latlon != null) {
                 coords_arr = parsePointCoordinates(item.latlon);

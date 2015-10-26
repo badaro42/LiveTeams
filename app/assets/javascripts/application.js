@@ -19,4 +19,5 @@
 //= require leaflet.groupedlayercontrol.min
 //= require leaflet.draw-touch
 //= require L.Control.Locate.min
+//= require leaflet.markercluster
 //= require initial
