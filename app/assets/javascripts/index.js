@@ -255,14 +255,18 @@ $(document).ready(function () {
             console.log(data);
             L.geoJson(data, {
                 pointToLayer: function (feature, latlng) {
-                    return L.marker(latlng);
+                    console.log(feature);
+                    if(feature.properties.radius > 0)
+                        return L.circle(latlng, feature.properties.radius);
+                    else
+                        return L.marker(latlng);
                 },
                 onEachFeature: function (feature, layer) {
                     popupOptions = {maxWidth: 600};
                     //layer.bindLabel('<h4>' + feature.properties.name + '</h4>');
                     //sidebar.setContent('<h4>'+feature.properties.musno+'</h4><br>'+'<h4>'+feature.properties.exchange_name+'</h4><br>'+feature.properties.pcp, popupOptions);
                     layer.bindPopup('<p>' + feature.properties.name + '</p>' +
-                        '<p>' + feature.properties.desc + '</p>', popupOptions);
+                        '<p>' + feature.properties.description + '</p>', popupOptions);
                 }
             }).addTo(map);
         },
