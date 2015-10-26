@@ -17,6 +17,6 @@
 //= require leaflet
 //= require leaflet-sidebar
 //= require leaflet.groupedlayercontrol.min
-//= require leaflet.draw
+//= require leaflet.draw-touch
 //= require L.Control.Locate.min
 //= require initial

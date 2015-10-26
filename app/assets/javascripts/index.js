@@ -155,7 +155,7 @@ $(document).ready(function () {
             desc = "[" + type + "] olha uma infowindow, ta engrassade.";
             name = type + " porreiro";
 
-            console.log(e.layer._mRadius);
+            //console.log(e.layer._mRadius);
         }
         // ta porreiro
         else if (type === 'polyline') {
