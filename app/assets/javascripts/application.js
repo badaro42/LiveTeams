@@ -20,4 +20,5 @@
 //= require leaflet.draw-touch
 //= require L.Control.Locate.min
 //= require leaflet.markercluster
+//= require leaflet.ajax.min
 //= require initial

@@ -1,51 +1,12 @@
-var map, osmUrl, osmAttrib, osm;
+var map, osmUrl, osmAttrib, osm, sidebar, cluster;
+var geo_entity_ajax_finished, teams_ajax_finished;
 
 $(document).ready(function () {
-    // DOM ready
-    //var vheight = ($('#curr_location').children().width()) - 400;
-    ////var vheight = 300;
-    //console.log(vheight);
-    //var myFn = function () {
-    //    $('#curr_location').children().animate({'margin-left': '-=' + vheight}, 10000, function () {
-    //        $('#curr_location').children().animate({'margin-left': '+=' + vheight}, 300);
-    //    });
-    //};
-    //
-    //myFn();
-    //setInterval(myFn, 10300);
+    geo_entity_ajax_finished = false;
+    teams_ajax_finished = false;
 
-    // cria uma imagem com a inicial do nome do utilizador autenticado
-    $('.profile_name').initial({
-        name: 'Name', // Name of the user
-        charCount: 1, // Number of characherts to be shown in the picture.
-        textColor: '#ffffff', // Color of the text
-        seed: 0, // randomize background color
-        height: 40,
-        width: 40,
-        fontSize: 20,
-        fontWeight: 400,
-        fontFamily: 'HelveticaNeue-Light,Helvetica Neue Light,Helvetica Neue,Helvetica, Arial,Lucida Grande, sans-serif',
-        radius: 25
-    });
-
-    $('.modal-trigger').leanModal();
-
-    //altera o background da lista das equipas quando o utilizador faz hover com o rato
-    $("#hover_test div:first-child")
-        .mouseenter(function () {
-            if (!($(this).hasClass("active")))
-                $(this).css("background", "#eaeaea")
-        })
-        .mouseleave(function () {
-            if (!($(this).hasClass("active")))
-                $(this).css("background", "#fff")
-        });
-
-    //faz mais ou menos o mesmo mas quando o utilizador clica numa entrada da lista
-    $("div.collapsible-header").click(function (div) {
-        $("div.collapsible-header").css("background", "#fff");
-        $("div.collapsible-header.active").css("background", "#eaeaea");
-    });
+    sidebar = L.control.sidebar('sidebar', {position: 'right'}).addTo(map);
+    cluster = L.markerClusterGroup();
 
     osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
     osm = L.tileLayer(osmUrl, {maxZoom: 20});
@@ -59,13 +20,13 @@ $(document).ready(function () {
         attributionControl: false
     });
 
-    var sidebar = L.control.sidebar('sidebar', {position: 'right'}).addTo(map);
-
     var drawnItems = new L.FeatureGroup();
     map.addLayer(drawnItems);
 
-    var cluster = L.markerClusterGroup();
+    /* controlo do zoom do mapa  */
+    new L.Control.Zoom({position: 'bottomleft'}).addTo(map);
 
+    // cria a barra de controlos para a criação de entidades
     L.drawLocal.draw.toolbar.buttons.polygon = 'Desenhar um poligono';
     L.drawLocal.draw.toolbar.buttons.polyline = 'Desenhar uma linha poligonal';
     L.drawLocal.draw.toolbar.buttons.marker = 'Desenhar um marcador';
@@ -102,7 +63,7 @@ $(document).ready(function () {
     });
     map.addControl(drawControl);
 
-    /* GPS enabled geolocation control set to follow the user's location */
+    // Geolocalização do utilizador através do GPS
     new L.control.locate({
         position: "bottomleft",
         drawCircle: true,
@@ -134,8 +95,162 @@ $(document).ready(function () {
         }
     }).addTo(map);
 
-    /* controlo do zoom do mapa  */
-    new L.Control.Zoom({position: 'bottomleft'}).addTo(map);
+    // cria uma imagem com a inicial do nome do utilizador autenticado
+    $('.profile_name').initial({
+        name: 'Name', // Name of the user
+        charCount: 1, // Number of characherts to be shown in the picture.
+        textColor: '#ffffff', // Color of the text
+        seed: 0, // randomize background color
+        height: 40,
+        width: 40,
+        fontSize: 20,
+        fontWeight: 400,
+        fontFamily: 'Helvetica Neue-Light,Helvetica Neue Light,Helvetica Neue,Helvetica, Arial, Lucida Grande, sans-serif',
+        radius: 25
+    });
+
+    //altera o background da lista das equipas quando o utilizador faz hover com o rato
+    $("#hover_test div:first-child")
+        .mouseenter(function () {
+            if (!($(this).hasClass("active")))
+                $(this).css("background", "#eaeaea")
+        })
+        .mouseleave(function () {
+            if (!($(this).hasClass("active")))
+                $(this).css("background", "#fff")
+        });
+
+    //faz mais ou menos o mesmo mas quando o utilizador clica numa entrada da lista
+    $("div.collapsible-header").click(function (div) {
+        $("div.collapsible-header").css("background", "#fff");
+        $("div.collapsible-header.active").css("background", "#eaeaea");
+    });
+
+    // inicializa as dropdowns que existem na pagina!
+    $('select').material_select();
+
+    var team_icon = L.icon({
+        iconUrl: 'http://freeflaticons.net/wp-content/uploads/2014/11/group-copy-1416476921gn4k8.png',
+        //shadowUrl: 'leaf-shadow.png',
+
+        iconSize: [38, 38], // size of the icon
+        //shadowSize:   [50, 64], // size of the shadow
+        iconAnchor: [19, 30], // point of the icon which will correspond to marker's location
+        //shadowAnchor: [4, 62],  // the same for the shadow
+        popupAnchor: [-1, -30] // point from which the popup should open relative to the iconAnchor
+    });
+
+
+    // ****************** CHAMADAS ASSINCRONAS PARA POPULAR O MAPA ******************
+
+    // retorna todas as entidades que estao na BD
+    var geo_entities = new L.GeoJSON.AJAX("/get_geo_entities.json", {
+        pointToLayer: function (feature, latlng) {
+            console.log(feature);
+            if (feature.properties.radius > 0)
+                return L.circle(latlng, feature.properties.radius);
+            else
+                return L.marker(latlng);
+        },
+        onEachFeature: function (feature, layer) {
+            layer.bindPopup('<p>' + feature.properties.name + '</p>' +
+                '<p>' + feature.properties.description + '</p>');
+        }
+    });
+
+    // listener invocado quando a chamada ajax acima terminar!
+    geo_entities.on('data:loaded', function () {
+        console.log("finish");
+        cluster.addLayer(geo_entities);
+        //console.log(geo_entities);
+        map.addLayer(cluster);
+    });
+
+    // TODO: as coordenadas das equipas estao erradas!!! trocar esta cena
+    $.getJSON("/teams", function (json) {
+        var i, item, popup_content, coords_arr, marker;
+        for (i = 0; i < json.length; i++) {
+            item = json[i];
+            //console.log(item);
+
+            if (item.latlon != null) {
+                coords_arr = parsePointCoordinates(item.latlon);
+
+                popup_content = "<p>" + item.name + "<br/>Latitude:" +
+                    coords_arr[0] + "<br/> Longitude:" + coords_arr[1] + "</p>";
+                marker = L.marker([coords_arr[1], coords_arr[0]], {icon: team_icon});
+                marker.bindPopup(popup_content);
+
+                cluster.addLayer(marker);
+            }
+        }
+        //teams_ajax_finished = true;
+        //enableMarkerCluster();
+        map.addLayer(cluster);
+    });
+
+
+//$.ajax({
+//    type: "GET",
+//    url: '/get_geo_entities',
+//    dataType: 'json',
+//    success: function (data) {
+//        //console.log(data);
+//        geojson = L.geoJson(data, {
+//            onEachFeature: function (feature, layer) {
+//                //console.log("EACH FEATURE");
+//                //console.log(feature);
+//                //console.log("EACH FEATURE");
+//
+//                //var c_arr = feature.geometry.coordinates;
+//                console.log(feature.geometry.type + ": " + feature.properties.radius);
+//                console.log(feature);
+//
+//                if (feature.geometry.type === "Point") {
+//                    var c_arr = feature.geometry.coordinates;
+//                    console.log(c_arr);
+//                    var latlon = L.latLng(c_arr[1], c_arr[0]);
+//                    console.log(latlon);
+//
+//                    if (feature.properties.radius > 0)
+//                        L.circle(latlon, feature.properties.radius).addTo(map);
+//                    else {
+//                        if (feature.geometry.type === "Point") {
+//                            var m = L.marker(latlon);
+//                            // apenas os marcadores vao para o cluster
+//                            cluster.addLayer(m);
+//                        }
+//                    }
+//                }
+//
+//
+//                //var latlon = L.LatLng(c_arr[1], c_arr[0]);
+//                //console.log(latlon);
+//
+//
+//                popupOptions = {maxWidth: 600};
+//                //layer.bindLabel('<h4>' + feature.properties.name + '</h4>');
+//                //sidebar.setContent('<h4>'+feature.properties.musno+'</h4><br>'+'<h4>'+feature.properties.exchange_name+'</h4><br>'+feature.properties.pcp, popupOptions);
+//                layer.bindPopup('<p>' + feature.properties.name + '</p>' +
+//                    '<p>' + feature.properties.description + '</p>', popupOptions);
+//            }
+//        }).addTo(map);
+//
+//        cluster.addLayer(g);
+//
+//        geo_entity_ajax_finished = true;
+//        enableMarkerCluster();
+//    },
+//
+//    //geojson.addTo(map);
+//    //console.log(geojson);
+//    error: function (err) {
+//        console.log(err);
+//    }
+//});
+
+
+// ****************** LISTENERS PARA A CRIAÇÃO/EDIÇÃO DE ENTIDADES ******************
 
     /* listener invocado quando é criada uma feature */
     map.on('draw:created', function (e) {
@@ -230,84 +345,6 @@ $(document).ready(function () {
             //do whatever you want, most likely save back to db
         });
     });
-
-    // inicializa as dropdowns que existem na pagina!
-    $('select').material_select();
-
-
-    var team_icon = L.icon({
-        iconUrl: 'http://freeflaticons.net/wp-content/uploads/2014/11/group-copy-1416476921gn4k8.png',
-        //shadowUrl: 'leaf-shadow.png',
-
-        iconSize: [38, 38], // size of the icon
-        //shadowSize:   [50, 64], // size of the shadow
-        iconAnchor: [19, 30], // point of the icon which will correspond to marker's location
-        //shadowAnchor: [4, 62],  // the same for the shadow
-        popupAnchor: [-1, -30] // point from which the popup should open relative to the iconAnchor
-    });
-
-
-    var geojson = "";
-    // retorna todas as entidades que estao na BD
-    $.ajax({
-        type: "GET",
-        url: '/get_geo_entities',
-        dataType: 'json',
-        success: function (data) {
-            //console.log(data);
-            var geojson = L.geoJson(data, {
-                pointToLayer: function (feature, latlng) {
-                    //console.log("POINT POINT");
-                    console.log(feature);
-                    //console.log("POINT POINT");
-                    if (feature.properties.radius > 0)
-                        return L.circle(latlng, feature.properties.radius);
-                    else
-                        return L.marker(latlng);
-                },
-                onEachFeature: function (feature, layer) {
-                    console.log("EACH FEATURE");
-                    console.log(feature);
-                    console.log("EACH FEATURE");
-
-                    //cluster.addLayer(feature);
-
-                    popupOptions = {maxWidth: 600};
-                    //layer.bindLabel('<h4>' + feature.properties.name + '</h4>');
-                    //sidebar.setContent('<h4>'+feature.properties.musno+'</h4><br>'+'<h4>'+feature.properties.exchange_name+'</h4><br>'+feature.properties.pcp, popupOptions);
-                    layer.bindPopup('<p>' + feature.properties.name + '</p>' +
-                        '<p>' + feature.properties.description + '</p>', popupOptions);
-                }
-            }).addTo(map);
-
-            cluster.addLayer(geojson);
-            map.addLayer(cluster);
-        },
-
-        //geojson.addTo(map);
-        //console.log(geojson);
-        error: function (err) {
-            console.log(err);
-        }
-    });
-
-
-    $.getJSON("/teams", function (json) {
-        var i, item, popup_content, coords_arr, marker;
-        for (i = 0; i < json.length; i++) {
-            item = json[i];
-            //console.log(item);
-
-            if (item.latlon != null) {
-                coords_arr = parsePointCoordinates(item.latlon);
-
-                popup_content = "<p>" + item.name + "<br/>Latitude:" +
-                    coords_arr[0] + "<br/> Longitude:" + coords_arr[1] + "</p>";
-                marker = L.marker([coords_arr[0], coords_arr[1]], {icon: team_icon}).addTo(map);
-                marker.bindPopup(popup_content);
-            }
-        }
-    });
 })
 ;
 
@@ -323,6 +360,15 @@ function parsePointCoordinates(coords) {
     res.push(new_split_res[1].split(")")[0]); //longitude
 
     return res;
+}
+
+// so coloca o cluster no mapa quando as duas chamadas terminarem
+function enableMarkerCluster() {
+    if (geo_entity_ajax_finished && teams_ajax_finished) {
+        map.addLayer(cluster);
+        geo_entity_ajax_finished = false;
+        teams_ajax_finished = false;
+    }
 }
 
 /*
