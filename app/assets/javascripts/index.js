@@ -1,4 +1,4 @@
-var map, osmUrl, osmAttrib, osm, sidebar, cluster;
+var map, osmUrl, osmAttrib, osm, sidebar, cluster, drawnItems;
 var e_type, e_radius, e_coords, coords_to_display, e_length, e_area, e_layer, e_num_points;
 
 $(document).ready(function () {
@@ -17,7 +17,7 @@ $(document).ready(function () {
         attributionControl: false
     });
 
-    var drawnItems = new L.FeatureGroup();
+    drawnItems = new L.FeatureGroup();
     map.addLayer(drawnItems);
 
     /* controlo do zoom do mapa  */
@@ -225,7 +225,6 @@ $(document).ready(function () {
 
             e_layer.bindPopup('NOVO ' + e_type + '!');
             console.log(e_layer);
-
             e_coords = "POINT(" + e_layer.getLatLng().lng + " " + e_layer.getLatLng().lat + ")";
         }
         else if (e_type === 'polyline' || e_type === 'rectangle' || e_type === 'polygon') {
@@ -269,7 +268,6 @@ $(document).ready(function () {
             e_length = 0;
             $.each(c_arr, function (i, curr_point) {
                 coords_to_display += curr_point;
-
                 if (e_type === 'polyline') {
                     if (temp_point == null)
                         temp_point = curr_point;
@@ -279,7 +277,6 @@ $(document).ready(function () {
                     }
                 }
                 e_coords += curr_point.lng + " " + curr_point.lat;
-
                 if (i < c_arr.length - 1) {
                     e_coords += ",";
                     coords_to_display += "\n";
@@ -300,20 +297,27 @@ $(document).ready(function () {
             else
                 e_coords += "))";
         }
-
-        // abre o modal para preencher os campos que faltam
         $('#confirm_entity_creation').openModal();
     });
 
     /* listener invocado quando se edita uma feature */
-    map.on('draw:edited', function (e) {
-        var layers = e.layers;
-        layers.eachLayer(function (layer) {
-            //do whatever you want, most likely save back to db
-        });
-    });
-})
-;
+    //map.on('draw:edited', function (e) {
+    //    var layers = e.layers;
+    //    layers.eachLayer(function (layer) {
+    //        //do whatever you want, most likely save back to db
+    //    });
+    //});
+});
+
+//$(document).keyup(function(e) {
+//    //if (e.keyCode == 13) $('.save').click();     // enter
+//    if (e.keyCode == 27) { // esc
+//        if(modal_is_open) {
+//            drawnItems.removeLayer(e_layer);
+//            modal_is_open = false;
+//        }
+//    }
+//});
 
 
 // o parametro "coords" é da forma -> "POINT(33.333 11.111)"
@@ -331,6 +335,7 @@ function parsePointCoordinates(coords) {
 
 // envia a entidade criada para a Base de Dados
 function insertGeoEntity() {
+    modal_is_open = false;
     console.log("inserir nova entidaade");
 
     var name = $('#e_name').val();
@@ -366,5 +371,6 @@ function insertGeoEntity() {
         }
     });
 
-    //drawnItems.addLayer(layer);
+    drawnItems.addLayer(e_layer);
+    e_layer = null;
 }
