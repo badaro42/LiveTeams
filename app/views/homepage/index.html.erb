@@ -80,14 +80,14 @@
     <div class="sidebar-pane" id="teams">
       <h1 class="sidebar-header" style="font-weight: 300">Equipas
         <!--<a class="waves-effect waves-teal btn modal-trigger right" onclick="" -->
-           <!--style="width: 53px; height: 33px; padding-left: 7px; padding-right: 10px; margin-top: 3px;" -->
-           <!--href="#create_team_modal">-->
-          <!--<i class="material-icons md-24 md-light">group_add</i>-->
+        <!--style="width: 53px; height: 33px; padding-left: 7px; padding-right: 10px; margin-top: 3px;" -->
+        <!--href="#create_team_modal">-->
+        <!--<i class="material-icons md-24 md-light">group_add</i>-->
         <!--</a>-->
         <!--&lt;!&ndash; botao que apresenta/esconde as checkboxes &ndash;&gt;-->
         <!--<a class="waves-effect waves-teal btn right" -->
-           <!--style="width: 53px; height: 33px; padding-left: 7px; padding-right: 7px; margin-top: 3px; margin-right: 10px;">-->
-          <!--<i class="fa fa-check-square-o"></i>-->
+        <!--style="width: 53px; height: 33px; padding-left: 7px; padding-right: 7px; margin-top: 3px; margin-right: 10px;">-->
+        <!--<i class="fa fa-check-square-o"></i>-->
         <!--</a>-->
 
         <div class="sidebar-close">
@@ -260,163 +260,55 @@
 
 
 <!-- Modal Structure -->
-<div id="edit_team_modal" class="modal modal-fixed-footer">
+<div id="confirm_entity_creation" class="modal modal-fixed-footer">
   <div class="modal-header">
-    <h5>Editar definições de equipa</h5>
+    <h5>Confirmar criação de entidade</h5>
   </div>
 
   <div class="modal-content">
     <div class="row">
-      <div class="input-field col s12">
-        <input id="team_name" value="Equipa de Sapadores de Corroios" type="text" class="validate">
-        <label for="team_name"><strong>Nome da equipa</strong></label>
+      <div id="e_type_div" class="input-field col s4">
+        <input disabled id="e_type" value="" type="text" class="validate">
+        <label for="e_type">Tipo</label>
+      </div>
+      <div hidden id="e_radius_div" class="input-field col s6">
+        <input disabled id="e_radius" value="" type="text" class="validate">
+        <label for="e_radius">Raio (m)</label>
+      </div>
+      <div hidden id="e_area_div" class="input-field col s4">
+        <input disabled id="e_area" value="" type="text" class="validate">
+        <label for="e_area">Área (ha)</label>
+      </div>
+      <div hidden id="e_length_div" class="input-field col s4">
+        <input disabled id="e_length" value="" type="text" class="validate">
+        <label for="e_length">Comprimento (km)</label>
+      </div>
+      <div hidden id="e_num_points_div" class="input-field col s4">
+        <input disabled id="e_num_points" value="" type="text" class="validate">
+        <label for="e_num_points">Nº pontos</label>
       </div>
     </div>
     <div class="row">
-      <label style="padding-left: 10px;"><strong>Utilizadores na equipa</strong></label>
-
-      <div class="input-field col s12" style="padding: 0px; height: 150px; overflow-y: auto; width: 100%;">
-        <form action="#">
-              <span>
-                <input type="checkbox" checked id="usr1"/>
-                <label for="usr1">Utilizador numero 1</label>
-              </span>
-          <br>
-              <span>
-                <input type="checkbox" id="usr2"/>
-                <label for="usr2">Utilizador numero 2</label>
-              </span>
-          <br>
-              <span>
-                <input type="checkbox" checked id="usr3"/>
-                <label for="usr3">Utilizador numero 3</label>
-              </span>
-          <br>
-              <span>
-                <input type="checkbox" checked id="usr4"/>
-                <label for="usr4">Utilizador numero 4</label>
-              </span>
-          <br>
-              <span>
-                <input type="checkbox" id="usr5"/>
-                <label for="usr5">Utilizador numero 6</label>
-              </span>
-          <br>
-              <span>
-                <input type="checkbox" checked id="usr6"/>
-                <label for="usr6">Utilizador numero 7</label>
-              </span>
-          <br>
-              <span>
-                <input type="checkbox" id="usr7"/>
-                <label for="usr7">Utilizador numero 8</label>
-              </span>
-        </form>
-      </div>
-    </div>
-    <div class="row" style="padding-top: 10px;">
       <div class="input-field col s12">
-        <select style="z-index: 10000;">
-          <option value="">Escolha um dos utilizadores</option>
-          <option value="1">Utilizador 1</option>
-          <option value="2" selected>Utilizador 2</option>
-          <option value="3">Utilizador 3</option>
-        </select>
-        <label><strong>Escolher responsável da equipa</strong></label>
+        <input id="e_name" value="" type="text" class="validate" autofocus>
+        <label for="e_name">Nome da entidade</label>
       </div>
     </div>
     <div class="row">
-      <label style="padding-left: 10px;"><strong>Destacar equipa para local</strong></label>
-
       <div class="input-field col s12">
-        <div id="edit_team_map"></div>
+        <textarea id="e_description" class="materialize-textarea"></textarea>
+        <label for="e_description">Descrição</label>
+      </div>
+    </div>
+    <div class="row">
+      <div class="input-field col s12">
+        <textarea id="e_coords" class="materialize-textarea"></textarea>
+        <label for="e_coords">Coordenadas</label>
       </div>
     </div>
   </div>
   <div class="modal-footer">
-    <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Confirmar</a>
-    <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Cancelar</a>
-  </div>
-</div>
-
-<!-- Modal Structure -->
-<div id="create_team_modal" class="modal modal-fixed-footer">
-  <div class="modal-header">
-    <h5>Criar nova equipa</h5>
-  </div>
-  <div class="modal-content">
-    <!--<div class="row">-->
-    <!--<div class="input-field col s12">-->
-    <!--<input id="team_name" value="" type="text" class="validate">-->
-    <!--<label for="team_name"><strong>Nome da equipa</strong></label>-->
-    <!--</div>-->
-    <!--</div>-->
-    <!--<div class="row">-->
-    <!--<label style="padding-left: 10px;"><strong>Utilizadores na equipa</strong></label>-->
-
-    <!--<div class="input-field col s12" style="padding: 0px; height: 150px; overflow-y: auto; width: 100%;">-->
-    <!--<form action="#">-->
-    <!--<span>-->
-    <!--<input type="checkbox" id="usr1"/>-->
-    <!--<label for="usr1">Utilizador numero 1</label>-->
-    <!--</span>-->
-    <!--<br>-->
-    <!--<span>-->
-    <!--<input type="checkbox" id="usr2"/>-->
-    <!--<label for="usr2">Utilizador numero 2</label>-->
-    <!--</span>-->
-    <!--<br>-->
-    <!--<span>-->
-    <!--<input type="checkbox" id="usr3"/>-->
-    <!--<label for="usr3">Utilizador numero 3</label>-->
-    <!--</span>-->
-    <!--<br>-->
-    <!--<span>-->
-    <!--<input type="checkbox" id="usr4"/>-->
-    <!--<label for="usr4">Utilizador numero 4</label>-->
-    <!--</span>-->
-    <!--<br>-->
-    <!--<span>-->
-    <!--<input type="checkbox" id="usr5"/>-->
-    <!--<label for="usr5">Utilizador numero 6</label>-->
-    <!--</span>-->
-    <!--<br>-->
-    <!--<span>-->
-    <!--<input type="checkbox" id="usr6"/>-->
-    <!--<label for="usr6">Utilizador numero 7</label>-->
-    <!--</span>-->
-    <!--<br>-->
-    <!--<span>-->
-    <!--<input type="checkbox" id="usr7"/>-->
-    <!--<label for="usr7">Utilizador numero 8</label>-->
-    <!--</span>-->
-    <!--</form>-->
-    <!--</div>-->
-    <!--</div>-->
-    <!--<div class="row" style="padding-top: 10px;">-->
-    <!--<div class="input-field col s12">-->
-    <!--<select style="z-index: 10000;">-->
-    <!--<option value="" selected>Escolha um dos utilizadores</option>-->
-    <!--<option value="1">Utilizador 1</option>-->
-    <!--<option value="2">Utilizador 2</option>-->
-    <!--<option value="3">Utilizador 3</option>-->
-    <!--</select>-->
-    <!--<label><strong>Escolher responsável da equipa</strong></label>-->
-    <!--</div>-->
-    <!--</div>-->
-    <!--<div class="row">-->
-    <!--<label style="padding-left: 10px;"><strong>Destacar equipa para local</strong></label>-->
-
-    <!--<div class="input-field col s12">-->
-    <!--<div id="create_team_map"></div>-->
-    <!--</div>-->
-    <!--</div>-->
-
-    <%#= render :partial => '/teams/form', :locals => {:team => Team.new} %>
-
-  </div>
-  <div class="modal-footer">
-    <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Confirmar</a>
-    <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Cancelar</a>
+    <a href="javascript:insertGeoEntity();" class="modal-action modal-close waves-effect waves-green btn-flat">Confirmar</a>
+    <a href="#" class="modal-action modal-close waves-effect waves-green btn-flat">Cancelar</a>
   </div>
 </div>

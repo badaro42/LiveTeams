@@ -29,7 +29,7 @@ class GeoEntitiesController < ApplicationController
     @geo_entity.entity_type = params[:geo_entity][:entity_type]
     @geo_entity.description = params[:geo_entity][:description]
     @geo_entity.latlon = params[:geo_entity][:latlon]
-    @geo_entity.user_id = params[:geo_entity][:user_id].to_i
+    @geo_entity.user_id = current_user.id
     @geo_entity.radius = params[:geo_entity][:radius]
 
     puts @geo_entity.inspect

@@ -1,10 +1,7 @@
 var map, osmUrl, osmAttrib, osm, sidebar, cluster;
-var geo_entity_ajax_finished, teams_ajax_finished;
+var e_type, e_radius, e_coords, coords_to_display, e_length, e_area, e_layer, e_num_points;
 
 $(document).ready(function () {
-    geo_entity_ajax_finished = false;
-    teams_ajax_finished = false;
-
     sidebar = L.control.sidebar('sidebar', {position: 'right'}).addTo(map);
     cluster = L.markerClusterGroup();
 
@@ -155,6 +152,8 @@ $(document).ready(function () {
         onEachFeature: function (feature, layer) {
             layer.bindPopup('<p>' + feature.properties.name + '</p>' +
                 '<p>' + feature.properties.description + '</p>');
+
+            //return L.marker(feature.geometry.coordinates);
         }
     });
 
@@ -166,12 +165,16 @@ $(document).ready(function () {
         map.addLayer(cluster);
     });
 
+    geo_entities.on('data:error', function (err) {
+        console.log(err);
+    });
+
+
     // TODO: as coordenadas das equipas estao erradas!!! trocar esta cena
     $.getJSON("/teams", function (json) {
         var i, item, popup_content, coords_arr, marker;
         for (i = 0; i < json.length; i++) {
             item = json[i];
-            //console.log(item);
 
             if (item.latlon != null) {
                 coords_arr = parsePointCoordinates(item.latlon);
@@ -184,158 +187,109 @@ $(document).ready(function () {
                 cluster.addLayer(marker);
             }
         }
-        //teams_ajax_finished = true;
-        //enableMarkerCluster();
         map.addLayer(cluster);
     });
 
 
-//$.ajax({
-//    type: "GET",
-//    url: '/get_geo_entities',
-//    dataType: 'json',
-//    success: function (data) {
-//        //console.log(data);
-//        geojson = L.geoJson(data, {
-//            onEachFeature: function (feature, layer) {
-//                //console.log("EACH FEATURE");
-//                //console.log(feature);
-//                //console.log("EACH FEATURE");
-//
-//                //var c_arr = feature.geometry.coordinates;
-//                console.log(feature.geometry.type + ": " + feature.properties.radius);
-//                console.log(feature);
-//
-//                if (feature.geometry.type === "Point") {
-//                    var c_arr = feature.geometry.coordinates;
-//                    console.log(c_arr);
-//                    var latlon = L.latLng(c_arr[1], c_arr[0]);
-//                    console.log(latlon);
-//
-//                    if (feature.properties.radius > 0)
-//                        L.circle(latlon, feature.properties.radius).addTo(map);
-//                    else {
-//                        if (feature.geometry.type === "Point") {
-//                            var m = L.marker(latlon);
-//                            // apenas os marcadores vao para o cluster
-//                            cluster.addLayer(m);
-//                        }
-//                    }
-//                }
-//
-//
-//                //var latlon = L.LatLng(c_arr[1], c_arr[0]);
-//                //console.log(latlon);
-//
-//
-//                popupOptions = {maxWidth: 600};
-//                //layer.bindLabel('<h4>' + feature.properties.name + '</h4>');
-//                //sidebar.setContent('<h4>'+feature.properties.musno+'</h4><br>'+'<h4>'+feature.properties.exchange_name+'</h4><br>'+feature.properties.pcp, popupOptions);
-//                layer.bindPopup('<p>' + feature.properties.name + '</p>' +
-//                    '<p>' + feature.properties.description + '</p>', popupOptions);
-//            }
-//        }).addTo(map);
-//
-//        cluster.addLayer(g);
-//
-//        geo_entity_ajax_finished = true;
-//        enableMarkerCluster();
-//    },
-//
-//    //geojson.addTo(map);
-//    //console.log(geojson);
-//    error: function (err) {
-//        console.log(err);
-//    }
-//});
-
-
-// ****************** LISTENERS PARA A CRIAÇÃO/EDIÇÃO DE ENTIDADES ******************
+    // ****************** LISTENERS PARA A CRIAÇÃO/EDIÇÃO DE ENTIDADES ******************
 
     /* listener invocado quando é criada uma feature */
     map.on('draw:created', function (e) {
         console.log(e);
-        var name = "", desc = "", coords = "", user_id = "",
-            radius = 0, type = e.layerType, layer = e.layer;
+        e_type = e.layerType;
+        e_layer = e.layer;
+        e_num_points = 1;
 
-        // ta porreiro
-        if (type === 'marker' || type === 'circle') {
-            if (type === 'circle')
-                radius = e.layer._mRadius;
-            else
-                radius = 0;
+        $('#e_type').val(e_type);
+        $('#e_type_div label').addClass('active');
 
-            layer.bindPopup('NOVO ' + type + '!');
-            console.log(e.layer);
+        if (e_type === 'marker' || e_type === 'circle') {
+            $("#e_area_div").prop('hidden', true);
+            $("#e_length_div").prop('hidden', true);
+            $("#e_num_points_div").prop('hidden', true);
 
-            coords = "POINT(" + e.layer._latlng.lng + " " + e.layer._latlng.lat + ")";
-            desc = "[" + type + "] olha uma infowindow, ta engrassade.";
-            name = type + " porreiro";
-
-            //console.log(e.layer._mRadius);
-        }
-        // ta porreiro
-        else if (type === 'polyline') {
-            layer.bindPopup('NOVA LINHA POLIGONAL!');
-            console.log(e.layer._latlngs);
-
-            coords = "LINESTRING(";
-            var c_arr = e.layer._latlngs;
-            $.each(c_arr, function (i, elem) {
-                coords += elem.lng + " " + elem.lat;
-                if (i < c_arr.length - 1)
-                    coords += ",";
-            });
-            coords += ")";
-            desc = "[Polyline] olha uma infowindow, ta engrassade.";
-            name = "Linha poligonal porreira";
-            radius = 0;
-
-            console.log(coords);
-        }
-        // ta porreiro
-        else if (type === 'rectangle' || type === 'polygon') {
-            layer.bindPopup('NOVO ' + type + '!');
-            console.log(e.layer._latlngs);
-
-            coords = "POLYGON((";
-            var c_arr = e.layer._latlngs;
-            $.each(c_arr, function (i, elem) {
-                coords += elem.lng + " " + elem.lat;
-                if (i < c_arr.length - 1)
-                    coords += ",";
-            });
-            coords += "))";
-            desc = "[" + type + "] olha uma infowindow, ta engrassade.";
-            name = type + " porreiro";
-            radius = 0;
-        }
-
-        // envia a entidade para o servidor
-        $.ajax({
-            type: "POST",
-            url: "/geo_entities",
-            dataType: "json",
-            data: {
-                geo_entity: {
-                    name: name,
-                    entity_type: type,
-                    radius: radius,
-                    description: desc,
-                    latlon: coords,
-                    user_id: "1"
-                }
-            },
-            success: function (data) {
-                console.log("MARCADOR ADICIONADO COM SUCESSO");
-            },
-            error: function (err) {
-                console.log("erro a adicionar o marcador");
-                console.log(err);
+            if (e_type === 'circle') {
+                e_radius = e_layer.getRadius();
+                $('#e_type_div').removeClass('s4 s12').addClass('s6');
+                $("#e_radius_div").prop('hidden', false);
+                $('#e_radius').val(Math.round(e_radius));
+                $('#e_radius_div label').addClass('active');
             }
-        });
+            else {
+                e_radius = 0;
+                $('#e_type_div').removeClass('s4 s6').addClass('s12');
+                $("#e_radius_div").prop('hidden', true);
+            }
 
-        drawnItems.addLayer(layer);
+            e_layer.bindPopup('NOVO ' + e_type + '!');
+            console.log(e_layer);
+
+            e_coords = "POINT(" + e_layer.getLatLng().lng + " " + e_layer.getLatLng().lat + ")";
+        }
+        else if (e_type === 'polyline' || e_type === 'rectangle' || e_type === 'polygon') {
+            e_radius = 0;
+            e_num_points = e_layer.getLatLngs().length;
+
+            $("#e_radius_div").prop('hidden', true);
+            $("#e_num_points_div").prop('hidden', false);
+            $('#e_num_points').val(e_num_points);
+            $('#e_num_points_div label').addClass('active');
+
+            if (e_type === 'polyline') {
+                e_coords = "LINESTRING(";
+                $('#e_type_div').removeClass('s6 s12').addClass('s4');
+                $("#e_area_div").prop('hidden', true);
+            }
+            else {
+                e_coords = "POLYGON((";
+                $('#e_type_div').removeClass('s6 s12').addClass('s4');
+                $("#e_length_div").prop('hidden', true);
+                $("#e_area_div").prop('hidden', false);
+                $('#e_area').val("11111");
+                $('#e_area_div label').addClass('active');
+            }
+
+            e_layer.bindPopup('NOVO ' + e_type + '!');
+            console.log(e_layer.getLatLng());
+
+            var temp_point = null;
+            var c_arr = e_layer.getLatLng();
+            coords_to_display = "";
+            e_length = 0;
+            $.each(c_arr, function (i, curr_point) {
+                coords_to_display += curr_point;
+
+                if (e_type === 'polyline') {
+                    if (temp_point == null)
+                        temp_point = curr_point;
+                    else {
+                        e_length += temp_point.distanceTo(curr_point);
+                        temp_point = curr_point;
+                    }
+                }
+                e_coords += curr_point.lng + " " + curr_point.lat;
+
+                if (i < c_arr.length - 1) {
+                    e_coords += ",";
+                    coords_to_display += "\n";
+                }
+            });
+
+            $('#e_coords').val(coords_to_display);
+            $('#e_coords').trigger('autoresize');
+
+            if (e_type === 'polyline') {
+                e_coords += ")";
+                $("#e_length_div").prop('hidden', false);
+                $('#e_length').val(Math.round(e_length) / 1000);
+                $('#e_length_div label').addClass('active');
+            }
+            else
+                e_coords += "))";
+        }
+
+        // abre o modal para preencher os campos que faltam
+        $('#confirm_entity_creation').openModal();
     });
 
     /* listener invocado quando se edita uma feature */
@@ -362,73 +316,42 @@ function parsePointCoordinates(coords) {
     return res;
 }
 
-// so coloca o cluster no mapa quando as duas chamadas terminarem
-function enableMarkerCluster() {
-    if (geo_entity_ajax_finished && teams_ajax_finished) {
-        map.addLayer(cluster);
-        geo_entity_ajax_finished = false;
-        teams_ajax_finished = false;
-    }
+// envia a entidade criada para a Base de Dados
+function insertGeoEntity() {
+    console.log("inserir nova entidaade");
+
+    var name = $('#e_name').val();
+    var description = $('#e_description').val();
+
+    console.log("***** PROPRIEDADES DA ENTIDADE *****");
+    console.log("nome: " + name);
+    console.log("tipo: " + e_type);
+    console.log("raio: " + e_radius);
+    console.log("descrição: " + description);
+    console.log("coordenadas: " + e_coords);
+    console.log("************************************");
+
+    $.ajax({
+        type: "POST",
+        url: "/geo_entities",
+        dataType: "json",
+        data: {
+            geo_entity: {
+                name: name,
+                entity_type: e_type,
+                radius: e_radius,
+                description: description,
+                latlon: e_coords
+            }
+        },
+        success: function (data) {
+            console.log("MARCADOR ADICIONADO COM SUCESSO");
+        },
+        error: function (err) {
+            console.log("erro a adicionar o marcador");
+            console.log(err);
+        }
+    });
+
+    //drawnItems.addLayer(layer);
 }
-
-/*
- * workaround para inicializar o mapa correspondente,
- * uma vez que se o mapa do modal fosse inicializado no document.ready,
- * como a largura do modal é inexistente, o mapa fica com tamanho bastante reduzido e
- * só ficava correcto com o resize do viewport
- */
-//function initMap() {
-//    osm2 = L.tileLayer(osmUrl, {maxZoom: 18});
-//
-//    if (map_to_init == 1) {
-//        //alert("criar equipa");
-//        /* mapa apresentado na modal para criar equipa */
-//        create_team_map = L.map("create_team_map", {
-//            zoom: 12,
-//            center: [38.627881, -9.161007],
-//            layers: [osm2],
-//            zoomControl: true,
-//            attributionControl: false
-//        });
-//    }
-//    else if (map_to_init == 2) {
-//        //alert("editar equipa");
-//        /* mapa apresentado na modal para editar equipa */
-//        create_team_map = L.map("edit_team_map", {
-//            zoom: 12,
-//            center: [38.627881, -9.161007],
-//            layers: [osm2],
-//            zoomControl: true,
-//            attributionControl: false
-//        });
-//    }
-//    map_to_init = -1;
-//}
-
-/*
- * o parametro indica se estamos a editar ou a criar uma equipa nova
- * dps verifica se o mapa ja esta desenhado ou se é necessario inicializar
- */
-//function drawMapOnModal(number) {
-//    if (number == 1) {
-//        if (typeof create_team_map === "undefined") {
-//            map_to_init = number;
-//            setTimeout(initMap, 500);
-//        }
-//    }
-//    else if (number == 2) {
-//        if (typeof edit_team_map === "undefined") {
-//            map_to_init = number;
-//            setTimeout(initMap, 500);
-//        }
-//    }
-//}
-
-
-//$(window).resize(function () {
-//
-//});
-
-//$(document).on("mouseover", ".feature-row", function (e) {
-//    //highlight.clearLayers().addLayer(L.circleMarker([$(this).attr("lat"), $(this).attr("lng")], highlightStyle));
-//});
