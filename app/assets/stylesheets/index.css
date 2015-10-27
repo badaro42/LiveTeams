@@ -138,7 +138,7 @@ html, body, #container {
 @media only screen and (min-width: 992px) {
     .leaflet-bottom.leaflet-left {
         transform: rotate(90deg);
-        left: 134px;
+        left: 73px;
         bottom: -120px;
         z-index: 98;
     }
