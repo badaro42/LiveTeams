@@ -267,25 +267,30 @@
 
   <div class="modal-content">
     <div class="row">
-      <div id="e_type_div" class="input-field col s4">
-        <input disabled id="e_type" value="" type="text" class="validate">
-        <label for="e_type">Tipo</label>
+      <div id="e_type_div" class="col s4">
+        <span class="modal-element-title">Tipo</span>
+        <br>
+        <span id="e_type"></span>
       </div>
-      <div hidden id="e_radius_div" class="input-field col s6">
-        <input disabled id="e_radius" value="" type="text" class="validate">
-        <label for="e_radius">Raio (m)</label>
+      <div hidden id="e_radius_div" class="col s6">
+        <span class="modal-element-title">Raio (m)</span>
+        <br>
+        <span id="e_radius"></span>
       </div>
-      <div hidden id="e_area_div" class="input-field col s4">
-        <input disabled id="e_area" value="" type="text" class="validate">
-        <label for="e_area">Área (ha)</label>
+      <div hidden id="e_area_div" class="col s4">
+        <span class="modal-element-title">Área (km<sup>2</sup>)</span>
+        <br>
+        <span id="e_area"></span>
       </div>
-      <div hidden id="e_length_div" class="input-field col s4">
-        <input disabled id="e_length" value="" type="text" class="validate">
-        <label for="e_length">Comprimento (km)</label>
+      <div hidden id="e_length_div" class="col s4">
+        <span class="modal-element-title">Comprimento (km)</span>
+        <br>
+        <span id="e_length"></span>
       </div>
-      <div hidden id="e_num_points_div" class="input-field col s4">
-        <input disabled id="e_num_points" value="" type="text" class="validate">
-        <label for="e_num_points">Nº pontos</label>
+      <div hidden id="e_num_points_div" class="col s4">
+        <span class="modal-element-title">Nº pontos</span>
+        <br>
+        <span id="e_num_points"></span>
       </div>
     </div>
     <div class="row">
@@ -301,7 +306,7 @@
       </div>
     </div>
     <div class="row">
-      <div class="input-field col s12">
+      <div id="e_coords_div" class="input-field col s12">
         <textarea id="e_coords" class="materialize-textarea"></textarea>
         <label for="e_coords">Coordenadas</label>
       </div>

@@ -347,3 +347,8 @@ html, body, #container {
 .extra-padding {
     padding-top: 8px;
 }
+
+.modal-element-title {
+    font-weight: 200;
+    font-size: 12px;
+}

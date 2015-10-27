@@ -200,9 +200,6 @@ $(document).ready(function () {
         e_layer = e.layer;
         e_num_points = 1;
 
-        $('#e_type').val(e_type);
-        $('#e_type_div label').addClass('active');
-
         if (e_type === 'marker' || e_type === 'circle') {
             $("#e_area_div").prop('hidden', true);
             $("#e_length_div").prop('hidden', true);
@@ -212,14 +209,19 @@ $(document).ready(function () {
                 e_radius = e_layer.getRadius();
                 $('#e_type_div').removeClass('s4 s12').addClass('s6');
                 $("#e_radius_div").prop('hidden', false);
-                $('#e_radius').val(Math.round(e_radius));
-                $('#e_radius_div label').addClass('active');
+                $('#e_radius').text(Math.round(e_radius));
+                $('#e_type').text("Circulo");
             }
             else {
                 e_radius = 0;
                 $('#e_type_div').removeClass('s4 s6').addClass('s12');
                 $("#e_radius_div").prop('hidden', true);
+                $('#e_type').text("Marcador");
             }
+
+            $('#e_coords').val(e_layer.getLatLng());
+            $('#e_coords').trigger('autoresize');
+            $('#e_coords_div label').addClass('active');
 
             e_layer.bindPopup('NOVO ' + e_type + '!');
             console.log(e_layer);
@@ -232,21 +234,30 @@ $(document).ready(function () {
 
             $("#e_radius_div").prop('hidden', true);
             $("#e_num_points_div").prop('hidden', false);
-            $('#e_num_points').val(e_num_points);
-            $('#e_num_points_div label').addClass('active');
+            $('#e_num_points').text(e_num_points);
 
             if (e_type === 'polyline') {
                 e_coords = "LINESTRING(";
+
                 $('#e_type_div').removeClass('s6 s12').addClass('s4');
                 $("#e_area_div").prop('hidden', true);
+                $('#e_type').text("Linha Poligonal");
             }
             else {
+                if(e_type === 'rectangle')
+                    $('#e_type').text("Rectangulo");
+                else
+                    $('#e_type').text("Poligono");
+
                 e_coords = "POLYGON((";
+                e_area = L.GeometryUtil.geodesicArea(e_layer.getLatLngs());
+                e_area = (Math.round(e_area) / 100000) + "";
+                e_area = e_area.replace(".", ",");
+
                 $('#e_type_div').removeClass('s6 s12').addClass('s4');
                 $("#e_length_div").prop('hidden', true);
                 $("#e_area_div").prop('hidden', false);
-                $('#e_area').val("11111");
-                $('#e_area_div label').addClass('active');
+                $('#e_area').text(e_area);
             }
 
             e_layer.bindPopup('NOVO ' + e_type + '!');
@@ -277,12 +288,14 @@ $(document).ready(function () {
 
             $('#e_coords').val(coords_to_display);
             $('#e_coords').trigger('autoresize');
+            $('#e_coords_div label').addClass('active');
 
+            e_length = (Math.round(e_length) / 1000) + "";
+            e_length = e_length.replace(".", ",");
             if (e_type === 'polyline') {
                 e_coords += ")";
                 $("#e_length_div").prop('hidden', false);
-                $('#e_length').val(Math.round(e_length) / 1000);
-                $('#e_length_div label').addClass('active');
+                $('#e_length').text(e_length);
             }
             else
                 e_coords += "))";
