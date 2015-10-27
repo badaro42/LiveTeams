@@ -250,10 +250,10 @@ $(document).ready(function () {
             }
 
             e_layer.bindPopup('NOVO ' + e_type + '!');
-            console.log(e_layer.getLatLng());
+            console.log(e_layer.getLatLngs());
 
             var temp_point = null;
-            var c_arr = e_layer.getLatLng();
+            var c_arr = e_layer.getLatLngs();
             coords_to_display = "";
             e_length = 0;
             $.each(c_arr, function (i, curr_point) {
