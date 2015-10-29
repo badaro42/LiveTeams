@@ -21,53 +21,53 @@
 <% end %>
 
 <div class="container">
-  <div id="profile-page-header" class="card">
-    <div class="card-image waves-effect waves-block waves-light">
-      <!--<img class="activator" src="../../assets/images/cais_ginjal_cacilhas_blurred.jpg" alt="user background">-->
-      <%= image_tag ("cais_ginjal_cacilhas_blurred.jpg"), class: 'activator' %>
-    </div>
-    <figure class="card-profile-image">
-      <!--<img src="images/avatar.jpg" alt="profile image" class="circle z-depth-2 responsive-img activator">-->
-      <%= image_tag @user.avatar.url(:thumb), class: 'circle z-depth-2 responsive-img activator' %>
+  <div class="row" style="margin-top: 20px;">
+    <div id="profile-user-info" class="col l3 s12 center-align z-depth-1 profile-div">
+      <div class="col l12 m6 s12">
+        <%= image_tag @user.avatar.url, class: 'circle responsive-img' %>
+      </div>
 
-    </figure>
-    <div class="card-content">
-      <div class="row" style="margin-top: 10px;">
-        <div class="col s3 l3 m3 offset-s5 offset-l5 offset-m5">
-          <h4 class="card-title grey-text text-darken-4">Administrador Poderoso</h4>
-          <p class="medium-small grey-text">Administrador</p>
+      <div class="col l12 m6 s8 offset-s2">
+        <h5 style="font-weight: 300;">
+          <%= @user.full_name %>
+        </h5>
+        <h6 style="font-weight: 300;">
+          <%= @user.email %>
+        </h6>
+
+        <div class="divider divider-margin"></div>
+
+        <div style="font-weight: 300;">
+          <i class="material-icons tiny">access_time</i>
+          <span style="padding-left: 10px"><%= @user.created_at.to_date.to_formatted_s(:rfc822) %></span>
         </div>
-        <!--<div class="col s2 center-align">-->
-          <!--<h4 class="card-title grey-text text-darken-4">10+</h4>-->
-          <!--<p class="medium-small grey-text">Work Experience</p>-->
-        <!--</div>-->
-        <div class="col s2 center-align">
-          <h4 class="card-title grey-text text-darken-4">6</h4>
-          <p class="medium-small grey-text">Equipas a que pertence</p>
-        </div>
-        <!--<div class="col s2 center-align">-->
-          <!--<h4 class="card-title grey-text text-darken-4">$ 1,253,000</h4>-->
-          <!--<p class="medium-small grey-text">Busness Profit</p>-->
-        <!--</div>-->
-        <div class="col s1 right-align">
-          <a class="btn-floating activator waves-effect waves-light darken-2 right">
-            <i class="mdi-action-perm-identity"></i>
-          </a>
+
+        <div style="font-weight: 300; ">
+          <i class="material-icons tiny">person</i>
+          <span style="padding-left: 10px"><%= @user.profile %></span>
         </div>
       </div>
+
     </div>
-    <div class="card-reveal">
-      <p>
-        <span class="card-title grey-text text-darken-4">Roger Waters <i class="mdi-navigation-close right"></i></span>
-        <span><i class="mdi-action-perm-identity cyan-text text-darken-2"></i> Project Manager</span>
-      </p>
 
-      <p>I am a very simple card. I am good at containing small bits of information. I am convenient because I require little markup to use effectively.</p>
+    <div class="profile-tabs col s12 l8 z-depth-1">
+      <div>
+        <ul id="profile-tabs-list" class="tabs">
+          <li class="tab col s4">
+            <a class="active" href="#test1">Equipas</a>
+          </li>
+          <li class="tab col s4">
+            <a href="#test2">Test 2</a>
+          </li>
+          <li class="tab col s4">
+            <a href="#test3">Opções</a>
+          </li>
+        </ul>
+      </div>
 
-      <p><i class="mdi-action-perm-phone-msg cyan-text text-darken-2"></i> +1 (612) 222 8989</p>
-      <p><i class="mdi-communication-email cyan-text text-darken-2"></i> mail@domain.com</p>
-      <p><i class="mdi-social-cake cyan-text text-darken-2"></i> 18th June 1990</p>
-      <p><i class="mdi-device-airplanemode-on cyan-text text-darken-2"></i> BAR - AUS</p>
+      <div id="test1" class="col s12 profile-tab-content">Test 1</div>
+      <div id="test2" class="col s12 profile-tab-content">Test 2</div>
+      <div id="test3" class="col s12 profile-tab-content">Test 3</div>
     </div>
   </div>
 </div>

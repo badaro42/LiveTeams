@@ -9,7 +9,25 @@
     padding-right: 10px;
 }
 
+#profile-tabs-list a.active {
+    border: none;
+}
 
+.profile-tab-content.col {
+    padding-left: 0px;
+    padding-right: 0px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.divider-margin {
+    margin-top: 12px;
+    margin-bottom: 12px;
+}
+
+#profile-user-info {
+    padding: 10px;
+}
 
 
 label {
@@ -29,7 +47,7 @@ label {
 
 @media only screen and (max-width: 601px) {
     .navbar-btn-wrapper {
-        padding-top: 5px;        
+        padding-top: 5px;
     }
 
     .navbar-btn-wrapper a {
@@ -92,35 +110,30 @@ label {
     border-bottom: 1px solid #00AE96;
 }
 
-@-moz-keyframes cursor-blink {
-    from, to {
-        background: transparent;
-    }
-    50% {
-        background: #FC9639;
-    }
-}
-
+/* ECRA PEQUENO */
 @media only screen and (max-width: 600px) {
+    .profile-tabs {
+        margin-top: 15px;
+    }
+
+
     nav img {
         margin-top: 3px;
     }
-
-    /*#nav-back-btn a {*/
-        /*padding-left: 0px;*/
-    /*}*/
-
-    /*#nav-search-btn a {*/
-        /*padding-right: 0px;*/
-    /*}*/
-
-    /*#nav-add-edit-btn a {*/
-        /*padding-left: 10px;*/
-        /*padding-right: 0px;*/
-    /*}*/
 }
 
+/* ECRA MEDIO */
 @media only screen and (min-width: 600px) and (max-width: 992px) {
+    .profile-tabs {
+        margin-top: 15px;
+    }
+
+    #profile-user-info > div:last-child {
+        margin-top: 20px;
+    }
+
+
+
     nav img {
         margin-top: 7px;
     }
@@ -138,7 +151,26 @@ label {
     }
 }
 
+/* ECRA GRANDE */
 @media only screen and (min-width: 992px) {
+    .profile-div {
+        margin-right: 40px;
+        margin-left: 20px;
+        padding: 10px;
+    }
+
+    .profile-tab-content {
+        margin-top: 10px;
+        margin-bottom: 10px;
+        padding: 0px;
+    }
+
+    #profile-user-info {
+        margin-left: 20px;
+    }
+
+
+
     nav img {
         margin-top: 15%;
     }
@@ -206,79 +238,3 @@ label {
         display: inline-block;
     }
 }
-
-
-
-
-
-.container {
-    padding: 0 0.5rem;
-    margin: 0 auto;
-    max-width: 100% !important;
-    width: 98%;
-}
-
-.card .card-content .card-title {
-    line-height: 30px;
-}
-
-#profile-page-header .card-image {
-    height: 250px;
-}
-#profile-page-header .card-profile-image {
-    width: 110px;
-    position: absolute;
-    top: 190px;
-    z-index: 1;
-    left: 40px;
-    cursor: pointer;
-    margin: 0;
-}
-#profile-page-header .card-content{
-    margin-top: -40px;
-}
-#profile-page-header .card-content .card-title{
-    margin-bottom: 0px;
-}
-
-/*profile-page-wall*/
-
-#profile-page-wall .profile-image-post{
-    width: 60px;
-    margin: 30px 10px;
-}
-#profile-page-wall .tab-profile .tab i{
-    font-size: 16px;
-}
-#profile-page-wall .tab-content{
-    padding: 10px;
-}
-#profile-page-wall .share-icons{
-    margin-top: 10px;
-}
-#profile-page-wall .share-icons i{
-    padding: 0px 5px;
-}
-
-
-#profile-page-wall-posts .profile-small{
-    height: 250px;
-    overflow: hidden;
-}
-#profile-page-wall-posts .profile-medium{
-    height: 350px;
-    overflow: hidden;
-}
-#profile-page-wall-posts .profile-large{
-    height: 450px;
-    overflow: hidden;
-}
-#profile-page-wall-posts .card-profile-title{
-    font-size: 16px;
-    padding: 20px;
-    border-radius: 0 0 2px 2px;
-}
-#profile-page-wall-posts .card-action-share{
-    padding: 16px;
-}
-
