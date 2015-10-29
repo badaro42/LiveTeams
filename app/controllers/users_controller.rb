@@ -7,6 +7,19 @@ class UsersController < ApplicationController
   end
 
   def show
+    @user_teams = @user.teams
+    @user_team_members = @user.team_members
+
+    @user_entities = @user.geo_entities
+
+    puts @user_teams.count
+    puts @user_teams.inspect
+    puts "-----------------"
+    puts @user_team_members.count
+    puts @user_team_members.inspect
+    puts "-----------------"
+    puts @user_entities.count
+    puts @user_entities.inspect
   end
 
   def edit

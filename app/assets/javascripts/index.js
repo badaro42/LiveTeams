@@ -369,3 +369,9 @@ function insertGeoEntity() {
     drawnItems.addLayer(e_layer);
     e_layer = null;
 }
+
+$('.stay-where-you-are').click(function(e) {
+    // do something fancy
+    return false; // prevent default click action from happening!
+    //e.preventDefault(); // same thing as above
+});

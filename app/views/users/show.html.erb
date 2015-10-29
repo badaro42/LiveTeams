@@ -24,7 +24,7 @@
   <div class="row" style="margin-top: 20px;">
     <div id="profile-user-info" class="col l3 s12 center-align z-depth-1 profile-div">
       <div class="col l12 m6 s12">
-        <%= image_tag @user.avatar.url, class: 'circle responsive-img' %>
+        <%= image_tag @user.avatar.url, class: 'circle responsive-img', size: '188x188' %>
       </div>
 
       <div class="col l12 m6 s8 offset-s2">
@@ -53,21 +53,74 @@
     <div class="profile-tabs col s12 l8 z-depth-1">
       <div>
         <ul id="profile-tabs-list" class="tabs">
-          <li class="tab col s4">
-            <a class="active" href="#test1">Equipas</a>
+          <li class="tab col s6">
+            <a class="stay-where-you-are active" href="#user-teams">Equipas</a>
           </li>
-          <li class="tab col s4">
-            <a href="#test2">Test 2</a>
-          </li>
-          <li class="tab col s4">
-            <a href="#test3">Opções</a>
+          <li class="tab col s6">
+            <a href="#user-entities" class="stay-where-you-are">Entidades</a>
           </li>
         </ul>
       </div>
 
-      <div id="test1" class="col s12 profile-tab-content">Test 1</div>
-      <div id="test2" class="col s12 profile-tab-content">Test 2</div>
-      <div id="test3" class="col s12 profile-tab-content">Test 3</div>
+      <div id="user-teams" class="col s12 profile-tab-content">
+        <ul class="collection with-header">
+          <li class="collection-header"><h5>Equipas a que pertence</h5></li>
+
+          <% if @user_teams.count == 0 %>
+              <li class="collection-item">
+                Não pertence a nenhuma equipa
+              </li>
+          <% else %>
+              <% @user_teams.each do |team| %>
+                  <% team_entry = @user_team_members.where(team_id: team.id).first %>
+                  <%= puts "USERS SHOW USERS SHOW" %>
+                  <%= puts team_entry.inspect %>
+                  <li class="collection-item">
+                    <div>
+                      <span style="font-size: 15px;"><%= team.name %></span>
+                      <span> | </span>
+                      <% if team_entry.is_leader? %>
+                          <span style="font-size: 12px;"><strong>Chefe</strong></span>
+                      <% else %>
+                          <span style="font-size: 12px;"><strong>Membro</strong></span>
+                      <% end %>
+                      <a href="#!" class="secondary-content">
+                        <i class="material-icons">send</i>
+                      </a>
+                    </div>
+                  </li>
+              <% end %>
+          <% end %>
+
+        </ul>
+      </div>
+      <div id="user-entities" class="col s12 profile-tab-content">
+        <ul class="collection with-header">
+          <li class="collection-header"><h5>Entidades que adicionou</h5></li>
+          <% if @user_entities.count == 0 %>
+              <li class="collection-item">
+                Não criou nenhuma entidade
+              </li>
+          <% else %>
+              <% @user_entities.each do |entity| %>
+                  <%= puts "ENTYITY ENTITYTHIUTR" %>
+                  <%= puts entity.inspect %>
+                  <li class="collection-item">
+                    <div>
+                      <span style="font-size: 15px;"><%= entity.name %></span>
+                      <span> | </span>
+                      <span style="font-size: 12px;"><strong><%= entity.entity_type %></strong></span>
+                      <span> | </span>
+                      <span style="font-size: 12px;"><%= entity.latlon %></span>
+                      <a href="#!" class="secondary-content">
+                        <i class="material-icons">my_location</i>
+                      </a>
+                    </div>
+                  </li>
+              <% end %>
+          <% end %>
+        </ul>
+      </div>
     </div>
   </div>
 </div>

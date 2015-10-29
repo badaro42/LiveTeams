@@ -47,6 +47,8 @@
       <%= f.password_field :password_confirmation, autocomplete: "off" %>
     </div>
 
+    <%= f.hidden_field :profile, :value => User::BASICO %>
+
     <div class="actions col s12 m12 l12" style="margin-top: 10px; margin-bottom: 20px;">
       <%= f.button 'Registar!', class: "btn waves-effect waves-light" %>
     </div>

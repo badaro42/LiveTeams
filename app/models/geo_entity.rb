@@ -8,4 +8,6 @@ class GeoEntity < ActiveRecord::Base
   # ALL_TYPES = [MARKER, POLYLINE, POLYGON, CIRCLE, RECTANGLE]
   #
   # validates_inclusion_of :type, :in => ALL_TYPES
+
+  belongs_to :user
 end

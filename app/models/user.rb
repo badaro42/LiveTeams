@@ -27,6 +27,7 @@ class User < ActiveRecord::Base
   validates :avatar, presence: true
   validates :email, presence: true, uniqueness: true
 
+  has_many :geo_entities
   has_many :team_members
   has_many :teams, through: :team_members
 

@@ -71,7 +71,8 @@
           </div>
         </div>
         <div class="row">
-          <%= link_to 'Encerrar sessão', destroy_user_session_path, :method => :delete %>
+          <%= link_to 'Encerrar sessão', destroy_user_session_path, :method => :delete %><br>
+          <%= link_to 'Perfil do utilizador', current_user, :method => :get %>
         </div>
       </div>
 
