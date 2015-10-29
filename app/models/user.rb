@@ -2,6 +2,10 @@ class User < ActiveRecord::Base
 
   # PROFILES = ['Administrador', 'Gestor', 'Operacional', 'Basico']
 
+  BASICO = "Basico"
+  OPERACIONAL = "Operacional"
+  GESTOR = "Gestor"
+  ADMINISTRADOR = "Administrador"
 
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable

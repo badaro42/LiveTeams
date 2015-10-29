@@ -75,14 +75,8 @@ $(document).ready(function () {
             }
             else if (!($(this).is(':checked'))) {
                 i_value = $(this).prop('value');
-
                 console.log("------ UNCHECKED ------");
-                //console.log(#select_team_leader option[value=i_value]);
-
                 $("#select_team_leader option[value=" + i_value + "]").remove();
-
-                //select_leader.prop("value", i_value).remove();
-                //console.log(i_value);
             }
         });
 

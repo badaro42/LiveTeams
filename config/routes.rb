@@ -24,7 +24,6 @@ Rails.application.routes.draw do
 
   # get 'teams', to: 'teams#index'
 
-
   get 'homepage/index'
 
   authenticated :user do

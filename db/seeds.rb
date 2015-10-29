@@ -25,7 +25,8 @@ puts 'Adding 20 random Users'
         email: 'admin@mail.com',
         password: 'adminadmin',
         avatar: File.open(Rails.root + "app/assets/teste.png"),
-        password_confirmation: 'adminadmin'
+        password_confirmation: 'adminadmin',
+        profile: User::ADMINISTRADOR
     )
   else
     r = Random.rand(10)
@@ -36,7 +37,8 @@ puts 'Adding 20 random Users'
         email: first_names[(r+i)%first_names.length]+''+i.to_s+'@mail.com',
         avatar: File.open(Rails.root + "app/assets/teste.png"),
         password: 'qweqweqwe',
-        password_confirmation: 'qweqweqwe'
+        password_confirmation: 'qweqweqwe',
+        profile: User::BASICO
     )
   end
 end

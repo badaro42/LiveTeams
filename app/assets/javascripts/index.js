@@ -128,12 +128,8 @@ $(document).ready(function () {
 
     var team_icon = L.icon({
         iconUrl: 'http://freeflaticons.net/wp-content/uploads/2014/11/group-copy-1416476921gn4k8.png',
-        //shadowUrl: 'leaf-shadow.png',
-
         iconSize: [38, 38], // size of the icon
-        //shadowSize:   [50, 64], // size of the shadow
         iconAnchor: [19, 30], // point of the icon which will correspond to marker's location
-        //shadowAnchor: [4, 62],  // the same for the shadow
         popupAnchor: [-1, -30] // point from which the popup should open relative to the iconAnchor
     });
 
@@ -152,23 +148,8 @@ $(document).ready(function () {
         onEachFeature: function (feature, layer) {
             layer.bindPopup('<p>' + feature.properties.name + '</p>' +
                 '<p>' + feature.properties.description + '</p>');
-
-            //return L.marker(feature.geometry.coordinates);
         }
     });
-
-    // listener invocado quando a chamada ajax acima terminar!
-    geo_entities.on('data:loaded', function () {
-        console.log("finish");
-        cluster.addLayer(geo_entities);
-        //console.log(geo_entities);
-        map.addLayer(cluster);
-    });
-
-    geo_entities.on('data:error', function (err) {
-        console.log(err);
-    });
-
 
     var teams_json = new L.GeoJSON.AJAX("/teams/teams_to_json.json", {
         pointToLayer: function (feature, latlng) {
@@ -181,11 +162,21 @@ $(document).ready(function () {
         }
     });
 
-    // listener invocado quando a chamada ajax acima terminar!
+    // listener invocado quando a chamada ajax das entidades terminar!
+    geo_entities.on('data:loaded', function () {
+        console.log("finish");
+        cluster.addLayer(geo_entities);
+        map.addLayer(cluster);
+    });
+
+    geo_entities.on('data:error', function (err) {
+        console.log(err);
+    });
+
+    // listener invocado quando a chamada ajax das equipas terminar!
     teams_json.on('data:loaded', function () {
         console.log("finish");
         cluster.addLayer(teams_json);
-        //console.log(geo_entities);
         map.addLayer(cluster);
     });
 
@@ -193,26 +184,6 @@ $(document).ready(function () {
         console.log(err);
     });
 
-
-    // TODO: as coordenadas das equipas estao erradas!!! trocar esta cena
-    //$.getJSON("/teams", function (json) {
-    //    var i, item, popup_content, coords_arr, marker;
-    //    for (i = 0; i < json.length; i++) {
-    //        item = json[i];
-    //
-    //        if (item.latlon != null) {
-    //            coords_arr = parsePointCoordinates(item.latlon);
-    //
-    //            popup_content = "<p>" + item.name + "<br/>Latitude:" +
-    //                coords_arr[0] + "<br/> Longitude:" + coords_arr[1] + "</p>";
-    //            marker = L.marker([coords_arr[0], coords_arr[1]], {icon: team_icon});
-    //            marker.bindPopup(popup_content);
-    //
-    //            cluster.addLayer(marker);
-    //        }
-    //    }
-    //    map.addLayer(cluster);
-    //});
 
 
     // ****************** LISTENERS PARA A CRIAÇÃO/EDIÇÃO DE ENTIDADES ******************

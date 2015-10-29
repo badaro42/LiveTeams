@@ -66,7 +66,7 @@
           <div class="col s7">
             <h5 style="font-weight: 300"><%= current_user.first_name %> <%= current_user.last_name %></h5>
             <hr>
-            <span>Administrador</span><br>
+            <span><%= current_user.profile %></span><br>
             <span>Registado há 100 dias</span>
           </div>
         </div>
@@ -104,9 +104,10 @@
               <li>
                 <div class="collapsible-header">
                   <%= team.name %>
-                  <%= link_to team, method: :get,
-                              class: 'edit-team-btn waves-effect waves-teal btn-flat modal-trigger right' do %>
-                      <i class="material-icons md-18">build</i>
+                  <%= link_to team, method: :get, :data => {:position => 'left', :delay => '15',
+                                                            :tooltip => 'Ver mais detalhes'},
+                              class: 'tooltipped edit-team-btn waves-effect waves-teal btn-flat right' do %>
+                      <i class="material-icons">more_vert</i>
                   <% end %>
                 </div>
                 <div class="collapsible-body">
