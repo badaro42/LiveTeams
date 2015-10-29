@@ -170,25 +170,49 @@ $(document).ready(function () {
     });
 
 
-    // TODO: as coordenadas das equipas estao erradas!!! trocar esta cena
-    $.getJSON("/teams", function (json) {
-        var i, item, popup_content, coords_arr, marker;
-        for (i = 0; i < json.length; i++) {
-            item = json[i];
-
-            if (item.latlon != null) {
-                coords_arr = parsePointCoordinates(item.latlon);
-
-                popup_content = "<p>" + item.name + "<br/>Latitude:" +
-                    coords_arr[0] + "<br/> Longitude:" + coords_arr[1] + "</p>";
-                marker = L.marker([coords_arr[1], coords_arr[0]], {icon: team_icon});
-                marker.bindPopup(popup_content);
-
-                cluster.addLayer(marker);
-            }
+    var teams_json = new L.GeoJSON.AJAX("/teams/teams_to_json.json", {
+        pointToLayer: function (feature, latlng) {
+            console.log(feature);
+            return L.marker(latlng, {icon: team_icon});
+        },
+        onEachFeature: function (feature, layer) {
+            layer.bindPopup('<p>' + feature.properties.name + '</p>' +
+                '<p>' + feature.geometry.coordinates + '</p>');
         }
+    });
+
+    // listener invocado quando a chamada ajax acima terminar!
+    teams_json.on('data:loaded', function () {
+        console.log("finish");
+        cluster.addLayer(teams_json);
+        //console.log(geo_entities);
         map.addLayer(cluster);
     });
+
+    teams_json.on('data:error', function (err) {
+        console.log(err);
+    });
+
+
+    // TODO: as coordenadas das equipas estao erradas!!! trocar esta cena
+    //$.getJSON("/teams", function (json) {
+    //    var i, item, popup_content, coords_arr, marker;
+    //    for (i = 0; i < json.length; i++) {
+    //        item = json[i];
+    //
+    //        if (item.latlon != null) {
+    //            coords_arr = parsePointCoordinates(item.latlon);
+    //
+    //            popup_content = "<p>" + item.name + "<br/>Latitude:" +
+    //                coords_arr[0] + "<br/> Longitude:" + coords_arr[1] + "</p>";
+    //            marker = L.marker([coords_arr[0], coords_arr[1]], {icon: team_icon});
+    //            marker.bindPopup(popup_content);
+    //
+    //            cluster.addLayer(marker);
+    //        }
+    //    }
+    //    map.addLayer(cluster);
+    //});
 
 
     // ****************** LISTENERS PARA A CRIAÇÃO/EDIÇÃO DE ENTIDADES ******************
@@ -243,7 +267,7 @@ $(document).ready(function () {
                 $('#e_type').text("Linha Poligonal");
             }
             else {
-                if(e_type === 'rectangle')
+                if (e_type === 'rectangle')
                     $('#e_type').text("Rectangulo");
                 else
                     $('#e_type').text("Poligono");

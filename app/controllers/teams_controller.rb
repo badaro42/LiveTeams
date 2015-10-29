@@ -4,15 +4,34 @@ class TeamsController < ApplicationController
 
   layout "listings"
 
+  def teams_to_json
+    require 'rgeo'
+    require 'rgeo-geojson'
+
+    teams = Team.all
+    # puts features
+
+    # cria a fabrica de entidades
+    factory = RGeo::GeoJSON::EntityFactory.instance
+    # puts factory
+
+    # dps de obter todas as equipas do servidor, mapeia-as num objeto de forma a que sejam correctamente
+    # transformadas em json
+    mapped_teams = factory.map_feature_collection(teams) { |f| factory.feature(f.latlon, nil, {name: f.name}) }
+
+    # puts mapped_feats
+
+    # dps do mapeamento, são enviadas para a fabrica que trata da transformação para json para serem apresentadas no mapa
+    teams_to_json = RGeo::GeoJSON.encode factory.feature_collection(mapped_teams)
+
+    # puts teste
+    render json: teams_to_json
+  end
+
   # GET /teams
   # GET /teams.json
   def index
     @teams = Team.all
-
-    respond_to do |format|
-      format.html {}
-      format.json { render json: @teams }
-    end
   end
 
   # GET /teams/1

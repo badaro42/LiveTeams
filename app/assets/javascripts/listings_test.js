@@ -124,6 +124,6 @@ function onMapClick(e) {
     curr_marker = L.marker([e.latlng.lat, e.latlng.lng]).addTo(team_map);
     curr_marker.bindPopup(popupContent).openPopup();
 
-    var new_val = "POINT (" + e.latlng.lat + " " + e.latlng.lng + ")";
+    var new_val = "POINT (" + e.latlng.lng + " " + e.latlng.lat + ")";
     $("#team_latlon").attr("value", new_val);
 }

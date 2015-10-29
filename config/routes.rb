@@ -1,5 +1,9 @@
 Rails.application.routes.draw do
 
+  # rotas para as chamadas ajax na pagina principal
+  get '/teams/teams_to_json', to: 'teams#teams_to_json'
+  get '/get_geo_entities', to: 'homepage#get_geo_entities'
+
   resources :geo_entities
   resources :team_members
   resources :teams
@@ -18,8 +22,7 @@ Rails.application.routes.draw do
   get 'users/show'
   get 'users/edit'
 
-  get 'teams', to: 'teams#index'
-  get '/get_geo_entities', to: 'homepage#get_geo_entities'
+  # get 'teams', to: 'teams#index'
 
 
   get 'homepage/index'
