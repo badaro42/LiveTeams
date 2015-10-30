@@ -6,6 +6,8 @@ class Team < ActiveRecord::Base
   accepts_nested_attributes_for :team_members
   accepts_nested_attributes_for :users
 
+  validates :name, presence: true
+
   def users=(users)
     users.reject(&:blank?)
   end

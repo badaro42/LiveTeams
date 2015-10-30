@@ -1,11 +1,10 @@
 class User < ActiveRecord::Base
-
-  # PROFILES = ['Administrador', 'Gestor', 'Operacional', 'Basico']
-
   BASICO = "Basico"
   OPERACIONAL = "Operacional"
   GESTOR = "Gestor"
   ADMINISTRADOR = "Administrador"
+
+  PROFILES = [BASICO, OPERACIONAL, GESTOR, ADMINISTRADOR]
 
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
@@ -25,7 +24,10 @@ class User < ActiveRecord::Base
   validates :first_name, presence: true
   validates :last_name, presence: true
   validates :avatar, presence: true
+  validates :profile, presence: true
   validates :email, presence: true, uniqueness: true
+
+  validates_inclusion_of :profile, :in => PROFILES
 
   has_many :geo_entities
   has_many :team_members
