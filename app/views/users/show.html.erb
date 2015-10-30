@@ -5,10 +5,12 @@
 <% content_for :page_purpose, "Utilizador " + @user.id.to_s %>
 
 <% content_for :model_actions do %>
-    <%= link_to edit_user_path(@user), :data => {:position => 'left', :delay => '15',
-                                                 :tooltip => 'Editar utilizador'},
-                class: 'tooltipped navbar-button', method: :get do %>
-        <i class="material-icons md-36">edit</i>
+    <% if current_user.id == @user.id || current_user.profile == User::ADMINISTRADOR %>
+        <%= link_to edit_user_path(@user), :data => {:position => 'left', :delay => '15',
+                                                     :tooltip => 'Editar utilizador'},
+                    class: 'tooltipped navbar-button', method: :get do %>
+            <i class="material-icons md-36">edit</i>
+        <% end %>
     <% end %>
 <% end %>
 
@@ -54,10 +56,14 @@
       <div>
         <ul id="profile-tabs-list" class="tabs">
           <li class="tab col s6">
-            <a class="stay-where-you-are active" href="#user-teams">Equipas</a>
+            <a class="stay-where-you-are active" href="#user-teams">
+              Equipas (<%= @user_teams.count %>)
+            </a>
           </li>
           <li class="tab col s6">
-            <a href="#user-entities" class="stay-where-you-are">Entidades</a>
+            <a href="#user-entities" class="stay-where-you-are">
+              Entidades (<%= @user_entities.count %>)
+            </a>
           </li>
         </ul>
       </div>
@@ -77,13 +83,15 @@
                   <%= puts team_entry.inspect %>
                   <li class="collection-item">
                     <div>
-                      <span style="font-size: 15px;"><%= team.name %></span>
-                      <span> | </span>
-                      <% if team_entry.is_leader? %>
-                          <span style="font-size: 12px;"><strong>Chefe</strong></span>
-                      <% else %>
-                          <span style="font-size: 12px;"><strong>Membro</strong></span>
-                      <% end %>
+                      <strong>
+                        <span style="font-size: 15px;"><%= team.name %></span>
+                        <span> | </span>
+                        <% if team_entry.is_leader? %>
+                            <span style="font-size: 12px;">Chefe</span>
+                        <% else %>
+                            <span style="font-size: 12px;">Membro</span>
+                        <% end %>
+                      </strong>
                       <a href="#!" class="secondary-content">
                         <i class="material-icons">send</i>
                       </a>
@@ -107,14 +115,18 @@
                   <%= puts entity.inspect %>
                   <li class="collection-item">
                     <div>
-                      <span style="font-size: 15px;"><%= entity.name %></span>
-                      <span> | </span>
-                      <span style="font-size: 12px;"><strong><%= entity.entity_type %></strong></span>
-                      <span> | </span>
+                      <strong>
+                        <span style="font-size: 15px;"><%= entity.name %></span>
+                        <span> | </span>
+                        <span style="font-size: 12px;"><%= entity.entity_type %></span>
+                        <span> | </span>
+                      </strong>
                       <span style="font-size: 12px;"><%= entity.latlon %></span>
-                      <a href="#!" class="secondary-content">
-                        <i class="material-icons">my_location</i>
-                      </a>
+                      <%= link_to '#', :data => {:position => 'left', :delay => '15',
+                                                 :tooltip => 'Centrar mapa'},
+                                  class: 'tooltipped secondary-content', method: :get do %>
+                          <i class="material-icons">my_location</i>
+                      <% end %>
                     </div>
                   </li>
               <% end %>
