@@ -37,6 +37,12 @@ class TeamsController < ApplicationController
   # GET /teams/1
   # GET /teams/1.json
   def show
+    # if @team.nil?
+    #   flash[:error] = "A equipa que procura não existe!"
+    #   redirect_to teams_url
+    # else
+    #   @team
+    # end
   end
 
   # GET /teams/new
@@ -48,12 +54,14 @@ class TeamsController < ApplicationController
   # GET /teams/1/edit
   def edit
     @users_in_team = @team.users
-
-
-    # puts @team.team_members.inspect
     @team_leader = TeamMember.find_by(team_id: @team.id, is_leader: true)
-    puts @team_leader.nil?
 
+    # if @team_leader.user_id == current_user.id || current_user.profile == User::ADMINISTRADOR
+    #   puts "PODE EDITAR"
+    # else
+    #   flash[:error] = "A equipa que procura não existe!"
+    #   redirect_to teams_url
+    # end
   end
 
   # POST /teams

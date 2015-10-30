@@ -11,7 +11,8 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
 
-  has_attached_file :avatar, styles: { medium: "300x300>", thumb: "100x100>" },
+  # usar # em vez de > para forçar as imagens a terem a resolução pretendida
+  has_attached_file :avatar, styles: { medium: "300x300>", small: "175x175>", thumb: "75x75>" },
                     default_url: ActionController::Base.helpers.asset_path('teste.png'),
                     url: '/images/users/:id/:style/:basename.:extension',
                     path: ':rails_root/public/images/users/:id/:style/:basename.:extension'

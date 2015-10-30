@@ -2,6 +2,8 @@ var osm, team_map, osmUrl, curr_marker = undefined;
 
 $(document).ready(function () {
 
+    //$('#profile-user-info').pushpin({ top: 64 });
+
     /**
      * Positions the tabs
      */

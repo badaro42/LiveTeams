@@ -24,9 +24,9 @@
 
 <div class="container">
   <div class="row" style="margin-top: 20px;">
-    <div id="profile-user-info" class="col l3 s12 center-align z-depth-1 profile-div">
+    <div id="profile-user-info" class="col l3 s12 center-align z-depth-1 profile-div white">
       <div class="col l12 m6 s12">
-        <%= image_tag @user.avatar.url, class: 'circle responsive-img', size: '188x188' %>
+        <%= image_tag @user.avatar.url(:small), class: 'circle responsive-img' %>
       </div>
 
       <div class="col l12 m6 s8 offset-s2">
@@ -52,7 +52,7 @@
 
     </div>
 
-    <div class="profile-tabs col s12 l8 z-depth-1">
+    <div class="profile-tabs col s12 l8 z-depth-1 white">
       <div>
         <ul id="profile-tabs-list" class="tabs">
           <li class="tab col s6">

@@ -6,7 +6,7 @@
 
 <% content_for :back_page do %>
     <%= link_to root_path, :data => {:position => 'right', :delay => '15',
-                                                 :tooltip => 'Voltar para o mapa'},
+                                     :tooltip => 'Voltar para o mapa'},
                 class: 'tooltipped navbar-button', method: :get do %>
         <i class="material-icons md-36">arrow_back</i>
     <% end %>
@@ -43,27 +43,28 @@
 <!--<a href="" class="test-alphabet waves-effect waves-light btn">Z</a>-->
 <!--</div>-->
 
+<div class="container">
+  <div class="row" style="margin-top: 10px;">
+    <% @users.each do |user| %>
 
-<div class="row" style="margin-top: 10px;">
-  <% @users.each do |user| %>
-
-      <div class="col l2 m3 s6">
-        <div class="card small">
-          <div class="card-image">
-            <%= image_tag user.avatar.url %>
-          </div>
-          <div class="card-content" style="padding-top: 10px;">
+        <div class="col l3 m4 s6">
+          <div class="card small">
+            <div class="card-image">
+              <%= image_tag user.avatar.url %>
+            </div>
+            <div class="card-content" style="padding-top: 10px;">
             <span class="card-title grey-text text-darken-4 truncate">
               <%= user.first_name %> <%= user.last_name %>
             </span>
 
-            <p class="truncate">Administrador</p>
-          </div>
-          <div class="card-action">
-            <%= link_to "Ver perfil", user_path(user), method: :get %>
+              <p class="truncate">Administrador</p>
+            </div>
+            <div class="card-action">
+              <%= link_to "Ver perfil", user_path(user), method: :get %>
+            </div>
           </div>
         </div>
-      </div>
 
-  <% end %>
+    <% end %>
+  </div>
 </div>
