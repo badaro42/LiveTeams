@@ -21,17 +21,42 @@
 
 <div class="container">
   <ul class="collapsible popout" data-collapsible="accordion" style="margin-left: 10px; margin-right: 10px;">
-    <li>
-      <div class="collapsible-header"><i class="material-icons">filter_drama</i>First</div>
-      <div class="collapsible-body"><p>Lorem ipsum dolor sit amet.</p></div>
-    </li>
-    <li>
-      <div class="collapsible-header"><i class="material-icons">place</i>Second</div>
-      <div class="collapsible-body"><p>Lorem ipsum dolor sit amet.</p></div>
-    </li>
-    <li>
-      <div class="collapsible-header"><i class="material-icons">whatshot</i>Third</div>
-      <div class="collapsible-body"><p>Lorem ipsum dolor sit amet.</p></div>
-    </li>
+    <% @teams.each do |team| %>
+        <li>
+          <% arr_coords = team.latlon.to_s.split('(')[1].split(')')[0].split(' ') %>
+          <div class="collapsible-header truncate">
+            <strong>
+              <%= link_to team, method: :get do %>
+                  <%= team.name %>
+              <% end %> |
+            </strong> [<%= arr_coords[1] %>; <%= arr_coords[0] %>]
+          </div>
+          <div class="collapsible-body">
+            <p style="padding: 15px;">
+              <% team_users = team.users %>
+              <% team_users.each do |user| %>
+                  <%= link_to user, method: :get do %>
+                      <%= user.full_name %>,
+                  <% end %> <%= user.profile %>
+                  <br>
+              <% end %>
+            </p>
+          </div>
+        </li>
+    <% end %>
+
+
+    <!--<li>-->
+    <!--<div class="collapsible-header">First</div>-->
+    <!--<div class="collapsible-body"><p>Lorem ipsum dolor sit amet.</p></div>-->
+    <!--</li>-->
+    <!--<li>-->
+    <!--<div class="collapsible-header"><i class="material-icons">place</i>Second</div>-->
+    <!--<div class="collapsible-body"><p>Lorem ipsum dolor sit amet.</p></div>-->
+    <!--</li>-->
+    <!--<li>-->
+    <!--<div class="collapsible-header"><i class="material-icons">whatshot</i>Third</div>-->
+    <!--<div class="collapsible-body"><p>Lorem ipsum dolor sit amet.</p></div>-->
+    <!--</li>-->
   </ul>
 </div>

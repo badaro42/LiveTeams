@@ -84,9 +84,9 @@ class TeamsController < ApplicationController
 
           # é o lider, adiciona-se com o parametro a true
           if u_id == params[:team][:is_leader]
-            team_member = TeamMember.new(:user_id => u_id, :team_id => @team.id, :is_leader => true)
+            team_member = TeamMember.new(:user_id => u_id.to_i, :team_id => @team.id, :is_leader => true)
           else
-            team_member = TeamMember.new(:user_id => u_id, :team_id => @team.id, :is_leader => false)
+            team_member = TeamMember.new(:user_id => u_id.to_i, :team_id => @team.id, :is_leader => false)
           end
           team_member.save
         end
