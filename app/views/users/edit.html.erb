@@ -6,8 +6,60 @@
 
 <% content_for :back_page do %>
     <%= link_to user_path(@user), :data => {:position => 'right', :delay => '15',
-                                      :tooltip => 'Voltar para o utilizador '+@user.id.to_s},
+                                            :tooltip => 'Voltar para o utilizador '+@user.id.to_s},
                 class: 'tooltipped navbar-button', method: :get do %>
         <i class="material-icons md-36 white-text">arrow_back</i>
     <% end %>
 <% end %>
+
+LOOOOOOOOOL
+<%= @user.inspect %>
+
+<div class="container">
+  <%= form_for(@user) do |f| %>
+      <div class="input-field col s6 m6 l6">
+        <!--<i class="material-icons prefix">account_circle</i>-->
+        <%= f.label "Primeiro Nome" %>
+        <%= f.text_field :first_name, autofocus: true %>
+      </div>
+
+      <div class="input-field col s6 m6 l6">
+        <!--<i class="material-icons prefix">account_circle</i>-->
+        <%= f.label "Último Nome" %>
+        <%= f.text_field :last_name %>
+      </div>
+
+      <div class="file-field input-field col s12 m12 l12">
+        <div class="btn">
+          <span>Ficheiro</span>
+          <!--<input type="file" id="user_avatar" name="user[avatar]">-->
+          <%= f.file_field :avatar, class: 'file' %>
+        </div>
+        <div class="file-path-wrapper">
+          <input class="file-path validate" type="text" placeholder="Imagem de perfil">
+          <%#= f.file_field :avatar %>
+        </div>
+      </div>
+
+      <div class="input-field col s12 m12 l12">
+        <%= f.label "Endereço de email" %>
+        <%= f.email_field :email %>
+      </div>
+
+      <div class="input-field col s12 m12 l12">
+        <%= f.label "Password" %>
+        <%= f.password_field :password, autocomplete: "off" %>
+      </div>
+
+      <div class="input-field col s12 m12 l12">
+        <%= f.label "Repita password" %>
+        <%= f.password_field :password_confirmation, autocomplete: "off" %>
+      </div>
+
+      <%= f.hidden_field :profile, :value => User::BASICO %>
+
+      <div class="actions col s12 m12 l12" style="margin-top: 10px; margin-bottom: 20px;">
+        <%= f.button 'Registar!', class: "btn waves-effect waves-light" %>
+      </div>
+  <% end %>
+</div>

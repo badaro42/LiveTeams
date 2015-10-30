@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  before_action :set_team, only: [:show, :edit]
+  before_action :set_user, only: [:show]
   layout "listings"
 
   def index
@@ -23,11 +23,16 @@ class UsersController < ApplicationController
   end
 
   def edit
+    if params[:id] == nil
+      @user = User.find(current_user.id)
+    else
+      @user = User.find(params[:id])
+    end
   end
 
   private
   # Use callbacks to share common setup or constraints between actions.
-  def set_team
+  def set_user
     @user = User.find(params[:id])
   end
 end

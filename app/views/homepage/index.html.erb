@@ -61,7 +61,7 @@
         <div class="row valign-wrapper" style="margin-top: 20px">
           <div class="col s5">
             <!--<img src="images/sec-estado-jorge-barreto-xavier.jpg" alt="" class="circle responsive-img">-->
-            <%= image_tag current_user.avatar.url, class: 'circle responsive-img' %>
+            <%= image_tag current_user.avatar.url(:medium), class: 'circle responsive-img' %>
           </div>
           <div class="col s7">
             <h5 style="font-weight: 300"><%= current_user.full_name %></h5>
@@ -210,7 +210,7 @@
 
           <% @most_active_users.each do |user| %>
               <li class="collection-item avatar">
-                <%= image_tag user.avatar.url, class: 'circle responsive-img' %>
+                <%= image_tag user.avatar.url(:thumb), class: 'circle responsive-img' %>
                 <span class="title" style="font-weight: 300">
 
                   <%= link_to user, method: :get,
