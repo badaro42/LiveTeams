@@ -52,17 +52,23 @@ gem 'activerecord-postgis-adapter'
 gem 'rgeo-geojson'
 
 gem 'ffi'
-# gem 'ffi-geos'
 
 
-# gem 'rgeo-activerecord'
-# gem 'rgeo'
+gem 'puma'
+gem 'rack-timeout'
+gem 'faye-websocket'
+gem 'pry-rails'
+
+# gem 'underscore-rails'
+# gem 'rb-fsevent'
+
 
 # ----------------------------------------------
 
 
 # Use ActiveModel has_secure_password
 gem 'bcrypt', '~> 3.1.7', platforms: :ruby
+gem "nokogiri", ">= 1.6.7.rc3"
 
 # Use Unicorn as the app server
 # gem 'unicorn'

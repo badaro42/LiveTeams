@@ -1,9 +1,15 @@
 Rails.application.routes.draw do
 
+  # get '/geo_entity_update' => 'homepage#geo_entity_update'
+  # get '/team_update' => 'homepage#user_update'
+  # get '/user_update' => 'homepage#team_update'
+  get '/entity_updates' => 'homepage#entity_updates'
+
   # rotas para as chamadas ajax na pagina principal
   get '/teams/teams_to_json', to: 'teams#teams_to_json'
   get '/get_geo_entities', to: 'homepage#get_geo_entities'
   get 'account/edit', to: 'users#edit'
+
 
   resources :geo_entities
   resources :team_members

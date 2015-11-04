@@ -2,31 +2,16 @@
 
 <h1>Listing Geo Entities</h1>
 
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Latlon</th>
-      <th>User</th>
-      <th>Description</th>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <% @geo_entities.each do |geo_entity| %>
-      <tr>
-        <td><%= geo_entity.name %></td>
-        <td><%= geo_entity.latlon %></td>
-        <td><%= geo_entity.user_id %></td>
-        <td><%= geo_entity.description %></td>
-        <td><%= link_to 'Show', geo_entity %></td>
-        <td><%= link_to 'Edit', edit_geo_entity_path(geo_entity) %></td>
-        <td><%= link_to 'Destroy', geo_entity, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+<div id="all_geo_entities">
+  <%- @geo_entities.each do |geo_entity| %>
+      <p>
+        <%= geo_entity.name %>
+        <%= geo_entity.latlon %>
+        <%= geo_entity.user_id %>
+        <%= geo_entity.description %>
+      </p>
+  <%- end %>
+</div>
 
 <br>
 

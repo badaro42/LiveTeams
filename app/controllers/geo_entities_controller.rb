@@ -7,6 +7,23 @@ class GeoEntitiesController < ApplicationController
     @geo_entities = GeoEntity.all
   end
 
+  # def stream
+  #   response.headers['Content-Type'] = 'text/event-stream'
+  #   sse = SSE.new(response.stream)
+  #   begin
+  #     GeoEntity.on_change do |id|
+  #       geo_entity = GeoEntity.find(id)
+  #       t = render_to_string(partial: 'entity', formats: [:html], locals: {geo_entity: geo_entity})
+  #       sse.write(t)
+  #     end
+  #   rescue IOError
+  #     # Client Disconnected
+  #   ensure
+  #     sse.close
+  #   end
+  #   render nothing: true
+  # end
+
   # GET /geo_entities/1
   # GET /geo_entities/1.json
   def show
