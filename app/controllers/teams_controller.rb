@@ -17,11 +17,13 @@ class TeamsController < ApplicationController
 
     # dps de obter todas as equipas do servidor, mapeia-as num objeto de forma a que sejam correctamente
     # transformadas em json
-    mapped_teams = factory.map_feature_collection(teams) { |f| factory.feature(f.latlon, nil, {name: f.name}) }
+    mapped_teams = factory.map_feature_collection(teams) {
+        |f| factory.feature(f.latlon, nil, {name: f.name, f_id: f.id}) }
 
     # puts mapped_feats
 
-    # dps do mapeamento, são enviadas para a fabrica que trata da transformação para json para serem apresentadas no mapa
+    # dps do mapeamento, sï¿½o enviadas para a fabrica que trata da transformaï¿½ï¿½o
+    # para json para serem apresentadas no mapa
     teams_to_json = RGeo::GeoJSON.encode factory.feature_collection(mapped_teams)
 
     # puts teste
@@ -38,7 +40,7 @@ class TeamsController < ApplicationController
   # GET /teams/1.json
   def show
     # if @team.nil?
-    #   flash[:error] = "A equipa que procura não existe!"
+    #   flash[:error] = "A equipa que procura nï¿½o existe!"
     #   redirect_to teams_url
     # else
     #   @team
@@ -59,7 +61,7 @@ class TeamsController < ApplicationController
     # if @team_leader.user_id == current_user.id || current_user.profile == User::ADMINISTRADOR
     #   puts "PODE EDITAR"
     # else
-    #   flash[:error] = "A equipa que procura não existe!"
+    #   flash[:error] = "A equipa que procura nï¿½o existe!"
     #   redirect_to teams_url
     # end
   end
@@ -72,7 +74,7 @@ class TeamsController < ApplicationController
     respond_to do |format|
       if @team.save
 
-        # adicionar os vários membros da equipa, colocar aqui um FOR!
+        # adicionar os vï¿½rios membros da equipa, colocar aqui um FOR!
         # todos os elementos sao adicionados como nao sendo lider
         params[:team][:users].each do |u_id|
           puts "LOOOOOOOOOOOOOOOL"
@@ -82,7 +84,7 @@ class TeamsController < ApplicationController
           puts "LEADER LEADER LEADER LEADER"
           puts params[:team][:is_leader]
 
-          # é o lider, adiciona-se com o parametro a true
+          # ï¿½ o lider, adiciona-se com o parametro a true
           if u_id == params[:team][:is_leader]
             team_member = TeamMember.new(:user_id => u_id.to_i, :team_id => @team.id, :is_leader => true)
           else
@@ -107,10 +109,10 @@ class TeamsController < ApplicationController
     respond_to do |format|
       if @team.update(team_params)
 
-        # começamos por remover todas as entradas da tabela para esta equipa
+        # comeï¿½amos por remover todas as entradas da tabela para esta equipa
         TeamMember.delete_all(["team_id = ?", @team.id.to_s])
 
-        # por fim, adicionamos novamente os membros da equipa, bem como qual o capitão
+        # por fim, adicionamos novamente os membros da equipa, bem como qual o capitï¿½o
         params[:team][:users].each do |u_id|
           if u_id == params[:team][:is_leader]
             team_member = TeamMember.new(:user_id => u_id, :team_id => @team.id, :is_leader => true)

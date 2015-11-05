@@ -32,14 +32,14 @@ class HomepageController < ApplicationController
 
         if new_or_updated_geo_entity.size == 1
           ent = new_or_updated_geo_entity.first
-          feature = factory.feature(ent.latlon, nil, {name: ent.name, user_id: ent.user_id,
+          feature = factory.feature(ent.latlon, nil, {f_id: ent.id, name: ent.name, user_id: ent.user_id,
                                                       description: ent.description, radius: ent.radius})
           features_to_json = RGeo::GeoJSON.encode feature
         else
           # dps de obter todas as entidades do servidor, mapeia-as num objeto de forma a que sejam correctamente
           # transformadas em json
           mapped_feats = factory.map_feature_collection(new_or_updated_geo_entity) {
-              |f| factory.feature(f.latlon, nil, {name: f.name, user_id: f.user_id,
+              |f| factory.feature(f.latlon, nil, {f_id: f.id, name: f.name, user_id: f.user_id,
                                                   description: f.description, radius: f.radius})
           }
 
@@ -64,81 +64,6 @@ class HomepageController < ApplicationController
     end
   end
 
-
-  # def user_update
-  #   response.headers['Content-Type'] = 'text/event-stream'
-  #
-  #   puts "SERA QUE HA NOVO UTILIZADOR!!!!????"
-  #   sse = SSE.new(response.stream, retry: 20000, event: 'user_update')
-  #
-  #   last_user = User.order('created_at DESC').first
-  #
-  #   # devolve os utilizadores criados ou atualizados nos ultimos 25 segundos
-  #   new_or_updated_users = User.where("created_at between (?) and (?) OR updated_at between (?) and (?)",
-  #                                     25.seconds.ago, Time.now, 25.seconds.ago, Time.now)
-  #
-  #   if new_or_updated_users.count > 0
-  #     begin
-  #       puts "UTILIZADOR NOVO NOS ULTIMOS 20 SEGUNDOS"
-  #       sse.write(new_or_updated_users + last_user, event: 'user_update', retry: 20000)
-  #     rescue IOError
-  #       # When the client disconnects, we'll get an IOError on write
-  #     ensure
-  #       puts "CLOSE USER USER"
-  #       sse.close
-  #     end
-  #   else
-  #     puts "NAO ENTROU NA CENA DO USER"
-  #     render :nothing => true, :status => 200, :content_type => 'text/html'
-  #   end
-  # end
-  #
-  # def team_update
-  #   response.headers['Content-Type'] = 'text/event-stream'
-  #
-  #   puts "SERA QUE HA NOVA EQUIPA!!!!????"
-  #   sse = SSE.new(response.stream, retry: 20000, event: 'team_update')
-  #
-  #   last_team = Team.order('created_at DESC').first
-  #   if recently_changed? last_team
-  #     begin
-  #       puts "EQUIPA NOVO NOS ULTIMOS 20 SEGUNDOS"
-  #       sse.write(last_team, event: 'team_update', retry: 20000)
-  #     rescue IOError
-  #       # When the client disconnects, we'll get an IOError on write
-  #     ensure
-  #       puts "CLOSE EQUIPA EQUIPA"
-  #       sse.close
-  #     end
-  #   else
-  #     puts "NAO ENTROU NA CENA DA EQUIPA"
-  #     render :nothing => true, :status => 200, :content_type => 'text/html'
-  #   end
-  # end
-  #
-  # def geo_entity_update
-  #   response.headers['Content-Type'] = 'text/event-stream'
-  #
-  #   puts "SERA QUE HA NOVA ENTIDADE!!!!????"
-  #   sse = SSE.new(response.stream, retry: 20000, event: 'geo_entity_update')
-  #
-  #   last_geo_entity = GeoEntity.order('created_at DESC').first
-  #   if recently_changed? last_geo_entity
-  #     begin
-  #       puts "ENTIDADE NOVA NOS ULTIMOS 20 SEGUNDOS"
-  #       sse.write(last_geo_entity, event: 'geo_entity_update', retry: 20000)
-  #     rescue IOError
-  #       # When the client disconnects, we'll get an IOError on write
-  #     ensure
-  #       puts "CLOSE CLOSE ENTIDADE ENTIDADE"
-  #       sse.close
-  #     end
-  #   else
-  #     puts "NAO ENTROU NA CENA DA ENTIDADE ENTIDADE"
-  #     render :nothing => true, :status => 200, :content_type => 'text/html'
-  #   end
-  # end
-
   def index
     @most_active_users = User.all.order(sign_in_count: :desc).limit(15)
     @recently_changed_teams = Team.all.order(updated_at: :desc).limit(15)
@@ -158,7 +83,7 @@ class HomepageController < ApplicationController
     # dps de obter todas as entidades do servidor, mapeia-as num objeto de forma a que sejam correctamente
     # transformadas em json
     mapped_feats = factory.map_feature_collection(features) {
-        |f| factory.feature(f.latlon, nil, {name: f.name, user_id: f.user_id,
+        |f| factory.feature(f.latlon, nil, {f_id: f.id, name: f.name, user_id: f.user_id,
                                             description: f.description, radius: f.radius})
     }
 

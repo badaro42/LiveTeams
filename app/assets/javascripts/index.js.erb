@@ -1,8 +1,12 @@
 var map, osmUrl, osmAttrib, osm, sidebar, cluster, drawnItems;
 var e_type, e_radius, e_coords, coords_to_display, e_length, e_area, e_layer, e_num_points;
 var source;
+var all_geo_ents_ids;
+var all_teams_ids;
 
 $(document).ready(function () {
+  all_teams_ids = [];
+  all_geo_ents_ids = [];
 
   // delay da inicialização do eventSource
   // delay atual - 10 segundos
@@ -145,7 +149,7 @@ $(document).ready(function () {
   // retorna todas as entidades que estao na BD
   var geo_entities = new L.GeoJSON.AJAX("/get_geo_entities.json", {
     pointToLayer: function (feature, latlng) {
-      console.log(feature);
+//      console.log(feature);
       if (feature.properties.radius > 0)
         return L.circle(latlng, feature.properties.radius);
       else
@@ -154,23 +158,25 @@ $(document).ready(function () {
     onEachFeature: function (feature, layer) {
       layer.bindPopup('<p>' + feature.properties.name + '</p>' +
           '<p>' + feature.properties.description + '</p>');
+      all_geo_ents_ids.push(feature.properties.f_id);
     }
   });
 
   var teams_json = new L.GeoJSON.AJAX("/teams/teams_to_json.json", {
     pointToLayer: function (feature, latlng) {
-      console.log(feature);
+//      console.log(feature);
       return L.marker(latlng, {icon: team_icon});
     },
     onEachFeature: function (feature, layer) {
       layer.bindPopup('<p>' + feature.properties.name + '</p>' +
           '<p>' + feature.geometry.coordinates + '</p>');
+      all_teams_ids.push(feature.properties.f_id);
     }
   });
 
   // listener invocado quando a chamada ajax das entidades terminar!
   geo_entities.on('data:loaded', function () {
-    console.log(geo_entities);
+    console.log("vector com os indices das geo_entities: " + all_geo_ents_ids);
     console.log("finish");
     cluster.addLayer(geo_entities);
     map.addLayer(cluster);
@@ -182,6 +188,7 @@ $(document).ready(function () {
 
   // listener invocado quando a chamada ajax das equipas terminar!
   teams_json.on('data:loaded', function () {
+    console.log("vector com os indices das equipas!!!!!: " + all_teams_ids);
     console.log("finish");
     cluster.addLayer(teams_json);
     map.addLayer(cluster);
@@ -365,6 +372,8 @@ function insertGeoEntity() {
     },
     success: function (data) {
       console.log("MARCADOR ADICIONADO COM SUCESSO");
+      console.log(data);
+      all_geo_ents_ids.push(data.id);
     },
     error: function (err) {
       console.log("erro a adicionar o marcador");
@@ -382,47 +391,58 @@ $('.stay-where-you-are').click(function (e) {
   //e.preventDefault(); // same thing as above
 });
 
-
-// TODO: COMPLETAR ESTA MERDA
-//function addTeamToMap(json) {
-////  console.log(json);
-//
-//  console.log("temos uma nova equipa!");
-//
-//  //introduzir ao inicio as equipas mais recentes!
-//  var li = $('<li/>');
-//  $("#recent_teams_list").prepend(li);
-//
-//
-//  var first_div = $('<div/>')
-//      .addClass('collapsible-header')
-//      .text(json.name)
-//      .appendTo(li);
-//  var anchor = $('<a/>')
-//      .addClass('tooltipped edit-team-btn waves-effect waves-teal btn-flat right')
-//      .prop('data-position', 'left')
-//      .prop('data-delay', '15')
-//      .prop('data-tooltip', 'Ver mais detalhes')
-//      .prop('data-method', 'get')
-//      .appendTo(first_div);
-//  var icon = $('<i/>')
-//      .addClass('material-icons')
-//      .text('more-vert')
-//      .appendTo(anchor);
-//
-//  var second_div = $('<div/>')
-//      .addClass('collapsible-body')
-//      .appendTo(li);
-//
-//  console.log(li);
-//}
-//
-//function addUserToMap(json) {
-//  console.log("temos um novo utilizador!");
-//}
-
+// recebe o json do servidor, processa-o e adiciona as entidades ao mapa
 function addGeoEntityToMap(json) {
-  console.log("temos uma nova entidade geografica");
+  console.log("UPDATES server sent event!!!!!!");
+
+  var new_layer;
+  var json_arr = JSON.parse(json);
+
+  // apenas uma entidade retornada pelo servidor
+  if (json_arr.type == "Feature") {
+    console.log(json_arr);
+    // esta feature ainda nao existe no array!!
+    if (all_geo_ents_ids.indexOf(json_arr.properties.f_id) == -1) {
+      console.log("FEATURE FEATURE - ainda nao existe no array");
+
+      new_layer = L.geoJson().addTo(map);
+      new_layer.addData(json_arr);
+      cluster.addLayer(new_layer);
+      map.addLayer(cluster);
+
+      all_geo_ents_ids.push(json_arr.properties.f_id);
+    }
+  }
+  // mais do que uma entidade retornada pelo servidor
+  else if (json_arr.type == "FeatureCollection") {
+    console.log("MAIS QUE UMA ENTIDADE, VAMOS ENTRAR NO FOR EACH!!!");
+
+    // array GEOJSON que no final conterá todas as entidades que ainda nao estejam no mapa
+    var final_json_arr = {
+      "type": "FeatureCollection",
+      "features": []
+    };
+
+    $.each(json_arr.features, function (key, val) {
+      var f_id = val.properties.f_id;
+      console.log(all_geo_ents_ids);
+      console.log(f_id);
+      console.log("f_id está contida no array?? " + (all_geo_ents_ids.indexOf(f_id) != -1));
+
+      // esta feature ainda nao existe no array!!
+      if (all_geo_ents_ids.indexOf(f_id) == -1) {
+        final_json_arr.features.push(val);
+        all_geo_ents_ids.push(f_id);
+      }
+    });
+
+//    console.log(final_json_arr);
+
+    new_layer = L.geoJson().addTo(map);
+    new_layer.addData(final_json_arr);
+    cluster.addLayer(new_layer);
+    map.addLayer(cluster);
+  }
 }
 
 function eventSourceSetup() {
@@ -436,48 +456,6 @@ function eventSourceSetup() {
   }
 
   source.addEventListener('entity_updates', function (e) {
-    var json_arr = JSON.parse(e.data);
-
-    console.log("UPDATES server sent event!!!!!!");
-    console.log(e.data);
-    //console.log(teste.length);
-
-    var myLayer = L.geoJson().addTo(map);
-    myLayer.addData(json_arr);
-
-    cluster.addLayer(myLayer);
-    map.addLayer(cluster);
-
-//    if(json)
-
-
-//    for (i = 0; i < json_arr.length; i++) {
-//      console.log("ITERAÇÃO " + i);
-//      console.log(json_arr[i]);
-////      console.log("É EQUIPA?? " + (typeof(json_arr[i][0].team) !== "undefined"));
-////      console.log("É UTILIZADOR?? " + (json_arr[i][0].user !== undefined));
-////      console.log("É ENTIDADE GEOGRÁFICA?? " + (json_arr[i].geo_entity !== undefined));
-//
-//
-//      if (typeof(json_arr[i]) !== "undefined") {
-//        //trata-se de uma entidade geografica
-//        if (typeof(json_arr[i].type !== "undefined")) {
-//          addGeoEntityToMap(json_arr[i]);
-//        }
-//
-////          //trata-se de uma equipa
-////        if (typeof(json_arr[i][0].team) !== "undefined")
-////          addTeamToMap(json_arr[i][0].team);
-////
-////        //trata-se de um utilizador
-////        else if (typeof(json_arr[i][0].user !== "undefined"))
-////          addUserToMap(json_arr[i][0].user);
-//      }
-//    }
-//
-//    // converter json para uma string bonita :)
-//    //var str = JSON.stringify(teste, null, 2);
-//    //console.log(str);
-//
+    addGeoEntityToMap(e.data);
   }, false);
 }
