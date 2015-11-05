@@ -2,25 +2,55 @@ class HomepageController < ApplicationController
   include ActionController::Live
 
   def entity_updates
+    require 'rgeo'
+    require 'rgeo-geojson'
+
+    ActiveRecord::Base.include_root_in_json = true
     response.headers['Content-Type'] = 'text/event-stream'
 
     puts "SERA QUE HA NOVA CENA!!!!????"
     sse = SSE.new(response.stream, retry: 20000, event: 'event_update')
 
     # devolve os utilizadores criados ou atualizados nos ultimos 25 segundos
-    new_or_updated_users = User.where("created_at between (?) and (?) OR updated_at between (?) and (?)",
-                                      5.minutes.ago, Time.now, 5.minutes.ago, Time.now)
-    # devolve os utilizadores criados ou atualizados nos ultimos 25 segundos
-    new_or_updated_teams = Team.where("created_at between (?) and (?) OR updated_at between (?) and (?)",
-                                      5.minutes.ago, Time.now, 5.minutes.ago, Time.now)
+    # new_or_updated_users = User.where("created_at between (?) and (?) OR updated_at between (?) and (?)",
+    #                                   15.minutes.ago, Time.now, 15.minutes.ago, Time.now)
+    # # devolve os utilizadores criados ou atualizados nos ultimos 25 segundos
+    # new_or_updated_teams = Team.where("created_at between (?) and (?) OR updated_at between (?) and (?)",
+    #                                   15.minutes.ago, Time.now, 15.minutes.ago, Time.now).to_json(include: :users)
+
+
     # devolve os utilizadores criados ou atualizados nos ultimos 25 segundos
     new_or_updated_geo_entity = GeoEntity.where("created_at between (?) and (?) OR updated_at between (?) and (?)",
-                                      5.minutes.ago, Time.now, 5.minutes.ago, Time.now)
+                                                20.seconds.ago, Time.now, 20.seconds.ago, Time.now)
 
-    if new_or_updated_users.size > 0 || new_or_updated_teams.size > 0 || new_or_updated_geo_entity.size > 0
+    # if new_or_updated_users.size > 0 || new_or_updated_teams.size > 0 || new_or_updated_geo_entity.size > 0
+    if new_or_updated_geo_entity.size > 0
       begin
-        puts "CENA NOVA NOS ULTIMOS 60 SEGUNDOS"
-        sse.write(new_or_updated_users + new_or_updated_teams + new_or_updated_geo_entity,
+        # cria a fabrica de entidades
+        factory = RGeo::GeoJSON::EntityFactory.instance
+        features_to_json = nil
+
+        if new_or_updated_geo_entity.size == 1
+          ent = new_or_updated_geo_entity.first
+          feature = factory.feature(ent.latlon, nil, {name: ent.name, user_id: ent.user_id,
+                                                      description: ent.description, radius: ent.radius})
+          features_to_json = RGeo::GeoJSON.encode feature
+        else
+          # dps de obter todas as entidades do servidor, mapeia-as num objeto de forma a que sejam correctamente
+          # transformadas em json
+          mapped_feats = factory.map_feature_collection(new_or_updated_geo_entity) {
+              |f| factory.feature(f.latlon, nil, {name: f.name, user_id: f.user_id,
+                                                  description: f.description, radius: f.radius})
+          }
+
+          # dps do mapeamento, s�o enviadas para a fabrica que trata da transforma��o
+          # para json para serem apresentadas no mapa
+          features_to_json = RGeo::GeoJSON.encode factory.feature_collection(mapped_feats)
+        end
+
+        puts "ENTIDADE NOVA NOS ULTIMOS 20 SEGUNDOS"
+        # sse.write([new_or_updated_users] + [new_or_updated_teams] + [new_or_updated_geo_entity],
+        sse.write(features_to_json,
                   event: 'entity_updates', retry: 20000)
       rescue IOError
         # When the client disconnects, we'll get an IOError on write
