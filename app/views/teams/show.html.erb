@@ -39,7 +39,10 @@
         <%= image_tag @team_leader.avatar.url(:small), class: 'circle responsive-img' %>
 
         <h6 class="hide-on-med-only" style="font-weight: 300;">
-          Chefe: <%= @team_leader.full_name %>
+          Chefe:
+          <%= link_to @team_leader, method: :get do %>
+              <%= @team_leader.full_name %>
+          <% end %>
         </h6>
       </div>
 
@@ -84,16 +87,54 @@
   </div>
   <div class="row z-depth-1 white"
        style="padding-left: 20px; padding-top: 1px; padding-bottom: 20px; padding-right: 20px;">
-    <h5 class="center" style="font-weight: 300;">Membros</h5>
+    <h5 class="center" style="font-weight: 300;">Membros (<%= @team.users.size %>)</h5>
 
     <div class="divider divider-margin"></div>
     <div class="s12 l12 m12">
+      <% i = 0 %>
       <% @team.users.each do |user| %>
-          <div class="even-user col l6 m12 s12">
-            <div class="card-panel teal">
-              <span class="white-text"><%= user.full_name %></span>
-            </div>
-          </div>
+          <% if i % 2 == 0 %>
+              <div class="even-user col l6 m12 s12">
+                <div class="card-panel grey lighten-4" style="padding: 15px; padding-left: 20px;">
+                  <!--<span><%= user.full_name %></span>-->
+                  <div class="row valign-wrapper" style="margin-bottom: 0px;">
+                    <div class="col l2 m1 s1">
+                      <%= image_tag user.avatar.url(:thumb), class: 'circle responsive-img', size: "30x30" %>
+                    </div>
+                    <div class="col l10 m11 s11 truncate">
+                      <span>
+                        <%= link_to user, method: :get do %>
+                          <%= user.full_name %>
+                        <% end %>
+                      </span>
+                      <br>
+                      <span style="font-weight: 300;"><%= user.profile %></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+          <% else %>
+              <div class="odd-user col l6 m12 s12">
+                <div class="card-panel grey lighten-4" style="padding: 15px; padding-left: 20px;">
+                  <!--<span><%= user.full_name %></span>-->
+                  <div class="row valign-wrapper" style="margin-bottom: 0px;">
+                    <div class="col l2 m1 s1">
+                      <%= image_tag user.avatar.url(:thumb), class: 'circle responsive-img', size: "30x30" %>
+                    </div>
+                    <div class="col l10 m11 s11 truncate">
+                      <span>
+                        <%= link_to user, method: :get do %>
+                          <%= user.full_name %>
+                        <% end %>
+                      </span>
+                      <br>
+                      <span style="font-weight: 300;"><%= user.profile %></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+          <% end %>
+          <% i = i + 1 %>
       <% end %>
     </div>
   </div>
