@@ -112,6 +112,16 @@ label {
 
 /* ECRA PEQUENO */
 @media only screen and (max-width: 600px) {
+    #team_coordinates {
+        margin-top: 20px;
+    }
+
+    .odd-user,
+    .even-user {
+        padding: 0px !important;
+    }
+
+
     .profile-tabs {
         margin-top: 15px;
     }
@@ -124,6 +134,16 @@ label {
 
 /* ECRA MEDIO */
 @media only screen and (min-width: 600px) and (max-width: 992px) {
+    #team_coordinates {
+        margin-top: 20px;
+    }
+
+    .odd-user,
+    .even-user {
+        padding: 0px !important;
+    }
+
+
     .profile-tabs {
         margin-top: 15px;
     }
@@ -153,6 +173,20 @@ label {
 
 /* ECRA GRANDE */
 @media only screen and (min-width: 993px) {
+    #teams_info_div {
+        margin-right: 3.3%;
+        width: 30%;
+    }
+
+    .odd-user {
+        padding-right: 0px !important;
+    }
+    .even-user {
+        padding-left: 0px !important;
+    }
+
+
+
     .profile-div {
         margin-right: 40px;
         margin-left: 20px;

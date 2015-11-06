@@ -21,13 +21,80 @@
 
 <div class="container">
   <div class="row" style="margin-top: 20px;">
-    <div class="col s12 m8 offset-m2 l4">
-      <div class="z-depth-1">
-        <div class="section">
-          <h5>Section 1</h5>
-          <p>Stuff</p>
+    <div id="teams_info_div" class="col l4 s12 center-align z-depth-1 white"
+         style="padding-left: 20px; padding-top: 0px; padding-bottom: 20px; padding-right: 20px;">
+      <h5 style="font-weight: 300;">Detalhes</h5>
+
+      <div class="divider divider-margin"></div>
+      <div class="col l12 m6 s12 offset-m6 hide-on-med-only">
+        <h6 style="font-weight: 300;">
+          <!--<strong>Nome bem grande só para ver como fica dentro da divisao</strong>-->
+          <strong><%= @team.name %></strong>
+        </h6>
+
+        <div class="divider divider-margin"></div>
+      </div>
+
+      <div class="col l12 m6 s12">
+        <%= image_tag @team_leader.avatar.url(:small), class: 'circle responsive-img' %>
+
+        <h6 class="hide-on-med-only" style="font-weight: 300;">
+          Chefe: <%= @team_leader.full_name %>
+        </h6>
+      </div>
+
+      <div class="col l12 m6 s12 hide-on-large-only hide-on-small-only">
+        <h6 style="font-weight: 300;">
+          <strong><%= @team.name %></strong>
+        </h6>
+
+        <div class="divider divider-margin"></div>
+      </div>
+
+      <div class="col l12 m6 s12">
+
+        <h6 class="hide-on-small-only hide-on-large-only" style="font-weight: 300;">
+          Chefe: <%= @team_leader.full_name %>
+        </h6>
+
+        <div class="divider divider-margin"></div>
+
+
+        <!--<div class="divider divider-margin show-on-medium"></div>-->
+
+        <div style="font-weight: 300;">
+          <i title="Data da criação" class="material-icons tiny">access_time</i>
+          <span style="padding-left: 10px"><%= @team.created_at.to_datetime.to_formatted_s(:long_ordinal) %></span>
+        </div>
+
+        <div style="font-weight: 300; ">
+          <i title="Data da última atualização" class="material-icons tiny">edit</i>
+          <span style="padding-left: 10px"><%= @team.updated_at.to_datetime.to_formatted_s(:long_ordinal) %></span>
         </div>
       </div>
+    </div>
+
+    <div id="team_coordinates" class="center col s12 l8 z-depth-1 white"
+         style="padding-left: 20px; padding-top: 0px; padding-bottom: 20px; padding-right: 20px;">
+      <h5 style="font-weight: 300;">Coordenadas</h5>
+
+      <div class="divider divider-margin"></div>
+      <div id="team_map" style="height: 350px;"></div>
+    </div>
+  </div>
+  <div class="row z-depth-1 white"
+       style="padding-left: 20px; padding-top: 1px; padding-bottom: 20px; padding-right: 20px;">
+    <h5 class="center" style="font-weight: 300;">Membros</h5>
+
+    <div class="divider divider-margin"></div>
+    <div class="s12 l12 m12">
+      <% @team.users.each do |user| %>
+          <div class="even-user col l6 m12 s12">
+            <div class="card-panel teal">
+              <span class="white-text"><%= user.full_name %></span>
+            </div>
+          </div>
+      <% end %>
     </div>
   </div>
 </div>

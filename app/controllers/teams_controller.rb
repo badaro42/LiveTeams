@@ -39,6 +39,12 @@ class TeamsController < ApplicationController
   # GET /teams/1
   # GET /teams/1.json
   def show
+
+    team_leader_id = @team.team_members.where(is_leader: true).first
+    puts team_leader_id.inspect
+    @team_leader = @team.users.where(id: team_leader_id.user_id).first
+    puts @team_leader.inspect
+
     # if @team.nil?
     #   flash[:error] = "A equipa que procura n�o existe!"
     #   redirect_to teams_url

@@ -41,7 +41,7 @@
 
         <div style="font-weight: 300;">
           <i class="material-icons tiny">access_time</i>
-          <span style="padding-left: 10px"><%= @user.created_at.to_date.to_formatted_s(:rfc822) %></span>
+          <span style="padding-left: 10px"><%= @user.created_at.to_datetime.to_formatted_s(:long_ordinal) %></span>
         </div>
 
         <div style="font-weight: 300; ">

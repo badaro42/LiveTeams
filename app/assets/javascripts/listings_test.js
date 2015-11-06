@@ -46,7 +46,7 @@ $(document).ready(function () {
     });
 
     /**
-     * Listener para quando uma checkbox é marcada ou desmarcada
+     * Listener para quando uma checkbox ï¿½ marcada ou desmarcada
      */
     $('input:checkbox').change(
         function () {
@@ -87,7 +87,7 @@ $(document).ready(function () {
     $('select').material_select();
 
 
-    // inicializa o mapa para destacar a equipa
+    // inicializa o mapa
     osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
     osm = L.tileLayer(osmUrl, {maxZoom: 18});
     team_map = L.map("team_map", {
@@ -103,19 +103,19 @@ $(document).ready(function () {
 });
 
 /**
- * Este método é executado quando o utilizador carrega no mapa no formulario das equipas
- * Começa por verificar se ja há marcador no mapa: se sim, remove-o.
+ * Este mï¿½todo ï¿½ executado quando o utilizador carrega no mapa no formulario das equipas
+ * Comeï¿½a por verificar se ja hï¿½ marcador no mapa: se sim, remove-o.
  * A seguir cria um novo marcador no ponto em que o utilizador carregou e abre uma popup
- * com a localização (USAR GEOCODING???)
+ * com a localizaï¿½ï¿½o (USAR GEOCODING???)
  */
 function onMapClick(e) {
-    // o marcador ja foi inicializado, vamos removê-lo
+    // o marcador ja foi inicializado, vamos removï¿½-lo
     if (typeof curr_marker !== "undefined")
         team_map.removeLayer(curr_marker);
 
     console.log(e);
 
-    var popupContent = "<p>Localização atualizada com sucesso.<br />Nova localização: [" +
+    var popupContent = "<p>Localizaï¿½ï¿½o atualizada com sucesso.<br />Nova localizaï¿½ï¿½o: [" +
         e.latlng.lat + "; " + e.latlng.lng + "]</p>";
     curr_marker = L.marker([e.latlng.lat, e.latlng.lng]).addTo(team_map);
     curr_marker.bindPopup(popupContent).openPopup();
