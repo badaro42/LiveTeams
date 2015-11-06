@@ -33,14 +33,16 @@ class HomepageController < ApplicationController
         if new_or_updated_geo_entity.size == 1
           ent = new_or_updated_geo_entity.first
           feature = factory.feature(ent.latlon, nil, {f_id: ent.id, name: ent.name, user_id: ent.user_id,
-                                                      description: ent.description, radius: ent.radius})
+                                                      description: ent.description, radius: ent.radius,
+                                                      created_at: ent.created_at})
           features_to_json = RGeo::GeoJSON.encode feature
         else
           # dps de obter todas as entidades do servidor, mapeia-as num objeto de forma a que sejam correctamente
           # transformadas em json
           mapped_feats = factory.map_feature_collection(new_or_updated_geo_entity) {
               |f| factory.feature(f.latlon, nil, {f_id: f.id, name: f.name, user_id: f.user_id,
-                                                  description: f.description, radius: f.radius})
+                                                  description: f.description, radius: f.radius,
+                                                  created_at: f.created_at})
           }
 
           # dps do mapeamento, s�o enviadas para a fabrica que trata da transforma��o
@@ -84,7 +86,8 @@ class HomepageController < ApplicationController
     # transformadas em json
     mapped_feats = factory.map_feature_collection(features) {
         |f| factory.feature(f.latlon, nil, {f_id: f.id, name: f.name, user_id: f.user_id,
-                                            description: f.description, radius: f.radius})
+                                            description: f.description, radius: f.radius,
+                                            created_at: f.created_at})
     }
 
     # puts mapped_feats

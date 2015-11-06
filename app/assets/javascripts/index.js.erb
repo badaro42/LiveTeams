@@ -1,4 +1,5 @@
-var map, osmUrl, osmAttrib, osm, sidebar, cluster, drawnItems;
+var map, osmUrl, osmAttrib, osm, sidebar, cluster;
+var drawnItems;
 var e_type, e_radius, e_coords, coords_to_display, e_length, e_area, e_layer, e_num_points;
 var source;
 var all_geo_ents_ids;
@@ -149,7 +150,6 @@ $(document).ready(function () {
   // retorna todas as entidades que estao na BD
   var geo_entities = new L.GeoJSON.AJAX("/get_geo_entities.json", {
     pointToLayer: function (feature, latlng) {
-//      console.log(feature);
       if (feature.properties.radius > 0)
         return L.circle(latlng, feature.properties.radius);
       else
@@ -164,7 +164,6 @@ $(document).ready(function () {
 
   var teams_json = new L.GeoJSON.AJAX("/teams/teams_to_json.json", {
     pointToLayer: function (feature, latlng) {
-//      console.log(feature);
       return L.marker(latlng, {icon: team_icon});
     },
     onEachFeature: function (feature, layer) {
@@ -180,6 +179,9 @@ $(document).ready(function () {
     console.log("finish");
     cluster.addLayer(geo_entities);
     map.addLayer(cluster);
+
+//    drawnItems.addLayer(geo_entities);
+//    map.addLayer(drawnItems);
   });
 
   geo_entities.on('data:error', function (err) {
@@ -192,6 +194,9 @@ $(document).ready(function () {
     console.log("finish");
     cluster.addLayer(teams_json);
     map.addLayer(cluster);
+
+//    drawnItems.addLayer(teams_json);
+//    map.addLayer(drawnItems);
   });
 
   teams_json.on('data:error', function (err) {
@@ -231,7 +236,6 @@ $(document).ready(function () {
       $('#e_coords').trigger('autoresize');
       $('#e_coords_div label').addClass('active');
 
-      e_layer.bindPopup('NOVO ' + e_type + '!');
       console.log(e_layer);
       e_coords = "POINT(" + e_layer.getLatLng().lng + " " + e_layer.getLatLng().lat + ")";
     }
@@ -267,7 +271,6 @@ $(document).ready(function () {
         $('#e_area').text(e_area);
       }
 
-      e_layer.bindPopup('NOVO ' + e_type + '!');
       console.log(e_layer.getLatLngs());
 
       var temp_point = null;
@@ -343,7 +346,6 @@ function parsePointCoordinates(coords) {
 
 // envia a entidade criada para a Base de Dados
 function insertGeoEntity() {
-  modal_is_open = false;
   console.log("inserir nova entidaade");
 
   var name = $('#e_name').val();
@@ -370,19 +372,32 @@ function insertGeoEntity() {
         latlon: e_coords
       }
     },
+    // adicionamos o id à lista de ids e criamos uma popup para essa entidade
     success: function (data) {
       console.log("MARCADOR ADICIONADO COM SUCESSO");
       console.log(data);
       all_geo_ents_ids.push(data.id);
+
+      var popup = L.popup({
+        maxWidth: 400
+      });
+      popup.setContent("<span>" + name + "</span><br><span>" + e_coords + "</span><br><span>" + description + "</span>");
+      e_layer.bindPopup(popup);
+
+      cluster.addLayer(e_layer);
+      map.addLayer(cluster);
+
+//      drawnItems.addLayer(e_layer);
+//      map.addLayer(drawnItems);
+
+      e_layer = null;
     },
     error: function (err) {
       console.log("erro a adicionar o marcador");
       console.log(err);
+      e_layer = null;
     }
   });
-
-  drawnItems.addLayer(e_layer);
-  e_layer = null;
 }
 
 $('.stay-where-you-are').click(function (e) {
@@ -401,13 +416,25 @@ function addGeoEntityToMap(json) {
   // apenas uma entidade retornada pelo servidor
   if (json_arr.type == "Feature") {
     console.log(json_arr);
+
     // esta feature ainda nao existe no array!!
     if (all_geo_ents_ids.indexOf(json_arr.properties.f_id) == -1) {
       console.log("FEATURE FEATURE - ainda nao existe no array");
 
-      new_layer = L.geoJson().addTo(map);
-      new_layer.addData(json_arr);
-      cluster.addLayer(new_layer);
+      var layer_to_add;
+      // é um circulo, vamos desenhá-lo à mão
+      if (json_arr.properties.radius > 0) {
+        var latlon = L.latLng(json_arr.geometry.coordinates[1], json_arr.geometry.coordinates[0]);
+        layer_to_add = L.circle(latlon, json_arr.properties.radius);
+      }
+      // não é circulo, adicionamos normalmente ao mapa
+      else {
+        new_layer = L.geoJson().addTo(map);
+        new_layer.addData(json_arr);
+        layer_to_add = new_layer;
+      }
+
+      cluster.addLayer(layer_to_add);
       map.addLayer(cluster);
 
       all_geo_ents_ids.push(json_arr.properties.f_id);
@@ -431,7 +458,19 @@ function addGeoEntityToMap(json) {
 
       // esta feature ainda nao existe no array!!
       if (all_geo_ents_ids.indexOf(f_id) == -1) {
-        final_json_arr.features.push(val);
+
+        // é um circulo, vamos desenhá-lo à mão
+        if (val.properties.radius > 0) {
+          var latlon = L.latLng(val.geometry.coordinates[1], val.geometry.coordinates[0]);
+          layer_to_add = L.circle(latlon, val.properties.radius);
+
+          cluster.addLayer(layer_to_add);
+          map.addLayer(cluster);
+        }
+        // não é circulo, adicionamos normalmente ao mapa
+        else
+          final_json_arr.features.push(val);
+
         all_geo_ents_ids.push(f_id);
       }
     });
@@ -449,9 +488,9 @@ function eventSourceSetup() {
   console.log("START DA CENA DO EVENT_SOURCE");
 
   // SSE stuff - atualização de informação
-  if (!!window.EventSource) {
+  if (!!window.EventSource)
     source = new EventSource("/entity_updates");
-  } else {
+  else {
     // Result to xhr polling :(
   }
 
