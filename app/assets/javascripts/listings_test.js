@@ -2,7 +2,12 @@ var osm, team_map, osmUrl, curr_marker = undefined;
 
 $(document).ready(function () {
 
-    //$('#profile-user-info').pushpin({ top: 64 });
+    var href = document.location.pathname;
+    var users_pages = href.indexOf("users") > -1;
+
+    console.log("Endereço contem 'users'?? -> " + users_pages);
+
+    $('#profile-user-info').pushpin({ top: 64 });
 
     /**
      * Positions the tabs
@@ -87,19 +92,21 @@ $(document).ready(function () {
     $('select').material_select();
 
 
-    // inicializa o mapa
-    osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-    osm = L.tileLayer(osmUrl, {maxZoom: 18});
-    team_map = L.map("team_map", {
-        zoom: 12,
-        center: [38.627881, -9.161007],
-        layers: [osm],
-        zoomControl: true,
-        attributionControl: false
-    });
+    if (!users_pages) {
+        // inicializa o mapa
+        osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+        osm = L.tileLayer(osmUrl, {maxZoom: 18});
+        team_map = L.map("team_map", {
+            zoom: 12,
+            center: [38.627881, -9.161007],
+            layers: [osm],
+            zoomControl: true,
+            attributionControl: false
+        });
 
-    // adiciona um listener ao mapa para o evento "clique"
-    team_map.on('click', onMapClick);
+        // adiciona um listener ao mapa para o evento "clique"
+        team_map.on('click', onMapClick);
+    }
 });
 
 /**

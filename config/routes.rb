@@ -1,8 +1,7 @@
 Rails.application.routes.draw do
 
-  # get '/geo_entity_update' => 'homepage#geo_entity_update'
-  # get '/team_update' => 'homepage#user_update'
-  # get '/user_update' => 'homepage#team_update'
+  # get '/teams/' => redirect('/teams')
+
   get '/entity_updates' => 'homepage#entity_updates'
 
   # rotas para as chamadas ajax na pagina principal

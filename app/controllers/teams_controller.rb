@@ -39,18 +39,15 @@ class TeamsController < ApplicationController
   # GET /teams/1
   # GET /teams/1.json
   def show
-
-    team_leader_id = @team.team_members.where(is_leader: true).first
-    puts team_leader_id.inspect
-    @team_leader = @team.users.where(id: team_leader_id.user_id).first
-    puts @team_leader.inspect
-
-    # if @team.nil?
-    #   flash[:error] = "A equipa que procura n�o existe!"
-    #   redirect_to teams_url
-    # else
-    #   @team
-    # end
+    if @team.nil?
+      flash[:error] = "A equipa que procura nao existe!"
+      redirect_to teams_url
+    else
+      team_leader_id = @team.team_members.where(is_leader: true).first
+      puts team_leader_id.inspect
+      @team_leader = @team.users.where(id: team_leader_id.user_id).first
+      puts @team_leader.inspect
+    end
   end
 
   # GET /teams/new
@@ -61,15 +58,20 @@ class TeamsController < ApplicationController
 
   # GET /teams/1/edit
   def edit
-    @users_in_team = @team.users
-    @team_leader = TeamMember.find_by(team_id: @team.id, is_leader: true)
+    if @team.nil?
+      flash[:error] = "A equipa que procura não existe!"
+      redirect_to teams_url
+    else
+      @users_in_team = @team.users
+      @team_leader = TeamMember.find_by(team_id: @team.id, is_leader: true)
 
-    # if @team_leader.user_id == current_user.id || current_user.profile == User::ADMINISTRADOR
-    #   puts "PODE EDITAR"
-    # else
-    #   flash[:error] = "A equipa que procura n�o existe!"
-    #   redirect_to teams_url
-    # end
+      if @team_leader.user_id == current_user.id || current_user.profile == User::ADMINISTRADOR
+        puts "PODE EDITAR"
+      else
+        flash[:error] = "Não tem permissões para realizar essa ação!"
+        redirect_to teams_url
+      end
+    end
   end
 
   # POST /teams
@@ -150,7 +152,19 @@ class TeamsController < ApplicationController
   private
   # Use callbacks to share common setup or constraints between actions.
   def set_team
-    @team = Team.find(params[:id])
+    if params[:name]
+      puts "INTRODUZIDO NOME PARA A EQUIPA!!!!"
+      @team = Team.where(name: params[:name]).first
+    else
+      puts "DESTA VEZ RECEBI UM IDENTIFICADOR!!!!"
+      count = Team.count
+      exists = Team.exists?(params[:id].to_i)
+      puts exists
+      if (params[:id].to_i <= count) and exists
+        @team = Team.find(params[:id])
+      end
+    end
+    # @team = Team.find(params[:id])
   end
 
   def set_all_users

@@ -20,6 +20,7 @@
 <% end %>
 
 <div class="container">
+  <strong><span><%= flash.now[:error] %></span></strong>
   <ul class="collapsible popout" data-collapsible="accordion" style="margin-left: 10px; margin-right: 10px;">
     <% @teams.each do |team| %>
         <li>
@@ -44,19 +45,5 @@
           </div>
         </li>
     <% end %>
-
-
-    <!--<li>-->
-    <!--<div class="collapsible-header">First</div>-->
-    <!--<div class="collapsible-body"><p>Lorem ipsum dolor sit amet.</p></div>-->
-    <!--</li>-->
-    <!--<li>-->
-    <!--<div class="collapsible-header"><i class="material-icons">place</i>Second</div>-->
-    <!--<div class="collapsible-body"><p>Lorem ipsum dolor sit amet.</p></div>-->
-    <!--</li>-->
-    <!--<li>-->
-    <!--<div class="collapsible-header"><i class="material-icons">whatshot</i>Third</div>-->
-    <!--<div class="collapsible-body"><p>Lorem ipsum dolor sit amet.</p></div>-->
-    <!--</li>-->
   </ul>
 </div>
