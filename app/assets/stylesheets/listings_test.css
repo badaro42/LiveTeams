@@ -173,7 +173,8 @@ label {
 
 /* ECRA GRANDE */
 @media only screen and (min-width: 993px) {
-    #teams_info_div {
+    #teams_info_div,
+    #profile-user-info {
         margin-right: 3.3%;
         width: 30%;
     }
@@ -199,9 +200,6 @@ label {
         padding: 0px;
     }
 
-    #profile-user-info {
-        margin-left: 2%;
-    }
 
 
 
