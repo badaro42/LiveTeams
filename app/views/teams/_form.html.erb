@@ -26,7 +26,7 @@
     <div class="row" style="margin-bottom: 35px;">
       <label style="padding-left: 10px;">Clique no mapa para criar um marcador (a equipa será destacada para esse
         ponto).</label>
-      <%= f.text_field :latlon, hidden: true %>
+      <%= f.text_field :latlon, hidden: true, value: @team.latlon %>
       <div class="input-field col s12">
         <div id="team_map"></div>
       </div>

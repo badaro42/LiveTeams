@@ -331,18 +331,18 @@ $(document).ready(function () {
 //});
 
 
-// o parametro "coords" � da forma -> "POINT(33.333 11.111)"
-// retorna um vector com 2 posi�oes, uma para cada coordenada
-function parsePointCoordinates(coords) {
-  var split_res = coords.split("(");
-  var new_split_res = split_res[1].split(" ");
-
-  var res = [];
-  res.push(new_split_res[0]); //latitude
-  res.push(new_split_res[1].split(")")[0]); //longitude
-
-  return res;
-}
+//// o parametro "coords" � da forma -> "POINT(33.333 11.111)"
+//// retorna um vector com 2 posi�oes, uma para cada coordenada
+//function parsePointCoordinates(coords) {
+//  var split_res = coords.split("(");
+//  var new_split_res = split_res[1].split(" ");
+//
+//  var res = [];
+//  res.push(new_split_res[0]); //latitude
+//  res.push(new_split_res[1].split(")")[0]); //longitude
+//
+//  return res;
+//}
 
 // envia a entidade criada para a Base de Dados
 function insertGeoEntity() {

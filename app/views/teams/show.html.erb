@@ -82,6 +82,8 @@
       <h5 style="font-weight: 300;">Coordenadas</h5>
 
       <div class="divider divider-margin"></div>
+
+      <%= hidden_field_tag(:curr_team_coords, @team.latlon) %>
       <div id="team_map" style="height: 350px;"></div>
     </div>
   </div>

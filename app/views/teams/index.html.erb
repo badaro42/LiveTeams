@@ -24,13 +24,22 @@
   <ul class="collapsible popout" data-collapsible="accordion" style="margin-left: 10px; margin-right: 10px;">
     <% @teams.each do |team| %>
         <li>
-          <% arr_coords = team.latlon.to_s.split('(')[1].split(')')[0].split(' ') %>
+          <% arr_is_empty = true %>
+          <% if !team.latlon.nil? %>
+              <% arr_coords = team.latlon.to_s.split('(')[1].split(')')[0].split(' ') %>
+              <% arr_is_empty = false %>
+          <% end %>
           <div class="collapsible-header truncate">
             <strong>
               <%= link_to team, method: :get do %>
                   <%= team.name %>
               <% end %> |
-            </strong> [<%= arr_coords[1] %>; <%= arr_coords[0] %>]
+            </strong>
+            <% if arr_is_empty %>
+                [Sem localização definida]
+            <% else %>
+                [<%= arr_coords[1] %>; <%= arr_coords[0] %>]
+            <% end %>
           </div>
           <div class="collapsible-body">
             <p style="padding: 15px;">

@@ -1,5 +1,6 @@
 class UsersController < ApplicationController
   before_action :set_user, only: [:show]
+  # before_action :set_flash
   layout "listings"
 
   def index
@@ -35,4 +36,8 @@ class UsersController < ApplicationController
   def set_user
     @user = User.find(params[:id])
   end
+
+  # def set_flash
+  #   flash[:error] = ""
+  # end
 end
