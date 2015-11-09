@@ -43,6 +43,15 @@ class TeamsController < ApplicationController
       flash[:error] = "A equipa que procura nao existe!"
       redirect_to teams_url
     else
+      puts "TAMANHO DAS VERSOES DESTA EQUIPA!!!!"
+      puts @team.versions.size
+
+      # gon.watch.team_versions = @team.versions
+      gon.team_versions = []
+      @team.versions.each do |version|
+        gon.team_versions.push(version.reify)
+      end
+
       team_leader_id = @team.team_members.where(is_leader: true).first
       puts team_leader_id.inspect
       @team_leader = @team.users.where(id: team_leader_id.user_id).first

@@ -59,6 +59,10 @@ gem 'rack-timeout'
 gem 'faye-websocket'
 gem 'pry-rails'
 
+gem 'paper_trail', '~> 4.0.0'
+gem 'gon'
+
+
 # gem 'underscore-rails'
 # gem 'rb-fsevent'
 

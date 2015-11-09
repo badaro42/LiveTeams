@@ -80,32 +80,49 @@ $(document).ready(function () {
       var text_coords = $('#curr_team_coords').val();
       var point_coords;
 
-      // a equipa nao esta destacada para lado nenhum
-      if (text_coords.length == 0) {
-        point_coords = L.latLng(38.627881, -9.161007);
-      }
-      else {
-        var coords_arr = parsePointCoordinates(text_coords);
-        point_coords = L.latLng(coords_arr[1], coords_arr[0]);
-      }
-
       osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
       osm = L.tileLayer(osmUrl, {maxZoom: 18});
       team_map = L.map("team_map", {
         zoom: 12,
-        center: point_coords,
+        center: [38.627881, -9.161007],
         layers: [osm],
         zoomControl: true,
         attributionControl: false
       });
 
-      // apenas adicionar o marcador caso a equipa tenha localizaçao
-      if (text_coords.length > 0) {
+//      gon.watch('team_versions', {interval: 5000}, updateTeamPosition);
+
+//      console.log(gon.team_versions);
+//
+      var i;
+      for (i = 0; i < gon.team_versions.length; i++) {
+        var coords = gon.team_versions[i].latlon;
+        var c_arr = parsePointCoordinates(gon.team_versions[i].latlon);
+        point_coords = L.latLng(c_arr[1], c_arr[0]);
         curr_marker = L.marker(point_coords).addTo(team_map);
-        var popupContent = "<p><b>Localização atual da equipa:</b></p><p>[" +
-            curr_marker.getLatLng().lat + "; " + curr_marker.getLatLng().lng + "]</p>";
-        curr_marker.bindPopup(popupContent).openPopup();
       }
+
+
+      // a equipa nao esta destacada para lado nenhum
+//      if (text_coords.length == 0) {
+//        point_coords = L.latLng(38.627881, -9.161007);
+//      }
+//      else {
+//        var coords_arr = parsePointCoordinates(text_coords);
+//        point_coords = L.latLng(coords_arr[1], coords_arr[0]);
+//      }
+
+
+
+
+
+      // apenas adicionar o marcador caso a equipa tenha localizaçao
+//      if (text_coords.length > 0) {
+//        curr_marker = L.marker(point_coords).addTo(team_map);
+//        var popupContent = "<p><b>Localização atual da equipa:</b></p><p>[" +
+//            curr_marker.getLatLng().lat + "; " + curr_marker.getLatLng().lng + "]</p>";
+//        curr_marker.bindPopup(popupContent).openPopup();
+//      }
     }
   }
   // estamos na pagina para editar utilizador - /users/12/edit
@@ -233,4 +250,9 @@ function parsePointCoordinates(coords) {
   res.push(new_split_res[1].split(")")[0]); //longitude
 
   return res;
+}
+
+function updateTeamPosition(args) {
+  console.log("FUNÇÃO DO GON - ARGUMENTOS:");
+  console.log(args);
 }
