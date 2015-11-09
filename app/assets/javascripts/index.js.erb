@@ -4,6 +4,13 @@ var e_type, e_radius, e_coords, coords_to_display, e_length, e_area, e_layer, e_
 var source;
 var all_geo_ents_ids;
 var all_teams_ids;
+var team_icon = L.icon({
+  iconUrl: 'http://freeflaticons.net/wp-content/uploads/2014/11/group-copy-1416476921gn4k8.png',
+  iconSize: [38, 38], // size of the icon
+  iconAnchor: [19, 30], // point of the icon which will correspond to marker's location
+  popupAnchor: [-1, -30] // point from which the popup should open relative to the iconAnchor
+});
+
 
 $(document).ready(function () {
   all_teams_ids = [];
@@ -136,13 +143,6 @@ $(document).ready(function () {
 
   // inicializa as dropdowns que existem na pagina!
   $('select').material_select();
-
-  var team_icon = L.icon({
-    iconUrl: 'http://freeflaticons.net/wp-content/uploads/2014/11/group-copy-1416476921gn4k8.png',
-    iconSize: [38, 38], // size of the icon
-    iconAnchor: [19, 30], // point of the icon which will correspond to marker's location
-    popupAnchor: [-1, -30] // point from which the popup should open relative to the iconAnchor
-  });
 
 
   // ****************** CHAMADAS ASSINCRONAS PARA POPULAR O MAPA ******************
@@ -484,6 +484,59 @@ function addGeoEntityToMap(json) {
   }
 }
 
+function addTeamToMap(json) {
+  console.log("RECEBEMOS NOVA EQUIPA!!!!");
+//  console.log(json);
+
+  var new_layer;
+  var json_arr = JSON.parse(json);
+
+  // apenas uma EQUIPA retornada pelo servidor
+  if (json_arr.type == "Feature") {
+    console.log(json_arr);
+
+    // esta EQUIPA ainda nao existe no array!!
+    if (all_teams_ids.indexOf(json_arr.properties.f_id) == -1) {
+      console.log("TEAM TEAM - ainda nao existe no array");
+
+      new_layer = L.geoJson().addTo(map);
+      new_layer.addData(json_arr);
+      cluster.addLayer(new_layer);
+      map.addLayer(cluster);
+
+      all_teams_ids.push(json_arr.properties.f_id);
+    }
+  }
+  // mais do que uma EQUIPA retornada pelo servidor
+  else if (json_arr.type == "FeatureCollection") {
+    console.log("MAIS QUE UMA EQUIPA, VAMOS ENTRAR NO FOR EACH!!!");
+
+    // array GEOJSON que no final conterá todas as EQUIPAS que ainda nao estejam no mapa
+    var final_json_arr = {
+      "type": "FeatureCollection",
+      "features": []
+    };
+
+    $.each(json_arr.features, function (key, val) {
+      var f_id = val.properties.f_id;
+      console.log(all_teams_ids);
+      console.log(f_id);
+      console.log("f_id está contida no array?? " + (all_teams_ids.indexOf(f_id) != -1));
+
+      // esta EQUIPA ainda nao existe no array!!
+      if (all_teams_ids.indexOf(f_id) == -1) {
+        final_json_arr.features.push(val);
+        all_teams_ids.push(f_id);
+      }
+    });
+
+    new_layer = L.geoJson().addTo(map);
+    new_layer.addData(final_json_arr);
+    cluster.addLayer(new_layer);
+    map.addLayer(cluster);
+  }
+}
+
 function eventSourceSetup() {
   console.log("START DA CENA DO EVENT_SOURCE");
 
@@ -494,7 +547,13 @@ function eventSourceSetup() {
     // Result to xhr polling :(
   }
 
+  // listener para a receção de updates de entidades geograficas
   source.addEventListener('entity_updates', function (e) {
     addGeoEntityToMap(e.data);
+  }, false);
+
+  // listener para a receçao de updates das equipas
+  source.addEventListener('team_updates', function (e) {
+    addTeamToMap(e.data);
   }, false);
 }
