@@ -475,8 +475,6 @@ function addGeoEntityToMap(json) {
       }
     });
 
-//    console.log(final_json_arr);
-
     new_layer = L.geoJson().addTo(map);
     new_layer.addData(final_json_arr);
     cluster.addLayer(new_layer);
@@ -486,7 +484,6 @@ function addGeoEntityToMap(json) {
 
 function addTeamToMap(json) {
   console.log("RECEBEMOS NOVA EQUIPA!!!!");
-//  console.log(json);
 
   var new_layer;
   var json_arr = JSON.parse(json);
@@ -499,8 +496,11 @@ function addTeamToMap(json) {
     if (all_teams_ids.indexOf(json_arr.properties.f_id) == -1) {
       console.log("TEAM TEAM - ainda nao existe no array");
 
-      new_layer = L.geoJson().addTo(map);
-      new_layer.addData(json_arr);
+      new_layer = L.geoJson(json_arr, {
+        pointToLayer: function (feature, latlng) {
+          return L.marker(latlng, {icon: team_icon});
+        }
+      }).addTo(map);
       cluster.addLayer(new_layer);
       map.addLayer(cluster);
 
@@ -530,8 +530,11 @@ function addTeamToMap(json) {
       }
     });
 
-    new_layer = L.geoJson().addTo(map);
-    new_layer.addData(final_json_arr);
+    new_layer = L.geoJson(final_json_arr, {
+      pointToLayer: function (feature, latlng) {
+        return L.marker(latlng, {icon: team_icon});
+      }
+    }).addTo(map);
     cluster.addLayer(new_layer);
     map.addLayer(cluster);
   }
