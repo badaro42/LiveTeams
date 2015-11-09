@@ -92,14 +92,26 @@ $(document).ready(function () {
 
 //      gon.watch('team_versions', {interval: 5000}, updateTeamPosition);
 
-//      console.log(gon.team_versions);
-//
-      var i;
-      for (i = 0; i < gon.team_versions.length; i++) {
-        var coords = gon.team_versions[i].latlon;
-        var c_arr = parsePointCoordinates(gon.team_versions[i].latlon);
-        point_coords = L.latLng(c_arr[1], c_arr[0]);
-        curr_marker = L.marker(point_coords).addTo(team_map);
+      console.log(gon.team_versions);
+      console.log(typeof gon.team_versions[1].latlon !== "undefined");
+
+      // isto só é null quando a equipa acabou de ser criada!!
+      if (gon.team_versions[0] != null) {
+        var i;
+        var bounds_arr = [];
+
+        for (i = 0; i < gon.team_versions.length; i++) {
+          // caso ainda nao haja nenhuma localização!!
+          if (typeof gon.team_versions[i].latlon !== "undefined") {
+            var c_arr = parsePointCoordinates(gon.team_versions[i].latlon);
+            point_coords = L.latLng(c_arr[1], c_arr[0]);
+            curr_marker = L.marker(point_coords).addTo(team_map);
+            bounds_arr.push(point_coords);
+          }
+        }
+
+        console.log(bounds_arr);
+        team_map.fitBounds(bounds_arr);
       }
 
 
@@ -111,9 +123,6 @@ $(document).ready(function () {
 //        var coords_arr = parsePointCoordinates(text_coords);
 //        point_coords = L.latLng(coords_arr[1], coords_arr[0]);
 //      }
-
-
-
 
 
       // apenas adicionar o marcador caso a equipa tenha localizaçao
@@ -252,7 +261,7 @@ function parsePointCoordinates(coords) {
   return res;
 }
 
-function updateTeamPosition(args) {
-  console.log("FUNÇÃO DO GON - ARGUMENTOS:");
-  console.log(args);
-}
+//function updateTeamPosition(args) {
+//  console.log("FUNÇÃO DO GON - ARGUMENTOS:");
+//  console.log(args);
+//}
