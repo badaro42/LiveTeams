@@ -57,7 +57,10 @@
       <div class="col l12 m6 s12">
 
         <h6 class="hide-on-small-only hide-on-large-only" style="font-weight: 300;">
-          Chefe: <%= @team_leader.full_name %>
+          Chefe:
+          <%= link_to @team_leader, method: :get do %>
+              <%= @team_leader.full_name %>
+          <% end %>
         </h6>
 
         <div class="divider divider-margin"></div>
