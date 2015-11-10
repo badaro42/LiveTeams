@@ -25,7 +25,7 @@ $(document).ready(function () {
       // TODO: MAPA COM LOCALIZAÇÃO ATUAL, PERMITE ARRASTAR MARCADOR!
       console.log("PÁGINA PARA EDITAR EQUIPA!!!");
 
-      var text_coords = $('#team_latlon').val();
+      var text_coords = $('#team_latlon_highlight').val();
       var point_coords;
 
       // a equipa nao esta destacada para lado nenhum
@@ -93,26 +93,36 @@ $(document).ready(function () {
 //      gon.watch('team_versions', {interval: 5000}, updateTeamPosition);
 
       console.log(gon.team_versions);
-      console.log(typeof gon.team_versions[1].latlon !== "undefined");
+//      console.log(typeof gon.team_versions[1].latlon !== "undefined");
 
+      var i = 0;
       // isto só é null quando a equipa acabou de ser criada!!
-      if (gon.team_versions[0] != null) {
-        var i;
-        var bounds_arr = [];
-
-        for (i = 0; i < gon.team_versions.length; i++) {
-          // caso ainda nao haja nenhuma localização!!
-          if (typeof gon.team_versions[i].latlon !== "undefined") {
-            var c_arr = parsePointCoordinates(gon.team_versions[i].latlon);
-            point_coords = L.latLng(c_arr[1], c_arr[0]);
-            curr_marker = L.marker(point_coords).addTo(team_map);
-            bounds_arr.push(point_coords);
-          }
-        }
-
-        console.log(bounds_arr);
-        team_map.fitBounds(bounds_arr);
+      if (gon.team_versions[0] == null) {
+        i = 1;
+        console.log("tou aqui dentro!!! ;D");
+//        console.log(gon.team_versions[i].latlon !== null);
       }
+
+      // processa todas as posições anteriores (excepto a atual!!!!)
+      var bounds_arr = [], c_arr;
+      for (; i < gon.team_versions.length; i++) {
+        // caso ainda nao haja nenhuma localização!!
+        if (gon.team_versions[i].latlon !== null) {
+          c_arr = parsePointCoordinates(gon.team_versions[i].latlon);
+          point_coords = L.latLng(c_arr[1], c_arr[0]);
+          curr_marker = L.marker(point_coords).addTo(team_map);
+          bounds_arr.push(point_coords);
+        }
+      }
+
+      // processa a posição atual da equipa!!
+      c_arr = parsePointCoordinates(gon.current_latlon);
+      point_coords = L.latLng(c_arr[1], c_arr[0]);
+      curr_marker = L.marker(point_coords).addTo(team_map);
+      bounds_arr.push(point_coords);
+
+      console.log(bounds_arr);
+      team_map.fitBounds(bounds_arr);
 
 
       // a equipa nao esta destacada para lado nenhum
@@ -188,9 +198,11 @@ $(document).ready(function () {
    */
   $('input:checkbox').change(
       function () {
+        // select para escolher o lider
         var select_leader = $('#select_team_leader');
+        // select para escolher o user responsavel pela posição da equipa
+        var select_team_position = $('#select_team_position');
         var i_value, i_text;
-        //console.log(select_leader);
 
         var len = $("input[name='team[users][]']:checked").length;
         console.log(len);
@@ -212,11 +224,16 @@ $(document).ready(function () {
             value: i_value,
             text: i_text
           }));
+          select_team_position.append($("<option/>", {
+            value: i_value,
+            text: i_text
+          }));
         }
         else if (!($(this).is(':checked'))) {
           i_value = $(this).prop('value');
           console.log("------ UNCHECKED ------");
           $("#select_team_leader option[value=" + i_value + "]").remove();
+          $("#select_team_position option[value=" + i_value + "]").remove();
         }
       });
 
@@ -245,7 +262,7 @@ function onMapClick(e) {
   curr_marker.bindPopup(popupContent).openPopup();
 
   var new_val = "POINT (" + e.latlng.lng + " " + e.latlng.lat + ")";
-  $("#team_latlon").attr("value", new_val);
+  $("#team_latlon_highlight").attr("value", new_val);
 }
 
 // o parametro "coords" � da forma -> "POINT(33.333 11.111)"

@@ -1,4 +1,8 @@
 /* ------------------------------------------ */
+.fixed-position {
+    left: auto !important;
+}
+
 
 .center-btn {
     text-align: center;

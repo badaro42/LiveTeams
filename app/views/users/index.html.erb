@@ -58,7 +58,7 @@
               <%= user.first_name %> <%= user.last_name %>
             </span>
 
-              <p class="truncate">Administrador</p>
+              <p class="truncate"><%= user.profile %></p>
             </div>
             <div class="card-action">
               <%= link_to "Ver perfil", user_path(user), method: :get %>

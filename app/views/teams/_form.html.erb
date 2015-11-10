@@ -13,8 +13,8 @@
         </div>
     <% end %>
 
-    <div class="row input-field col s12 m12 l12" style="margin-top: 20px; margin-bottom: 15px;">
-      <%= f.label "Nome da equipa" %>
+    <div class="row input-field col s12 m12 l12" style="margin-top: 20px; margin-bottom: 15px; padding: 0;">
+      <%= f.label "Nome da equipa", class: "fixed-position" %>
       <%= f.text_field :name, required: true, autofocus: true %>
     </div>
 
@@ -24,9 +24,8 @@
     <!--</div>-->
 
     <div class="row" style="margin-bottom: 35px;">
-      <label style="padding-left: 10px;">Clique no mapa para criar um marcador (a equipa será destacada para esse
-        ponto).</label>
-      <%= f.text_field :latlon, hidden: true, value: @team.latlon %>
+      <label style="padding-left: 10px;">Destacar equipa para local (clique no mapa para adicionar um marcador)</label>
+      <%= f.text_field :latlon_highlight, hidden: true %>
       <div class="input-field col s12">
         <div id="team_map"></div>
       </div>
@@ -45,7 +44,7 @@
                 <% else %>
                     <%= f.check_box("users", {:multiple => true}, user.id.to_s, nil) %>
                 <% end %>
-                <%= f.label :full_name, full_name, for: "team_users_"+user.id.to_s %>
+                <%= f.label :full_name, full_name, class: "truncate", for: "team_users_"+user.id.to_s %>
               </p>
             </div>
         <% end %>
@@ -69,10 +68,26 @@
 
         <%= f.label "Responsável pela equipa", for: "select_team_leader", style: "font-size: 13px;" %>
       </div>
+      <div id="choose_team_position_dropdown" class="input-field col s12 m12 l6"
+           style="margin-bottom: 20px; padding-top: 40px; margin-top: 0px;">
+        <!-- A equipa não tem lider. P.e: quando estamos a criar uma nova equipa hehe -->
+        <% if @team_leader.nil? %>
+            <%= select_tag 'team[location_user_id]', options_from_collection_for_select(@users_in_team, :id, :full_name),
+                           {prompt: 'Escolha um utilizador', class: 'browser-default', id: "select_team_position",
+                            required: true} %>
+        <% else %>
+            <%= select_tag 'team[location_user_id]', options_from_collection_for_select(
+                @users_in_team, :id, :full_name, @team_leader.user_id),
+                           {prompt: 'Escolha um utilizador', class: 'browser-default', id: "select_team_position",
+                            required: true} %>
+        <% end %>
+
+        <%= f.label "Utilizador responsável por atualizar a posição da equipa", for: "select_team_position", style: "font-size: 13px;" %>
+      </div>
     </div>
 
 
-    <div class="actions col m12 l12 s12" style="margin-top: 5px;">
+    <div class="actions col m12 l12 s12" style="margin-top: 5px; padding: 0;">
       <% if @create_new_team %>
           <%= f.button 'Criar equipa', class: "btn waves-effect waves-light disabled", id: "team-submit-form" %>
       <% else %>

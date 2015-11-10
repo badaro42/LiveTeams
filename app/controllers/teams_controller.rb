@@ -10,7 +10,7 @@ class TeamsController < ApplicationController
 
     # apenas carrega as equipas que tenham localização
     # equipas sem localização dava merda no mapeamento para json
-    teams = Team.where.not('latlon' => nil)
+    teams = Team.all
 
     # puts "EQUIPAS NO SISTEMA!!!!!!"
     # puts teams
@@ -22,7 +22,7 @@ class TeamsController < ApplicationController
     # dps de obter todas as equipas do servidor, mapeia-as num objeto de forma a que sejam correctamente
     # transformadas em json
     mapped_teams = factory.map_feature_collection(teams) {
-        |f| factory.feature(f.latlon, nil, {name: f.name, f_id: f.id}) }
+        |f| factory.feature(f.users.where(id: f.location_user_id).first.latlon, nil, {name: f.name, f_id: f.id}) }
 
     # puts mapped_teams
 
@@ -43,14 +43,19 @@ class TeamsController < ApplicationController
   # GET /teams/1
   # GET /teams/1.json
   def show
+    @team.inspect
+
     if @team.nil?
       flash[:error] = "A equipa que procura nao existe!"
       redirect_to teams_url
     else
       puts "TAMANHO DAS VERSOES DESTA EQUIPA!!!!"
       puts @team.versions.size
+      puts @team.versions.inspect
+      puts @team.versions.first.reify.inspect
+      puts @team.versions.last.reify.inspect
 
-      # gon.watch.team_versions = @team.versions
+      gon.current_latlon = @team.latlon
       gon.team_versions = []
       @team.versions.each do |version|
         gon.team_versions.push(version.reify)
@@ -60,6 +65,8 @@ class TeamsController < ApplicationController
       puts team_leader_id.inspect
       @team_leader = @team.users.where(id: team_leader_id.user_id).first
       puts @team_leader.inspect
+
+      @location_user = User.find(@team.location_user_id)
     end
   end
 
@@ -92,6 +99,10 @@ class TeamsController < ApplicationController
   def create
     @team = Team.new(team_params)
 
+    # utilizador responsavel pela localização
+    # vamos buscar a localização para esse utilizador e introduzimos na equipa
+    @team.latlon = User.find(params[:team][:location_user_id]).latlon
+
     respond_to do |format|
       if @team.save
 
@@ -105,12 +116,16 @@ class TeamsController < ApplicationController
           puts "LEADER LEADER LEADER LEADER"
           puts params[:team][:is_leader]
 
-          # � o lider, adiciona-se com o parametro a true
+          puts "RESPONSAVEL LOCALIZAÇÃO"
+          puts params[:team][:location_user_id]
+
+          # é o lider, adiciona-se com o parametro a true
           if u_id == params[:team][:is_leader]
             team_member = TeamMember.new(:user_id => u_id.to_i, :team_id => @team.id, :is_leader => true)
           else
             team_member = TeamMember.new(:user_id => u_id.to_i, :team_id => @team.id, :is_leader => false)
           end
+
           team_member.save
         end
 
@@ -170,10 +185,10 @@ class TeamsController < ApplicationController
       @team = Team.where(name: params[:name]).first
     else
       puts "DESTA VEZ RECEBI UM IDENTIFICADOR!!!!"
-      count = Team.count
+      # count = Team.count
       exists = Team.exists?(params[:id].to_i)
       puts exists
-      if (params[:id].to_i <= count) and exists
+      if exists
         @team = Team.find(params[:id])
       end
     end
@@ -186,6 +201,6 @@ class TeamsController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def team_params
-    params.require(:team).permit(:name, :latlon, :is_leader, users: [:id])
+    params.require(:team).permit(:name, :latlon_highlight, :location_user_id, :is_leader, users: [:id])
   end
 end

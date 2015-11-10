@@ -3,6 +3,11 @@ class UsersController < ApplicationController
   # before_action :set_flash
   layout "listings"
 
+  def update_location
+    # atualizar a posição de todas as equipas que tenham este user como responsavel por atualizar a localização
+    Team.where(location_user_id: params[:user_id]).update_all(latlon: params[:latlon])
+  end
+
   def index
     @users = User.all
   end

@@ -27,7 +27,7 @@
 
       <div class="divider divider-margin"></div>
       <div class="col l12 m6 s12 offset-m6 hide-on-med-only">
-        <h6 style="font-weight: 300;">
+        <h6 style="font-weight: 300; margin-top: 0 !important;">
           <!--<strong>Nome bem grande só para ver como fica dentro da divisao</strong>-->
           <strong><%= @team.name %></strong>
         </h6>
@@ -42,6 +42,12 @@
           Chefe:
           <%= link_to @team_leader, method: :get do %>
               <%= @team_leader.full_name %>
+          <% end %>
+        </h6>
+        <h6 class="hide-on-med-only" style="font-weight: 300;">
+          Reponsável por atualizar a posição:
+          <%= link_to @location_user, method: :get do %>
+              <%= @location_user.full_name %>
           <% end %>
         </h6>
       </div>
@@ -86,7 +92,7 @@
 
       <div class="divider divider-margin"></div>
 
-      <%= hidden_field_tag(:curr_team_coords, @team.latlon) %>
+      <%#= hidden_field_tag(:curr_team_coords, @team.latlon) %>
       <div id="team_map" style="height: 350px;"></div>
     </div>
   </div>
