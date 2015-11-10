@@ -125,9 +125,4 @@ class HomepageController < ApplicationController
     # puts teste
     render json: features_to_json
   end
-
-  # def recently_changed? object
-  #   object.created_at > 25.seconds.ago or
-  #       object.updated_at > 25.seconds.ago
-  # end
 end

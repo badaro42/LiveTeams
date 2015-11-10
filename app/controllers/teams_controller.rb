@@ -8,8 +8,12 @@ class TeamsController < ApplicationController
     require 'rgeo'
     require 'rgeo-geojson'
 
-    teams = Team.all
-    # puts features
+    # apenas carrega as equipas que tenham localização
+    # equipas sem localização dava merda no mapeamento para json
+    teams = Team.where.not('latlon' => nil)
+
+    # puts "EQUIPAS NO SISTEMA!!!!!!"
+    # puts teams
 
     # cria a fabrica de entidades
     factory = RGeo::GeoJSON::EntityFactory.instance
@@ -20,7 +24,7 @@ class TeamsController < ApplicationController
     mapped_teams = factory.map_feature_collection(teams) {
         |f| factory.feature(f.latlon, nil, {name: f.name, f_id: f.id}) }
 
-    # puts mapped_feats
+    # puts mapped_teams
 
     # dps do mapeamento, s�o enviadas para a fabrica que trata da transforma��o
     # para json para serem apresentadas no mapa
