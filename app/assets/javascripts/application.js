@@ -23,3 +23,4 @@
 //= require leaflet.ajax.min
 //= require initial
 //= require leaflet_numbered_markers
+//= require Leaflet.AccuratePosition

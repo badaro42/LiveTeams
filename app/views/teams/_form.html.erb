@@ -18,11 +18,6 @@
       <%= f.text_field :name, required: true, autofocus: true %>
     </div>
 
-    <!--<div class="row input-field col s12 m12 l12" style="margin-bottom: 15px; margin-top: 0px;">-->
-    <!--<%= f.label "Coordenadas" %>-->
-    <!--<%= f.text_field :latlon %>-->
-    <!--</div>-->
-
     <div class="row" style="margin-bottom: 35px;">
       <label style="padding-left: 10px;">Destacar equipa para local (clique no mapa para adicionar um marcador)</label>
       <%= f.text_field :latlon_highlight, hidden: true %>
@@ -82,7 +77,8 @@
                             required: true} %>
         <% end %>
 
-        <%= f.label "Utilizador responsável por atualizar a posição da equipa", for: "select_team_position", style: "font-size: 13px;" %>
+        <%= f.label "Utilizador responsável por atualizar a posição da equipa", for: "select_team_position",
+                    style: "font-size: 13px;" %>
       </div>
     </div>
 

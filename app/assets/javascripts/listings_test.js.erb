@@ -119,6 +119,11 @@ $(document).ready(function () {
       console.log(gon.team_versions);
 //      console.log(typeof gon.team_versions[1].latlon !== "undefined");
 
+      console.log("TEM PROPRIEDADE 'TEAM'??");
+      console.log(gon.team_versions[1].hasOwnProperty('team'));
+
+
+
       var i = 0;
       // isto só é null quando a equipa acabou de ser criada!!
       if (gon.team_versions[0] == null) {
@@ -127,15 +132,23 @@ $(document).ready(function () {
 //        console.log(gon.team_versions[i].latlon !== null);
       }
 
+
+
       var counter = 1;
       var last_coords = L.latLng(0, 0); //apenas para inicializar
 
       // processa todas as posições anteriores (excepto a atual!!!!)
-      var bounds_arr = [], c_arr;
+      var bounds_arr = [], c_arr, obj;
       for (; i < gon.team_versions.length; i++) {
+
+        if(gon.team_versions[i].hasOwnProperty('team'))
+          obj = gon.team_versions[i].team;
+        else
+          obj = gon.team_versions[i];
+
         // caso ainda nao haja nenhuma localização!!
-        if (gon.team_versions[i].latlon !== null) {
-          c_arr = parsePointCoordinates(gon.team_versions[i].latlon);
+        if (obj.latlon !== null) {
+          c_arr = parsePointCoordinates(obj.latlon);
           point_coords = L.latLng(c_arr[1], c_arr[0]);
 
           if (!last_coords.equals(point_coords)) {

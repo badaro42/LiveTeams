@@ -35,6 +35,16 @@ $(document).ready(function () {
     attributionControl: false
   });
 
+
+  // ************** Inicializa a cena da localização *******************
+//  map.on('accuratepositionprogress', onAccuratePositionProgress);
+//  map.on('accuratepositionfound', onAccuratePositionFound);
+//  map.on('accuratepositionerror', onAccuratePositionError);
+//
+//  getUserPositionGPS();
+
+
+
   drawnItems = new L.FeatureGroup();
   map.addLayer(drawnItems);
 
@@ -79,36 +89,36 @@ $(document).ready(function () {
   map.addControl(drawControl);
 
   // Geolocaliza��o do utilizador atrav�s do GPS
-  new L.control.locate({
-    position: "bottomleft",
-    drawCircle: true,
-    follow: true,
-    setView: true,
-    keepCurrentZoomLevel: false,
-    markerStyle: {
-      weight: 1,
-      opacity: 0.8,
-      fillOpacity: 0.8
-    },
-    circleStyle: {
-      weight: 1,
-      clickable: false
-    },
-    icon: "fa fa-location-arrow",
-    metric: true,
-    strings: {
-      title: "Clique aqui para ativar a geolocaliza��o",
-      popup: "Encontra-se a {distance} {unit} deste ponto",
-      outsideMapBoundsMsg: "Parece que se encontra fora dos limites do mapa"
-    },
-    locateOptions: {
-      maxZoom: 19,
-      watch: true,
-      enableHighAccuracy: true,
-      maximumAge: 10000,
-      timeout: 10000
-    }
-  }).addTo(map);
+//  new L.control.locate({
+//    position: "bottomleft",
+//    drawCircle: true,
+//    follow: true,
+//    setView: true,
+//    keepCurrentZoomLevel: false,
+//    markerStyle: {
+//      weight: 1,
+//      opacity: 0.8,
+//      fillOpacity: 0.8
+//    },
+//    circleStyle: {
+//      weight: 1,
+//      clickable: false
+//    },
+//    icon: "fa fa-location-arrow",
+//    metric: true,
+//    strings: {
+//      title: "Clique aqui para ativar a geolocaliza��o",
+//      popup: "Encontra-se a {distance} {unit} deste ponto",
+//      outsideMapBoundsMsg: "Parece que se encontra fora dos limites do mapa"
+//    },
+//    locateOptions: {
+//      maxZoom: 19,
+//      watch: true,
+//      enableHighAccuracy: true,
+//      maximumAge: 10000,
+//      timeout: 10000
+//    }
+//  }).addTo(map);
 
   // cria uma imagem com a inicial do nome do utilizador autenticado
   $('.profile_name').initial({
@@ -540,6 +550,7 @@ function addTeamToMap(json) {
   }
 }
 
+// ****************** SSE STUFF :) ************************
 function eventSourceSetup() {
   console.log("START DA CENA DO EVENT_SOURCE");
 
@@ -559,4 +570,34 @@ function eventSourceSetup() {
   source.addEventListener('team_updates', function (e) {
     addTeamToMap(e.data);
   }, false);
+}
+
+
+// ****************** TESTE GEOLOCALIZAÇÃO ************************
+function getUserPositionGPS() {
+  map.findAccuratePosition({
+    maxWait: 5000, // defaults to 10000
+    desiredAccuracy: 20 // defaults to 20
+  });
+
+  setTimeout(getUserPositionGPS, 30000);
+}
+
+function onAccuratePositionProgress (e) {
+  console.log("A OBTER A POSIÇÃO!!");
+  console.log(e.accuracy);
+  console.log(e.latlng);
+}
+
+function onAccuratePositionFound (e) {
+  console.log("POSIÇÃO OBTIDA!!");
+  console.log(e.accuracy);
+  console.log(e.latlng);
+  map.setView(e.latlng, 16);
+  L.marker(e.latlng).addTo(map);
+}
+
+function onAccuratePositionError (e) {
+  console.log("ERRO A OBTER A POSIÇÃO!!");
+  console.log(e.message)
 }
