@@ -4,14 +4,20 @@ class UsersController < ApplicationController
   layout "listings"
 
   def update_location
-    current_user.latlon = params[:latlon]
-    current_user.save
+    current_latlon = current_user.latlon
 
-    # atualizar a posição de todas as equipas que tenham este user como responsavel por atualizar a localização
-    teams = Team.where(location_user_id: params[:user_id].to_i)
-    teams.each do |team|
-      team.latlon = params[:latlon]
-      team.save
+    # só atualiza a localização se a diferença para a anterior for maior que 20m
+    # TODO: deve ser necessário fazer um fine-tunning a este parametro
+    if current_latlon.distance(params[:latlon]) < 20
+      current_user.latlon = current_latlon
+      current_user.save
+
+      # atualizar a posição de todas as equipas que tenham este user como responsavel por atualizar a localização
+      teams = Team.where(location_user_id: params[:user_id].to_i)
+      teams.each do |team|
+        team.latlon = params[:latlon]
+        team.save
+      end
     end
 
     # puts a.errors.messages
