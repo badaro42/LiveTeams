@@ -2,6 +2,28 @@ var osm, team_map, osmUrl, curr_marker = undefined;
 
 $(document).ready(function () {
 
+  // atualizar posição do utilizador
+  $("#update_location").click(function (e) {
+    console.log("CARREGUEI NO BOTAO PARA ATUALIZAR POSIÇÃO");
+    console.log($("#new_coords").val());
+
+    $.ajax({
+      type: "POST",
+      url: "/update_location",
+      data: {
+        latlon: $("#new_coords").val(),
+        user_id: gon.user_id
+      },
+      success: function (result) {
+        console.log(result);
+      },
+      error: function (err) {
+        console.log(err);
+      }
+    });
+  });
+
+
   var href = document.location.pathname;
   var users_pages = href.indexOf("users") > -1;
   var teams_pages = href.indexOf("teams") > -1;
@@ -103,6 +125,8 @@ $(document).ready(function () {
 //        console.log(gon.team_versions[i].latlon !== null);
       }
 
+      var counter = 1;
+
       // processa todas as posições anteriores (excepto a atual!!!!)
       var bounds_arr = [], c_arr;
       for (; i < gon.team_versions.length; i++) {
@@ -110,15 +134,16 @@ $(document).ready(function () {
         if (gon.team_versions[i].latlon !== null) {
           c_arr = parsePointCoordinates(gon.team_versions[i].latlon);
           point_coords = L.latLng(c_arr[1], c_arr[0]);
-          curr_marker = L.marker(point_coords).addTo(team_map);
+          curr_marker = L.marker(point_coords, {icon:	new L.NumberedDivIcon({number: counter})}).addTo(team_map);
           bounds_arr.push(point_coords);
+          counter++;
         }
       }
 
       // processa a posição atual da equipa!!
       c_arr = parsePointCoordinates(gon.current_latlon);
       point_coords = L.latLng(c_arr[1], c_arr[0]);
-      curr_marker = L.marker(point_coords).addTo(team_map);
+      curr_marker = L.marker(point_coords, {icon:	new L.NumberedDivIcon({number: counter})}).addTo(team_map);
       bounds_arr.push(point_coords);
 
       console.log(bounds_arr);

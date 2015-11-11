@@ -24,6 +24,24 @@
 
 <div class="container">
   <div class="row" style="margin-top: 20px;">
+    <form class="col l12 m12 s12 center-align z-depth-1 profile-div white">
+      <div class="row">
+        <div class="input-field col s12">
+          <input value="POINT()" id="new_coords" type="text" class="validate">
+          <label for="new_coords">(TESTE) Alterar a posição atual do utilizador [lat lon]:</label>
+          <a id="update_location" class="waves-effect waves-light btn">
+            <i class="material-icons right">send</i>Enviar
+          </a>
+        </div>
+        <!-- TODO: ESTE PEQUENO FORM PARA (TEMPORARIAMENTE) ATUALIZAR A POSIÇÃO DO UTILIZADOR -->
+        <!-- TODO: TESTANDO ASSIM SE A ATUALIZAÇÃO DAS POSIÇÕES DA EQUIPA QUE É RESPONSAVEL ESTAO CORRECTAS -->
+        <!--<button class="btn waves-effect waves-light" type="submit" id="update_location" name="latlon">Enviar-->
+          <!--<i class="material-icons right">send</i>-->
+        <!--</button>-->
+      </div>
+    </form>
+  </div>
+  <div class="row" style="margin-top: 20px;">
     <div id="profile-user-info" class="col l3 s12 center-align z-depth-1 profile-div white">
       <div class="col l12 m6 s12">
         <%= image_tag @user.avatar.url(:small), class: 'circle responsive-img' %>

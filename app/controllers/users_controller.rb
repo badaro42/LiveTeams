@@ -4,8 +4,19 @@ class UsersController < ApplicationController
   layout "listings"
 
   def update_location
+    current_user.latlon = params[:latlon]
+    current_user.save
+
     # atualizar a posição de todas as equipas que tenham este user como responsavel por atualizar a localização
-    Team.where(location_user_id: params[:user_id]).update_all(latlon: params[:latlon])
+    teams = Team.where(location_user_id: params[:user_id].to_i)
+    teams.each do |team|
+      team.latlon = params[:latlon]
+      team.save
+    end
+
+    # puts a.errors.messages
+
+    render :nothing => true, :status => 200, :content_type => 'text/html'
   end
 
   def index
@@ -13,6 +24,9 @@ class UsersController < ApplicationController
   end
 
   def show
+    # variavel para fornecer o id no jquery
+    gon.user_id = @user.id
+
     @user_teams = @user.teams
     @user_team_members = @user.team_members
 

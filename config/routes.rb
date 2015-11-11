@@ -1,7 +1,5 @@
 Rails.application.routes.draw do
 
-  # get '/teams/' => redirect('/teams')
-
   get '/entity_updates' => 'homepage#entity_updates'
 
   # rotas para as chamadas ajax na pagina principal
@@ -27,6 +25,9 @@ Rails.application.routes.draw do
   get 'users', to: 'users#index'
   get 'users/show'
   get 'users/edit'
+
+  # TESTE: ATUALIZAR AS COORDENADAS DO UTILIZADOR
+  post '/update_location' => 'users#update_location'
 
 
   # get 'teams', to: 'teams#index'
