@@ -16,9 +16,11 @@ $(document).ready(function () {
       },
       success: function (result) {
         console.log(result);
+        $("#new_coords").val('POINT()');
       },
       error: function (err) {
         console.log(err);
+        $("#new_coords").val('Erro a atualizar coordenadas!');
       }
     });
   });
@@ -126,6 +128,7 @@ $(document).ready(function () {
       }
 
       var counter = 1;
+      var last_coords = L.latLng(0, 0); //apenas para inicializar
 
       // processa todas as posições anteriores (excepto a atual!!!!)
       var bounds_arr = [], c_arr;
@@ -134,17 +137,24 @@ $(document).ready(function () {
         if (gon.team_versions[i].latlon !== null) {
           c_arr = parsePointCoordinates(gon.team_versions[i].latlon);
           point_coords = L.latLng(c_arr[1], c_arr[0]);
-          curr_marker = L.marker(point_coords, {icon:	new L.NumberedDivIcon({number: counter})}).addTo(team_map);
-          bounds_arr.push(point_coords);
-          counter++;
+
+          if (!last_coords.equals(point_coords)) {
+            curr_marker = L.marker(point_coords, {icon: new L.NumberedDivIcon({number: counter})}).addTo(team_map);
+            bounds_arr.push(point_coords);
+            counter++;
+            last_coords = point_coords;
+          }
         }
       }
 
       // processa a posição atual da equipa!!
       c_arr = parsePointCoordinates(gon.current_latlon);
       point_coords = L.latLng(c_arr[1], c_arr[0]);
-      curr_marker = L.marker(point_coords, {icon:	new L.NumberedDivIcon({number: counter})}).addTo(team_map);
-      bounds_arr.push(point_coords);
+
+      if (!last_coords.equals(point_coords)) {
+        curr_marker = L.marker(point_coords, {icon: new L.NumberedDivIcon({number: counter})}).addTo(team_map);
+        bounds_arr.push(point_coords);
+      }
 
       console.log(bounds_arr);
       team_map.fitBounds(bounds_arr);
