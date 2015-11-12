@@ -15,9 +15,14 @@ var team_icon = L.icon({
 $(document).ready(function () {
 
 //  console.log(screen);
-//  console.log(window.chrome);
-//  console.log(chrome);
+//  console.log(document.visibilityState);
+//  console.log(navigator);
+//  console.log(navigator.wakeLock);
 
+//  lock = window.navigator.requestWakeLock('screen');
+//  console.log(lock);
+
+//  console.log(typeof screen.keepAwake);
 
   all_teams_ids = [];
   all_geo_ents_ids = [];
@@ -25,6 +30,7 @@ $(document).ready(function () {
   // delay da inicialização do eventSource
   // delay atual - 10 segundos
   setTimeout(eventSourceSetup, 10000);
+//  setTimeout(teste, 10000);
 
   sidebar = L.control.sidebar('sidebar', {position: 'right'}).addTo(map);
   cluster = L.markerClusterGroup();
@@ -48,7 +54,6 @@ $(document).ready(function () {
   map.on('accuratepositionerror', onAccuratePositionError);
 
   getUserPositionGPS();
-
 
 
   drawnItems = new L.FeatureGroup();
@@ -582,19 +587,19 @@ function eventSourceSetup() {
 // ****************** TESTE GEOLOCALIZAÇÃO ************************
 function getUserPositionGPS() {
   map.findAccuratePosition({
-    maxWait: 5000, // defaults to 10000
+    maxWait: 12500, // defaults to 10000
     desiredAccuracy: 20 // defaults to 20
   });
 
-  setTimeout(getUserPositionGPS, 10000);
+  setTimeout(getUserPositionGPS, 15000);
 }
 
-function onAccuratePositionProgress (e) {
+function onAccuratePositionProgress(e) {
   console.log("A OBTER A POSIÇÃO!!");
   console.log(e);
 }
 
-function onAccuratePositionFound (e) {
+function onAccuratePositionFound(e) {
   console.log("POSIÇÃO OBTIDA!!");
   console.log(e);
 //  map.setView(e.latlng, 16);
@@ -612,7 +617,33 @@ function onAccuratePositionFound (e) {
   $('#current_position_list').prepend(li);
 }
 
-function onAccuratePositionError (e) {
+function onAccuratePositionError(e) {
   console.log("ERRO A OBTER A POSIÇÃO!!");
   console.log(e)
 }
+
+
+
+//function teste() {
+//  navigator.wakeLock.request("display").then(
+//      function successFunction() {
+//        // success
+//        console.log("foda-se sucesso1");
+//      },
+//      function errorFunction() {
+//        // error
+//        console.log("foda-se erro1");
+//      }
+//  );
+////here system indicates CPU, GPU, radio, wifi etc.
+//  navigator.wakeLock.request("system").then(
+//      function successFunction() {
+//        // success
+//        console.log("foda-se sucesso1");
+//      },
+//      function errorFunction() {
+//        // error
+//        console.log("foda-se erro1");
+//      }
+//  );
+//}
