@@ -13,6 +13,12 @@ var team_icon = L.icon({
 
 
 $(document).ready(function () {
+
+//  console.log(screen);
+//  console.log(window.chrome);
+//  console.log(chrome);
+
+
   all_teams_ids = [];
   all_geo_ents_ids = [];
 
@@ -580,7 +586,7 @@ function getUserPositionGPS() {
     desiredAccuracy: 20 // defaults to 20
   });
 
-  setTimeout(getUserPositionGPS, 30000);
+  setTimeout(getUserPositionGPS, 10000);
 }
 
 function onAccuratePositionProgress (e) {
