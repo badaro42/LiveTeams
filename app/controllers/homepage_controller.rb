@@ -96,6 +96,8 @@ class HomepageController < ApplicationController
   def index
     @most_active_users = User.all.order(sign_in_count: :desc).limit(15)
     @recently_changed_teams = Team.all.order(updated_at: :desc).limit(15)
+
+    gon.user_id = current_user.id
   end
 
   def get_geo_entities

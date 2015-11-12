@@ -5,17 +5,27 @@ class UsersController < ApplicationController
 
   def update_location
     current_latlon = current_user.latlon
+    gon.update_successful = false
+
+    geographic_factory = RGeo::Geographic.spherical_factory(:srid => 4326)
+    new_point = geographic_factory.point(params[:longitude], params[:latitude])
+    distance = current_latlon.distance(new_point)
+
+    puts new_point
+    puts distance
 
     # só atualiza a localização se a diferença para a anterior for maior que 20m
     # TODO: deve ser necessário fazer um fine-tunning a este parametro
-    if current_latlon.distance(params[:latlon]) < 20
-      current_user.latlon = current_latlon
+    if distance > 20
+      current_user.latlon = new_point
       current_user.save
+
+      gon.update_successful = true
 
       # atualizar a posição de todas as equipas que tenham este user como responsavel por atualizar a localização
       teams = Team.where(location_user_id: params[:user_id].to_i)
       teams.each do |team|
-        team.latlon = params[:latlon]
+        team.latlon = new_point
         team.save
       end
     end

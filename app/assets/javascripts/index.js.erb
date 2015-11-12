@@ -27,42 +27,9 @@ $(document).ready(function () {
   if ("geolocation" in navigator) {
     /* geolocation is available */
 
-    var options;
-
-    function onsuccess(pos) {
-      console.log(pos);
-      var c_latlng = L.latLng(pos.coords.latitude, pos.coords.longitude);
-
-      console.log("POSIÇÃO OBTIDA!!");
-      console.log(c_latlng);
-//    map.setView(e.latlng, 16);
-
-      L.marker(c_latlng).addTo(map);
-
-      var d = new Date();
-      var time = d.toLocaleTimeString();
-
-      var li = $('<li/>').addClass('collection-item');
-      var span1 = $('<span/>').text("Coordenadas: [" + pos.coords.latitude + "; " + pos.coords.longitude + "]");
-      var span2 = $('<span/>').text("Precisão da medição: " + pos.coords.accuracy + " metros");
-      var span3 = $('<span/>').text("Data do sistema: " + time);
-
-      li.append(span1).append('<br>').append(span2).append('<br>').append(span3);
-      $('#current_position_list').prepend(li);
-    }
-
-    function onerror(err) {
-      console.warn('ERROR(' + err.code + '): ' + err.message);
-    }
-
-    options = {
-      enableHighAccuracy: true,
-      timeout: 10000,
-      maximumAge: 0
-    };
-
-    navigator.geolocation.watchPosition(onsuccess, onerror, options);
-  } else {
+    setTimeout(cenaGPS, 10000);
+  }
+  else {
     /* geolocation IS NOT available */
   }
 
@@ -642,23 +609,23 @@ function eventSourceSetup() {
 //  console.log(e);
 //}
 //
-function onAccuratePositionFound(e) {
-  console.log("POSIÇÃO OBTIDA!!");
-  console.log(e);
-//  map.setView(e.latlng, 16);
-  L.marker(e.latlng).addTo(map);
-
-  var d = new Date();
-  var time = d.toLocaleTimeString();
-
-  var li = $('<li/>').addClass('collection-item');
-  var span1 = $('<span/>').text("Coordenadas: [" + e.latlng.lat + "; " + e.latlng.lng + "]");
-  var span2 = $('<span/>').text("Precisão da medição: " + e.accuracy + " metros");
-  var span3 = $('<span/>').text("Data do sistema: " + time);
-
-  li.append(span1).append('<br>').append(span2).append('<br>').append(span3);
-  $('#current_position_list').prepend(li);
-}
+//function onAccuratePositionFound(e) {
+//  console.log("POSIÇÃO OBTIDA!!");
+//  console.log(e);
+////  map.setView(e.latlng, 16);
+//  L.marker(e.latlng).addTo(map);
+//
+//  var d = new Date();
+//  var time = d.toLocaleTimeString();
+//
+//  var li = $('<li/>').addClass('collection-item');
+//  var span1 = $('<span/>').text("Coordenadas: [" + e.latlng.lat + "; " + e.latlng.lng + "]");
+//  var span2 = $('<span/>').text("Precisão da medição: " + e.accuracy + " metros");
+//  var span3 = $('<span/>').text("Data do sistema: " + time);
+//
+//  li.append(span1).append('<br>').append(span2).append('<br>').append(span3);
+//  $('#current_position_list').prepend(li);
+//}
 //
 //function onAccuratePositionError(e) {
 //  console.log("ERRO A OBTER A POSIÇÃO!!");
@@ -689,3 +656,71 @@ function onAccuratePositionFound(e) {
 //      }
 //  );
 //}
+
+
+function cenaGPS() {
+  var options = {
+    enableHighAccuracy: true,
+    timeout: 85000,
+    maximumAge: 10000
+  };
+
+  function onsuccess(pos) {
+    console.log(pos);
+    var c_latlng = L.latLng(pos.coords.latitude, pos.coords.longitude);
+
+    console.log("POSIÇÃO OBTIDA!!");
+    console.log(c_latlng);
+
+    var positionDate = new Date(pos.timestamp);
+    var currentDate = new Date();
+    console.log(positionDate.toLocaleString(), currentDate.toLocaleString());
+
+//    var c_text = "POINT(" + pos.coords.longitude + " " + pos.coords.latitude + ")";
+
+    // envia a nova posição para o servidor
+      $.ajax({
+        type: "POST",
+        url: "/update_location",
+        data: {
+          latitude: pos.coords.latitude,
+          longitude: pos.coords.longitude,
+          user_id: gon.user_id
+        },
+        success: function (result) {
+          console.log(result);
+
+          if(gon.update_successful) {
+            L.marker(c_latlng).addTo(map);
+
+            var d = new Date();
+            var time = d.toLocaleTimeString();
+
+            var li = $('<li/>').addClass('collection-item');
+            var span1 = $('<span/>').text("Coordenadas: [" + pos.coords.latitude + "; " + pos.coords.longitude + "]");
+            var span2 = $('<span/>').text("Precisão da medição: " + pos.coords.accuracy + " metros");
+            var span3 = $('<span/>').text("Data do sistema: " + time);
+
+            li.append(span1).append('<br>').append(span2).append('<br>').append(span3);
+            $('#current_position_list').prepend(li);
+          }
+        },
+        error: function (err) {
+          console.log(err);
+        }
+      });
+//    map.setView(e.latlng, 16);
+  }
+
+
+  // PERMISSION_DENIED = 1;
+  // POSITION_UNAVAILABLE = 2;
+  // TIMEOUT = 3;
+  function onerror(err) {
+    console.warn('ERROR(' + err.code + '): ' + err.message);
+  }
+
+  // esta cena do watch só é executada quando o user muda de posição
+  navigator.geolocation.getCurrentPosition(onsuccess, onerror, options);
+  setTimeout(cenaGPS, 10000);
+}
