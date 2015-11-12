@@ -24,6 +24,49 @@ $(document).ready(function () {
 
 //  console.log(typeof screen.keepAwake);
 
+  if ("geolocation" in navigator) {
+    /* geolocation is available */
+
+    var options;
+
+    function onsuccess(pos) {
+      console.log(pos);
+      var c_latlng = L.latLng(pos.coords.latitude, pos.coords.longitude);
+
+      console.log("POSIÇÃO OBTIDA!!");
+      console.log(c_latlng);
+//    map.setView(e.latlng, 16);
+
+      L.marker(c_latlng).addTo(map);
+
+      var d = new Date();
+      var time = d.toLocaleTimeString();
+
+      var li = $('<li/>').addClass('collection-item');
+      var span1 = $('<span/>').text("Coordenadas: [" + pos.coords.latitude + "; " + pos.coords.longitude + "]");
+      var span2 = $('<span/>').text("Precisão da medição: " + pos.coords.accuracy + " metros");
+      var span3 = $('<span/>').text("Data do sistema: " + time);
+
+      li.append(span1).append('<br>').append(span2).append('<br>').append(span3);
+      $('#current_position_list').prepend(li);
+    }
+
+    function onerror(err) {
+      console.warn('ERROR(' + err.code + '): ' + err.message);
+    }
+
+    options = {
+      enableHighAccuracy: true,
+      timeout: 10000,
+      maximumAge: 0
+    };
+
+    navigator.geolocation.watchPosition(onsuccess, onerror, options);
+  } else {
+    /* geolocation IS NOT available */
+  }
+
+
   all_teams_ids = [];
   all_geo_ents_ids = [];
 
@@ -49,11 +92,11 @@ $(document).ready(function () {
 
 
   // ************** Inicializa a cena da localização *******************
-  map.on('accuratepositionprogress', onAccuratePositionProgress);
-  map.on('accuratepositionfound', onAccuratePositionFound);
-  map.on('accuratepositionerror', onAccuratePositionError);
-
-  getUserPositionGPS();
+//  map.on('accuratepositionprogress', onAccuratePositionProgress);
+//  map.on('accuratepositionfound', onAccuratePositionFound);
+//  map.on('accuratepositionerror', onAccuratePositionError);
+//
+//  getUserPositionGPS();
 
 
   drawnItems = new L.FeatureGroup();
@@ -585,20 +628,20 @@ function eventSourceSetup() {
 
 
 // ****************** TESTE GEOLOCALIZAÇÃO ************************
-function getUserPositionGPS() {
-  map.findAccuratePosition({
-    maxWait: 12500, // defaults to 10000
-    desiredAccuracy: 20 // defaults to 20
-  });
-
-  setTimeout(getUserPositionGPS, 15000);
-}
-
-function onAccuratePositionProgress(e) {
-  console.log("A OBTER A POSIÇÃO!!");
-  console.log(e);
-}
-
+//function getUserPositionGPS() {
+//  map.findAccuratePosition({
+//    maxWait: 12500, // defaults to 10000
+//    desiredAccuracy: 20 // defaults to 20
+//  });
+//
+//  setTimeout(getUserPositionGPS, 15000);
+//}
+//
+//function onAccuratePositionProgress(e) {
+//  console.log("A OBTER A POSIÇÃO!!");
+//  console.log(e);
+//}
+//
 function onAccuratePositionFound(e) {
   console.log("POSIÇÃO OBTIDA!!");
   console.log(e);
@@ -616,12 +659,11 @@ function onAccuratePositionFound(e) {
   li.append(span1).append('<br>').append(span2).append('<br>').append(span3);
   $('#current_position_list').prepend(li);
 }
-
-function onAccuratePositionError(e) {
-  console.log("ERRO A OBTER A POSIÇÃO!!");
-  console.log(e)
-}
-
+//
+//function onAccuratePositionError(e) {
+//  console.log("ERRO A OBTER A POSIÇÃO!!");
+//  console.log(e)
+//}
 
 
 //function teste() {
