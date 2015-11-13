@@ -16,7 +16,11 @@ $(document).ready(function () {
 
   var noSleep = new NoSleep();
 
-  document.addEventListener('touchstart', function () {
+  var obj = document.getElementById('map');
+  obj.addEventListener('touchstart', function () {
+
+    console.log("touchstart cena cena!!!");
+
     noSleep.enable(); // keep the screen on!
     console.log(noSleep);
   }, false);
