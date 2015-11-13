@@ -16,13 +16,10 @@ $(document).ready(function () {
 
   var noSleep = new NoSleep();
 
-  noSleep.enable(); // keep the screen on!
-  console.log(noSleep);
-
-//  document.addEventListener('touchstart', function () {
-//    noSleep.enable(); // keep the screen on!
-//    console.log(noSleep);
-//  }, false);
+  document.addEventListener('touchstart', function () {
+    noSleep.enable(); // keep the screen on!
+    console.log(noSleep);
+  }, false);
 
 
 //  console.log(screen);
