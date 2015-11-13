@@ -14,6 +14,17 @@ var team_icon = L.icon({
 
 $(document).ready(function () {
 
+  var noSleep = new NoSleep();
+
+  noSleep.enable(); // keep the screen on!
+  console.log(noSleep);
+
+//  document.addEventListener('touchstart', function () {
+//    noSleep.enable(); // keep the screen on!
+//    console.log(noSleep);
+//  }, false);
+
+
 //  console.log(screen);
 //  console.log(document.visibilityState);
 //  console.log(navigator);
@@ -679,36 +690,36 @@ function cenaGPS() {
 //    var c_text = "POINT(" + pos.coords.longitude + " " + pos.coords.latitude + ")";
 
     // envia a nova posição para o servidor
-      $.ajax({
-        type: "POST",
-        url: "/update_location",
-        data: {
-          latitude: pos.coords.latitude,
-          longitude: pos.coords.longitude,
-          user_id: gon.user_id
-        },
-        success: function (result) {
-          console.log(result);
+    $.ajax({
+      type: "POST",
+      url: "/update_location",
+      data: {
+        latitude: pos.coords.latitude,
+        longitude: pos.coords.longitude,
+        user_id: gon.user_id
+      },
+      success: function (result) {
+        console.log(result);
 
-          if(gon.update_successful) {
-            L.marker(c_latlng).addTo(map);
+        if (gon.update_successful) {
+          L.marker(c_latlng).addTo(map);
 
-            var d = new Date();
-            var time = d.toLocaleTimeString();
+          var d = new Date();
+          var time = d.toLocaleTimeString();
 
-            var li = $('<li/>').addClass('collection-item');
-            var span1 = $('<span/>').text("Coordenadas: [" + pos.coords.latitude + "; " + pos.coords.longitude + "]");
-            var span2 = $('<span/>').text("Precisão da medição: " + pos.coords.accuracy + " metros");
-            var span3 = $('<span/>').text("Data do sistema: " + time);
+          var li = $('<li/>').addClass('collection-item');
+          var span1 = $('<span/>').text("Coordenadas: [" + pos.coords.latitude + "; " + pos.coords.longitude + "]");
+          var span2 = $('<span/>').text("Precisão da medição: " + pos.coords.accuracy + " metros");
+          var span3 = $('<span/>').text("Data do sistema: " + time);
 
-            li.append(span1).append('<br>').append(span2).append('<br>').append(span3);
-            $('#current_position_list').prepend(li);
-          }
-        },
-        error: function (err) {
-          console.log(err);
+          li.append(span1).append('<br>').append(span2).append('<br>').append(span3);
+          $('#current_position_list').prepend(li);
         }
-      });
+      },
+      error: function (err) {
+        console.log(err);
+      }
+    });
 //    map.setView(e.latlng, 16);
   }
 

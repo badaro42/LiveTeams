@@ -24,3 +24,4 @@
 //= require initial
 //= require leaflet_numbered_markers
 //= require Leaflet.AccuratePosition
+//= require NoSleep.min
