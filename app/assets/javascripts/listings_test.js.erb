@@ -1,4 +1,13 @@
-var osm, team_map, osmUrl, curr_marker = undefined;
+var osm, team_map, osmUrl;
+var curr_marker = undefined, remove_btn;
+
+var team_highlight_icon = L.icon({
+  iconUrl: '/assets/bullseye-64.png',
+  iconSize: [38, 38], // size of the icon
+  iconAnchor: [19, 30], // point of the icon which will correspond to marker's location
+  popupAnchor: [-1, -30] // point from which the popup should open relative to the iconAnchor
+});
+
 
 $(document).ready(function () {
 
@@ -25,7 +34,6 @@ $(document).ready(function () {
     });
   });
 
-
   var href = document.location.pathname;
   var users_pages = href.indexOf("users") > -1;
   var teams_pages = href.indexOf("teams") > -1;
@@ -39,7 +47,7 @@ $(document).ready(function () {
   // verificamos se o ultimo char do url é um numero
   // se sim, estamos na pagina do show, seja user ou equipa
   var is_a_number = !isNaN(parseInt(href[href.length - 1]));
-
+  var text_coords, point_coords;
 
   // TODO: COLOCAR PAGINAS ESPECIFICAS EM CIMA!!!
   // TODO: EX: /users/new antes de /users
@@ -49,8 +57,7 @@ $(document).ready(function () {
       // TODO: MAPA COM LOCALIZAÇÃO ATUAL, PERMITE ARRASTAR MARCADOR!
       console.log("PÁGINA PARA EDITAR EQUIPA!!!");
 
-      var text_coords = $('#team_latlon_highlight').val();
-      var point_coords;
+      text_coords = $('#team_latlon_highlight').val();
 
       // a equipa nao esta destacada para lado nenhum
       if (text_coords.length == 0) {
@@ -71,10 +78,29 @@ $(document).ready(function () {
         attributionControl: false
       });
 
+      remove_btn = L.easyButton('fa-trash-o', function () {
+        if (confirm("Pretende remover o destaque da equipa?")) {
+          if (typeof curr_marker !== 'undefined') {
+            team_map.removeLayer(curr_marker);
+            $("#team_latlon_highlight").attr("value", null);
+            remove_btn.disable();
+          }
+        }
+      });
+
+      remove_btn.disable();
+      remove_btn.addTo(team_map);
+
       // apenas adicionar o marcador caso a equipa tenha localizaçao
       if (text_coords.length > 0) {
-        var marker = L.marker(point_coords).addTo(team_map);
+        var marker = L.marker(point_coords, {icon: team_highlight_icon}).addTo(team_map);
+        var p_content = "<span>Esta equipa está destacada para as<br>seguintes coordenadas:</span>" +
+            "<p>Latitude: <b>" + point_coords.lat + "</b>,<br>Longitude: <b>" +
+            point_coords.lng + "</b></p>";
+        marker.bindPopup(p_content).openPopup();
         curr_marker = marker;
+
+        remove_btn.enable();
       }
 
       // adiciona um listener ao mapa para o evento "clique"
@@ -94,15 +120,25 @@ $(document).ready(function () {
         attributionControl: false
       });
 
+      remove_btn = L.easyButton('fa-trash-o', function () {
+        if (confirm("Pretende remover o destaque da equipa?")) {
+          if (typeof curr_marker !== 'undefined') {
+            team_map.removeLayer(curr_marker);
+            $("#team_latlon_highlight").attr("value", null);
+            remove_btn.disable();
+          }
+        }
+      });
+
+      remove_btn.disable();
+      remove_btn.addTo(team_map);
+
       // adiciona um listener ao mapa para o evento "clique"
       team_map.on('click', onMapClick);
     }
     else if (is_a_number) {
       // TODO: MAPA COM LOCALIZAÇÃO ATUAL, NAO DEVE PERMITIR ALTERAÇÕES
       console.log("PÁGINA PARA APRESENTAR INFO DA EQUIPA!!!");
-
-      var text_coords = $('#curr_team_coords').val();
-      var point_coords;
 
       osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
       osm = L.tileLayer(osmUrl, {maxZoom: 18});
@@ -114,34 +150,26 @@ $(document).ready(function () {
         attributionControl: false
       });
 
-//      gon.watch('team_versions', {interval: 5000}, updateTeamPosition);
-
       console.log(gon.team_versions);
-//      console.log(typeof gon.team_versions[1].latlon !== "undefined");
 
       console.log("TEM PROPRIEDADE 'TEAM'??");
       console.log(gon.team_versions[1].hasOwnProperty('team'));
-
-
 
       var i = 0;
       // isto só é null quando a equipa acabou de ser criada!!
       if (gon.team_versions[0] == null) {
         i = 1;
         console.log("tou aqui dentro!!! ;D");
-//        console.log(gon.team_versions[i].latlon !== null);
       }
-
-
 
       var counter = 1;
       var last_coords = L.latLng(0, 0); //apenas para inicializar
 
       // processa todas as posições anteriores (excepto a atual!!!!)
-      var bounds_arr = [], c_arr, obj;
+      var bounds_arr = [], c_arr, obj, popupContent;
       for (; i < gon.team_versions.length; i++) {
 
-        if(gon.team_versions[i].hasOwnProperty('team'))
+        if (gon.team_versions[i].hasOwnProperty('team'))
           obj = gon.team_versions[i].team;
         else
           obj = gon.team_versions[i];
@@ -152,7 +180,23 @@ $(document).ready(function () {
           point_coords = L.latLng(c_arr[1], c_arr[0]);
 
           if (!last_coords.equals(point_coords)) {
+            var date1 = new Date(obj.updated_at);
+            var date2 = Date.now();
+            var seconds = (date2 - date1) / 1000;
+            //pos 0 - dias; pos 1 - horas; pos 2 - minutos; pos 3 - segundos
+            var time_arr = secondsTimeSpanToHMS(seconds).split(':');
+            console.log(time_arr);
+
             curr_marker = L.marker(point_coords, {icon: new L.NumberedDivIcon({number: counter})}).addTo(team_map);
+            popupContent = "<span>A equipa esteve neste ponto com</span><p>Latitude: <b>" +
+                curr_marker.getLatLng().lat + "</b>,<br> Longitude: <b>" + curr_marker.getLatLng().lng +
+                "</b></p><span> há <b>" + time_arr[0] + "</b> " +
+                (time_arr[0] == 1 ? "dia" : "dias") + ", <b>" + time_arr[1] + "</b> " +
+                (time_arr[1] == 1 ? "hora" : "horas") + ", <b>" + time_arr[2] + "</b> " +
+                (time_arr[2] == 1 ? "minuto" : "minutos") + " e <b>" + Math.floor(time_arr[3]) + "</b> " +
+                (time_arr[3] == 1 ? "segundo" : "segundos") + ".</span>";
+            curr_marker.bindPopup(popupContent);
+
             bounds_arr.push(point_coords);
             counter++;
             last_coords = point_coords;
@@ -169,27 +213,24 @@ $(document).ready(function () {
         bounds_arr.push(point_coords);
       }
 
+      // devolve as coordenadas do destaque da equipa
+      text_coords = gon.highlight_latlon;
+
+      // se estiver a null a equipa nao esta destacada.
+      if (text_coords != null) {
+        c_arr = parsePointCoordinates(text_coords);
+        point_coords = L.latLng(c_arr[1], c_arr[0]);
+
+        curr_marker = L.marker(point_coords, {icon: team_highlight_icon}).addTo(team_map);
+        popupContent = "<span>Esta equipa está destacada para as<br>seguintes coordenadas:</span>" +
+            "<p>Latitude: <b>" + curr_marker.getLatLng().lat + "</b>,<br>Longitude: <b>" +
+            curr_marker.getLatLng().lng + "</b></p>";
+        curr_marker.bindPopup(popupContent);
+        bounds_arr.push(point_coords);
+      }
+
       console.log(bounds_arr);
       team_map.fitBounds(bounds_arr);
-
-
-      // a equipa nao esta destacada para lado nenhum
-//      if (text_coords.length == 0) {
-//        point_coords = L.latLng(38.627881, -9.161007);
-//      }
-//      else {
-//        var coords_arr = parsePointCoordinates(text_coords);
-//        point_coords = L.latLng(coords_arr[1], coords_arr[0]);
-//      }
-
-
-      // apenas adicionar o marcador caso a equipa tenha localizaçao
-//      if (text_coords.length > 0) {
-//        curr_marker = L.marker(point_coords).addTo(team_map);
-//        var popupContent = "<p><b>Localização atual da equipa:</b></p><p>[" +
-//            curr_marker.getLatLng().lat + "; " + curr_marker.getLatLng().lng + "]</p>";
-//        curr_marker.bindPopup(popupContent).openPopup();
-//      }
     }
   }
   // estamos na pagina para editar utilizador - /users/12/edit
@@ -242,7 +283,7 @@ $(document).ready(function () {
   });
 
   /**
-   * Listener para quando uma checkbox � marcada ou desmarcada
+   * Listener para quando uma checkbox é marcada ou desmarcada
    */
   $('input:checkbox').change(
       function () {
@@ -283,8 +324,8 @@ $(document).ready(function () {
           $("#select_team_leader option[value=" + i_value + "]").remove();
           $("#select_team_position option[value=" + i_value + "]").remove();
         }
-      });
-
+      }
+  );
 
   // inicializa a select box para escolher o lider
   $('select').material_select();
@@ -303,14 +344,16 @@ function onMapClick(e) {
 
   console.log(e);
 
-  var popupContent = "<p><b>Localização atualizada com sucesso.</b></p><p>Nova localização: [" +
-      e.latlng.lat + "; " + e.latlng.lng + "]</p>";
+  var popupContent = "<span>Destaque alterado para as coordenadas:</span>" +
+      "<p>Latitude: <b>" + e.latlng.lat + "</b>,<br> Longitude: <b>" + e.latlng.lng + "</b>.</p>";
 
-  curr_marker = L.marker([e.latlng.lat, e.latlng.lng]).addTo(team_map);
+  curr_marker = L.marker([e.latlng.lat, e.latlng.lng], {icon: team_highlight_icon}).addTo(team_map);
   curr_marker.bindPopup(popupContent).openPopup();
 
   var new_val = "POINT (" + e.latlng.lng + " " + e.latlng.lat + ")";
   $("#team_latlon_highlight").attr("value", new_val);
+
+  remove_btn.enable();
 }
 
 // o parametro "coords" � da forma -> "POINT(33.333 11.111)"
@@ -326,7 +369,12 @@ function parsePointCoordinates(coords) {
   return res;
 }
 
-//function updateTeamPosition(args) {
-//  console.log("FUNÇÃO DO GON - ARGUMENTOS:");
-//  console.log(args);
-//}
+function secondsTimeSpanToHMS(s) {
+  var d = Math.floor(s / 86400); // Get days
+  s -= d * 86400;
+  var h = Math.floor(s / 3600); //Get whole hours
+  s -= h * 3600;
+  var m = Math.floor(s / 60); //Get remaining minutes
+  s -= m * 60;
+  return d + ":" + h + ":" + (m < 10 ? '0' + m : m) + ":" + (s < 10 ? '0' + s : s); //zero padding on minutes and seconds
+}

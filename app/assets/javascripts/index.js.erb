@@ -4,8 +4,9 @@ var e_type, e_radius, e_coords, coords_to_display, e_length, e_area, e_layer, e_
 var source;
 var all_geo_ents_ids;
 var all_teams_ids;
+
 var team_icon = L.icon({
-  iconUrl: 'http://freeflaticons.net/wp-content/uploads/2014/11/group-copy-1416476921gn4k8.png',
+  iconUrl: '/assets/team_icon.png',
   iconSize: [38, 38], // size of the icon
   iconAnchor: [19, 30], // point of the icon which will correspond to marker's location
   popupAnchor: [-1, -30] // point from which the popup should open relative to the iconAnchor
@@ -14,38 +15,28 @@ var team_icon = L.icon({
 
 $(document).ready(function () {
 
-  if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent)) {
+  // apenas ativa a cena do wake lock caso seja um dispositivo movel
+  if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.
+      test(navigator.userAgent)) {
     // Take the user to a different screen here.
     alert("Dispositivo Móvel.");
+
+    var noSleep = new NoSleep();
+
+    var obj = document.getElementById('map');
+    obj.addEventListener('touchstart', function () {
+
+      console.log("touchstart cena cena!!!");
+
+      noSleep.enable(); // keep the screen on!
+      console.log(noSleep);
+    }, false);
   }
   else {
     alert("Dispositivo Fixo.");
   }
 
-
-
-  var noSleep = new NoSleep();
-
-  var obj = document.getElementById('map');
-  obj.addEventListener('touchstart', function () {
-
-    console.log("touchstart cena cena!!!");
-
-    noSleep.enable(); // keep the screen on!
-    console.log(noSleep);
-  }, false);
-
-
-//  console.log(screen);
-//  console.log(document.visibilityState);
-//  console.log(navigator);
-//  console.log(navigator.wakeLock);
-
-//  lock = window.navigator.requestWakeLock('screen');
-//  console.log(lock);
-
-//  console.log(typeof screen.keepAwake);
-
+  // ativa a geolocalização apenas se o browser a suportar
   if ("geolocation" in navigator) {
     /* geolocation is available */
 
@@ -53,6 +44,7 @@ $(document).ready(function () {
   }
   else {
     /* geolocation IS NOT available */
+    alert("Geolocalização não suportada.");
   }
 
 
@@ -62,7 +54,6 @@ $(document).ready(function () {
   // delay da inicialização do eventSource
   // delay atual - 10 segundos
   setTimeout(eventSourceSetup, 10000);
-//  setTimeout(teste, 10000);
 
   sidebar = L.control.sidebar('sidebar', {position: 'right'}).addTo(map);
   cluster = L.markerClusterGroup();

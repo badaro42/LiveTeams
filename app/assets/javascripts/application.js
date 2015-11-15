@@ -25,3 +25,4 @@
 //= require leaflet_numbered_markers
 //= require Leaflet.AccuratePosition
 //= require NoSleep.min
+//= require easy-button

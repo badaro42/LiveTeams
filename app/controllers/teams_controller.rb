@@ -56,6 +56,8 @@ class TeamsController < ApplicationController
       puts @team.versions.first.reify.inspect
       puts @team.versions.last.reify.inspect
 
+      gon.highlight_latlon = @team.latlon_highlight
+
       gon.current_latlon = @team.latlon
       gon.team_versions = []
       @team.versions.each do |version|
