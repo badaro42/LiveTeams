@@ -4,6 +4,7 @@ var e_type, e_radius, e_coords, coords_to_display, e_length, e_area, e_layer, e_
 var source;
 var all_geo_ents_ids;
 var all_teams_ids;
+var current_user_location;
 
 var team_icon = L.icon({
   iconUrl: '/assets/team_icon.png',
@@ -681,6 +682,7 @@ function cenaGPS() {
   function onsuccess(pos) {
     console.log(pos);
     var c_latlng = L.latLng(pos.coords.latitude, pos.coords.longitude);
+    var c_text = "POINT(" + c_latlng.lng + " " + c_latlng.lat + ")";
 
     console.log("POSIÇÃO OBTIDA!!");
     console.log(c_latlng);
@@ -689,22 +691,32 @@ function cenaGPS() {
     var currentDate = new Date();
     console.log(positionDate.toLocaleString(), currentDate.toLocaleString());
 
-//    var c_text = "POINT(" + pos.coords.longitude + " " + pos.coords.latitude + ")";
+    var distance = -1;
+    if (typeof current_user_location !== 'undefined')
+      distance = current_user_location.distanceTo(c_latlng);
 
-    // envia a nova posição para o servidor
-    $.ajax({
-      type: "POST",
-      url: "/update_location",
-      data: {
-        latitude: pos.coords.latitude,
-        longitude: pos.coords.longitude,
-        user_id: gon.user_id
-      },
-      success: function (result) {
-        console.log(result);
+    console.log("DISTANCIA PARA MEDIÇÃO ANTERIOR: " + distance);
 
-        if (gon.update_successful) {
-          L.marker(c_latlng).addTo(map);
+    // envia a nova posição para o servidor caso seja a primeira vez ou
+    // a distancia para a posição anterior seja superior a 10 metros
+    if (distance == -1 || distance > 10) {
+      console.log("POSIÇÃO ATUAL A MAIS DE 10M DA ANTERIOR!");
+
+      $.ajax({
+        type: "POST",
+        url: "/update_location",
+        data: {
+          latitude: pos.coords.latitude,
+          longitude: pos.coords.longitude,
+          user_id: gon.user_id
+        },
+        success: function (result) {
+          console.log(result);
+
+//          if (gon.update_successful) {
+          var new_marker = L.marker(c_latlng).addTo(map);
+          cluster.addLayer(new_marker);
+          map.addLayer(cluster);
 
           var d = new Date();
           var time = d.toLocaleTimeString();
@@ -716,13 +728,15 @@ function cenaGPS() {
 
           li.append(span1).append('<br>').append(span2).append('<br>').append(span3);
           $('#current_position_list').prepend(li);
+//          }
+        },
+        error: function (err) {
+          console.log(err);
         }
-      },
-      error: function (err) {
-        console.log(err);
-      }
-    });
-//    map.setView(e.latlng, 16);
+      });
+//      map.setView(c_latlng, 16);
+    }
+    current_user_location = c_latlng;
   }
 
 
@@ -733,7 +747,6 @@ function cenaGPS() {
     console.warn('ERROR(' + err.code + '): ' + err.message);
   }
 
-  // esta cena do watch só é executada quando o user muda de posição
   navigator.geolocation.getCurrentPosition(onsuccess, onerror, options);
   setTimeout(cenaGPS, 10000);
 }

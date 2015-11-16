@@ -210,6 +210,10 @@ $(document).ready(function () {
 
       if (!last_coords.equals(point_coords)) {
         curr_marker = L.marker(point_coords, {icon: new L.NumberedDivIcon({number: counter})}).addTo(team_map);
+        popupContent = "<span>Localização mais recente desta equipa.</span><p>Latitude: <b>" +
+            curr_marker.getLatLng().lat + "</b>,<br> Longitude: <b>" + curr_marker.getLatLng().lng +
+            "</b></p>";
+        curr_marker.bindPopup(popupContent);
         bounds_arr.push(point_coords);
       }
 
