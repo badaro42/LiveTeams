@@ -233,13 +233,13 @@ $(document).ready(function () {
         c_arr = parsePointCoordinates(text_coords);
         point_coords = L.latLng(c_arr[1], c_arr[0]);
 
-        curr_marker = L.marker(point_coords, {icon: team_highlight_icon});
+        curr_marker = L.marker(point_coords, {icon: team_highlight_icon}).addTo(team_map);
         popupContent = "<span>Esta equipa está destacada para as<br>seguintes coordenadas:</span>" +
             "<p>Latitude: <b>" + curr_marker.getLatLng().lat + "</b>,<br>Longitude: <b>" +
             curr_marker.getLatLng().lng + "</b></p>";
         curr_marker.bindPopup(popupContent);
 
-        cluster.addLayer(curr_marker);
+//        cluster.addLayer(curr_marker);
         bounds_arr.push(point_coords);
       }
 
@@ -392,5 +392,5 @@ function secondsTimeSpanToHMS(s) {
   s -= h * 3600;
   var m = Math.floor(s / 60); //Get remaining minutes
   s -= m * 60;
-  return d + ":" + h + ":" + (m < 10 ? '0' + m : m) + ":" + (s < 10 ? '0' + s : s); //zero padding on minutes and seconds
+  return d + ":" + h + ":" + m + ":" + s;
 }

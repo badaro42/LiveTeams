@@ -28,8 +28,7 @@
       <div class="divider divider-margin"></div>
       <div class="col l12 m6 s12 offset-m6 hide-on-med-only">
         <h6 style="font-weight: 300; margin-top: 0 !important;">
-          <!--<strong>Nome bem grande só para ver como fica dentro da divisao</strong>-->
-          <strong><%= @team.name %></strong>
+          <strong><%= @team.name.upcase %></strong>
         </h6>
 
         <div class="divider divider-margin"></div>
@@ -54,7 +53,7 @@
 
       <div class="col l12 m6 s12 hide-on-large-only hide-on-small-only">
         <h6 style="font-weight: 300;">
-          <strong><%= @team.name %></strong>
+          <strong><%= @team.name.upcase %></strong>
         </h6>
 
         <div class="divider divider-margin"></div>

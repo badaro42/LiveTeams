@@ -51,9 +51,6 @@
         <h5 style="font-weight: 300;">
           <%= @user.full_name %>
         </h5>
-        <h6 style="font-weight: 300;">
-          <%= @user.email %>
-        </h6>
 
         <div class="divider divider-margin"></div>
 
@@ -62,9 +59,19 @@
           <span style="padding-left: 10px"><%= @user.created_at.to_datetime.to_formatted_s(:long_ordinal) %></span>
         </div>
 
-        <div style="font-weight: 300; ">
+        <div style="font-weight: 300; margin-top: 3px; margin-bottom: 3px;">
           <i class="material-icons tiny">person</i>
           <span style="padding-left: 10px"><%= @user.profile %></span>
+        </div>
+
+        <div style="font-weight: 300; margin-top: 3px; margin-bottom: 3px;">
+          <i class="material-icons tiny">mail</i>
+          <span style="padding-left: 10px"><%= @user.email %></span>
+        </div>
+
+        <div style="font-weight: 300; margin-top: 3px;">
+          <i class="material-icons tiny">phone</i>
+          <span style="padding-left: 10px">211234567</span>
         </div>
       </div>
     </div>

@@ -212,8 +212,10 @@ $(document).ready(function () {
       return L.marker(latlng, {icon: team_icon});
     },
     onEachFeature: function (feature, layer) {
-      layer.bindPopup('<p>' + feature.properties.name + '</p>' +
-          '<p>' + feature.geometry.coordinates + '</p>');
+      layer.bindPopup('<p><b> Equipa número ' + feature.properties.f_id + '</b></p>' +
+          '<span>Nome: <b>' + feature.properties.name + '</b><br>' +
+          'Latitude: <b>' + feature.geometry.coordinates[1] + '</b>;<br>' +
+          'Longitude: <b>' + feature.geometry.coordinates[0] + '</b></span>');
       all_teams_ids.push(feature.properties.f_id);
     }
   });
