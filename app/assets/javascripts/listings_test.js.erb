@@ -1,5 +1,6 @@
 var osm, team_map, osmUrl;
 var curr_marker = undefined, remove_btn;
+var cluster;
 
 var team_highlight_icon = L.icon({
   iconUrl: '/assets/bullseye-64.png',
@@ -10,6 +11,8 @@ var team_highlight_icon = L.icon({
 
 
 $(document).ready(function () {
+
+  cluster = L.markerClusterGroup({chunkedLoading: true});
 
   // atualizar posição do utilizador
   $("#update_location").click(function (e) {
@@ -69,7 +72,7 @@ $(document).ready(function () {
       }
 
       osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-      osm = L.tileLayer(osmUrl, {maxZoom: 18});
+      osm = L.tileLayer(osmUrl, {maxZoom: 20});
       team_map = L.map("team_map", {
         zoom: 12,
         center: point_coords,
@@ -111,7 +114,7 @@ $(document).ready(function () {
       console.log("PÁGINA PARA CRIAR NOVA EQUIPA!!!");
 
       osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-      osm = L.tileLayer(osmUrl, {maxZoom: 18});
+      osm = L.tileLayer(osmUrl, {maxZoom: 20});
       team_map = L.map("team_map", {
         zoom: 12,
         center: [38.627881, -9.161007],
@@ -141,7 +144,7 @@ $(document).ready(function () {
       console.log("PÁGINA PARA APRESENTAR INFO DA EQUIPA!!!");
 
       osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-      osm = L.tileLayer(osmUrl, {maxZoom: 18});
+      osm = L.tileLayer(osmUrl, {maxZoom: 20});
       team_map = L.map("team_map", {
         zoom: 12,
         center: [38.627881, -9.161007],
@@ -187,7 +190,7 @@ $(document).ready(function () {
             var time_arr = secondsTimeSpanToHMS(seconds).split(':');
             console.log(time_arr);
 
-            curr_marker = L.marker(point_coords, {icon: new L.NumberedDivIcon({number: counter})}).addTo(team_map);
+            curr_marker = L.marker(point_coords, {icon: new L.NumberedDivIcon({number: counter})});
             popupContent = "<span>A equipa esteve neste ponto com</span><p>Latitude: <b>" +
                 curr_marker.getLatLng().lat + "</b>,<br> Longitude: <b>" + curr_marker.getLatLng().lng +
                 "</b></p><span> há <b>" + time_arr[0] + "</b> " +
@@ -196,6 +199,9 @@ $(document).ready(function () {
                 (time_arr[2] == 1 ? "minuto" : "minutos") + " e <b>" + Math.floor(time_arr[3]) + "</b> " +
                 (time_arr[3] == 1 ? "segundo" : "segundos") + ".</span>";
             curr_marker.bindPopup(popupContent);
+
+            cluster.addLayer(curr_marker);
+//            team_map.addLayer(cluster);
 
             bounds_arr.push(point_coords);
             counter++;
@@ -209,11 +215,13 @@ $(document).ready(function () {
       point_coords = L.latLng(c_arr[1], c_arr[0]);
 
       if (!last_coords.equals(point_coords)) {
-        curr_marker = L.marker(point_coords, {icon: new L.NumberedDivIcon({number: counter})}).addTo(team_map);
+        curr_marker = L.marker(point_coords, {icon: new L.NumberedDivIcon({number: counter})});
         popupContent = "<span>Localização mais recente desta equipa.</span><p>Latitude: <b>" +
             curr_marker.getLatLng().lat + "</b>,<br> Longitude: <b>" + curr_marker.getLatLng().lng +
             "</b></p>";
         curr_marker.bindPopup(popupContent);
+
+        cluster.addLayer(curr_marker);
         bounds_arr.push(point_coords);
       }
 
@@ -225,13 +233,17 @@ $(document).ready(function () {
         c_arr = parsePointCoordinates(text_coords);
         point_coords = L.latLng(c_arr[1], c_arr[0]);
 
-        curr_marker = L.marker(point_coords, {icon: team_highlight_icon}).addTo(team_map);
+        curr_marker = L.marker(point_coords, {icon: team_highlight_icon});
         popupContent = "<span>Esta equipa está destacada para as<br>seguintes coordenadas:</span>" +
             "<p>Latitude: <b>" + curr_marker.getLatLng().lat + "</b>,<br>Longitude: <b>" +
             curr_marker.getLatLng().lng + "</b></p>";
         curr_marker.bindPopup(popupContent);
+
+        cluster.addLayer(curr_marker);
         bounds_arr.push(point_coords);
       }
+
+      team_map.addLayer(cluster);
 
       console.log(bounds_arr);
       team_map.fitBounds(bounds_arr);
