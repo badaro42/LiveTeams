@@ -14,24 +14,29 @@ class UsersController < ApplicationController
     puts new_point
     puts distance
 
-    # a verificação da distancia é feita do lado do cliente, para evitar POSTs desnecessarios
     # só atualiza a localização se a diferença para a anterior for maior que 20m
     # TODO: deve ser necessário fazer um fine-tunning a este parametro
     # if distance > 20
     current_user.latlon = new_point
     current_user.save
 
-    # gon.update_successful = true
+    teams_in_need_of_update = []
 
     # atualizar a posição de todas as equipas que tenham este user como responsavel por atualizar a localização
     teams = Team.where(location_user_id: params[:user_id].to_i)
     teams.each do |team|
+      teams_in_need_of_update.push(team.id)
+
       team.latlon = new_point
       team.save
     end
     # end
 
-    # puts a.errors.messages
+    # todas as equipas cujo utilizador é responsavel pela posição sao introduzidas neste array
+    gon.teams_user_update_position = teams_in_need_of_update
+
+    puts "IDS DAS EQUIPAS QUE TÊM COMO RESPONSAVEL ESTE GAJO:"
+    puts gon.teams_user_update_position.inspect
 
     render :nothing => true, :status => 200, :content_type => 'text/html'
   end

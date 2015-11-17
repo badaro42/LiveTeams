@@ -17,13 +17,19 @@ $(document).ready(function () {
   // atualizar posição do utilizador
   $("#update_location").click(function (e) {
     console.log("CARREGUEI NO BOTAO PARA ATUALIZAR POSIÇÃO");
-    console.log($("#new_coords").val());
+    var text_coords = $("#new_coords").val();
+    var c_arr = parsePointCoordinates(text_coords);
+
+
+    console.log("Latitude: " + c_arr[1]);
+    console.log("Longitude: " + c_arr[0]);
 
     $.ajax({
       type: "POST",
       url: "/update_location",
       data: {
-        latlon: $("#new_coords").val(),
+        latitude: c_arr[1],
+        longitude: c_arr[0],
         user_id: gon.user_id
       },
       success: function (result) {
@@ -155,8 +161,8 @@ $(document).ready(function () {
 
       console.log(gon.team_versions);
 
-      console.log("TEM PROPRIEDADE 'TEAM'??");
-      console.log(gon.team_versions[1].hasOwnProperty('team'));
+//      console.log("TEM PROPRIEDADE 'TEAM'??");
+//      console.log(gon.team_versions[1].hasOwnProperty('team'));
 
       var i = 0;
       // isto só é null quando a equipa acabou de ser criada!!

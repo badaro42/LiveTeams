@@ -3,7 +3,7 @@ var drawnItems;
 var e_type, e_radius, e_coords, coords_to_display, e_length, e_area, e_layer, e_num_points;
 var source;
 var all_geo_ents_ids;
-var all_teams_ids;
+var all_teams_ids; // cada entrada é da forma {id: feature_id, marker: L.marker(L.latLng(lat, lng))}
 var current_user_location;
 
 var team_icon = L.icon({
@@ -41,7 +41,7 @@ $(document).ready(function () {
   if ("geolocation" in navigator) {
     /* geolocation is available */
 
-    setTimeout(cenaGPS, 10000);
+//    setTimeout(cenaGPS, 10000);
   }
   else {
     /* geolocation IS NOT available */
@@ -207,16 +207,19 @@ $(document).ready(function () {
     }
   });
 
+  var t_marker;
   var teams_json = new L.GeoJSON.AJAX("/teams/teams_to_json.json", {
     pointToLayer: function (feature, latlng) {
-      return L.marker(latlng, {icon: team_icon});
+      t_marker = L.marker(latlng, {icon: team_icon});
+      all_teams_ids.push({id: feature.properties.f_id, marker: t_marker});
+
+      return t_marker;
     },
     onEachFeature: function (feature, layer) {
       layer.bindPopup('<p><b> Equipa número ' + feature.properties.f_id + '</b></p>' +
           '<span>Nome: <b>' + feature.properties.name + '</b><br>' +
           'Latitude: <b>' + feature.geometry.coordinates[1] + '</b>;<br>' +
           'Longitude: <b>' + feature.geometry.coordinates[0] + '</b></span>');
-      all_teams_ids.push(feature.properties.f_id);
     }
   });
 
@@ -237,7 +240,8 @@ $(document).ready(function () {
 
   // listener invocado quando a chamada ajax das equipas terminar!
   teams_json.on('data:loaded', function () {
-    console.log("vector com os indices das equipas!!!!!: " + all_teams_ids);
+    console.log("vector com os indices das equipas!!!!!:");
+    console.log(all_teams_ids);
     console.log("finish");
     cluster.addLayer(teams_json);
     map.addLayer(cluster);
@@ -532,59 +536,34 @@ function addGeoEntityToMap(json) {
 function addTeamToMap(json) {
   console.log("RECEBEMOS NOVA EQUIPA!!!!");
 
-  var new_layer;
+  var new_layer, new_marker, old_marker, index;
   var json_arr = JSON.parse(json);
+  console.log(json_arr);
 
-  // apenas uma EQUIPA retornada pelo servidor
-  if (json_arr.type == "Feature") {
-    console.log(json_arr);
+  new_layer = L.geoJson(json_arr, {
+    pointToLayer: function (feature, latlng) {
+      // verifica se esta entidade ja existe no sistema
+      // se sim, removemos para voltar a introduzir
+      index = teamIsInMap(feature.properties.f_id);
+      new_marker = L.marker(latlng, {icon: team_icon});
 
-    // esta EQUIPA ainda nao existe no array!!
-    if (all_teams_ids.indexOf(json_arr.properties.f_id) == -1) {
-      console.log("TEAM TEAM - ainda nao existe no array");
+      if (index == -1) //equipa nao existe no mapa
+        all_teams_ids.push({id: feature.properties.f_id, marker: new_marker});
 
-      new_layer = L.geoJson(json_arr, {
-        pointToLayer: function (feature, latlng) {
-          return L.marker(latlng, {icon: team_icon});
-        }
-      }).addTo(map);
-      cluster.addLayer(new_layer);
-      map.addLayer(cluster);
+      else {
+        old_marker = all_teams_ids[index].marker;
+        all_teams_ids[index].marker = new_marker;
 
-      all_teams_ids.push(json_arr.properties.f_id);
+        cluster.removeLayer(old_marker);
+        map.removeLayer(old_marker);
+      }
+
+      return new_marker;
     }
-  }
-  // mais do que uma EQUIPA retornada pelo servidor
-  else if (json_arr.type == "FeatureCollection") {
-    console.log("MAIS QUE UMA EQUIPA, VAMOS ENTRAR NO FOR EACH!!!");
+  });
 
-    // array GEOJSON que no final conterá todas as EQUIPAS que ainda nao estejam no mapa
-    var final_json_arr = {
-      "type": "FeatureCollection",
-      "features": []
-    };
-
-    $.each(json_arr.features, function (key, val) {
-      var f_id = val.properties.f_id;
-      console.log(all_teams_ids);
-      console.log(f_id);
-      console.log("f_id está contida no array?? " + (all_teams_ids.indexOf(f_id) != -1));
-
-      // esta EQUIPA ainda nao existe no array!!
-      if (all_teams_ids.indexOf(f_id) == -1) {
-        final_json_arr.features.push(val);
-        all_teams_ids.push(f_id);
-      }
-    });
-
-    new_layer = L.geoJson(final_json_arr, {
-      pointToLayer: function (feature, latlng) {
-        return L.marker(latlng, {icon: team_icon});
-      }
-    }).addTo(map);
-    cluster.addLayer(new_layer);
-    map.addLayer(cluster);
-  }
+  cluster.addLayer(new_layer);
+  map.addLayer(cluster);
 }
 
 // ****************** SSE STUFF :) ************************
@@ -684,7 +663,7 @@ function cenaGPS() {
   function onsuccess(pos) {
     console.log(pos);
     var c_latlng = L.latLng(pos.coords.latitude, pos.coords.longitude);
-    var c_text = "POINT(" + c_latlng.lng + " " + c_latlng.lat + ")";
+//    var c_text = "POINT(" + c_latlng.lng + " " + c_latlng.lat + ")";
 
     console.log("POSIÇÃO OBTIDA!!");
     console.log(c_latlng);
@@ -715,8 +694,17 @@ function cenaGPS() {
         success: function (result) {
           console.log(result);
 
+          var t_arr = gon.teams_user_update_position;
+          console.log(t_arr);
+//          all_teams_ids = $.grep(all_teams_ids, function (value) {
+//            return t_arr.indexOf(value) == -1;
+//          });
+
+          console.log("INDICES DAS EQUIPAS APOS UPDATE DA POSIÇÃO:");
+          console.log(all_teams_ids);
+
 //          if (gon.update_successful) {
-          var new_marker = L.marker(c_latlng).addTo(map);
+          var new_marker = L.marker(c_latlng);
           cluster.addLayer(new_marker);
           map.addLayer(cluster);
 
@@ -751,4 +739,19 @@ function cenaGPS() {
 
   navigator.geolocation.getCurrentPosition(onsuccess, onerror, options);
   setTimeout(cenaGPS, 10000);
+}
+
+
+/*
+ * Verifica se a equipa ja existe ou nao no mapa
+ * Retorna -1 caso a equipa nao esteja no mapa
+ * Retorna o indice caso a equipa ja exista no mapa
+ */
+function teamIsInMap(param_id) {
+  var i;
+  for (i = 0; i < all_teams_ids.length; i++) {
+    if (all_teams_ids[i].id === param_id) // a equipa existe
+        return i;
+  }
+  return -1;
 }
