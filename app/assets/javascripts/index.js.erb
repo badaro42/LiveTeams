@@ -13,6 +13,13 @@ var team_icon = L.icon({
   popupAnchor: [-1, -30] // point from which the popup should open relative to the iconAnchor
 });
 
+var user_pos_icon = L.icon({
+  iconUrl: '/assets/user-64.png',
+  iconSize: [38, 38], // size of the icon
+  iconAnchor: [19, 30], // point of the icon which will correspond to marker's location
+  popupAnchor: [-1, -30] // point from which the popup should open relative to the iconAnchor
+});
+
 
 $(document).ready(function () {
 
@@ -41,13 +48,12 @@ $(document).ready(function () {
   if ("geolocation" in navigator) {
     /* geolocation is available */
 
-//    setTimeout(cenaGPS, 10000);
+    setTimeout(cenaGPS, 10000);
   }
   else {
     /* geolocation IS NOT available */
     alert("Geolocalização não suportada.");
   }
-
 
   all_teams_ids = [];
   all_geo_ents_ids = [];
@@ -67,7 +73,7 @@ $(document).ready(function () {
     zoom: 12,
     center: [38.627881, -9.161007],
     layers: [osm],
-    zoomControl: false,
+    zoomControl: true,
     attributionControl: false
   });
 
@@ -694,17 +700,7 @@ function cenaGPS() {
         success: function (result) {
           console.log(result);
 
-          var t_arr = gon.teams_user_update_position;
-          console.log(t_arr);
-//          all_teams_ids = $.grep(all_teams_ids, function (value) {
-//            return t_arr.indexOf(value) == -1;
-//          });
-
-          console.log("INDICES DAS EQUIPAS APOS UPDATE DA POSIÇÃO:");
-          console.log(all_teams_ids);
-
-//          if (gon.update_successful) {
-          var new_marker = L.marker(c_latlng);
+          var new_marker = L.marker(c_latlng, {icon: user_pos_icon});
           cluster.addLayer(new_marker);
           map.addLayer(cluster);
 
@@ -718,7 +714,6 @@ function cenaGPS() {
 
           li.append(span1).append('<br>').append(span2).append('<br>').append(span3);
           $('#current_position_list').prepend(li);
-//          }
         },
         error: function (err) {
           console.log(err);
@@ -728,7 +723,6 @@ function cenaGPS() {
     }
     current_user_location = c_latlng;
   }
-
 
   // PERMISSION_DENIED = 1;
   // POSITION_UNAVAILABLE = 2;

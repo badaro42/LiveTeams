@@ -36,7 +36,7 @@
         <!-- TODO: ESTE PEQUENO FORM PARA (TEMPORARIAMENTE) ATUALIZAR A POSIÇÃO DO UTILIZADOR -->
         <!-- TODO: TESTANDO ASSIM SE A ATUALIZAÇÃO DAS POSIÇÕES DA EQUIPA QUE É RESPONSAVEL ESTAO CORRECTAS -->
         <!--<button class="btn waves-effect waves-light" type="submit" id="update_location" name="latlon">Enviar-->
-          <!--<i class="material-icons right">send</i>-->
+        <!--<i class="material-icons right">send</i>-->
         <!--</button>-->
       </div>
     </form>
@@ -118,7 +118,7 @@
                       </strong>
 
                       <%= link_to team, :data => {:position => 'left', :delay => '15',
-                                                :tooltip => 'Ir para a equipa'},
+                                                  :tooltip => 'Ir para a equipa'},
                                   class: 'tooltipped secondary-content', method: :get do %>
                           <i class="material-icons">send</i>
                       <% end %>
@@ -148,12 +148,11 @@
                         <span style="font-size: 12px;"><%= entity.entity_type %></span>
                         <span> | </span>
                       </strong>
-                      <span style="font-size: 12px;"><%= entity.latlon %></span>
-                      <%= link_to '', :data => {:position => 'left', :delay => '15',
-                                                 :tooltip => 'Centrar mapa'},
-                                  class: 'tooltipped secondary-content', method: :get do %>
-                          <i class="material-icons">my_location</i>
-                      <% end %>
+                      <span class="entity-latlon" style="font-size: 12px;"><%= entity.latlon %></span>
+                      <a data-position="left" onclick="alert('foda-se')" data-delay="15" data-tooltip="Centrar mapa"
+                         class="tooltipped secondary-content">
+                        <i class="material-icons">my_location</i>
+                      </a>
                     </div>
                   </li>
               <% end %>
