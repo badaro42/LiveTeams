@@ -84,7 +84,7 @@ $(document).ready(function () {
   map.addLayer(drawnItems);
 
   /* controlo do zoom do mapa  */
-  new L.Control.Zoom({position: 'bottomleft'}).addTo(map);
+  map.zoomControl.setPosition('bottomleft');
 
   // cria a barra de controlos para a criaçao de entidades
   L.drawLocal.draw.toolbar.buttons.polygon = 'Desenhar um poligono';
