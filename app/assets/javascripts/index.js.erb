@@ -44,16 +44,6 @@ $(document).ready(function () {
     alert("Dispositivo Fixo.");
   }
 
-  // ativa a geolocalização apenas se o browser a suportar
-  if ("geolocation" in navigator) {
-    /* geolocation is available */
-
-    setTimeout(cenaGPS, 10000);
-  }
-  else {
-    /* geolocation IS NOT available */
-    alert("Geolocalização não suportada.");
-  }
 
   all_teams_ids = [];
   all_geo_ents_ids = [];
@@ -78,12 +68,103 @@ $(document).ready(function () {
   });
 
 
-  // ************** Inicializa a cena da localização *******************
-//  map.on('accuratepositionprogress', onAccuratePositionProgress);
-//  map.on('accuratepositionfound', onAccuratePositionFound);
-//  map.on('accuratepositionerror', onAccuratePositionError);
-//
-//  getUserPositionGPS();
+  // ativa a geolocalização apenas se o browser a suportar
+  if ("geolocation" in navigator) { /* geolocation is available */
+
+    new L.control.locate({
+      position: "topleft",
+      layer: drawnItems,
+      drawCircle: true,
+      follow: true,
+      setView: false,
+      keepCurrentZoomLevel: true,
+      stopFollowingOnDrag: false,
+      remainActive: false,
+      markerStyle: {
+        weight: 1,
+        opacity: 0.8,
+        fillOpacity: 0.8
+      },
+      circleStyle: {
+        weight: 1,
+        clickable: false
+      },
+      icon: "fa fa-location-arrow",
+      metric: true,
+      strings: {
+        title: "Clique aqui para ativar/desativar a geolocalização",
+        popup: "A sua localização atual está dentro deste círculo com {distance} metros.",
+        outsideMapBoundsMsg: "Parece que se encontra fora dos limites do mapa"
+      },
+      locateOptions: {
+        maxZoom: 20,
+        watch: true,
+        enableHighAccuracy: true,
+        maximumAge: 15000,
+        timeout: 10000
+      }
+    }).addTo(map);
+
+    map.on('locationfound', function(e) {
+      console.log("POSIÇÃO OBTIDA COM SUCESSO!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+//      console.log(e.latlng);
+      console.log(e);
+
+      var positionDate = new Date(e.timestamp);
+      var currentDate = new Date();
+      console.log(positionDate.toLocaleString(), currentDate.toLocaleString());
+
+      var distance = -1;
+      if (typeof current_user_location !== 'undefined')
+        distance = current_user_location.distanceTo(e.latlng);
+
+      console.log("DISTANCIA PARA MEDIÇÃO ANTERIOR: " + distance);
+
+      // envia a nova posição para o servidor caso seja a primeira vez ou
+      // a distancia para a posição anterior seja superior a 10 metros
+      if (distance == -1 || distance > 10) {
+        console.log("POSIÇÃO ATUAL A MAIS DE 10M DA ANTERIOR!");
+
+        $.ajax({
+          type: "POST",
+          url: "/update_location",
+          data: {
+            latitude: e.latlng.lat,
+            longitude: e.latlng.lng,
+            user_id: gon.user_id
+          },
+          success: function (result) {
+            console.log(result);
+
+//            var new_marker = L.marker(e.latlng, {icon: user_pos_icon});
+//            cluster.addLayer(new_marker);
+//            map.addLayer(cluster);
+
+            var d = new Date();
+            var time = d.toLocaleTimeString();
+
+            var li = $('<li/>').addClass('collection-item');
+            var span1 = $('<span/>').text("Coordenadas: [" + e.latlng.lat + "; " + e.latlng.lng + "]");
+            var span2 = $('<span/>').text("Precisão da medição: " + e.accuracy + " metros");
+            var span3 = $('<span/>').text("Data do sistema: " + time);
+
+            li.append(span1).append('<br>').append(span2).append('<br>').append(span3);
+            $('#current_position_list').prepend(li);
+          },
+          error: function (err) {
+            console.log(err);
+          }
+        });
+//      map.setView(c_latlng, 16);
+      }
+      current_user_location = e.latlng;
+    });
+
+  }
+  else {
+    /* geolocation IS NOT available */
+    alert("Geolocalização não suportada.");
+  }
 
 
   drawnItems = new L.FeatureGroup();
@@ -128,38 +209,6 @@ $(document).ready(function () {
     }
   });
   map.addControl(drawControl);
-
-  // Geolocaliza��o do utilizador atrav�s do GPS
-//  new L.control.locate({
-//    position: "bottomleft",
-//    drawCircle: true,
-//    follow: true,
-//    setView: true,
-//    keepCurrentZoomLevel: false,
-//    markerStyle: {
-//      weight: 1,
-//      opacity: 0.8,
-//      fillOpacity: 0.8
-//    },
-//    circleStyle: {
-//      weight: 1,
-//      clickable: false
-//    },
-//    icon: "fa fa-location-arrow",
-//    metric: true,
-//    strings: {
-//      title: "Clique aqui para ativar a geolocaliza��o",
-//      popup: "Encontra-se a {distance} {unit} deste ponto",
-//      outsideMapBoundsMsg: "Parece que se encontra fora dos limites do mapa"
-//    },
-//    locateOptions: {
-//      maxZoom: 19,
-//      watch: true,
-//      enableHighAccuracy: true,
-//      maximumAge: 10000,
-//      timeout: 10000
-//    }
-//  }).addTo(map);
 
   // cria uma imagem com a inicial do nome do utilizador autenticado
   $('.profile_name').initial({
@@ -745,7 +794,7 @@ function teamIsInMap(param_id) {
   var i;
   for (i = 0; i < all_teams_ids.length; i++) {
     if (all_teams_ids[i].id === param_id) // a equipa existe
-        return i;
+      return i;
   }
   return -1;
 }
