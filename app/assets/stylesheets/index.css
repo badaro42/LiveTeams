@@ -85,15 +85,15 @@ html, body, #container {
     .leaflet-bottom.leaflet-left {
         transform: rotate(90deg);
         left: 31px;
-        bottom: -75px;
+        bottom: -11px;
         z-index: 98;
     }
 
-    .leaflet-control-zoom {
-        transform: rotate(180deg);
-        bottom: 289px;
-        left: 29px;
-    }
+    /*.leaflet-control-zoom {*/
+        /*transform: rotate(180deg);*/
+        /*bottom: 289px;*/
+        /*left: 29px;*/
+    /*}*/
 
     /*.leaflet-control-locate {*/
         /*transform: rotate(270deg);*/
@@ -112,15 +112,15 @@ html, body, #container {
     .leaflet-bottom.leaflet-left {
         transform: rotate(90deg);
         left: 31px;
-        bottom: -75px;
+        bottom: -11px;
         z-index: 98;
     }
 
-    .leaflet-control-zoom {
-        transform: rotate(180deg);
-        bottom: 290px;
-        left: 29px;
-    }
+    /*.leaflet-control-zoom {*/
+        /*transform: rotate(180deg);*/
+        /*bottom: 290px;*/
+        /*left: 29px;*/
+    /*}*/
 
     /*.leaflet-control-locate {*/
         /*transform: rotate(270deg);*/
@@ -138,17 +138,17 @@ html, body, #container {
 @media only screen and (min-width: 992px) {
     .leaflet-bottom.leaflet-left {
         transform: rotate(90deg);
-        left: 54px;
-        bottom: -103px;
+        left: 53px;
+        bottom: -40px;
         z-index: 98;
     }
 
-    .leaflet-control-zoom {
-        transform: rotate(180deg);
-        bottom: 268px;
-        right: 0;
-        /*right: 86px;*/
-    }
+    /*.leaflet-control-zoom {*/
+        /*transform: rotate(180deg);*/
+        /*bottom: 268px;*/
+        /*right: 0;*/
+        /*!*right: 86px;*!*/
+    /*}*/
 
     /*.leaflet-control-locate {*/
         /*transform: rotate(270deg);*/
@@ -157,22 +157,22 @@ html, body, #container {
     /*}*/
 }
 
-/*botao para ampliar*/
-.leaflet-control-zoom a:first-child {
-    transform: rotate(90deg);
-    border-top-right-radius: 0;
-    border-bottom-left-radius: 4px;
-    border-bottom: 0 solid #ccc;
-    border-right: 1px solid #ccc;
-}
+/*!*botao para ampliar*!*/
+/*.leaflet-control-zoom a:first-child {*/
+    /*transform: rotate(90deg);*/
+    /*border-top-right-radius: 0;*/
+    /*border-bottom-left-radius: 4px;*/
+    /*border-bottom: 0 solid #ccc;*/
+    /*border-right: 1px solid #ccc;*/
+/*}*/
 
-/*botao para reduzir*/
-.leaflet-control-zoom a:last-child {
-    transform: rotate(90deg);
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-    border-top-right-radius: 4px;
-}
+/*!*botao para reduzir*!*/
+/*.leaflet-control-zoom a:last-child {*/
+    /*transform: rotate(90deg);*/
+    /*border-top-left-radius: 0;*/
+    /*border-bottom-left-radius: 0;*/
+    /*border-top-right-radius: 4px;*/
+/*}*/
 
 .leaflet-draw-section a:first-child {
     border-top-left-radius: 0;

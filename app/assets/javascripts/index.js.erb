@@ -89,7 +89,7 @@ $(document).ready(function () {
         weight: 1,
         clickable: false
       },
-      icon: "fa fa-location-arrow",
+      icon: "fa fa-map-marker",
       metric: true,
       strings: {
         title: "Clique aqui para ativar/desativar a geolocalização",
@@ -122,41 +122,41 @@ $(document).ready(function () {
 
       // envia a nova posição para o servidor caso seja a primeira vez ou
       // a distancia para a posição anterior seja superior a 10 metros
-      if (distance == -1 || distance > 10) {
-        console.log("POSIÇÃO ATUAL A MAIS DE 10M DA ANTERIOR!");
-
-        $.ajax({
-          type: "POST",
-          url: "/update_location",
-          data: {
-            latitude: e.latlng.lat,
-            longitude: e.latlng.lng,
-            user_id: gon.user_id
-          },
-          success: function (result) {
-            console.log(result);
-
-//            var new_marker = L.marker(e.latlng, {icon: user_pos_icon});
-//            cluster.addLayer(new_marker);
-//            map.addLayer(cluster);
-
-            var d = new Date();
-            var time = d.toLocaleTimeString();
-
-            var li = $('<li/>').addClass('collection-item');
-            var span1 = $('<span/>').text("Coordenadas: [" + e.latlng.lat + "; " + e.latlng.lng + "]");
-            var span2 = $('<span/>').text("Precisão da medição: " + e.accuracy + " metros");
-            var span3 = $('<span/>').text("Data do sistema: " + time);
-
-            li.append(span1).append('<br>').append(span2).append('<br>').append(span3);
-            $('#current_position_list').prepend(li);
-          },
-          error: function (err) {
-            console.log(err);
-          }
-        });
+//      if (distance == -1 || distance > 10) {
+//        console.log("POSIÇÃO ATUAL A MAIS DE 10M DA ANTERIOR!");
+//
+//        $.ajax({
+//          type: "POST",
+//          url: "/update_location",
+//          data: {
+//            latitude: e.latlng.lat,
+//            longitude: e.latlng.lng,
+//            user_id: gon.user_id
+//          },
+//          success: function (result) {
+//            console.log(result);
+//
+////            var new_marker = L.marker(e.latlng, {icon: user_pos_icon});
+////            cluster.addLayer(new_marker);
+////            map.addLayer(cluster);
+//
+//            var d = new Date();
+//            var time = d.toLocaleTimeString();
+//
+//            var li = $('<li/>').addClass('collection-item');
+//            var span1 = $('<span/>').text("Coordenadas: [" + e.latlng.lat + "; " + e.latlng.lng + "]");
+//            var span2 = $('<span/>').text("Precisão da medição: " + e.accuracy + " metros");
+//            var span3 = $('<span/>').text("Data do sistema: " + time);
+//
+//            li.append(span1).append('<br>').append(span2).append('<br>').append(span3);
+//            $('#current_position_list').prepend(li);
+//          },
+//          error: function (err) {
+//            console.log(err);
+//          }
+//        });
 //      map.setView(c_latlng, 16);
-      }
+//      }
       current_user_location = e.latlng;
     });
 
@@ -171,7 +171,7 @@ $(document).ready(function () {
   map.addLayer(drawnItems);
 
   /* controlo do zoom do mapa  */
-  map.zoomControl.setPosition('bottomleft');
+  map.zoomControl.setPosition('topleft');
 
   // cria a barra de controlos para a criaçao de entidades
   L.drawLocal.draw.toolbar.buttons.polygon = 'Desenhar um poligono';
@@ -203,10 +203,11 @@ $(document).ready(function () {
         }
       },
       //rectangle: false //� assim que se desativam op��es
-    },
-    edit: {
-      featureGroup: drawnItems
     }
+//    },
+//    edit: {
+//      featureGroup: drawnItems
+//    }
   });
   map.addControl(drawControl);
 
