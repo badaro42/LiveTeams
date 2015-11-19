@@ -1,5 +1,6 @@
 class HomepageController < ApplicationController
   include ActionController::Live
+  before_filter :authenticate_user!
 
   def entity_updates
     require 'rgeo'

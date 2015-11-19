@@ -4,7 +4,8 @@ var e_type, e_radius, e_coords, coords_to_display, e_length, e_area, e_layer, e_
 var source;
 var all_geo_ents_ids;
 var all_teams_ids; // cada entrada é da forma {id: feature_id, marker: L.marker(L.latLng(lat, lng))}
-var current_user_location;
+var previous_user_location; // {timestamp: Date(), position: L.latLng(lat, lng)}
+var no_sleep_enabled = false;
 
 var team_icon = L.icon({
   iconUrl: '/assets/team_icon.png',
@@ -27,21 +28,21 @@ $(document).ready(function () {
   if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.
       test(navigator.userAgent)) {
     // Take the user to a different screen here.
-    alert("Dispositivo Móvel.");
+//    alert("Dispositivo Móvel.");
 
     var noSleep = new NoSleep();
 
     var obj = document.getElementById('map');
     obj.addEventListener('touchstart', function () {
-
-      console.log("touchstart cena cena!!!");
-
-      noSleep.enable(); // keep the screen on!
-      console.log(noSleep);
+      if (!no_sleep_enabled) {
+        console.log("NoSleep Ativado :)");
+        noSleep.enable(); // keep the screen on!
+        no_sleep_enabled = true;
+      }
     }, false);
   }
   else {
-    alert("Dispositivo Fixo.");
+//    alert("Dispositivo Fixo.");
   }
 
 
@@ -70,12 +71,11 @@ $(document).ready(function () {
 
   // ativa a geolocalização apenas se o browser a suportar
   if ("geolocation" in navigator) { /* geolocation is available */
-
     new L.control.locate({
       position: "topleft",
       layer: drawnItems,
       drawCircle: true,
-      follow: true,
+      follow: false,
       setView: false,
       keepCurrentZoomLevel: true,
       stopFollowingOnDrag: false,
@@ -101,63 +101,71 @@ $(document).ready(function () {
         watch: true,
         enableHighAccuracy: true,
         maximumAge: 15000,
-        timeout: 10000
+        timeout: 1000
       }
     }).addTo(map);
 
-    map.on('locationfound', function(e) {
+    map.on('locationfound', function (e) {
       console.log("POSIÇÃO OBTIDA COM SUCESSO!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-//      console.log(e.latlng);
       console.log(e);
 
-      var positionDate = new Date(e.timestamp);
-      var currentDate = new Date();
-      console.log(positionDate.toLocaleString(), currentDate.toLocaleString());
+      var distance = -1, time_spanned = -1, curr_time, prev_time;
+      if (typeof previous_user_location !== 'undefined') {
+        distance = previous_user_location.position.distanceTo(e.latlng);
+        curr_time = new Date();
+        prev_time = previous_user_location.timestamp;
 
-      var distance = -1;
-      if (typeof current_user_location !== 'undefined')
-        distance = current_user_location.distanceTo(e.latlng);
+        // caso a diferença seja seja, passa a 1ms para evitar divisão por zero
+        // resultado em ms, divisao por 1000 para converter para segundos
+        time_spanned = (curr_time - prev_time) == 0 ? 1 : (curr_time - prev_time) / 1000;
 
-      console.log("DISTANCIA PARA MEDIÇÃO ANTERIOR: " + distance);
+        console.log("DIFERENÇA DO TIMESTAMP: " + time_spanned);
+        console.log("DISTANCIA PARA MEDIÇÃO ANTERIOR: " + distance);
+      }
 
-      // envia a nova posição para o servidor caso seja a primeira vez ou
-      // a distancia para a posição anterior seja superior a 10 metros
-//      if (distance == -1 || distance > 10) {
-//        console.log("POSIÇÃO ATUAL A MAIS DE 10M DA ANTERIOR!");
-//
-//        $.ajax({
-//          type: "POST",
-//          url: "/update_location",
-//          data: {
-//            latitude: e.latlng.lat,
-//            longitude: e.latlng.lng,
-//            user_id: gon.user_id
-//          },
-//          success: function (result) {
-//            console.log(result);
-//
-////            var new_marker = L.marker(e.latlng, {icon: user_pos_icon});
-////            cluster.addLayer(new_marker);
-////            map.addLayer(cluster);
-//
-//            var d = new Date();
-//            var time = d.toLocaleTimeString();
-//
-//            var li = $('<li/>').addClass('collection-item');
-//            var span1 = $('<span/>').text("Coordenadas: [" + e.latlng.lat + "; " + e.latlng.lng + "]");
-//            var span2 = $('<span/>').text("Precisão da medição: " + e.accuracy + " metros");
-//            var span3 = $('<span/>').text("Data do sistema: " + time);
-//
-//            li.append(span1).append('<br>').append(span2).append('<br>').append(span3);
-//            $('#current_position_list').prepend(li);
-//          },
-//          error: function (err) {
-//            console.log(err);
-//          }
-//        });
+      // envia a nova posição para o servidor caso seja a primeira vez,
+      // a distancia para a posição anterior seja superior a 10 metros ou
+      // a ultima medição tenha sido há mais de 10 segundos
+      if ((distance == -1 || distance > 10) && (time_spanned == -1 || time_spanned > 10)) {
+        console.log("POSIÇÃO A MAIS DE 10METROS E HÁ MAIS DE 10SEGUNDOS!!!!!!");
+
+        // atualizam-se ja estas variaveis pois o retorno do ajax pode demorar e aí a posição era
+        // atualizada várias vezes ao invés de apenas uma.
+        previous_user_location = {position: e.latlng, timestamp: e.timestamp};
+
+        $.ajax({
+          type: "POST",
+          url: "/update_location",
+          data: {
+            latitude: e.latlng.lat,
+            longitude: e.latlng.lng,
+            user_id: gon.user_id
+          },
+          success: function (result) {
+            console.log(result);
+
+//            var new_marker = L.marker(e.latlng, {icon: user_pos_icon});
+//            cluster.addLayer(new_marker);
+//            map.addLayer(cluster);
+
+            var d = new Date();
+            var time = d.toLocaleTimeString();
+
+            var li = $('<li/>').addClass('collection-item');
+            var span1 = $('<span/>').text("Coordenadas: [" + e.latlng.lat + "; " + e.latlng.lng + "]");
+            var span2 = $('<span/>').text("Precisão da medição: " + e.accuracy + " metros");
+            var span3 = $('<span/>').text("Data do sistema: " + time);
+
+            li.append(span1).append('<br>').append(span2).append('<br>').append(span3);
+            $('#current_position_list').prepend(li);
+          },
+          error: function (err) {
+            console.log(err);
+          }
+        });
 //      map.setView(c_latlng, 16);
-//      }
-      current_user_location = e.latlng;
+      }
+//      setTimeout(map.locate(), 5000);
     });
 
   }
@@ -709,81 +717,81 @@ function eventSourceSetup() {
 //}
 
 
-function cenaGPS() {
-  var options = {
-    enableHighAccuracy: true,
-    timeout: 85000,
-    maximumAge: 10000
-  };
-
-  function onsuccess(pos) {
-    console.log(pos);
-    var c_latlng = L.latLng(pos.coords.latitude, pos.coords.longitude);
-//    var c_text = "POINT(" + c_latlng.lng + " " + c_latlng.lat + ")";
-
-    console.log("POSIÇÃO OBTIDA!!");
-    console.log(c_latlng);
-
-    var positionDate = new Date(pos.timestamp);
-    var currentDate = new Date();
-    console.log(positionDate.toLocaleString(), currentDate.toLocaleString());
-
-    var distance = -1;
-    if (typeof current_user_location !== 'undefined')
-      distance = current_user_location.distanceTo(c_latlng);
-
-    console.log("DISTANCIA PARA MEDIÇÃO ANTERIOR: " + distance);
-
-    // envia a nova posição para o servidor caso seja a primeira vez ou
-    // a distancia para a posição anterior seja superior a 10 metros
-    if (distance == -1 || distance > 10) {
-      console.log("POSIÇÃO ATUAL A MAIS DE 10M DA ANTERIOR!");
-
-      $.ajax({
-        type: "POST",
-        url: "/update_location",
-        data: {
-          latitude: pos.coords.latitude,
-          longitude: pos.coords.longitude,
-          user_id: gon.user_id
-        },
-        success: function (result) {
-          console.log(result);
-
-          var new_marker = L.marker(c_latlng, {icon: user_pos_icon});
-          cluster.addLayer(new_marker);
-          map.addLayer(cluster);
-
-          var d = new Date();
-          var time = d.toLocaleTimeString();
-
-          var li = $('<li/>').addClass('collection-item');
-          var span1 = $('<span/>').text("Coordenadas: [" + pos.coords.latitude + "; " + pos.coords.longitude + "]");
-          var span2 = $('<span/>').text("Precisão da medição: " + pos.coords.accuracy + " metros");
-          var span3 = $('<span/>').text("Data do sistema: " + time);
-
-          li.append(span1).append('<br>').append(span2).append('<br>').append(span3);
-          $('#current_position_list').prepend(li);
-        },
-        error: function (err) {
-          console.log(err);
-        }
-      });
-//      map.setView(c_latlng, 16);
-    }
-    current_user_location = c_latlng;
-  }
-
-  // PERMISSION_DENIED = 1;
-  // POSITION_UNAVAILABLE = 2;
-  // TIMEOUT = 3;
-  function onerror(err) {
-    console.warn('ERROR(' + err.code + '): ' + err.message);
-  }
-
-  navigator.geolocation.getCurrentPosition(onsuccess, onerror, options);
-  setTimeout(cenaGPS, 10000);
-}
+//function cenaGPS() {
+//  var options = {
+//    enableHighAccuracy: true,
+//    timeout: 85000,
+//    maximumAge: 10000
+//  };
+//
+//  function onsuccess(pos) {
+//    console.log(pos);
+//    var c_latlng = L.latLng(pos.coords.latitude, pos.coords.longitude);
+////    var c_text = "POINT(" + c_latlng.lng + " " + c_latlng.lat + ")";
+//
+//    console.log("POSIÇÃO OBTIDA!!");
+//    console.log(c_latlng);
+//
+//    var positionDate = new Date(pos.timestamp);
+//    var currentDate = new Date();
+//    console.log(positionDate.toLocaleString(), currentDate.toLocaleString());
+//
+//    var distance = -1;
+//    if (typeof current_user_location !== 'undefined')
+//      distance = current_user_location.distanceTo(c_latlng);
+//
+//    console.log("DISTANCIA PARA MEDIÇÃO ANTERIOR: " + distance);
+//
+//    // envia a nova posição para o servidor caso seja a primeira vez ou
+//    // a distancia para a posição anterior seja superior a 10 metros
+//    if (distance == -1 || distance > 10) {
+//      console.log("POSIÇÃO ATUAL A MAIS DE 10M DA ANTERIOR!");
+//
+//      $.ajax({
+//        type: "POST",
+//        url: "/update_location",
+//        data: {
+//          latitude: pos.coords.latitude,
+//          longitude: pos.coords.longitude,
+//          user_id: gon.user_id
+//        },
+//        success: function (result) {
+//          console.log(result);
+//
+//          var new_marker = L.marker(c_latlng, {icon: user_pos_icon});
+//          cluster.addLayer(new_marker);
+//          map.addLayer(cluster);
+//
+//          var d = new Date();
+//          var time = d.toLocaleTimeString();
+//
+//          var li = $('<li/>').addClass('collection-item');
+//          var span1 = $('<span/>').text("Coordenadas: [" + pos.coords.latitude + "; " + pos.coords.longitude + "]");
+//          var span2 = $('<span/>').text("Precisão da medição: " + pos.coords.accuracy + " metros");
+//          var span3 = $('<span/>').text("Data do sistema: " + time);
+//
+//          li.append(span1).append('<br>').append(span2).append('<br>').append(span3);
+//          $('#current_position_list').prepend(li);
+//        },
+//        error: function (err) {
+//          console.log(err);
+//        }
+//      });
+////      map.setView(c_latlng, 16);
+//    }
+//    current_user_location = c_latlng;
+//  }
+//
+//  // PERMISSION_DENIED = 1;
+//  // POSITION_UNAVAILABLE = 2;
+//  // TIMEOUT = 3;
+//  function onerror(err) {
+//    console.warn('ERROR(' + err.code + '): ' + err.message);
+//  }
+//
+//  navigator.geolocation.getCurrentPosition(onsuccess, onerror, options);
+//  setTimeout(cenaGPS, 10000);
+//}
 
 
 /*
