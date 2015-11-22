@@ -8,43 +8,41 @@
 <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
     <%= devise_error_messages! %>
 
-    <div class="input-field col s6 m6 l6">
+    <div class="input-field col s12 m6 l6">
       <!--<i class="material-icons prefix">account_circle</i>-->
       <%= f.label "Primeiro Nome" %>
-      <%= f.text_field :first_name, autofocus: true %>
+      <%= f.text_field :first_name, autofocus: true, required: true %>
     </div>
 
-    <div class="input-field col s6 m6 l6">
+    <div class="input-field col s12 m6 l6">
       <!--<i class="material-icons prefix">account_circle</i>-->
       <%= f.label "Último Nome" %>
-      <%= f.text_field :last_name %>
+      <%= f.text_field :last_name, required: true %>
     </div>
 
     <div class="file-field input-field col s12 m12 l12">
       <div class="btn">
         <span>Ficheiro</span>
-        <!--<input type="file" id="user_avatar" name="user[avatar]">-->
         <%= f.file_field :avatar, class: 'file' %>
       </div>
       <div class="file-path-wrapper">
         <input class="file-path validate" type="text" placeholder="Imagem de perfil">
-    <%#= f.file_field :avatar %>
       </div>
     </div>
 
     <div class="input-field col s12 m12 l12">
       <%= f.label "Endereço de email" %>
-      <%= f.email_field :email %>
+      <%= f.email_field :email, required: true %>
     </div>
 
     <div class="input-field col s12 m12 l12">
       <%= f.label "Password" %>
-      <%= f.password_field :password, autocomplete: "off" %>
+      <%= f.password_field :password, autocomplete: "off", required: true %>
     </div>
 
     <div class="input-field col s12 m12 l12">
       <%= f.label "Repita password" %>
-      <%= f.password_field :password_confirmation, autocomplete: "off" %>
+      <%= f.password_field :password_confirmation, autocomplete: "off", required: true %>
     </div>
 
     <%= f.hidden_field :profile, :value => User::BASICO %>

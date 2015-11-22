@@ -5,7 +5,13 @@ Rails.application.routes.draw do
   # rotas para as chamadas ajax na pagina principal
   get '/teams/teams_to_json', to: 'teams#teams_to_json'
   get '/get_geo_entities', to: 'homepage#get_geo_entities'
-  get 'account/edit', to: 'users#edit'
+  # get 'account/edit', to: 'users#edit'
+
+
+  # altera as rotas predefinidas do devise
+  devise_for :users, :controllers => { registrations: 'registrations' },
+             :path => 'account', :path_names => { :sign_in => 'login', :sign_up => 'new', :sign_out => 'logout',
+                                                  :password => 'password', :confirmation => 'confirmation' }
 
 
   resources :geo_entities
@@ -17,10 +23,6 @@ Rails.application.routes.draw do
     resources :users
   end
 
-  # altera as rotas predefinidas do devise
-  devise_for :users, :controllers => { registrations: 'registrations' },
-             :path => 'account', :path_names => { :sign_in => 'login', :sign_up => 'new', :sign_out => 'logout',
-                                                  :password => 'password', :confirmation => 'confirmation' }
 
   get 'users', to: 'users#index'
   get 'users/show'

@@ -1,39 +1,128 @@
-<h2>Edit <%= resource_name.to_s.humanize %></h2>
+<%# encoding: utf-8 %>
 
-<%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
-  <%= devise_error_messages! %>
+<% content_for :title, "Editar utilizador :: GestãoEmergência" %>
+<% content_for :page_purpose, "Editar utilizador" %>
 
-  <div class="field">
-    <%= f.label :email %><br />
-    <%= f.email_field :email, autofocus: true %>
-  </div>
-
-  <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
-    <div>Currently waiting confirmation for: <%= resource.unconfirmed_email %></div>
-  <% end %>
-
-  <div class="field">
-    <%= f.label :password %> <i>(leave blank if you don't want to change it)</i><br />
-    <%= f.password_field :password, autocomplete: "off" %>
-  </div>
-
-  <div class="field">
-    <%= f.label :password_confirmation %><br />
-    <%= f.password_field :password_confirmation, autocomplete: "off" %>
-  </div>
-
-  <div class="field">
-    <%= f.label :current_password %> <i>(we need your current password to confirm your changes)</i><br />
-    <%= f.password_field :current_password, autocomplete: "off" %>
-  </div>
-
-  <div class="actions">
-    <%= f.submit "Update" %>
-  </div>
+<% content_for :back_page do %>
+    <%= link_to @user, :data => {:position => 'right', :delay => '15', :tooltip => 'Voltar para o utilizador '+@user.id.to_s},
+                class: 'tooltipped navbar-button', method: :get do %>
+        <i class="material-icons md-36 white-text">arrow_back</i>
+    <% end %>
 <% end %>
 
-<h3>Cancel my account</h3>
+<% content_for :model_actions do %>
+    <%= link_to user_registration_path, :data => {:position => 'left', :delay => '15',
+                                                  :confirm => "Tem a certeza de que pretende remover este utilizador?",
+                                                  :tooltip => 'Apagar conta'},
+                class: 'tooltipped navbar-button', method: :delete do %>
+        <i class="material-icons md-36">delete</i>
+    <% end %>
+<% end %>
 
-<p>Unhappy? <%= button_to "Cancel my account", registration_path(resource_name), data: { confirm: "Are you sure?" }, method: :delete %></p>
 
-<%= link_to "Back", :back %>
+<div class="container">
+  <div class="row" style="margin-top: 20px;">
+    <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: {method: :put}) do |f| %>
+        <%= devise_error_messages! %>
+
+        <div class="col l10 m10 s12">
+
+          <div id="basic-info" class="scrollspy col l12 s12 z-depth-1 white">
+            <div class="section">
+              <h5 style="margin-left: 10px;">Dados Básicos</h5>
+            </div>
+
+            <div class="input-field col s12 m6 l6">
+              <!--<i class="material-icons prefix">account_circle</i>-->
+              <%= f.label "Primeiro Nome" %>
+              <%= f.text_field :first_name, autofocus: true, required: true %>
+            </div>
+
+            <div class="input-field col s12 m6 l6">
+              <!--<i class="material-icons prefix">account_circle</i>-->
+              <%= f.label "Último Nome" %>
+              <%= f.text_field :last_name, required: true %>
+            </div>
+
+
+            <div class="input-field col s12 m12 l12">
+              <%= f.label "Endereço de email", class: "fixed-position" %>
+              <%= f.text_field :email, required: true %>
+            </div>
+
+            <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
+                <div>Aguardando confirmação de: <%= resource.unconfirmed_email %></div>
+            <% end %>
+          </div>
+
+          <div id="avatar" class="scrollspy col l12 s12 z-depth-1 white" style="margin-top: 20px; margin-bottom: 20px;">
+            <div class="section">
+              <h5 style="margin-left: 10px;">Foto de perfil</h5>
+            </div>
+
+            <div class="file-field input-field col s12 m12 l12">
+              <div class="btn">
+                <span>Ficheiro</span>
+                <%= f.file_field :avatar, class: 'file' %>
+              </div>
+              <div class="file-path-wrapper">
+                <input class="file-path validate" type="text" placeholder="Imagem de perfil">
+              </div>
+            </div>
+          </div>
+
+          <div id="password" class="scrollspy col l12 s12 z-depth-1 white" style="margin-bottom: 20px;">
+            <div class="section">
+              <h5 style="margin-left: 10px; display: inline;">Palavra-passe </h5>
+              <span>(deixe em branco se não quiser alterar)</span>
+            </div>
+
+            <div class="input-field col s12 m12 l6">
+              <%= f.label "Nova palavra-passe (opcional)", class: "fixed-position" %>
+              <%= f.password_field :password, autocomplete: "off" %>
+            </div>
+
+            <div class="input-field col s12 m12 l6">
+              <%= f.label "Confirme a palavra-passe", class: "fixed-position" %>
+              <%= f.password_field :password_confirmation, autocomplete: "off" %>
+            </div>
+          </div>
+
+          <div id="profile" class="scrollspy col l12 s12 z-depth-1 white">
+            <div class="section">
+              <h5 style="margin-left: 10px; display: inline;">Alterar perfil do utilizador</h5>
+            </div>
+
+            <div class="input-field col s12 m12 l12">
+              <%= select_tag "user[profile]", options_for_select(User::PROFILES, :selected=>@user.profile) %>
+            </div>
+          </div>
+
+          <div class="col s12 m12 l12 center-align" style="margin-top: 20px;">
+            <div class="actions">
+              <%= f.submit 'Atualizar', class: "btn waves-effect waves-light" %>
+            </div>
+          </div>
+        </div>
+
+        <div id="scroll" class="col l2 m2 hide-on-small-only right-align">
+          <div class="teste">
+            <ul class="table-of-contents">
+              <li><a href="#basic-info">Dados básicos</a></li>
+              <li><a href="#avatar">Foto de perfil</a></li>
+              <li><a href="#password">Palavra-passe</a></li>
+              <li><a href="#profile">Perfil</a></li>
+            </ul>
+          </div>
+        </div>
+
+    <% end %>
+
+    <!--<h3>Cancel my account</h3>-->
+
+    <!--<p>Unhappy? <%#= button_to "Cancel my account", registration_path(resource_name),
+                            data: {confirm: "Are you sure?"}, method: :delete %></p>-->
+
+    <%#= link_to "Back", :back %>
+  </div>
+</div>

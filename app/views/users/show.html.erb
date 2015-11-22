@@ -6,7 +6,7 @@
 
 <% content_for :model_actions do %>
     <% if current_user.id == @user.id || current_user.profile == User::ADMINISTRADOR %>
-        <%= link_to edit_user_path(@user), :data => {:position => 'left', :delay => '15',
+        <%= link_to edit_user_registration_path, :data => {:position => 'left', :delay => '15',
                                                      :tooltip => 'Editar utilizador'},
                     class: 'tooltipped navbar-button', method: :get do %>
             <i class="material-icons md-36">edit</i>

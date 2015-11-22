@@ -12,6 +12,9 @@ var team_highlight_icon = L.icon({
 
 $(document).ready(function () {
 
+  $('.teste').pushpin({ top: 84 });
+  $('.scrollspy').scrollSpy();
+
   cluster = L.markerClusterGroup({chunkedLoading: true});
 
   // atualizar posição do utilizador
