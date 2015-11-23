@@ -21,7 +21,7 @@
 
 <div class="container">
   <div class="row" style="margin-top: 20px;">
-    <div id="teams_info_div" class="col l4 s12 center-align z-depth-1 white"
+    <div id="teams_info_div" class="col l4 m12 s12 center-align z-depth-1 white"
          style="padding-left: 20px; padding-top: 0px; padding-bottom: 20px; padding-right: 20px;">
       <h5 style="font-weight: 300;">Detalhes</h5>
 
@@ -85,16 +85,16 @@
       </div>
     </div>
 
-    <div id="team_coordinates" class="center col s12 l8 z-depth-1 white"
+    <div id="team_coordinates" class="center col s12 m12 l8 z-depth-1 white"
          style="padding-left: 20px; padding-top: 0px; padding-bottom: 20px; padding-right: 20px;">
       <h5 style="font-weight: 300;">Coordenadas</h5>
 
       <div class="divider divider-margin"></div>
 
-      <%#= hidden_field_tag(:curr_team_coords, @team.latlon) %>
       <div id="team_map" style="height: 350px;"></div>
     </div>
   </div>
+
   <div class="row z-depth-1 white"
        style="padding-left: 20px; padding-top: 1px; padding-bottom: 20px; padding-right: 20px;">
     <h5 class="center" style="font-weight: 300;">Membros (<%= @team.users.size %>)</h5>

@@ -1,4 +1,5 @@
-var osm, team_map, osmUrl;
+var osm, osmUrl;
+var team_map, osmUrl;
 var curr_marker = undefined, remove_btn;
 var cluster;
 
@@ -11,10 +12,6 @@ var team_highlight_icon = L.icon({
 
 
 $(document).ready(function () {
-
-  $('.teste').pushpin({ top: 84 });
-  $('.scrollspy').scrollSpy();
-
   cluster = L.markerClusterGroup({chunkedLoading: true});
 
   // atualizar posição do utilizador
@@ -258,13 +255,17 @@ $(document).ready(function () {
       team_map.fitBounds(bounds_arr);
     }
   }
-  // estamos na pagina para editar utilizador - /users/12/edit
-  else if (users_pages && edit_page) {
-    console.log("PÁGINA PARA EDITAR UTILIZADOR!!!");
+  // estamos na pagina para apresentar utilizador - /users/12
+  else if (users_pages) {
+    if (is_a_number) {
+      console.log("PÁGINA PARA APRESENTAR UTILIZADOR!!!");
+    }
+    else if(edit_page) {
+      // barra lateral que acompanha o scroll - pagina para editar utilizador
+      $('.pushpin').pushpin({top: 84});
+      $('.scrollspy').scrollSpy();
+    }
   }
-
-
-//  $('#profile-user-info').pushpin({top: 64});
 
   /**
    * Positions the tabs

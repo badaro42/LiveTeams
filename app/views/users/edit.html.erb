@@ -1,65 +1,115 @@
 <%# encoding: utf-8 %>
 
-<% @show_search_stuff = false %>
 <% content_for :title, "Editar utilizador :: GestãoEmergência" %>
 <% content_for :page_purpose, "Editar utilizador" %>
 
 <% content_for :back_page do %>
-    <%= link_to user_path(@user), :data => {:position => 'right', :delay => '15',
-                                            :tooltip => 'Voltar para o utilizador '+@user.id.to_s},
+    <%= link_to @user, :data => {:position => 'right', :delay => '15', :tooltip => 'Voltar para o utilizador '+@user.id.to_s},
                 class: 'tooltipped navbar-button', method: :get do %>
         <i class="material-icons md-36 white-text">arrow_back</i>
     <% end %>
 <% end %>
 
-LOOOOOOOOOL
-<%= @user.inspect %>
+<% content_for :model_actions do %>
+    <%= link_to user_registration_path, :data => {:position => 'left', :delay => '15',
+                                                  :confirm => "Tem a certeza de que pretende remover este utilizador?",
+                                                  :tooltip => 'Apagar conta'},
+                class: 'tooltipped navbar-button', method: :delete do %>
+        <i class="material-icons md-36">delete</i>
+    <% end %>
+<% end %>
+
 
 <div class="container">
-  <%= form_for(@user) do |f| %>
-      <div class="input-field col s6 m6 l6">
-        <!--<i class="material-icons prefix">account_circle</i>-->
-        <%= f.label "Primeiro Nome" %>
-        <%= f.text_field :first_name, autofocus: true %>
-      </div>
+  <div class="row" style="margin-top: 20px;">
+    <%= form_for(@user) do |f| %>
+        <div class="col l10 m10 s12">
 
-      <div class="input-field col s6 m6 l6">
-        <!--<i class="material-icons prefix">account_circle</i>-->
-        <%= f.label "Último Nome" %>
-        <%= f.text_field :last_name %>
-      </div>
+          <div id="basic-info" class="scrollspy col l12 s12 z-depth-1 white">
+            <div class="section">
+              <h5 style="margin-left: 10px;">Dados Básicos</h5>
+            </div>
 
-      <div class="file-field input-field col s12 m12 l12">
-        <div class="btn">
-          <span>Ficheiro</span>
-          <!--<input type="file" id="user_avatar" name="user[avatar]">-->
-          <%= f.file_field :avatar, class: 'file' %>
+            <div class="input-field col s12 m6 l6">
+              <!--<i class="material-icons prefix">account_circle</i>-->
+              <%= f.label "Primeiro Nome" %>
+              <%= f.text_field :first_name, autofocus: true, required: true %>
+            </div>
+
+            <div class="input-field col s12 m6 l6">
+              <!--<i class="material-icons prefix">account_circle</i>-->
+              <%= f.label "Último Nome" %>
+              <%= f.text_field :last_name, required: true %>
+            </div>
+
+
+            <div class="input-field col s12 m12 l12">
+              <%= f.label "Endereço de email", class: "fixed-position" %>
+              <%= f.text_field :email, required: true %>
+            </div>
+          </div>
+
+          <div id="avatar" class="scrollspy col l12 s12 z-depth-1 white" style="margin-top: 20px; margin-bottom: 20px;">
+            <div class="section">
+              <h5 style="margin-left: 10px;">Foto de perfil</h5>
+            </div>
+
+            <div class="file-field input-field col s12 m12 l12">
+              <div class="btn">
+                <span>Ficheiro</span>
+                <%= f.file_field :avatar, class: 'file' %>
+              </div>
+              <div class="file-path-wrapper">
+                <input class="file-path validate" type="text" placeholder="Imagem de perfil">
+              </div>
+            </div>
+          </div>
+
+          <div id="password" class="scrollspy col l12 s12 z-depth-1 white" style="margin-bottom: 20px;">
+            <div class="section">
+              <h5 style="margin-left: 10px; display: inline;">Palavra-passe </h5>
+              <span>(deixe em branco se não quiser alterar)</span>
+            </div>
+
+            <div class="input-field col s12 m12 l6">
+              <%= f.label "Nova palavra-passe (opcional)", class: "fixed-position" %>
+              <%= f.password_field :password, autocomplete: "off" %>
+            </div>
+
+            <div class="input-field col s12 m12 l6">
+              <%= f.label "Confirme a palavra-passe", class: "fixed-position" %>
+              <%= f.password_field :password_confirmation, autocomplete: "off" %>
+            </div>
+          </div>
+
+          <div id="profile" class="scrollspy col l12 s12 z-depth-1 white">
+            <div class="section">
+              <h5 style="margin-left: 10px; display: inline;">Alterar perfil do utilizador</h5>
+            </div>
+
+            <div class="input-field col s12 m12 l12">
+              <%= select_tag "user[profile]", options_for_select(User::PROFILES, :selected=>@user.profile) %>
+            </div>
+          </div>
+
+          <div class="col s12 m12 l12 center-align" style="margin-top: 20px;">
+            <div class="actions">
+              <%= f.submit 'Atualizar', class: "btn waves-effect waves-light" %>
+            </div>
+          </div>
         </div>
-        <div class="file-path-wrapper">
-          <input class="file-path validate" type="text" placeholder="Imagem de perfil">
-          <%#= f.file_field :avatar %>
+
+        <div id="scroll" class="col l2 m2 hide-on-small-only right-align">
+          <div class="pushpin">
+            <ul class="table-of-contents">
+              <li><a href="#basic-info">Dados básicos</a></li>
+              <li><a href="#avatar">Foto de perfil</a></li>
+              <li><a href="#password">Palavra-passe</a></li>
+              <li><a href="#profile">Perfil</a></li>
+            </ul>
+          </div>
         </div>
-      </div>
 
-      <div class="input-field col s12 m12 l12">
-        <%= f.label "Endereço de email" %>
-        <%= f.email_field :email %>
-      </div>
-
-      <div class="input-field col s12 m12 l12">
-        <%= f.label "Password" %>
-        <%= f.password_field :password, autocomplete: "off" %>
-      </div>
-
-      <div class="input-field col s12 m12 l12">
-        <%= f.label "Repita password" %>
-        <%= f.password_field :password_confirmation, autocomplete: "off" %>
-      </div>
-
-      <%= f.hidden_field :profile, :value => User::BASICO %>
-
-      <div class="actions col s12 m12 l12" style="margin-top: 10px; margin-bottom: 20px;">
-        <%= f.button 'Registar!', class: "btn waves-effect waves-light" %>
-      </div>
-  <% end %>
+    <% end %>
+  </div>
 </div>

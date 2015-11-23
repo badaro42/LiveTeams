@@ -1,5 +1,6 @@
 class UsersController < ApplicationController
-  before_action :set_user, only: [:show]
+  # before_action :set_user, only: [:show]
+  before_action :set_user, only: [:show, :edit, :update]
   before_filter :authenticate_user!
   layout "listings"
 
@@ -72,10 +73,58 @@ class UsersController < ApplicationController
     end
   end
 
+  def update
+    # if params[:user][:password].blank? && params[:user][:password_confirmation].blank?
+    #   params[:user].delete(:password)
+    #   params[:user].delete(:password_confirmation)
+    # end
+    #
+    # self.resource = resource_class.to_adapter.get!(send(:"current_#{resource_name}").to_key)
+    # prev_unconfirmed_email = resource.unconfirmed_email if resource.respond_to?(:unconfirmed_email)
+    #
+    # resource_updated = @user.update_attributes(account_update_params)
+    # yield resource if block_given?
+    # if resource_updated
+    #   if is_flashing_format?
+    #     flash_key = update_needs_confirmation?(resource, prev_unconfirmed_email) ?
+    #         :update_needs_confirmation : :updated
+    #     set_flash_message :notice, flash_key
+    #   end
+    #   sign_in resource_name, resource, bypass: true
+    #   respond_with resource, location: after_update_path_for(resource)
+    # else
+    #   clean_up_passwords resource
+    #   respond_with resource
+    # end
+
+    if params[:user][:password].blank? && params[:user][:password_confirmation].blank?
+      params[:user].delete(:password)
+      params[:user].delete(:password_confirmation)
+    end
+
+    respond_to do |format|
+      if @user.update(account_update_params)
+        format.html { redirect_to @user, notice: 'User was successfully updated.' }
+        format.json { render :show, status: :ok, location: @user }
+      else
+        puts @user.errors.inspect
+        format.html { render :edit }
+        format.json { render json: @user.errors, status: :unprocessable_entity }
+      end
+    end
+
+  end
+
+
+
   private
   # Use callbacks to share common setup or constraints between actions.
   def set_user
     @user = User.find(params[:id])
+  end
+
+  def account_update_params
+    params.require(:user).permit(:first_name, :last_name, :email, :password, :password_confirmation, :avatar, :profile)
   end
 
   # def set_flash

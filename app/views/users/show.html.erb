@@ -5,9 +5,15 @@
 <% content_for :page_purpose, "Utilizador " + @user.id.to_s %>
 
 <% content_for :model_actions do %>
-    <% if current_user.id == @user.id || current_user.profile == User::ADMINISTRADOR %>
+    <% if current_user.id == @user.id %>
         <%= link_to edit_user_registration_path, :data => {:position => 'left', :delay => '15',
-                                                     :tooltip => 'Editar utilizador'},
+                                                           :tooltip => 'Editar utilizador'},
+                    class: 'tooltipped navbar-button', method: :get do %>
+            <i class="material-icons md-36">edit</i>
+        <% end %>
+    <% elsif current_user.profile == User::ADMINISTRADOR %>
+        <%= link_to edit_user_path(@user), :data => {:position => 'left', :delay => '15',
+                                                           :tooltip => 'Editar utilizador'},
                     class: 'tooltipped navbar-button', method: :get do %>
             <i class="material-icons md-36">edit</i>
         <% end %>
@@ -23,26 +29,25 @@
 <% end %>
 
 <div class="container">
+
+  <!-- TODO: ESTE PEQUENO FORM PARA (TEMPORARIAMENTE) ATUALIZAR A POSIÇÃO DO UTILIZADOR -->
+  <!-- TODO: TESTANDO ASSIM SE A ATUALIZAÇÃO DAS POSIÇÕES DA EQUIPA QUE É RESPONSAVEL ESTAO CORRECTAS -->
+  <!--<div class="row" style="margin-top: 20px;">-->
+  <!--<form class="col l12 m12 s12 center-align z-depth-1 profile-div white">-->
+  <!--<div class="row">-->
+  <!--<div class="input-field col s12">-->
+  <!--<input value="POINT()" id="new_coords" type="text" class="validate">-->
+  <!--<label for="new_coords">(TESTE) Alterar a posição atual do utilizador [lat lon]:</label>-->
+  <!--<a id="update_location" class="waves-effect waves-light btn">-->
+  <!--<i class="material-icons right">send</i>Enviar-->
+  <!--</a>-->
+  <!--</div>-->
+  <!--</div>-->
+  <!--</form>-->
+  <!--</div>-->
+
   <div class="row" style="margin-top: 20px;">
-    <form class="col l12 m12 s12 center-align z-depth-1 profile-div white">
-      <div class="row">
-        <div class="input-field col s12">
-          <input value="POINT()" id="new_coords" type="text" class="validate">
-          <label for="new_coords">(TESTE) Alterar a posição atual do utilizador [lat lon]:</label>
-          <a id="update_location" class="waves-effect waves-light btn">
-            <i class="material-icons right">send</i>Enviar
-          </a>
-        </div>
-        <!-- TODO: ESTE PEQUENO FORM PARA (TEMPORARIAMENTE) ATUALIZAR A POSIÇÃO DO UTILIZADOR -->
-        <!-- TODO: TESTANDO ASSIM SE A ATUALIZAÇÃO DAS POSIÇÕES DA EQUIPA QUE É RESPONSAVEL ESTAO CORRECTAS -->
-        <!--<button class="btn waves-effect waves-light" type="submit" id="update_location" name="latlon">Enviar-->
-        <!--<i class="material-icons right">send</i>-->
-        <!--</button>-->
-      </div>
-    </form>
-  </div>
-  <div class="row" style="margin-top: 20px;">
-    <div id="profile-user-info" class="col l3 s12 center-align z-depth-1 profile-div white">
+    <div id="profile-user-info" class="col l4 m12 s12 center-align z-depth-1 profile-div white">
       <div class="col l12 m6 s12">
         <%= image_tag @user.avatar.url(:small), class: 'circle responsive-img' %>
       </div>
@@ -76,7 +81,18 @@
       </div>
     </div>
 
-    <div class="profile-tabs col s12 l8 z-depth-1 white">
+    <div id="user_coordinates" class="center col s12 m12 l8 z-depth-1 white"
+         style="padding-left: 20px; padding-top: 0px; padding-bottom: 20px; padding-right: 20px;">
+      <h5 style="font-weight: 300;">Coordenadas</h5>
+
+      <div class="divider divider-margin"></div>
+
+      <div id="team_map" style="height: 350px;"></div>
+    </div>
+  </div>
+
+  <div class="row z-depth-1 white">
+    <div class="profile-tabs col s12 m12 l12 z-depth-1 white">
       <div>
         <ul id="profile-tabs-list" class="tabs">
           <li class="tab col s6">
