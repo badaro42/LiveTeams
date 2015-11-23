@@ -27,7 +27,7 @@
 
     <div class="input-field col s12 m6 l6">
       <%= f.label "Contacto telefónico" %>
-      <%= f.number_field :phone_number, required: true %>
+      <%= f.text_field :phone_number, class: 'numeric', maxlength: 9, required: true %>
     </div>
 
     <div class="input-field col s12 m6 l6">

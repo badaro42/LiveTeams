@@ -26,3 +26,4 @@
 //= require Leaflet.AccuratePosition
 //= require NoSleep.min
 //= require easy-button
+//= require jquery.numeric.min
