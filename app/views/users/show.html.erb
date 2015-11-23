@@ -52,7 +52,7 @@
         <%= image_tag @user.avatar.url(:small), class: 'circle responsive-img' %>
       </div>
 
-      <div class="col l12 m6 s8 offset-s2">
+      <div class="col l12 m6 s12">
         <h5 style="font-weight: 300;">
           <%= @user.full_name %>
         </h5>
@@ -76,7 +76,7 @@
 
         <div style="font-weight: 300; margin-top: 3px;">
           <i class="material-icons tiny">phone</i>
-          <span style="padding-left: 10px">211234567</span>
+          <span style="padding-left: 10px"><%= @user.phone_number %></span>
         </div>
       </div>
     </div>
@@ -87,7 +87,7 @@
 
       <div class="divider divider-margin"></div>
 
-      <div id="team_map" style="height: 350px;"></div>
+      <div id="user_map" style="height: 350px;"></div>
     </div>
   </div>
 

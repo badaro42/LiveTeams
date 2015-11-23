@@ -16,83 +16,103 @@ puts 'Adding 20 Users'
 # id 1
 User.create(first_name: 'Admin', last_name: 'Sistema', email: 'admin@mail.com', password: 'adminadmin',
             avatar: File.open(Rails.root + "app/assets/teste.png"), password_confirmation: 'adminadmin',
-            profile: User::ADMINISTRADOR, latlon: 'POINT(-9.160860925912857 38.62768769514654)') # Vale de Milha�os
+            profile: User::ADMINISTRADOR, phone_number: '212111111',
+            latlon: 'POINT(-9.160860925912857 38.62768769514654)') # Vale de Milha�os
 # id 2
 User.create(first_name: 'José', last_name: 'Sócrates', email: 'jose1@mail.com', password: 'qweqweqwe',
             avatar: File.open(Rails.root + "app/assets/teste.png"), password_confirmation: 'qweqweqwe',
-            profile: User::GESTOR, latlon: 'POINT(-9.203015863895416 38.661109791229485)') # FCT-UNL DI
+            profile: User::GESTOR, phone_number: '212111112',
+            latlon: 'POINT(-9.203015863895416 38.661109791229485)') # FCT-UNL DI
 # id 3
 User.create(first_name: 'Manuel', last_name: 'Rebelo', email: 'manuel2@mail.com', password: 'qweqweqwe',
             avatar: File.open(Rails.root + "app/assets/teste.png"), password_confirmation: 'qweqweqwe',
-            profile: User::GESTOR, latlon: 'POINT(-9.147389531135559 38.6874694378102)') # Metro Cacilhas
+            profile: User::GESTOR, phone_number: '212111113',
+            latlon: 'POINT(-9.147389531135559 38.6874694378102)') # Metro Cacilhas
 # id 4
 User.create(first_name: 'Renato', last_name: 'Alexandre', email: 'renato3@mail.com', password: 'qweqweqwe',
             avatar: File.open(Rails.root + "app/assets/teste.png"), password_confirmation: 'qweqweqwe',
-            profile: User::OPERACIONAL, latlon: 'POINT(-9.160088449716568 38.65548397079349)') # Campos T�nis Feij�
+            profile: User::OPERACIONAL, phone_number: '212111114',
+            latlon: 'POINT(-9.160088449716568 38.65548397079349)') # Campos T�nis Feij�
 # id 5
 User.create(first_name: 'Carlos', last_name: 'Dias', email: 'carlos4@mail.com', password: 'qweqweqwe',
             avatar: File.open(Rails.root + "app/assets/teste.png"), password_confirmation: 'qweqweqwe',
-            profile: User::OPERACIONAL, latlon: 'POINT(-9.23403024673462 38.64389162826271)') # Costa da Caparica
+            profile: User::OPERACIONAL, phone_number: '212111115',
+            latlon: 'POINT(-9.23403024673462 38.64389162826271)') # Costa da Caparica
 # id 6
 User.create(first_name: 'Miguel', last_name: 'Alberto', email: 'miguel5@mail.com', password: 'qweqweqwe',
             avatar: File.open(Rails.root + "app/assets/teste.png"), password_confirmation: 'qweqweqwe',
-            profile: User::BASICO, latlon: 'POINT(-9.171277284622192 38.678508079563805)') # Cristo Rei
+            profile: User::BASICO, phone_number: '212111116',
+            latlon: 'POINT(-9.171277284622192 38.678508079563805)') # Cristo Rei
 # id 7
 User.create(first_name: 'Bruno', last_name: 'Aleixo', email: 'bruno6@mail.com', password: 'qweqweqwe',
             avatar: File.open(Rails.root + "app/assets/teste.png"), password_confirmation: 'qweqweqwe',
-            profile: User::BASICO, latlon: 'POINT(-9.136432707309723 38.70748187656837)') # Pra�a do Com�rcio
+            profile: User::BASICO, phone_number: '212111117',
+            latlon: 'POINT(-9.136432707309723 38.70748187656837)') # Pra�a do Com�rcio
 # id 8
 User.create(first_name: 'Rui', last_name: 'Coelho', email: 'rui7@mail.com', password: 'qweqweqwe',
             avatar: File.open(Rails.root + "app/assets/teste.png"), password_confirmation: 'qweqweqwe',
-            profile: User::GESTOR, latlon: 'POINT(-9.094029664993286 38.76843921624117)') # Pavilh�o Atl�ntico
+            profile: User::GESTOR, phone_number: '212111118',
+            latlon: 'POINT(-9.094029664993286 38.76843921624117)') # Pavilh�o Atl�ntico
 # id 9
 User.create(first_name: 'Rafael', last_name: 'Bizarra', email: 'rafael8@mail.com', password: 'qweqweqwe',
             avatar: File.open(Rails.root + "app/assets/teste.png"), password_confirmation: 'qweqweqwe',
-            profile: User::ADMINISTRADOR, latlon: 'POINT(-9.213436245918274 38.42022552818708)') # Cabo Espichel
+            profile: User::ADMINISTRADOR, phone_number: '212111119',
+            latlon: 'POINT(-9.213436245918274 38.42022552818708)') # Cabo Espichel
 # id 10
 User.create(first_name: 'Roberto', last_name: 'Frangueiro', email: 'roberto9@mail.com', password: 'qweqweqwe',
             avatar: File.open(Rails.root + "app/assets/teste.png"), password_confirmation: 'qweqweqwe',
-            profile: User::BASICO, latlon: 'POINT(-8.903088569641113 38.49027879470561)') # Pen�nsula de Tr�ia
+            profile: User::BASICO, phone_number: '212111120',
+            latlon: 'POINT(-8.903088569641113 38.49027879470561)') # Pen�nsula de Tr�ia
 # id 11
 User.create(first_name: 'Artur', last_name: 'Bacano', email: 'artur10@mail.com', password: 'qweqweqwe',
             avatar: File.open(Rails.root + "app/assets/teste.png"), password_confirmation: 'qweqweqwe',
-            profile: User::BASICO, latlon: 'POINT(-9.22276496887207 38.6275996886131)')
+            profile: User::BASICO, phone_number: '212111121',
+            latlon: 'POINT(-9.22276496887207 38.6275996886131)')
 # id 12
 User.create(first_name: 'Álvaro', last_name: 'Branco', email: 'alvaro11@mail.com', password: 'qweqweqwe',
             avatar: File.open(Rails.root + "app/assets/teste.png"), password_confirmation: 'qweqweqwe',
-            profile: User::GESTOR, latlon: 'POINT(-9.081315994262695 38.626258623311166)')
+            profile: User::GESTOR, phone_number: '212111122',
+            latlon: 'POINT(-9.081315994262695 38.626258623311166)')
 # id 13
 User.create(first_name: 'Rodrigo', last_name: 'Silva', email: 'rodrigo12@mail.com', password: 'qweqweqwe',
             avatar: File.open(Rails.root + "app/assets/teste.png"), password_confirmation: 'qweqweqwe',
-            profile: User::GESTOR, latlon: 'POINT(-9.095392227172852 38.5937971957727)')
+            profile: User::GESTOR, phone_number: '212111123',
+            latlon: 'POINT(-9.095392227172852 38.5937971957727)')
 # id 14
 User.create(first_name: 'Valter', last_name: 'Costa', email: 'valter13@mail.com', password: 'qweqweqwe',
             avatar: File.open(Rails.root + "app/assets/teste.png"), password_confirmation: 'qweqweqwe',
-            profile: User::BASICO, latlon: 'POINT(-9.323358535766602 38.680417696714684)')
+            profile: User::BASICO, phone_number: '212111124',
+            latlon: 'POINT(-9.323358535766602 38.680417696714684)')
 # id 15
 User.create(first_name: 'Diogo', last_name: 'Fonseca', email: 'diogo14@mail.com', password: 'qweqweqwe',
             avatar: File.open(Rails.root + "app/assets/teste.png"), password_confirmation: 'qweqweqwe',
-            profile: User::BASICO, latlon: 'POINT(-9.20628547668457 38.69756846453178)')
+            profile: User::BASICO, phone_number: '212111125',
+            latlon: 'POINT(-9.20628547668457 38.69756846453178)')
 # id 16
 User.create(first_name: 'David', last_name: 'António', email: 'david15@mail.com', password: 'qweqweqwe',
             avatar: File.open(Rails.root + "app/assets/teste.png"), password_confirmation: 'qweqweqwe',
-            profile: User::BASICO, latlon: 'POINT(-9.420175552368164 38.69408504756833)')
+            profile: User::BASICO, phone_number: '212111126',
+            latlon: 'POINT(-9.420175552368164 38.69408504756833)')
 # id 17
 User.create(first_name: 'António', last_name: 'Esteves', email: 'antonio16@mail.com', password: 'qweqweqwe',
             avatar: File.open(Rails.root + "app/assets/teste.png"), password_confirmation: 'qweqweqwe',
-            profile: User::GESTOR, latlon: 'POINT(-9.381723403930664 38.69676461413586)')
+            profile: User::GESTOR, phone_number: '212111127',
+            latlon: 'POINT(-9.381723403930664 38.69676461413586)')
 # id 18
 User.create(first_name: 'Filipe', last_name: 'Jesus', email: 'filipe17@mail.com', password: 'qweqweqwe',
             avatar: File.open(Rails.root + "app/assets/teste.png"), password_confirmation: 'qweqweqwe',
-            profile: User::BASICO, latlon: 'POINT(-9.298982620239258 38.659777730712534)')
+            profile: User::BASICO, phone_number: '212111128',
+            latlon: 'POINT(-9.298982620239258 38.659777730712534)')
 # id 19
 User.create(first_name: 'Adalberto', last_name: 'Feio', email: 'adalberto18@mail.com', password: 'qweqweqwe',
             avatar: File.open(Rails.root + "app/assets/teste.png"), password_confirmation: 'qweqweqwe',
-            profile: User::BASICO, latlon: 'POINT(-9.257440567016602 38.662458581979436)')
+            profile: User::BASICO, phone_number: '212111129',
+            latlon: 'POINT(-9.257440567016602 38.662458581979436)')
 # id 20
 User.create(first_name: 'João', last_name: 'Rodrigues', email: 'joao19@mail.com', password: 'qweqweqwe',
             avatar: File.open(Rails.root + "app/assets/teste.png"), password_confirmation: 'qweqweqwe',
-            profile: User::BASICO, latlon: 'POINT(-9.105348587036133 38.666747735267805)')
+            profile: User::BASICO, phone_number: '21211130',
+            latlon: 'POINT(-9.105348587036133 38.666747735267805)')
 
 # User.update(1, {
 # User.update(2, {:latlon => 'POINT( )'})

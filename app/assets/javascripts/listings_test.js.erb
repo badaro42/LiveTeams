@@ -261,6 +261,9 @@ $(document).ready(function () {
       console.log("PÁGINA PARA APRESENTAR UTILIZADOR!!!");
     }
     else if(edit_page) {
+      // apenas permite numeros no campo do numero de telefone
+      $(".numeric").numeric();
+
       // barra lateral que acompanha o scroll - pagina para editar utilizador
       $('.pushpin').pushpin({top: 84});
       $('.scrollspy').scrollSpy();
