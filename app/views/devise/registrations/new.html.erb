@@ -20,6 +20,26 @@
       <%= f.text_field :last_name, required: true %>
     </div>
 
+    <div class="input-field col s12 m6 l6">
+      <%= f.label "Endereço de email" %>
+      <%= f.email_field :email, required: true %>
+    </div>
+
+    <div class="input-field col s12 m6 l6">
+      <%= f.label "Contacto telefónico" %>
+      <%= f.number_field :phone_number, required: true %>
+    </div>
+
+    <div class="input-field col s12 m6 l6">
+      <%= f.label "Password" %>
+      <%= f.password_field :password, autocomplete: "off", required: true %>
+    </div>
+
+    <div class="input-field col s12 m6 l6">
+      <%= f.label "Repita password" %>
+      <%= f.password_field :password_confirmation, autocomplete: "off", required: true %>
+    </div>
+
     <div class="file-field input-field col s12 m12 l12">
       <div class="btn">
         <span>Ficheiro</span>
@@ -30,24 +50,9 @@
       </div>
     </div>
 
-    <div class="input-field col s12 m12 l12">
-      <%= f.label "Endereço de email" %>
-      <%= f.email_field :email, required: true %>
-    </div>
-
-    <div class="input-field col s12 m12 l12">
-      <%= f.label "Password" %>
-      <%= f.password_field :password, autocomplete: "off", required: true %>
-    </div>
-
-    <div class="input-field col s12 m12 l12">
-      <%= f.label "Repita password" %>
-      <%= f.password_field :password_confirmation, autocomplete: "off", required: true %>
-    </div>
-
     <%= f.hidden_field :profile, :value => User::BASICO %>
 
-    <div class="actions col s12 m12 l12" style="margin-top: 10px; margin-bottom: 20px;">
+    <div class="actions col s12 m12 l12 center-align" style="margin-top: 20px; margin-bottom: 20px;">
       <%= f.button 'Registar!', class: "btn waves-effect waves-light" %>
     </div>
 
