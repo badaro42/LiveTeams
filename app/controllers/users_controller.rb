@@ -49,6 +49,7 @@ class UsersController < ApplicationController
   def show
     # variavel para fornecer o id no jquery
     gon.user_id = @user.id
+    gon.curr_user_pos = @user.latlon
 
     @user_teams = @user.teams
     @user_team_members = @user.team_members

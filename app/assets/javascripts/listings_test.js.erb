@@ -46,6 +46,7 @@ $(document).ready(function () {
   var href = document.location.pathname;
   var users_pages = href.indexOf("users") > -1;
   var teams_pages = href.indexOf("teams") > -1;
+  var account_pages = href.indexOf("account") > -1;
   var edit_page = href.indexOf("edit") > -1;
   var new_page = href.indexOf("new") > -1;
 
@@ -256,7 +257,7 @@ $(document).ready(function () {
     }
   }
   // estamos na pagina para apresentar utilizador - /users/12
-  else if (users_pages) {
+  else if (users_pages || account_pages) {
     if (is_a_number) {
       console.log("PÁGINA PARA APRESENTAR UTILIZADOR!!!");
 
@@ -264,13 +265,32 @@ $(document).ready(function () {
       osm = L.tileLayer(osmUrl, {maxZoom: 20});
       user_map = L.map("user_map", {
         zoom: 12,
-        center: [38.627881, -9.161007],
+        center: L.latLng(38.627881, -9.161007),
         layers: [osm],
         zoomControl: true,
         attributionControl: false
       });
+
+      var center, coords_arr, c_marker;
+      if(gon.curr_user_pos !== null) {
+        coords_arr = parsePointCoordinates(gon.curr_user_pos);
+        center = L.latLng(coords_arr[1], coords_arr[0]);
+        user_map.panTo(center);
+
+        c_marker = L.marker(center).addTo(user_map);
+        popupContent = "<span>Este utilizador encontra-se neste ponto<br> com as seguintes coordenadas:</span>" +
+            "<p>Latitude: <b>" + c_marker.getLatLng().lat + "</b>,<br>Longitude: <b>" +
+            c_marker.getLatLng().lng + "</b></p>";
+        c_marker.bindPopup(popupContent).openPopup();
+      }
+//      else {
+//        center = L.latLng(38.627881, -9.161007);
+//        user_map.panTo(center);
+//      }
     }
     else if(edit_page) {
+      console.log("PÁGINA PARA editar UTILIZADOR!!!");
+
       // apenas permite numeros no campo do numero de telefone
       $(".numeric").numeric();
 

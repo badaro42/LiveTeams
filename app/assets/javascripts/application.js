@@ -29,3 +29,4 @@
 //= require jquery.numeric.min
 //= require spin.min
 //= require leaflet.spin
+//= require jquery.noty.packaged.min
