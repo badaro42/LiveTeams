@@ -1,5 +1,5 @@
 var osm, osmUrl;
-var team_map, osmUrl;
+var team_map, user_map;
 var curr_marker = undefined, remove_btn;
 var cluster;
 
@@ -259,6 +259,16 @@ $(document).ready(function () {
   else if (users_pages) {
     if (is_a_number) {
       console.log("PÁGINA PARA APRESENTAR UTILIZADOR!!!");
+
+      osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+      osm = L.tileLayer(osmUrl, {maxZoom: 20});
+      user_map = L.map("user_map", {
+        zoom: 12,
+        center: [38.627881, -9.161007],
+        layers: [osm],
+        zoomControl: true,
+        attributionControl: false
+      });
     }
     else if(edit_page) {
       // apenas permite numeros no campo do numero de telefone

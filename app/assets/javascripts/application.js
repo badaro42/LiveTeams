@@ -27,3 +27,5 @@
 //= require NoSleep.min
 //= require easy-button
 //= require jquery.numeric.min
+//= require spin.min
+//= require leaflet.spin

@@ -7,6 +7,9 @@ var all_teams_ids; // cada entrada é da forma {id: feature_id, marker: L.marker
 var previous_user_location; // {timestamp: Date(), position: L.latLng(lat, lng)}
 var no_sleep_enabled = false;
 
+// var incrementada quando um dos conjuntos de dados é carregado - equipas e entidades
+var geo_data_loaded = 0;
+
 var team_icon = L.icon({
   iconUrl: '/assets/team_icon.png',
   iconSize: [38, 38], // size of the icon
@@ -259,6 +262,30 @@ $(document).ready(function () {
 
   // ****************** CHAMADAS ASSINCRONAS PARA POPULAR O MAPA ******************
 
+  map.spin(true, {
+    lines: 15 // The number of lines to draw
+    , length: 0 // The length of each line
+    , width: 11 // The line thickness
+    , radius: 40 // The radius of the inner circle
+    , scale: 0.5 // Scales overall size of the spinner
+    , corners: 1 // Corner roundness (0..1)
+    , color: '#000' // #rgb or #rrggbb or array of colors
+    , opacity: 0 // Opacity of the lines
+    , rotate: 0 // The rotation offset
+    , direction: 1 // 1: clockwise, -1: counterclockwise
+    , speed: 1.2 // Rounds per second
+    , trail: 60 // Afterglow percentage
+    , fps: 20 // Frames per second when using setTimeout() as a fallback for CSS
+    , zIndex: 2e9 // The z-index (defaults to 2000000000)
+    , className: 'spinner' // The CSS class to assign to the spinner
+    , top: '50%' // Top position relative to parent
+    , left: '50%' // Left position relative to parent
+    , shadow: false // Whether to render a shadow
+    , hwaccel: true // Whether to use hardware acceleration
+    , position: 'absolute' // Element positioning
+  });
+
+
   // retorna todas as entidades que estao na BD
   var geo_entities = new L.GeoJSON.AJAX("/get_geo_entities.json", {
     pointToLayer: function (feature, latlng) {
@@ -297,8 +324,9 @@ $(document).ready(function () {
     cluster.addLayer(geo_entities);
     map.addLayer(cluster);
 
-//    drawnItems.addLayer(geo_entities);
-//    map.addLayer(drawnItems);
+    geo_data_loaded++;
+    if(geo_data_loaded == 2)
+      map.spin(false);
   });
 
   geo_entities.on('data:error', function (err) {
@@ -313,8 +341,9 @@ $(document).ready(function () {
     cluster.addLayer(teams_json);
     map.addLayer(cluster);
 
-//    drawnItems.addLayer(teams_json);
-//    map.addLayer(drawnItems);
+    geo_data_loaded++;
+    if(geo_data_loaded == 2)
+      map.spin(false);
   });
 
   teams_json.on('data:error', function (err) {
