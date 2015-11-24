@@ -116,7 +116,8 @@ label {
 
 /* ECRA PEQUENO */
 @media only screen and (max-width: 600px) {
-    #team_coordinates {
+    #team_coordinates,
+    #user_coordinates {
         margin-top: 20px;
     }
 
@@ -138,7 +139,8 @@ label {
 
 /* ECRA MEDIO */
 @media only screen and (min-width: 600px) and (max-width: 992px) {
-    #team_coordinates {
+    #team_coordinates,
+    #user_coordinates  {
         margin-top: 20px;
     }
 

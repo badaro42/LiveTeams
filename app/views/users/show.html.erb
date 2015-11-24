@@ -13,7 +13,7 @@
         <% end %>
     <% elsif current_user.profile == User::ADMINISTRADOR %>
         <%= link_to edit_user_path(@user), :data => {:position => 'left', :delay => '15',
-                                                           :tooltip => 'Editar utilizador'},
+                                                     :tooltip => 'Editar utilizador'},
                     class: 'tooltipped navbar-button', method: :get do %>
             <i class="material-icons md-36">edit</i>
         <% end %>
@@ -27,6 +27,17 @@
         <i class="material-icons md-36 white-text">arrow_back</i>
     <% end %>
 <% end %>
+
+
+<% if flash[:notice] %>
+    <% if flash[:notice].to_s.eql? "edit_success" %>
+        <%= javascript_tag "displayFlashMessage('edit_success', 'user')" %>
+    <% else %>
+        <%= javascript_tag "displayFlashMessage('edit_error', 'user')" %>
+    <% end %>
+<% end %>
+
+
 
 <div class="container">
 
@@ -81,7 +92,7 @@
       </div>
     </div>
 
-    <div id="user_coordinates" class="center col s12 m12 l8 z-depth-1 white"
+    <div id="user_coordinates" class="center-align col s12 m12 l8 z-depth-1 white"
          style="padding-left: 20px; padding-top: 0px; padding-bottom: 20px; padding-right: 20px;">
       <h5 style="font-weight: 300;">Posição atual</h5>
 

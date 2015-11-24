@@ -272,7 +272,7 @@ $(document).ready(function () {
       });
 
       var center, coords_arr, c_marker;
-      if(gon.curr_user_pos !== null) {
+      if (gon.curr_user_pos !== null) {
         coords_arr = parsePointCoordinates(gon.curr_user_pos);
         center = L.latLng(coords_arr[1], coords_arr[0]);
         user_map.panTo(center);
@@ -283,12 +283,8 @@ $(document).ready(function () {
             c_marker.getLatLng().lng + "</b></p>";
         c_marker.bindPopup(popupContent).openPopup();
       }
-//      else {
-//        center = L.latLng(38.627881, -9.161007);
-//        user_map.panTo(center);
-//      }
     }
-    else if(edit_page) {
+    else if (edit_page) {
       console.log("PÁGINA PARA editar UTILIZADOR!!!");
 
       // apenas permite numeros no campo do numero de telefone
@@ -436,4 +432,23 @@ function secondsTimeSpanToHMS(s) {
   var m = Math.floor(s / 60); //Get remaining minutes
   s -= m * 60;
   return d + ":" + h + ":" + m + ":" + s;
+}
+
+function displayFlashMessage(param, resource) {
+  if (param === 'edit_success') {
+    if (resource === 'user')
+      noty({text: 'O utilizador foi atualizado com sucesso!', timeout: 3500, type: 'success', layout: 'bottomCenter'});
+    else if (resource === 'team')
+      noty({text: 'A equipa foi atualizada com sucesso!', timeout: 3500, type: 'success', layout: 'bottomCenter'});
+  }
+  else if (param === 'create_success') {
+    if (resource === 'team')
+      noty({text: 'A equipa foi criada com sucesso!', timeout: 3500, type: 'success', layout: 'bottomCenter'});
+  }
+  else if (param === 'edit_error') {
+    if (resource === 'user')
+      noty({text: 'Erro a atualizar o utilizador!', timeout: 3500, type: 'error', layout: 'bottomCenter'});
+    else if (resource === 'team')
+      noty({text: 'Erro a atualizar a equipa!', timeout: 3500, type: 'error', layout: 'bottomCenter'});
+  }
 }

@@ -19,6 +19,17 @@
     <% end %>
 <% end %>
 
+<% if flash[:notice] %>
+    <% if flash[:notice].to_s.eql? "edit_success" %>
+        <%= javascript_tag "displayFlashMessage('edit_success', 'team')" %>
+    <% elsif flash[:notice].to_s.eql? "create_success" %>
+        <%= javascript_tag "displayFlashMessage('create_success', 'team')" %>
+    <% else %>
+        <%= javascript_tag "displayFlashMessage('edit_error', 'team')" %>
+    <% end %>
+<% end %>
+
+
 <div class="container">
   <div class="row" style="margin-top: 20px;">
     <div id="teams_info_div" class="col l4 m12 s12 center-align z-depth-1 white"

@@ -534,6 +534,9 @@ function insertGeoEntity() {
     },
     // adicionamos o id à lista de ids e criamos uma popup para essa entidade
     success: function (data) {
+      noty({text: 'Entidade geográfica introduzida com sucesso!', timeout: 3500,
+        type: 'success', layout: 'bottomCenter'});
+
       console.log("MARCADOR ADICIONADO COM SUCESSO");
       console.log(data);
       all_geo_ents_ids.push(data.id);
@@ -553,6 +556,9 @@ function insertGeoEntity() {
       e_layer = null;
     },
     error: function (err) {
+      noty({text: 'Erro a introduzir a entidades geográfica!', timeout: 3500,
+        type: 'error', layout: 'bottomCenter'});
+
       console.log("erro a adicionar o marcador");
       console.log(err);
       e_layer = null;
@@ -598,6 +604,9 @@ function addGeoEntityToMap(json) {
       map.addLayer(cluster);
 
       all_geo_ents_ids.push(json_arr.properties.f_id);
+
+      noty({text: 'Uma entidade geográfica foi atualizada!', timeout: 3500,
+        type: 'success', layout: 'bottomCenter'});
     }
   }
   // mais do que uma entidade retornada pelo servidor
@@ -639,6 +648,9 @@ function addGeoEntityToMap(json) {
     new_layer.addData(final_json_arr);
     cluster.addLayer(new_layer);
     map.addLayer(cluster);
+
+    noty({text: 'Várias entidades geográficas foram atualizadas!', timeout: 3500,
+      type: 'success', layout: 'bottomCenter'});
   }
 }
 
@@ -666,6 +678,9 @@ function addTeamToMap(json) {
         cluster.removeLayer(old_marker);
         map.removeLayer(old_marker);
       }
+
+      noty({text: 'Uma ou mais equipas foram atualizadas!', timeout: 3500,
+        type: 'success', layout: 'bottomCenter'});
 
       return new_marker;
     }
