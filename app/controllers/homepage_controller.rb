@@ -30,7 +30,7 @@ class HomepageController < ApplicationController
       ent = new_or_updated_geo_entity.first
       feature = geo_factory.feature(ent.latlon, nil, {f_id: ent.id, name: ent.name, user_id: ent.user_id,
                                                       description: ent.description, radius: ent.radius,
-                                                      created_at: ent.created_at})
+                                                      created_at: ent.created_at, entity_type: ent.entity_type})
       features_to_json = RGeo::GeoJSON.encode feature
     else
       # dps de obter todas as entidades do servidor, mapeia-as num objeto de forma a que sejam correctamente

@@ -81,6 +81,7 @@
           <%= link_to destroy_user_session_path, method: :get, class: 'waves-effect waves-light btn' do %>
               Encerrar sessão
           <% end %>
+          <a id="button-da-merda" class="waves-effect waves-light btn">Modal</a>
         </div>
       </div>
 
@@ -331,6 +332,18 @@
   <div class="modal-footer">
     <a id="submit_new_geo_entity" href="javascript:insertGeoEntity();"
        class="modal-action modal-close waves-effect waves-green btn-flat">Confirmar</a>
-    <a href="" class="modal-action modal-close waves-effect waves-green btn-flat">Cancelar</a>
+    <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Cancelar</a>
+  </div>
+</div>
+
+<!-- Modal Structure -->
+<div id="modal_entity_coordinates" class="modal bottom-sheet">
+  <div class="modal-content">
+    <h5 style="display: inline;">Coordenadas </h5>
+    <span id="modal_entity_type">polígono</span>, <span id="modal_num_points">10 pontos</span>
+    <p id="modal_coords"></p>
+  </div>
+  <div class="modal-footer">
+    <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Dispensar</a>
   </div>
 </div>

@@ -32,7 +32,7 @@
 <% if flash[:notice] %>
     <% if flash[:notice].to_s.eql? "edit_success" %>
         <%= javascript_tag "displayFlashMessage('edit_success', 'user')" %>
-    <% else %>
+    <% elsif flash[:notice].to_s.eql? "edit_error" %>
         <%= javascript_tag "displayFlashMessage('edit_error', 'user')" %>
     <% end %>
 <% end %>

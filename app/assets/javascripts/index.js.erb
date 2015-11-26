@@ -2,8 +2,8 @@ var map, osmUrl, osmAttrib, osm, sidebar, cluster;
 var drawnItems;
 var e_type, e_radius, e_coords, coords_to_display, e_length, e_area, e_layer, e_num_points;
 var source;
-var all_geo_ents_ids;
-var all_teams_ids; // cada entrada é da forma {id: feature_id, marker: L.marker(L.latLng(lat, lng))}
+var all_geo_entities; // cada entrada é da forma {id: feature_id, marker: L.marker(L.latLng(lat, lng))}
+var all_teams; // cada entrada é da forma {id: feature_id, marker: L.marker(L.latLng(lat, lng))}
 var previous_user_location; // {timestamp: Date(), position: L.latLng(lat, lng)}
 var no_sleep_enabled = false;
 
@@ -26,6 +26,13 @@ var user_pos_icon = L.icon({
 
 
 $(document).ready(function () {
+
+//  $('#modal_bottom').openModal();
+
+  $('#button-da-merda').on('click', function () {
+    console.log("CARREGUEI NO BOTAO!!! HEHE");
+    $('#modal_entity_coordinates').openModal();
+  });
 
   // apenas permite numeros no campo do numero de telefone
   $(".numeric").numeric();
@@ -52,8 +59,8 @@ $(document).ready(function () {
   }
 
 
-  all_teams_ids = [];
-  all_geo_ents_ids = [];
+  all_teams = [];
+  all_geo_entities = [];
 
   // delay da inicialização do eventSource
   // delay atual - 10 segundos
@@ -175,9 +182,11 @@ $(document).ready(function () {
     });
 
   }
-  else {
-    /* geolocation IS NOT available */
-    alert("Geolocalização não suportada.");
+  else { /* geolocation IS NOT available */
+    noty({
+      text: 'Este browser não suporta geolocalização!', timeout: 3500,
+      type: 'error', layout: 'bottomCenter'
+    });
   }
 
 
@@ -286,6 +295,7 @@ $(document).ready(function () {
   });
 
 
+  var arr_stuff = [];
   // retorna todas as entidades que estao na BD
   var geo_entities = new L.GeoJSON.AJAX("/get_geo_entities.json", {
     pointToLayer: function (feature, latlng) {
@@ -295,9 +305,24 @@ $(document).ready(function () {
         return L.marker(latlng);
     },
     onEachFeature: function (feature, layer) {
-      layer.bindPopup('<p>' + feature.properties.name + '</p>' +
-          '<p>' + feature.properties.description + '</p>');
-      all_geo_ents_ids.push(feature.properties.f_id);
+//      layer.bindPopup('<p>' + feature.properties.name + '</p>' +
+//          '<p>' + feature.properties.description + '</p>');
+//      all_geo_entities.push({id: feature.properties.f_id, latlon: layer);
+
+      layer.bindPopup('<a id="submit_new_geo_entity" href="javascript:showEntityCoordinates(' +
+          feature.properties.f_id + ');"' +
+          'class="modal-action modal-close waves-effect waves-green">Ver coordenadas</a>');
+
+      if (layer.hasOwnProperty('_latlng')) // só tem um par de coordenadas
+        all_geo_entities.push({id: feature.properties.f_id, latlon: [layer.getLatLng()]});
+      else if (layer.hasOwnProperty('_latlngs')) // tem mais do que um par de coordenadas
+        all_geo_entities.push({id: feature.properties.f_id, latlon: layer.getLatLngs()});
+
+//      layer.bindPopup('<span>Entidade geográfica número <b>' + feature.properties.f_id + '</b><br>' +
+//          'Nome: <b>' + feature.properties.name + '</b><br><br>' +
+//          'Esta equipa está destacada para as coordenadas: <br>' +
+//          'Latitude: <b>' + feature.geometry.coordinates[1] + '</b>;<br>' +
+//          'Longitude: <b>' + feature.geometry.coordinates[0] + '</b></span>');
     }
   });
 
@@ -305,13 +330,14 @@ $(document).ready(function () {
   var teams_json = new L.GeoJSON.AJAX("/teams/teams_to_json.json", {
     pointToLayer: function (feature, latlng) {
       t_marker = L.marker(latlng, {icon: team_icon});
-      all_teams_ids.push({id: feature.properties.f_id, marker: t_marker});
-
       return t_marker;
     },
     onEachFeature: function (feature, layer) {
-      layer.bindPopup('<p><b> Equipa número ' + feature.properties.f_id + '</b></p>' +
-          '<span>Nome: <b>' + feature.properties.name + '</b><br>' +
+      all_teams.push({id: feature.properties.f_id, marker: t_marker});
+
+      layer.bindPopup('<span>Equipa número <b>' + feature.properties.f_id + '</b><br>' +
+          'Nome: <b>' + feature.properties.name + '</b><br><br>' +
+          'Esta equipa está destacada para as coordenadas: <br>' +
           'Latitude: <b>' + feature.geometry.coordinates[1] + '</b>;<br>' +
           'Longitude: <b>' + feature.geometry.coordinates[0] + '</b></span>');
     }
@@ -319,10 +345,12 @@ $(document).ready(function () {
 
   // listener invocado quando a chamada ajax das entidades terminar!
   geo_entities.on('data:loaded', function () {
-    console.log("vector com os indices das geo_entities: " + all_geo_ents_ids);
+    console.log("vector com os indices das geo_entities: " + all_geo_entities);
     console.log("finish");
     cluster.addLayer(geo_entities);
     map.addLayer(cluster);
+
+    console.log(arr_stuff);
 
     geo_data_loaded++;
     if (geo_data_loaded == 2) {
@@ -330,20 +358,24 @@ $(document).ready(function () {
       geo_data_loaded = 0;
     }
 
-    noty({text: 'Entidades geográficas carregadas com sucesso!', timeout: 3500,
-      type: 'success', layout: 'bottomCenter'});
+    noty({
+      text: 'Entidades geográficas carregadas com sucesso!', timeout: 3500,
+      type: 'success', layout: 'bottomCenter'
+    });
   });
 
   geo_entities.on('data:error', function (err) {
     console.log(err);
-    noty({text: 'Erro a carregar as entidades geográficas do servidor!', timeout: 3500,
-      type: 'error', layout: 'bottomCenter'});
+    noty({
+      text: 'Erro a carregar as entidades geográficas do servidor!', timeout: 3500,
+      type: 'error', layout: 'bottomCenter'
+    });
   });
 
   // listener invocado quando a chamada ajax das equipas terminar!
   teams_json.on('data:loaded', function () {
     console.log("vector com os indices das equipas!!!!!:");
-    console.log(all_teams_ids);
+    console.log(all_teams);
     console.log("finish");
     cluster.addLayer(teams_json);
     map.addLayer(cluster);
@@ -359,8 +391,10 @@ $(document).ready(function () {
 
   teams_json.on('data:error', function (err) {
     console.log(err);
-    noty({text: 'Erro a carregar as equipas do servidor!', timeout: 3500,
-      type: 'error', layout: 'bottomCenter'});
+    noty({
+      text: 'Erro a carregar as equipas do servidor!', timeout: 3500,
+      type: 'error', layout: 'bottomCenter'
+    });
   });
 
 
@@ -493,16 +527,68 @@ $(document).ready(function () {
 
 //// o parametro "coords" � da forma -> "POINT(33.333 11.111)"
 //// retorna um vector com 2 posi�oes, uma para cada coordenada
-//function parsePointCoordinates(coords) {
+function parsePointCoordinates(coords) {
+  var split_res = coords.split("(");
+  var new_split_res = split_res[1].split(" ");
+
+  var res = [];
+  res.push(new_split_res[0]); //latitude
+  res.push(new_split_res[1].split(")")[0]); //longitude
+
+  return res;
+}
+
+
+function parseCoordinates(coords) {
+
+  var i;
+  var str_aux = "";
+  var result = [];
+  var temp_latlon;
+  if (coords.indexOf("POINT") > -1) { // coordenadas de um ponto ou circulo
+    str_aux = coords.split("(");
+    str_aux = str_aux[1].split(")");
+    str_aux = str_aux[0].split(" ");
+
+    temp_latlon = L.latLng(str_aux[1], str_aux[0]);
+    result.push(temp_latlon);
+  }
+  else if (coords.indexOf("POLYGON") > -1) { // coordenadas de um poligono
+    str_aux = coords.split("((");
+    str_aux = str_aux[1].split("))");
+    str_aux = str_aux[0].split(", ");
+
+    var t_coord;
+    for (i = 0; i < str_aux.length; i++) {
+      t_coord = str_aux[i].split(" ");
+      temp_latlon = L.latLng(t_coord[1], t_coord[0]);
+      result.push(temp_latlon);
+    }
+  }
+  else if (coords.indexOf("LINESTRING") > -1) { // coordenadas de uma linha poligonal
+    str_aux = coords.split("(");
+    str_aux = str_aux[1].split(")");
+    str_aux = str_aux[0].split(", ");
+
+    var t_coord;
+    for (i = 0; i < str_aux.length; i++) {
+      t_coord = str_aux[i].split(" ");
+      temp_latlon = L.latLng(t_coord[1], t_coord[0]);
+      result.push(temp_latlon);
+    }
+  }
+
+
 //  var split_res = coords.split("(");
 //  var new_split_res = split_res[1].split(" ");
+//
 //
 //  var res = [];
 //  res.push(new_split_res[0]); //latitude
 //  res.push(new_split_res[1].split(")")[0]); //longitude
-//
-//  return res;
-//}
+
+  return result;
+}
 
 // envia a entidade criada para a Base de Dados
 function insertGeoEntity() {
@@ -534,12 +620,18 @@ function insertGeoEntity() {
     },
     // adicionamos o id à lista de ids e criamos uma popup para essa entidade
     success: function (data) {
-      noty({text: 'Entidade geográfica introduzida com sucesso!', timeout: 3500,
-        type: 'success', layout: 'bottomCenter'});
+      noty({
+        text: 'Entidade geográfica introduzida com sucesso!', timeout: 3500,
+        type: 'success', layout: 'bottomCenter'
+      });
 
       console.log("MARCADOR ADICIONADO COM SUCESSO");
       console.log(data);
-      all_geo_ents_ids.push(data.id);
+
+      var latlng_arr = parseCoordinates(data.latlon);
+      console.log(latlng_arr);
+
+      all_geo_entities.push({id: data.id, latlon: latlng_arr});
 
       var popup = L.popup({
         maxWidth: 400
@@ -554,10 +646,16 @@ function insertGeoEntity() {
 //      map.addLayer(drawnItems);
 
       e_layer = null;
+
+      // remove o texto que estava no modal
+      $('#e_name').val("");
+      $('#e_description').val("");
     },
     error: function (err) {
-      noty({text: 'Erro a introduzir a entidades geográfica!', timeout: 3500,
-        type: 'error', layout: 'bottomCenter'});
+      noty({
+        text: 'Erro a introduzir a entidades geográfica!', timeout: 3500,
+        type: 'error', layout: 'bottomCenter'
+      });
 
       console.log("erro a adicionar o marcador");
       console.log(err);
@@ -584,10 +682,10 @@ function addGeoEntityToMap(json) {
     console.log(json_arr);
 
     // esta feature ainda nao existe no array!!
-    if (all_geo_ents_ids.indexOf(json_arr.properties.f_id) == -1) {
+    if (geoEntityIsInMap(json_arr.properties.f_id) == -1) {
       console.log("FEATURE FEATURE - ainda nao existe no array");
 
-      var layer_to_add;
+      var layer_to_add, latlon_arr = [];
       // é um circulo, vamos desenhá-lo à mão
       if (json_arr.properties.radius > 0) {
         var latlon = L.latLng(json_arr.geometry.coordinates[1], json_arr.geometry.coordinates[0]);
@@ -603,10 +701,30 @@ function addGeoEntityToMap(json) {
       cluster.addLayer(layer_to_add);
       map.addLayer(cluster);
 
-      all_geo_ents_ids.push(json_arr.properties.f_id);
+      // pa ver se é apenas um par de coordenadas ou um array
+      if (json_arr.geometry.type === 'Point')
+        latlon_arr.push(L.latLng(json_arr.geometry.coordinates[1], json_arr.geometry.coordinates[0]));
+      else {
+        var new_arr;
+        if (json_arr.geometry.type === 'LineString') // as coordenadas tao arranjadas doutra forma
+          new_arr = json_arr.geometry.coordinates;
+        else
+          new_arr = json_arr.geometry.coordinates[0];
 
-      noty({text: 'Uma entidade geográfica foi atualizada!', timeout: 3500,
-        type: 'success', layout: 'bottomCenter'});
+        console.log("temp_arr: " + new_arr);
+        $.each(new_arr, function (index, elem) {
+          latlon_arr.push(L.latLng(elem[1], elem[0]));
+        });
+      }
+
+      console.log(latlon_arr);
+      all_geo_entities.push({id: json_arr.properties.f_id, latlon: latlon_arr});
+
+
+      noty({
+        text: 'Uma entidade geográfica foi atualizada!', timeout: 3500,
+        type: 'success', layout: 'bottomCenter'
+      });
     }
   }
   // mais do que uma entidade retornada pelo servidor
@@ -621,12 +739,12 @@ function addGeoEntityToMap(json) {
 
     $.each(json_arr.features, function (key, val) {
       var f_id = val.properties.f_id;
-      console.log(all_geo_ents_ids);
+      console.log(all_geo_entities);
       console.log(f_id);
-      console.log("f_id está contida no array?? " + (all_geo_ents_ids.indexOf(f_id) != -1));
+      console.log("f_id está contida no array?? " + (all_geo_entities.indexOf(f_id) != -1));
 
       // esta feature ainda nao existe no array!!
-      if (all_geo_ents_ids.indexOf(f_id) == -1) {
+      if (all_geo_entities.indexOf(f_id) == -1) {
 
         // é um circulo, vamos desenhá-lo à mão
         if (val.properties.radius > 0) {
@@ -640,7 +758,7 @@ function addGeoEntityToMap(json) {
         else
           final_json_arr.features.push(val);
 
-        all_geo_ents_ids.push(f_id);
+        all_geo_entities.push(f_id);
       }
     });
 
@@ -649,8 +767,10 @@ function addGeoEntityToMap(json) {
     cluster.addLayer(new_layer);
     map.addLayer(cluster);
 
-    noty({text: 'Várias entidades geográficas foram atualizadas!', timeout: 3500,
-      type: 'success', layout: 'bottomCenter'});
+    noty({
+      text: 'Várias entidades geográficas foram atualizadas!', timeout: 3500,
+      type: 'success', layout: 'bottomCenter'
+    });
   }
 }
 
@@ -669,26 +789,43 @@ function addTeamToMap(json) {
       new_marker = L.marker(latlng, {icon: team_icon});
 
       if (index == -1) //equipa nao existe no mapa
-        all_teams_ids.push({id: feature.properties.f_id, marker: new_marker});
+        all_teams.push({id: feature.properties.f_id, marker: new_marker});
 
       else {
-        old_marker = all_teams_ids[index].marker;
-        all_teams_ids[index].marker = new_marker;
+        old_marker = all_teams[index].marker;
+        all_teams[index].marker = new_marker;
 
         cluster.removeLayer(old_marker);
         map.removeLayer(old_marker);
       }
 
-      noty({text: 'Uma ou mais equipas foram atualizadas!', timeout: 3500,
-        type: 'success', layout: 'bottomCenter'});
-
       return new_marker;
+    },
+    onEachFeature: function (feature, layer) {
+      console.log("foda-se");
+      layer.bindPopup('<span>Equipa número <b>' + feature.properties.f_id + '</b><br>' +
+          'Nome: <b>' + feature.properties.name + '</b><br><br>' +
+          'Esta equipa está destacada para as coordenadas: <br>' +
+          'Latitude: <b>' + feature.geometry.coordinates[1] + '</b>;<br>' +
+          'Longitude: <b>' + feature.geometry.coordinates[0] + '</b></span>');
     }
   });
+
+  if (json_arr.features.length == 1)
+    noty({
+      text: 'Uma equipa foi atualizada!', timeout: 3500,
+      type: 'success', layout: 'bottomCenter'
+    });
+  else
+    noty({
+      text: 'Várias equipas foram atualizadas!', timeout: 3500,
+      type: 'success', layout: 'bottomCenter'
+    });
 
   cluster.addLayer(new_layer);
   map.addLayer(cluster);
 }
+
 
 // ****************** SSE STUFF :) ************************
 function eventSourceSetup() {
@@ -861,9 +998,38 @@ function eventSourceSetup() {
  */
 function teamIsInMap(param_id) {
   var i;
-  for (i = 0; i < all_teams_ids.length; i++) {
-    if (all_teams_ids[i].id === param_id) // a equipa existe
+  for (i = 0; i < all_teams.length; i++) {
+    if (all_teams[i].id === param_id) // a equipa existe
       return i;
   }
   return -1;
+}
+
+/*
+ * Verifica se a entidade geografica ja existe ou nao no mapa
+ * Retorna -1 caso nao esteja no mapa
+ * Retorna o indice caso ja exista no mapa
+ */
+function geoEntityIsInMap(param_id) {
+  var i;
+  for (i = 0; i < all_geo_entities.length; i++) {
+    if (all_geo_entities[i].id === param_id) // a entidade geografica existe
+      return i;
+  }
+  return -1;
+}
+
+function showEntityCoordinates(entity_index) {
+  var index_in_array = geoEntityIsInMap(entity_index);
+  var coords = all_geo_entities[index_in_array].latlon;
+  var text_coords = "";
+
+  $.each(coords, function(index, elem) {
+    text_coords += "(" + elem.lat + ", " + elem.lng + ")";
+    if(index < coords.length - 1)
+      text_coords += "; ";
+  });
+
+  $("#modal_coords").text(text_coords);
+  $('#modal_entity_coordinates').openModal();
 }

@@ -24,7 +24,7 @@
         <%= javascript_tag "displayFlashMessage('edit_success', 'team')" %>
     <% elsif flash[:notice].to_s.eql? "create_success" %>
         <%= javascript_tag "displayFlashMessage('create_success', 'team')" %>
-    <% else %>
+    <% elsif flash[:notice].to_s.eql? "edit_error" %>
         <%= javascript_tag "displayFlashMessage('edit_error', 'team')" %>
     <% end %>
 <% end %>
