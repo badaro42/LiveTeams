@@ -2,6 +2,9 @@ var osm, osmUrl;
 var team_map, user_map;
 var curr_marker = undefined, remove_btn;
 var cluster;
+var allUserCards, allUserNames, userNamesIndexed = [], userCardsIndexed = [];
+var allTeamEntries, allTeamNames, teamNamesIndexed = [], teamEntriesIndexed = [];
+var searchBar, noResultsDiv;
 
 var team_highlight_icon = L.icon({
   iconUrl: '/assets/bullseye-64.png',
@@ -255,6 +258,28 @@ $(document).ready(function () {
       console.log(bounds_arr);
       team_map.fitBounds(bounds_arr);
     }
+    else {
+      console.log("PÁGINA COM TODOS AS EQUIPAS!!!");
+
+      noResultsDiv = $('.no-results');
+      searchBar = $('#search-bar');
+      allTeamEntries = $(".team-entry");
+      allTeamNames = $(".team-title");
+      teamEntriesIndexed = [];
+      teamNamesIndexed = [];
+
+      // nomes das equipas
+      $.each(allTeamNames, function () {
+        teamNamesIndexed.push($(this).text().replace(/\s{2,}/g, ' ').toLowerCase());
+      });
+
+      // div das varias equipas
+      $.each(allTeamEntries, function () {
+        teamEntriesIndexed.push($(this));
+      });
+
+      searchBar.on('keyup', searchAlgorithmTEMP);
+    }
   }
   // estamos na pagina para apresentar utilizador - /users/12
   else if (users_pages || account_pages) {
@@ -294,6 +319,28 @@ $(document).ready(function () {
       $('.pushpin').pushpin({top: 84});
       $('.scrollspy').scrollSpy();
     }
+    else {
+      console.log("PÁGINA COM TODOS OS UTILIZADORES!!!");
+
+      noResultsDiv = $('.no-results');
+      searchBar = $('#search-bar');
+      allUserCards = $(".user-card");
+      allUserNames = $(".card-title");
+      userCardsIndexed = [];
+      userNamesIndexed = [];
+
+      // nomes dos utilizadores
+      $.each(allUserNames, function () {
+        userNamesIndexed.push($(this).text().replace(/\s{2,}/g, ' ').toLowerCase());
+      });
+
+      // div dos varios utilizadores
+      $.each(allUserCards, function () {
+        userCardsIndexed.push($(this));
+      });
+
+      searchBar.on('keyup', searchAlgorithm);
+    }
   }
 
   /**
@@ -320,12 +367,12 @@ $(document).ready(function () {
 
   // Scroll events
   $(window).scroll(function (e) {
-    positionTabs();
+//    positionTabs();
   });
 
   // Resize events
   $(window).resize(function (e) {
-    positionTabs();
+//    positionTabs();
   });
 
   // Toggle search
@@ -452,4 +499,93 @@ function displayFlashMessage(param, resource) {
     else if (resource === 'team')
       noty({text: 'Erro a atualizar a equipa!', timeout: 3500, type: 'error', layout: 'bottomCenter'});
   }
+}
+
+// função executada sempre que é introduzida uma letra na caixa de pesquisa
+function searchAlgorithm(param) {
+  console.log("letra introduzida na search-bar!");
+
+  if (param.keyCode == 13) { //tecla enter
+    searchBar.trigger('blur');
+    return true;
+  }
+
+  var user;
+  var userCard;
+  var search_val = $.trim(searchBar.val()).toLowerCase(); // remove espaços brancos antes e dps da palavra
+
+  allUserNames.each(function () {
+    user = $(this);
+    user.html(user.html().replace(/<span class="highlight">([^<]+)<\/span>/gi, '$1'));
+  });
+
+  if (search_val.length > 0) {
+    for (var i in userNamesIndexed) {
+      user = allUserNames.eq(i);
+      userCard = allUserCards.eq(i);
+
+      if (userNamesIndexed[i].indexOf(search_val) != -1) {
+        userCard.removeClass('is-hidden');
+        user.html(user.html()
+            .replace(new RegExp(search_val + '(?!([^<]+)?>)', 'gi'), '<span class="highlight">$&</span>'));
+      }
+      else
+        userCard.addClass('is-hidden');
+    }
+  }
+  else
+    $.each(allUserCards, function() {
+      $(this).removeClass('is-hidden');
+    });
+
+
+  console.log(allUserCards.not('.is-hidden').length == 0);
+
+  // ativa a div com a mensagem a dizer que nenhum utilizador foi encontrado
+  noResultsDiv.toggleClass('is-visible', allUserCards.not('.is-hidden').length == 0);
+}
+
+
+// função executada sempre que é introduzida uma letra na caixa de pesquisa
+function searchAlgorithmTEMP(param) {
+  console.log("letra introduzida na search-bar!");
+
+  if (param.keyCode == 13) { //tecla enter
+    searchBar.trigger('blur');
+    return true;
+  }
+
+  var team;
+  var teamEntry;
+  var search_val = $.trim(searchBar.val()).toLowerCase(); // remove espaços brancos antes e dps da palavra
+
+  allTeamNames.each(function () {
+    team = $(this);
+    team.html(team.html().replace(/<span class="highlight">([^<]+)<\/span>/gi, '$1'));
+  });
+
+  if (search_val.length > 0) {
+    for (var i in teamNamesIndexed) {
+      team = allTeamNames.eq(i);
+      teamEntry = allTeamEntries.eq(i);
+
+      if (teamNamesIndexed[i].indexOf(search_val) != -1) {
+        teamEntry.removeClass('is-hidden');
+        team.html(team.html()
+            .replace(new RegExp(search_val + '(?!([^<]+)?>)', 'gi'), '<span class="highlight">$&</span>'));
+      }
+      else
+        teamEntry.addClass('is-hidden');
+    }
+  }
+  else
+    $.each(allTeamEntries, function() {
+      $(this).removeClass('is-hidden');
+    });
+
+
+  console.log(allTeamEntries.not('.is-hidden').length == 0);
+
+  // ativa a div com a mensagem a dizer que nenhum utilizador foi encontrado
+  noResultsDiv.toggleClass('is-visible', allTeamEntries.not('.is-hidden').length == 0);
 }

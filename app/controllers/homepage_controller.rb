@@ -20,10 +20,10 @@ class HomepageController < ApplicationController
 
     # devolve os utilizadores criados ou atualizados nos ultimos 20 segundos
     new_or_updated_geo_entity = GeoEntity.where("created_at between (?) and (?) OR updated_at between (?) and (?)",
-                                                20.seconds.ago, Time.now, 20.seconds.ago, Time.now)
+                                                25.seconds.ago, Time.now, 25.seconds.ago, Time.now)
     # devolve as equipas criadas ou atualizadas nos ultimos 20 segundos
     new_or_updated_teams = Team.where("created_at between (?) and (?) OR updated_at between (?) and (?)",
-                                      20.seconds.ago, Time.now, 20.seconds.ago, Time.now)
+                                      25.seconds.ago, Time.now, 25.seconds.ago, Time.now)
 
     # codifica as entidades geograficas
     if new_or_updated_geo_entity.size == 1
@@ -38,7 +38,7 @@ class HomepageController < ApplicationController
       mapped_feats = geo_factory.map_feature_collection(new_or_updated_geo_entity) {
           |f| geo_factory.feature(f.latlon, nil, {f_id: f.id, name: f.name, user_id: f.user_id,
                                                   description: f.description, radius: f.radius,
-                                                  created_at: f.created_at})
+                                                  created_at: f.created_at, entity_type: f.entity_type})
       }
 
       features_to_json = RGeo::GeoJSON.encode geo_factory.feature_collection(mapped_feats)
@@ -117,7 +117,7 @@ class HomepageController < ApplicationController
     mapped_feats = factory.map_feature_collection(features) {
         |f| factory.feature(f.latlon, nil, {f_id: f.id, name: f.name, user_id: f.user_id,
                                             description: f.description, radius: f.radius,
-                                            created_at: f.created_at})
+                                            created_at: f.created_at, entity_type: f.entity_type})
     }
 
     # puts mapped_feats

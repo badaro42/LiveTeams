@@ -276,3 +276,21 @@ label {
         display: inline-block;
     }
 }
+
+
+/* cena da pesquisa */
+.highlight {
+    background-color: #fffd77;
+}
+
+.is-hidden {
+    display: none;
+}
+
+.no-results {
+    display: none
+}
+
+.no-results.is-visible {
+    display: block;
+}

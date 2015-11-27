@@ -44,11 +44,10 @@
 <!--</div>-->
 
 <div class="container">
-  <strong><span><%= flash.now[:error] %></span></strong>
   <div class="row" style="margin-top: 10px;">
     <% @users.each do |user| %>
 
-        <div class="col l3 m4 s6">
+        <div class="user-card col l3 m4 s6">
           <div class="card small hoverable">
             <div class="card-image">
               <%= image_tag user.avatar.url(:small) %>
@@ -67,5 +66,11 @@
         </div>
 
     <% end %>
+
+    <div class="no-results col l6 m8 s10 push-l3 push-m2 push-s1 center-align" style="margin-top: 30px;">
+      <i><span>Nenhum utilizador corresponde à pesquisa efetuada...</span>
+      <br>
+      <span>Tente refinar a pesquisa para obter resultados.</span></i>
+    </div>
   </div>
 </div>
