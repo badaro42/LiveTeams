@@ -2,8 +2,12 @@ var osm, osmUrl;
 var team_map, user_map;
 var curr_marker = undefined, remove_btn;
 var cluster;
-var allUserCards, allUserNames, userNamesIndexed = [], userCardsIndexed = [];
-var allTeamEntries, allTeamNames, teamNamesIndexed = [], teamEntriesIndexed = [];
+//var allUserCards, allUserNames, userNamesIndexed = [], userCardsIndexed = [];
+//var allTeamEntries, allTeamNames, teamNamesIndexed = [], teamEntriesIndexed = [];
+
+
+var allEntityEntries, allEntityNames, entityNamesIndexed = [], entityEntriesIndexed = [];
+
 var searchBar, noResultsDiv;
 
 var team_highlight_icon = L.icon({
@@ -260,25 +264,7 @@ $(document).ready(function () {
     }
     else {
       console.log("PÁGINA COM TODOS AS EQUIPAS!!!");
-
-      noResultsDiv = $('.no-results');
-      searchBar = $('#search-bar');
-      allTeamEntries = $(".team-entry");
-      allTeamNames = $(".team-title");
-      teamEntriesIndexed = [];
-      teamNamesIndexed = [];
-
-      // nomes das equipas
-      $.each(allTeamNames, function () {
-        teamNamesIndexed.push($(this).text().replace(/\s{2,}/g, ' ').toLowerCase());
-      });
-
-      // div das varias equipas
-      $.each(allTeamEntries, function () {
-        teamEntriesIndexed.push($(this));
-      });
-
-      searchBar.on('keyup', searchAlgorithmTEMP);
+      initSearchEngine('team');
     }
   }
   // estamos na pagina para apresentar utilizador - /users/12
@@ -321,25 +307,26 @@ $(document).ready(function () {
     }
     else {
       console.log("PÁGINA COM TODOS OS UTILIZADORES!!!");
+      initSearchEngine('user');
 
-      noResultsDiv = $('.no-results');
-      searchBar = $('#search-bar');
-      allUserCards = $(".user-card");
-      allUserNames = $(".card-title");
-      userCardsIndexed = [];
-      userNamesIndexed = [];
-
-      // nomes dos utilizadores
-      $.each(allUserNames, function () {
-        userNamesIndexed.push($(this).text().replace(/\s{2,}/g, ' ').toLowerCase());
-      });
-
-      // div dos varios utilizadores
-      $.each(allUserCards, function () {
-        userCardsIndexed.push($(this));
-      });
-
-      searchBar.on('keyup', searchAlgorithm);
+//      noResultsDiv = $('.no-results');
+//      searchBar = $('#search-bar');
+//      allUserCards = $(".user-card");
+//      allUserNames = $(".card-title");
+//      userCardsIndexed = [];
+//      userNamesIndexed = [];
+//
+//      // nomes dos utilizadores
+//      $.each(allUserNames, function () {
+//        userNamesIndexed.push($(this).text().replace(/\s{2,}/g, ' ').toLowerCase());
+//      });
+//
+//      // div dos varios utilizadores
+//      $.each(allUserCards, function () {
+//        userCardsIndexed.push($(this));
+//      });
+//
+//      searchBar.on('keyup', searchAlgorithm);
     }
   }
 
@@ -501,53 +488,85 @@ function displayFlashMessage(param, resource) {
   }
 }
 
-// função executada sempre que é introduzida uma letra na caixa de pesquisa
-function searchAlgorithm(param) {
-  console.log("letra introduzida na search-bar!");
+// inicializa as variaveis para o motor de pesquisa dos users ou teams
+function initSearchEngine(param) {
+  noResultsDiv = $('.no-results');
+  searchBar = $('#search-bar');
+  entityEntriesIndexed = [];
+  entityNamesIndexed = [];
 
-  if (param.keyCode == 13) { //tecla enter
-    searchBar.trigger('blur');
-    return true;
+  if(param === 'team') {
+    allEntityEntries = $(".team-entry");
+    allEntityNames = $(".team-title");
+  }
+  else if(param === 'user') {
+    allEntityEntries = $(".user-card");
+    allEntityNames = $(".card-title");
   }
 
-  var user;
-  var userCard;
-  var search_val = $.trim(searchBar.val()).toLowerCase(); // remove espaços brancos antes e dps da palavra
-
-  allUserNames.each(function () {
-    user = $(this);
-    user.html(user.html().replace(/<span class="highlight">([^<]+)<\/span>/gi, '$1'));
+  // nomes das entidades a filtrar
+  $.each(allEntityNames, function () {
+    entityNamesIndexed.push($(this).text().replace(/\s{2,}/g, ' ').toLowerCase());
   });
 
-  if (search_val.length > 0) {
-    for (var i in userNamesIndexed) {
-      user = allUserNames.eq(i);
-      userCard = allUserCards.eq(i);
+  // div das varias entidades na pagina
+  $.each(allEntityEntries, function () {
+    entityEntriesIndexed.push($(this));
+  });
 
-      if (userNamesIndexed[i].indexOf(search_val) != -1) {
-        userCard.removeClass('is-hidden');
-        user.html(user.html()
-            .replace(new RegExp(search_val + '(?!([^<]+)?>)', 'gi'), '<span class="highlight">$&</span>'));
-      }
-      else
-        userCard.addClass('is-hidden');
-    }
-  }
-  else
-    $.each(allUserCards, function() {
-      $(this).removeClass('is-hidden');
-    });
-
-
-  console.log(allUserCards.not('.is-hidden').length == 0);
-
-  // ativa a div com a mensagem a dizer que nenhum utilizador foi encontrado
-  noResultsDiv.toggleClass('is-visible', allUserCards.not('.is-hidden').length == 0);
+  searchBar.on('keyup', searchListenerKeyPressed);
 }
 
 
+
+
 // função executada sempre que é introduzida uma letra na caixa de pesquisa
-function searchAlgorithmTEMP(param) {
+//function searchAlgorithm(param) {
+//  console.log("letra introduzida na search-bar!");
+//
+//  if (param.keyCode == 13) { //tecla enter
+//    searchBar.trigger('blur');
+//    return true;
+//  }
+//
+//  var user;
+//  var userCard;
+//  var search_val = $.trim(searchBar.val()).toLowerCase(); // remove espaços brancos antes e dps da palavra
+//
+//  allUserNames.each(function () {
+//    user = $(this);
+//    user.html(user.html().replace(/<span class="highlight">([^<]+)<\/span>/gi, '$1'));
+//  });
+//
+//  if (search_val.length > 0) {
+//    for (var i in userNamesIndexed) {
+//      user = allUserNames.eq(i);
+//      userCard = allUserCards.eq(i);
+//
+//      if (userNamesIndexed[i].indexOf(search_val) != -1) {
+//        userCard.removeClass('is-hidden');
+//        user.html(user.html()
+//            .replace(new RegExp(search_val + '(?!([^<]+)?>)', 'gi'), '<span class="highlight">$&</span>'));
+//      }
+//      else
+//        userCard.addClass('is-hidden');
+//    }
+//  }
+//  else
+//    $.each(allUserCards, function() {
+//      $(this).removeClass('is-hidden');
+//    });
+//
+//
+//  console.log(allUserCards.not('.is-hidden').length == 0);
+//
+//  // ativa a div com a mensagem a dizer que nenhum utilizador foi encontrado
+//  noResultsDiv.toggleClass('is-visible', allUserCards.not('.is-hidden').length == 0);
+//}
+
+
+// função executada sempre que é introduzida uma letra na caixa de pesquisa
+function searchListenerKeyPressed(param) {
   console.log("letra introduzida na search-bar!");
 
   if (param.keyCode == 13) { //tecla enter
@@ -555,37 +574,36 @@ function searchAlgorithmTEMP(param) {
     return true;
   }
 
-  var team;
-  var teamEntry;
+  var entity;
+  var entityEntry;
   var search_val = $.trim(searchBar.val()).toLowerCase(); // remove espaços brancos antes e dps da palavra
 
-  allTeamNames.each(function () {
-    team = $(this);
-    team.html(team.html().replace(/<span class="highlight">([^<]+)<\/span>/gi, '$1'));
+  allEntityNames.each(function () {
+    entity = $(this);
+    entity.html(entity.html().replace(/<span class="highlight">([^<]+)<\/span>/gi, '$1'));
   });
 
   if (search_val.length > 0) {
-    for (var i in teamNamesIndexed) {
-      team = allTeamNames.eq(i);
-      teamEntry = allTeamEntries.eq(i);
+    for (var i in entityNamesIndexed) {
+      entity = allEntityNames.eq(i);
+      entityEntry = allEntityEntries.eq(i);
 
-      if (teamNamesIndexed[i].indexOf(search_val) != -1) {
-        teamEntry.removeClass('is-hidden');
-        team.html(team.html()
+      if (entityNamesIndexed[i].indexOf(search_val) != -1) {
+        entityEntry.removeClass('is-hidden');
+        entity.html(entity.html()
             .replace(new RegExp(search_val + '(?!([^<]+)?>)', 'gi'), '<span class="highlight">$&</span>'));
       }
       else
-        teamEntry.addClass('is-hidden');
+        entityEntry.addClass('is-hidden');
     }
   }
   else
-    $.each(allTeamEntries, function() {
+    $.each(allEntityEntries, function() {
       $(this).removeClass('is-hidden');
     });
 
-
-  console.log(allTeamEntries.not('.is-hidden').length == 0);
+  console.log(allEntityEntries.not('.is-hidden').length == 0);
 
   // ativa a div com a mensagem a dizer que nenhum utilizador foi encontrado
-  noResultsDiv.toggleClass('is-visible', allTeamEntries.not('.is-hidden').length == 0);
+  noResultsDiv.toggleClass('is-visible', allEntityEntries.not('.is-hidden').length == 0);
 }
