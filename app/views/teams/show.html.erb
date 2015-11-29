@@ -39,7 +39,7 @@
       <div class="divider divider-margin"></div>
       <div class="col l12 m6 s12 offset-m6 hide-on-med-only">
         <h6 style="font-weight: 300; margin-top: 0 !important;">
-          <strong><%= @team.name.upcase %></strong>
+          <strong><%= @team.name.mb_chars.upcase %></strong>
         </h6>
 
         <div class="divider divider-margin"></div>
@@ -55,7 +55,7 @@
           <% end %>
         </h6>
         <h6 class="hide-on-med-only" style="font-weight: 300;">
-          Reponsável por atualizar a posição:
+          Responsável por atualizar a posição:
           <%= link_to @location_user, method: :get do %>
               <%= @location_user.full_name %>
           <% end %>
@@ -108,55 +108,64 @@
 
   <div class="row z-depth-1 white"
        style="padding-left: 20px; padding-top: 1px; padding-bottom: 20px; padding-right: 20px;">
-    <h5 class="center" style="font-weight: 300;">Membros (<%= @team.users.size %>)</h5>
+    <div class="section">
+      <h5>Adicionar membro a esta equipa</h5>
+      <span><i>Nota: apenas é possível selecionar utilizadores que ainda não estejam em nenhuma equipa.</i></span>
+    </div>
+
+    <div id="add_user_form">
+      <div class="col s7 l9 m8" style="padding-left: 0;">
+        <%= select_tag 'dropdown_add_user_to_team', options_from_collection_for_select(
+            @users_not_in_any_team, :id, :full_name, nil),
+                       {prompt: 'Escolha um utilizador', class: 'browser-default', id: "dropdown_add_user_to_team"} %>
+      </div>
+
+      <div class="col s5 l3 m4 right-align" style="padding-right: 0;">
+        <a id="confirm_add_user" class="waves-effect waves-light btn"
+           style="height: 41px; line-height: 41px;">Adicionar!</a>
+      </div>
+    </div>
+
+    <blockquote id="no_user_to_add" style="display: none;">
+      De momento não há nenhum utilizador sem equipa.
+    </blockquote>
+  </div>
+
+  <div class="row z-depth-1 white"
+       style="padding-left: 20px; padding-top: 1px; padding-bottom: 20px; padding-right: 20px;">
+    <h5 id="team_members_count" class="center" style="font-weight: 300;">Membros (<%= @team.users.size %>)</h5>
 
     <div class="divider divider-margin"></div>
+
     <div class="s12 l12 m12">
-      <% i = 0 %>
-      <% @team.users.each do |user| %>
-          <% if i % 2 == 0 %>
-              <div class="even-user col l6 m12 s12">
-                <div class="card-panel grey lighten-4" style="padding: 15px; padding-left: 20px;">
-                  <!--<span><%= user.full_name %></span>-->
-                  <div class="row valign-wrapper" style="margin-bottom: 0px;">
-                    <div class="col l2 m1 s1">
-                      <%= image_tag user.avatar.url(:thumb), class: 'circle responsive-img', size: "30x30" %>
-                    </div>
-                    <div class="col l10 m11 s11 truncate">
-                      <span>
-                        <%= link_to user, method: :get do %>
-                          <%= user.full_name %>
-                        <% end %>
-                      </span>
-                      <br>
-                      <span style="font-weight: 300;"><%= user.profile %></span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-          <% else %>
-              <div class="odd-user col l6 m12 s12">
-                <div class="card-panel grey lighten-4" style="padding: 15px; padding-left: 20px;">
-                  <!--<span><%= user.full_name %></span>-->
-                  <div class="row valign-wrapper" style="margin-bottom: 0px;">
-                    <div class="col l2 m1 s1">
-                      <%= image_tag user.avatar.url(:thumb), class: 'circle responsive-img', size: "30x30" %>
-                    </div>
-                    <div class="col l10 m11 s11 truncate">
-                      <span>
-                        <%= link_to user, method: :get do %>
-                          <%= user.full_name %>
-                        <% end %>
-                      </span>
-                      <br>
-                      <span style="font-weight: 300;"><%= user.profile %></span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-          <% end %>
-          <% i = i + 1 %>
-      <% end %>
+      <ul class="collection">
+        <% @team.users.each do |user| %>
+            <% is_leader = false %>
+            <% in_charge_of_location = false %>
+            <% if user.id == @team_leader_entry.user_id %>
+                <% is_leader = true %>
+            <% end %>
+            <% if user.id == @location_user.id %>
+                <% is_in_charge_of_location = true %>
+            <% end %>
+            <%= render partial: 'list_entry',
+                       locals: {user: user, is_leader: is_leader, in_charge_of_location: is_in_charge_of_location} %>
+        <% end %>
+      </ul>
     </div>
+  </div>
+</div>
+
+<!-- Modal Structure -->
+<div id="remove_user_confirm" class="modal">
+  <div class="modal-content">
+    <h4>Remover membro</h4>
+    <p>Tem a certeza que pretende remover o membro <b id="modal_user_name"></b> desta equipa?
+      <!--<b id="modal_team_name"></b>?-->
+    </p>
+  </div>
+  <div class="modal-footer">
+    <a id="modal_confirm_removal" class="modal-action modal-close waves-effect waves-green btn-flat">Confirmar</a>
+    <a class="modal-action modal-close waves-effect waves-green btn-flat">Cancelar</a>
   </div>
 </div>

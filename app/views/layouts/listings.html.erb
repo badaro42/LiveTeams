@@ -7,7 +7,8 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 
-  <%= include_gon(watch: true) %>
+  <%#= include_gon(watch: true) %>
+  <%= Gon::Base.render_data({}) %>
 
   <%= stylesheet_link_tag 'application', media: 'all' %>
   <%= stylesheet_link_tag 'listings_test' %>
@@ -27,7 +28,6 @@
       </ul>
       <h2 id="page-title-center" class="brand-logo center"><%= yield(:page_purpose) %></h2>
 
-
       <ul id="nav-mobile" class="right navbar-btn-wrapper">
         <% if @show_search_stuff %>
             <li id="nav-search-btn">
@@ -39,8 +39,6 @@
           <%= yield(:model_actions) %>
         </li>
       </ul>
-
-
     </div>
   </div>
 </nav>

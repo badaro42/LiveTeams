@@ -1,0 +1,32 @@
+<% entry_id = "entry_" + user.id.to_s %>
+
+<li id="<%= entry_id %>" class="collection-item avatar">
+  <%= image_tag user.avatar.url(:thumb), class: 'circle' %>
+  <span class="title">
+                <%= link_to user, class: "username", method: :get do %>
+                  <%= user.full_name %>
+                <% end %>
+              </span>
+  <p><%= user.profile %><br>
+    Membro desde <%= user.created_at.to_datetime.to_formatted_s(:short) %>
+  </p>
+
+  <% if is_leader %>
+      <%= link_to "javascript:void(0)", :data => {:position => 'left', :delay => '15',
+                                                  :tooltip => 'Não é possível remover o líder da equipa'},
+                  style: "cursor: default", class: 'tooltipped secondary-content' do %>
+          <i class="material-icons">info_outline</i>
+      <% end %>
+  <% elsif in_charge_of_location %>
+      <%= link_to "javascript:void(0)", :data => {:position => 'left', :delay => '15',
+                                                  :tooltip => 'Não é possível remover o responsável pela localização da equipa'},
+                  style: "cursor: default", class: 'tooltipped secondary-content' do %>
+          <i class="material-icons">info_outline</i>
+      <% end %>
+  <% else %>
+      <%= link_to "javascript:void(0)", :data => {:position => 'left', :delay => '15', :tooltip => 'Remover da equipa'},
+                  class: 'remove-user-from-team tooltipped secondary-content' do %>
+          <i class="material-icons">delete</i>
+      <% end %>
+  <% end %>
+</li>

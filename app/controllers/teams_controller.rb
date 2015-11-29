@@ -53,6 +53,10 @@ class TeamsController < ApplicationController
       flash[:error] = "A equipa que procura nao existe!"
       redirect_to teams_url
     else
+      members_unique_ids = TeamMember.uniq(:user_id).select(:user_id)
+      @users_not_in_any_team = User.where.not(id: members_unique_ids)
+      puts @users_not_in_any_team.inspect
+
       puts "TAMANHO DAS VERSOES DESTA EQUIPA!!!!"
       puts @team.versions.size
       puts @team.versions.inspect
@@ -67,9 +71,11 @@ class TeamsController < ApplicationController
         gon.team_versions.push(version.reify)
       end
 
-      team_leader_id = @team.team_members.where(is_leader: true).first
-      puts team_leader_id.inspect
-      @team_leader = @team.users.where(id: team_leader_id.user_id).first
+      gon.current_team_id = @team.id
+
+      @team_leader_entry = @team.team_members.where(is_leader: true).first
+      puts @team_leader_entry.inspect
+      @team_leader = @team.users.where(id: @team_leader_entry.user_id).first
       puts @team_leader.inspect
 
       @location_user = User.find(@team.location_user_id)
@@ -181,6 +187,39 @@ class TeamsController < ApplicationController
       format.json { head :no_content }
     end
   end
+
+  def add_user_to_team
+    puts "**********************************************"
+    puts "ADD_USER_TO_TEAM HEHEHEHEHEHEHE"
+    puts "**********************************************"
+
+    t_member = TeamMember.new(:user_id => params[:user_id], :team_id => params[:team_id], :is_leader => false)
+    if t_member.save
+      gon.recently_added_user = User.where(id: params[:user_id]).first
+      @recently_added_user = User.where(id: params[:user_id]).first
+
+      puts @recently_added_user.inspect
+
+      # o utilizador que acabamos de introduzir nao é nem o lider nem o responsavel pela posição
+      render partial: 'list_entry', locals: {user: @recently_added_user, is_leader: false, in_charge_of_location: false}
+    else # em caso de erro enviar codigo de erro para o jquery
+      render :nothing => true, :status => 500, :content_type => 'text/html'
+    end
+  end
+
+  def remove_user_from_team
+    puts "**********************************************"
+    puts "REMOVE_USER_FROM_TEAM HEHEHEHEHEHEHE"
+    puts "**********************************************"
+
+    t_member = TeamMember.where(:user_id => params[:user_id], :team_id => params[:team_id]).first
+    if TeamMember.destroy(t_member.id)
+      render :nothing => true, :status => 200, :content_type => 'text/html'
+    else # em caso de erro enviar codigo de erro para o jquery
+      render :nothing => true, :status => 500, :content_type => 'text/html'
+    end
+  end
+
 
   private
   # Use callbacks to share common setup or constraints between actions.

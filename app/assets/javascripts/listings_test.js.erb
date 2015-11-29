@@ -2,12 +2,10 @@ var osm, osmUrl;
 var team_map, user_map;
 var curr_marker = undefined, remove_btn;
 var cluster;
-//var allUserCards, allUserNames, userNamesIndexed = [], userCardsIndexed = [];
-//var allTeamEntries, allTeamNames, teamNamesIndexed = [], teamEntriesIndexed = [];
+var parent_list_entry_id, username_to_be_removed;
 
-
+// variaveis da cena da search bar
 var allEntityEntries, allEntityNames, entityNamesIndexed = [], entityEntriesIndexed = [];
-
 var searchBar, noResultsDiv;
 
 var team_highlight_icon = L.icon({
@@ -26,7 +24,6 @@ $(document).ready(function () {
     console.log("CARREGUEI NO BOTAO PARA ATUALIZAR POSIÇÃO");
     var text_coords = $("#new_coords").val();
     var c_arr = parsePointCoordinates(text_coords);
-
 
     console.log("Latitude: " + c_arr[1]);
     console.log("Longitude: " + c_arr[0]);
@@ -86,7 +83,7 @@ $(document).ready(function () {
       }
 
       osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-      osm = L.tileLayer(osmUrl, {maxZoom: 20});
+      osm = L.tileLayer(osmUrl, {maxZoom: 19});
       team_map = L.map("team_map", {
         zoom: 12,
         center: point_coords,
@@ -128,7 +125,7 @@ $(document).ready(function () {
       console.log("PÁGINA PARA CRIAR NOVA EQUIPA!!!");
 
       osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-      osm = L.tileLayer(osmUrl, {maxZoom: 20});
+      osm = L.tileLayer(osmUrl, {maxZoom: 19});
       team_map = L.map("team_map", {
         zoom: 12,
         center: [38.627881, -9.161007],
@@ -154,11 +151,27 @@ $(document).ready(function () {
       team_map.on('click', onMapClick);
     }
     else if (is_a_number) {
-      // TODO: MAPA COM LOCALIZAÇÃO ATUAL, NAO DEVE PERMITIR ALTERAÇÕES
       console.log("PÁGINA PARA APRESENTAR INFO DA EQUIPA!!!");
+      checkUsersWithoutTeam();
+
+      // LISTENER PARA QUANDO O ADMIN ADICIONA UM USER À EQUIPA
+      $('#confirm_add_user').on('click', addUserToTeam);
+
+      // abre o modal para confirmar a remoção do membro da equipa
+      $('.remove-user-from-team').on('click', openConfirmRemovalModal);
+
+      // o admin carregou no botao para remover o membro. vamos entao fazer-lhe a vontade
+      $('#modal_confirm_removal').on('click', function (e) {
+        var user_id = parseInt(parent_list_entry_id.split("_")[1]);
+
+        console.log(parent_list_entry_id);
+        console.log(user_id);
+
+        removeUserFromTeam(parent_list_entry_id, user_id);
+      });
 
       osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-      osm = L.tileLayer(osmUrl, {maxZoom: 20});
+      osm = L.tileLayer(osmUrl, {maxZoom: 19});
       team_map = L.map("team_map", {
         zoom: 12,
         center: [38.627881, -9.161007],
@@ -168,9 +181,6 @@ $(document).ready(function () {
       });
 
       console.log(gon.team_versions);
-
-//      console.log("TEM PROPRIEDADE 'TEAM'??");
-//      console.log(gon.team_versions[1].hasOwnProperty('team'));
 
       var i = 0;
       // isto só é null quando a equipa acabou de ser criada!!
@@ -273,7 +283,7 @@ $(document).ready(function () {
       console.log("PÁGINA PARA APRESENTAR UTILIZADOR!!!");
 
       osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-      osm = L.tileLayer(osmUrl, {maxZoom: 20});
+      osm = L.tileLayer(osmUrl, {maxZoom: 19});
       user_map = L.map("user_map", {
         zoom: 12,
         center: L.latLng(38.627881, -9.161007),
@@ -308,59 +318,8 @@ $(document).ready(function () {
     else {
       console.log("PÁGINA COM TODOS OS UTILIZADORES!!!");
       initSearchEngine('user');
-
-//      noResultsDiv = $('.no-results');
-//      searchBar = $('#search-bar');
-//      allUserCards = $(".user-card");
-//      allUserNames = $(".card-title");
-//      userCardsIndexed = [];
-//      userNamesIndexed = [];
-//
-//      // nomes dos utilizadores
-//      $.each(allUserNames, function () {
-//        userNamesIndexed.push($(this).text().replace(/\s{2,}/g, ' ').toLowerCase());
-//      });
-//
-//      // div dos varios utilizadores
-//      $.each(allUserCards, function () {
-//        userCardsIndexed.push($(this));
-//      });
-//
-//      searchBar.on('keyup', searchAlgorithm);
     }
   }
-
-  /**
-   * Positions the tabs
-   */
-  function positionTabs() {
-    var tabs = $('#tab-wrapper');
-    if (tabs.length) {
-      var nav = $('#nav');
-      var search = $('#search');
-      var content = $('#content');
-      var offsetTop = window.pageYOffset || document.documentElement.scrollTop;
-
-      if (offsetTop > (nav.height() + (search.is(':visible') ? search.height() : 0)) && window.innerWidth > 600) {
-        tabs.addClass('fixed');
-        content.css({'padding-top': (tabs.height() + parseInt(tabs.css('margin-bottom'))) + 'px'});
-      }
-      else {
-        tabs.removeClass('fixed');
-        content.css({'padding-top': 0});
-      }
-    }
-  }
-
-  // Scroll events
-  $(window).scroll(function (e) {
-//    positionTabs();
-  });
-
-  // Resize events
-  $(window).resize(function (e) {
-//    positionTabs();
-  });
 
   // Toggle search
   $('a#toggle-search').click(function () {
@@ -495,11 +454,11 @@ function initSearchEngine(param) {
   entityEntriesIndexed = [];
   entityNamesIndexed = [];
 
-  if(param === 'team') {
+  if (param === 'team') {
     allEntityEntries = $(".team-entry");
     allEntityNames = $(".team-title");
   }
-  else if(param === 'user') {
+  else if (param === 'user') {
     allEntityEntries = $(".user-card");
     allEntityNames = $(".card-title");
   }
@@ -516,54 +475,6 @@ function initSearchEngine(param) {
 
   searchBar.on('keyup', searchListenerKeyPressed);
 }
-
-
-
-
-// função executada sempre que é introduzida uma letra na caixa de pesquisa
-//function searchAlgorithm(param) {
-//  console.log("letra introduzida na search-bar!");
-//
-//  if (param.keyCode == 13) { //tecla enter
-//    searchBar.trigger('blur');
-//    return true;
-//  }
-//
-//  var user;
-//  var userCard;
-//  var search_val = $.trim(searchBar.val()).toLowerCase(); // remove espaços brancos antes e dps da palavra
-//
-//  allUserNames.each(function () {
-//    user = $(this);
-//    user.html(user.html().replace(/<span class="highlight">([^<]+)<\/span>/gi, '$1'));
-//  });
-//
-//  if (search_val.length > 0) {
-//    for (var i in userNamesIndexed) {
-//      user = allUserNames.eq(i);
-//      userCard = allUserCards.eq(i);
-//
-//      if (userNamesIndexed[i].indexOf(search_val) != -1) {
-//        userCard.removeClass('is-hidden');
-//        user.html(user.html()
-//            .replace(new RegExp(search_val + '(?!([^<]+)?>)', 'gi'), '<span class="highlight">$&</span>'));
-//      }
-//      else
-//        userCard.addClass('is-hidden');
-//    }
-//  }
-//  else
-//    $.each(allUserCards, function() {
-//      $(this).removeClass('is-hidden');
-//    });
-//
-//
-//  console.log(allUserCards.not('.is-hidden').length == 0);
-//
-//  // ativa a div com a mensagem a dizer que nenhum utilizador foi encontrado
-//  noResultsDiv.toggleClass('is-visible', allUserCards.not('.is-hidden').length == 0);
-//}
-
 
 // função executada sempre que é introduzida uma letra na caixa de pesquisa
 function searchListenerKeyPressed(param) {
@@ -598,7 +509,7 @@ function searchListenerKeyPressed(param) {
     }
   }
   else
-    $.each(allEntityEntries, function() {
+    $.each(allEntityEntries, function () {
       $(this).removeClass('is-hidden');
     });
 
@@ -606,4 +517,133 @@ function searchListenerKeyPressed(param) {
 
   // ativa a div com a mensagem a dizer que nenhum utilizador foi encontrado
   noResultsDiv.toggleClass('is-visible', allEntityEntries.not('.is-hidden').length == 0);
+}
+
+// função responsavel por associar o utilizador selecionado à equipa atual
+function addUserToTeam(e) {
+  e.preventDefault();
+  var selected_item = $('#dropdown_add_user_to_team').find(":selected");
+
+  if (selected_item.text() === "Escolha um utilizador")
+    noty({
+      text: 'Não selecionou nenhum utilizador.',
+      timeout: 3500, type: 'error', layout: 'bottomCenter'
+    });
+  else {
+    var selected_user_id = parseInt(selected_item[0].value);
+    console.log(selected_item);
+    console.log(selected_user_id);
+
+    $.ajax({
+      type: "POST",
+      url: "/add_user_to_team",
+      data: {
+        user_id: selected_user_id,
+        team_id: gon.current_team_id
+      },
+      success: function (result) {
+        console.log(result);
+        console.log("sucesso add_user_to_team");
+
+        // append da nova entrada à lista de membros
+        $(".collection").append(result);
+
+        // atualiza a contagem de elementos na equipa
+        var entries_count = $('.collection li').length;
+        console.log(entries_count);
+        $("#team_members_count").text("Membros (" + entries_count + ")");
+
+        // faz um scroll para a entrada acabada de criar
+        $('body, html').animate({scrollTop: $('.collection li:last-child').offset().top}, 1000);
+
+        //remove a entrada da dropdown para impedir que se introduza o mesmo user outra vez
+        $("#dropdown_add_user_to_team option[value='" + selected_user_id + "']").remove();
+        checkUsersWithoutTeam();
+
+        noty({
+          text: 'O utilizador foi adicionado com sucesso à equipa!',
+          timeout: 3500, type: 'success', layout: 'bottomCenter'
+        });
+
+        // inicializa a tooltip da entrada acabada de introduzir!
+        // o mesmo para o listener do remove
+        $('.tooltipped').tooltip({delay: 15});
+        $('.collection li:last-child > a').on('click', openConfirmRemovalModal);
+      },
+      error: function (err) {
+        console.log("erro add_user_to_team");
+        noty({
+          text: 'Ocorreu um erro ao adicionar o utilizador à equipa!',
+          timeout: 3500, type: 'error', layout: 'bottomCenter'
+        });
+      }
+    });
+  }
+}
+
+function removeUserFromTeam(entry_id_to_remove, user_id) {
+  $.ajax({
+    type: "POST",
+    url: "/remove_user_from_team",
+    data: {
+      user_id: user_id,
+      team_id: gon.current_team_id
+    },
+    success: function (result) {
+      console.log(result);
+      console.log("sucesso add_user_to_team");
+
+      // remove a entrada da lista correspondente ao utilizador
+      // o codigo da atualização tem que estar aqui dentro pois o metodo animate recebe um parametro
+      // que atrasa a execução do remove por meio segundo, o que fazia com que a contagem desse valores errados
+      $("#" + entry_id_to_remove).animate({opacity: 0}, 500, function () {
+        $("#" + entry_id_to_remove).remove();
+
+        // atualiza a contagem de elementos na equipa
+        var entries_count = $('.collection li').length;
+        console.log(entries_count);
+        $("#team_members_count").text("Membros (" + entries_count + ")");
+
+        //remove a entrada da dropdown para impedir que se introduza o mesmo user outra vez
+        $("#dropdown_add_user_to_team").append($('<option></option>').val(user_id).text(username_to_be_removed));
+        checkUsersWithoutTeam();
+
+        noty({
+          text: 'O utilizador foi removido com sucesso da equipa!',
+          timeout: 3500, type: 'success', layout: 'bottomCenter'
+        });
+      });
+    },
+    error: function (err) {
+      console.log("erro a remover o membro da equipa");
+      noty({
+        text: 'Ocorreu um erro ao remover o membro da equipa!',
+        timeout: 3500, type: 'error', layout: 'bottomCenter'
+      });
+    }
+  });
+}
+
+function openConfirmRemovalModal() {
+  // $('this') representa o botao. o seu pai é a entrada que queremos remover.
+  var parent = $(this).parent();
+  parent_list_entry_id = parent.attr('id');
+  username_to_be_removed = parent.find('.username').text().trim();
+  console.log("username_to_be_removed: " + username_to_be_removed);
+
+  $('#modal_user_name').text(username_to_be_removed);
+  $('#remove_user_confirm').openModal();
+}
+
+// verifica se há utilizadores na dropdown
+// caso nao haja, esconde o formulario a apresenta uma mensagem a informar que nao ha users sem equipa
+function checkUsersWithoutTeam() {
+  if ($('#dropdown_add_user_to_team > option').length == 1) {
+    $('#add_user_form').css('display', 'none');
+    $('#no_user_to_add').css('display', 'block');
+  }
+  else {
+    $('#add_user_form').css('display', 'block');
+    $('#no_user_to_add').css('display', 'none');
+  }
 }

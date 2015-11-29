@@ -30,6 +30,8 @@ Rails.application.routes.draw do
 
   # TESTE: ATUALIZAR AS COORDENADAS DO UTILIZADOR
   post '/update_location' => 'users#update_location'
+  post '/add_user_to_team' => 'teams#add_user_to_team'
+  post '/remove_user_from_team' => 'teams#remove_user_from_team'
 
 
   # get 'teams', to: 'teams#index'
