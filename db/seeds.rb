@@ -111,7 +111,7 @@ User.create(first_name: 'Adalberto', last_name: 'Feio', email: 'adalberto18@mail
 # id 20
 User.create(first_name: 'João', last_name: 'Rodrigues', email: 'joao19@mail.com', password: 'qweqweqwe',
             avatar: File.open(Rails.root + "app/assets/teste.png"), password_confirmation: 'qweqweqwe',
-            profile: User::BASICO, phone_number: '21211130',
+            profile: User::BASICO, phone_number: '212111130',
             latlon: 'POINT(-9.105348587036133 38.666747735267805)')
 
 # User.update(1, {

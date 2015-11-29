@@ -42,7 +42,7 @@ class RegistrationsController < Devise::RegistrationsController
   # Modified Devise params for user login
   def sign_up_params
     params.require(:user).permit(:first_name, :last_name, :email, :password, :password_confirmation, :avatar,
-                                 :profile, :phone_number)
+                                 :profile, :phone_number, :latlon)
   end
 
   def account_update_params
