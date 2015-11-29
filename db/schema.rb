@@ -18,15 +18,17 @@ ActiveRecord::Schema.define(version: 20151122185954) do
   enable_extension "postgis"
 
   create_table "geo_entities", force: :cascade do |t|
-    t.string    "name"
-    t.geography "latlon",      limit: {:srid=>4326, :type=>"geometry", :geographic=>true}
-    t.integer   "user_id"
+    t.string    "name",                                                                    null: false
+    t.geography "latlon",      limit: {:srid=>4326, :type=>"geometry", :geographic=>true}, null: false
+    t.integer   "user_id",                                                                 null: false
     t.text      "description"
     t.datetime  "created_at",                                                              null: false
     t.datetime  "updated_at",                                                              null: false
-    t.string    "entity_type"
-    t.integer   "radius"
+    t.string    "entity_type",                                                             null: false
+    t.integer   "radius",                                                                  null: false
   end
+
+  add_index "geo_entities", ["user_id"], name: "index_geo_entities_on_user_id", using: :btree
 
   create_table "team_members", force: :cascade do |t|
     t.integer  "team_id"
@@ -36,14 +38,19 @@ ActiveRecord::Schema.define(version: 20151122185954) do
     t.datetime "updated_at", null: false
   end
 
+  add_index "team_members", ["team_id"], name: "index_team_members_on_team_id", using: :btree
+  add_index "team_members", ["user_id"], name: "index_team_members_on_user_id", using: :btree
+
   create_table "teams", force: :cascade do |t|
-    t.string    "name"
+    t.string    "name",                                                                      null: false
     t.geography "latlon_highlight", limit: {:srid=>4326, :type=>"point", :geographic=>true}
     t.datetime  "created_at",                                                                null: false
     t.datetime  "updated_at",                                                                null: false
     t.integer   "location_user_id"
     t.geography "latlon",           limit: {:srid=>4326, :type=>"point", :geographic=>true}
   end
+
+  add_index "teams", ["location_user_id"], name: "index_teams_on_location_user_id", using: :btree
 
   create_table "users", force: :cascade do |t|
     t.string    "email",                                                                           default: "", null: false
@@ -58,15 +65,15 @@ ActiveRecord::Schema.define(version: 20151122185954) do
     t.inet      "last_sign_in_ip"
     t.datetime  "created_at",                                                                                   null: false
     t.datetime  "updated_at",                                                                                   null: false
-    t.string    "first_name"
-    t.string    "last_name"
+    t.string    "first_name",                                                                                   null: false
+    t.string    "last_name",                                                                                    null: false
     t.string    "avatar_file_name"
     t.string    "avatar_content_type"
     t.integer   "avatar_file_size"
     t.datetime  "avatar_updated_at"
-    t.string    "profile"
-    t.geography "latlon",                 limit: {:srid=>4326, :type=>"point", :geographic=>true}
-    t.integer   "phone_number"
+    t.string    "profile",                                                                                      null: false
+    t.geography "latlon",                 limit: {:srid=>4326, :type=>"point", :geographic=>true},              null: false
+    t.integer   "phone_number",                                                                                 null: false
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
@@ -83,4 +90,8 @@ ActiveRecord::Schema.define(version: 20151122185954) do
 
   add_index "versions", ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id", using: :btree
 
+  add_foreign_key "geo_entities", "users"
+  add_foreign_key "team_members", "teams"
+  add_foreign_key "team_members", "users"
+  add_foreign_key "teams", "users", column: "location_user_id"
 end

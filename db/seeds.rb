@@ -114,27 +114,6 @@ User.create(first_name: 'João', last_name: 'Rodrigues', email: 'joao19@mail.com
             profile: User::BASICO, phone_number: '212111130',
             latlon: 'POINT(-9.105348587036133 38.666747735267805)')
 
-# User.update(1, {
-# User.update(2, {:latlon => 'POINT( )'})
-# User.update(3, {:latlon => 'POINT( )'})
-# User.update(4, {:latlon => 'POINT( )'})
-# User.update(5, {:latlon => 'POINT( )'})
-# User.update(6, {:latlon => 'POINT( )'})
-# User.update(7, {:latlon => 'POINT( )'})
-# User.update(8, {:latlon => 'POINT( )'})
-# User.update(9, {:latlon => 'POINT( )'})
-# User.update(10, {:latlon => 'POINT( )'})
-# User.update(11, {:latlon => 'POINT( )'})
-# User.update(12, {:latlon => 'POINT( )'})
-# User.update(13, {:latlon => 'POINT( )'})
-# User.update(14, {:latlon => 'POINT( )'})
-# User.update(15, {:latlon => 'POINT( )'})
-# User.update(16, {:latlon => 'POINT( )'})
-# User.update(17, {:latlon => 'POINT( )'})
-# User.update(18, {:latlon => 'POINT( )'})
-# User.update(19, {:latlon => 'POINT( )'})
-# User.update(20, {:latlon => 'POINT( )'})
-
 
 # TEAMS name:string
 # NOTA: AS COORDENADAS ESTAO INVERTIDAS: PRIMEIRO LONGITUDE, DPS LATITUDE
