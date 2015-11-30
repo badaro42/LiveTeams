@@ -32,6 +32,11 @@ function geoSucess(position) {
     var text_coords = "POINT(" + position.coords.longitude + " " + position.coords.latitude + ")";
     console.log(text_coords);
     $('#user_latlon').val(text_coords);
+
+    noty({
+        text: 'Localização obtida com sucesso!',
+        timeout: 3500, type: 'success', layout: 'bottomCenter'
+    });
 }
 
 // função executada quando ocorreu algum erro a obter a posição atual

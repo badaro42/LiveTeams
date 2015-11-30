@@ -23,10 +23,15 @@ class TeamsController < ApplicationController
     # dps de obter todas as equipas do servidor, mapeia-as num objeto de forma a que sejam correctamente
     # transformadas em json
     mapped_teams = factory.map_feature_collection(teams) {
-        |f| factory.feature(f.users.where(id: f.location_user_id).first.latlon, nil,
+        |f| factory.feature(User.find(f.location_user_id).latlon, nil,
                             {name: f.name, f_id: f.id, location_user_id: f.location_user_id,
                              created_at: f.created_at, updated_at: f.updated_at,
-                             location_user_name: f.users.where(id: f.location_user_id).first.full_name}) }
+                             location_user_name: User.find(f.location_user_id).full_name,
+                             leader_name: User.find(TeamMember.where(team_id: f.id, is_leader: true)
+                                                        .first.user_id).full_name,
+                             leader_id: User.find(TeamMember.where(team_id: f.id, is_leader: true)
+                                                      .first.user_id).id})
+    }
 
     # puts mapped_teams
 

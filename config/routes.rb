@@ -1,12 +1,11 @@
 Rails.application.routes.draw do
 
+  # rota para o SSE :)
   get '/entity_updates' => 'homepage#entity_updates'
 
   # rotas para as chamadas ajax na pagina principal
   get '/teams/teams_to_json', to: 'teams#teams_to_json'
-  get '/get_geo_entities', to: 'homepage#get_geo_entities'
-  # get 'account/edit', to: 'users#edit'
-
+  get '/users/get_geo_entities', to: 'users#get_geo_entities'
 
   # altera as rotas predefinidas do devise
   devise_for :users, :controllers => { registrations: 'registrations' },
@@ -30,11 +29,9 @@ Rails.application.routes.draw do
 
   # TESTE: ATUALIZAR AS COORDENADAS DO UTILIZADOR
   post '/update_location' => 'users#update_location'
+
   post '/add_user_to_team' => 'teams#add_user_to_team'
   post '/remove_user_from_team' => 'teams#remove_user_from_team'
-
-
-  # get 'teams', to: 'teams#index'
 
   get 'homepage/index'
 

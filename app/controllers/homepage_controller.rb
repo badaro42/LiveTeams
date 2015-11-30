@@ -2,6 +2,14 @@ class HomepageController < ApplicationController
   include ActionController::Live
   before_filter :authenticate_user!
 
+  def index
+    @most_active_users = User.all.order(sign_in_count: :desc).limit(15)
+    @recently_changed_teams = Team.all.order(updated_at: :desc).limit(15)
+
+    gon.user_id = current_user.id
+  end
+
+
   def entity_updates
     require 'rgeo'
     require 'rgeo-geojson'
@@ -28,7 +36,7 @@ class HomepageController < ApplicationController
     # codifica as entidades geograficas
     if new_or_updated_geo_entity.size == 1
       ent = new_or_updated_geo_entity.first
-      feature = geo_factory.feature(ent.latlon, nil, {f_id: ent.id, name: ent.name, user_id: ent.user_id,
+      feature = geo_factory.feature(ent.latlon, nil, {f_id: ent.id, name: ent.name, username: User.find(ent.user_id).full_name,
                                                       description: ent.description, radius: ent.radius,
                                                       created_at: ent.created_at, entity_type: ent.entity_type})
       features_to_json = RGeo::GeoJSON.encode feature
@@ -36,7 +44,7 @@ class HomepageController < ApplicationController
       # dps de obter todas as entidades do servidor, mapeia-as num objeto de forma a que sejam correctamente
       # transformadas em json
       mapped_feats = geo_factory.map_feature_collection(new_or_updated_geo_entity) {
-          |f| geo_factory.feature(f.latlon, nil, {f_id: f.id, name: f.name, user_id: f.user_id,
+          |f| geo_factory.feature(f.latlon, nil, {f_id: f.id, name: f.name, username: User.find(f.user_id).full_name,
                                                   description: f.description, radius: f.radius,
                                                   created_at: f.created_at, entity_type: f.entity_type})
       }
@@ -47,15 +55,27 @@ class HomepageController < ApplicationController
     # codifica as equipas
     if new_or_updated_teams.size == 1
       ent = new_or_updated_teams.first
-      team = team_factory.feature(ent.latlon, nil, {f_id: ent.id, name: ent.name,
-                                                       created_at: ent.created_at})
+      team = team_factory.feature(User.find(ent.location_user_id).latlon, nil,
+                                  {name: ent.name, f_id: ent.id, location_user_id: ent.location_user_id,
+                                   created_at: ent.created_at, updated_at: ent.updated_at,
+                                   location_user_name: User.find(ent.location_user_id).full_name,
+                                   leader_name: User.find(TeamMember.where(team_id: ent.id, is_leader: true)
+                                                              .first.user_id).full_name,
+                                   leader_id: User.find(TeamMember.where(team_id: ent.id, is_leader: true)
+                                                            .first.user_id).id})
       teams_to_json = RGeo::GeoJSON.encode team
     else
       # dps de obter todas as entidades do servidor, mapeia-as num objeto de forma a que sejam correctamente
       # transformadas em json
       mapped_teams = team_factory.map_feature_collection(new_or_updated_teams) {
-          |f| team_factory.feature(f.latlon, nil, {f_id: f.id, name: f.name,
-                                                  created_at: f.created_at})
+          |f| factory.feature(User.find(f.location_user_id).latlon, nil,
+                              {name: f.name, f_id: f.id, location_user_id: f.location_user_id,
+                               created_at: f.created_at, updated_at: f.updated_at,
+                               location_user_name: User.find(f.location_user_id).full_name,
+                               leader_name: User.find(TeamMember.where(team_id: f.id, is_leader: true)
+                                                          .first.user_id).full_name,
+                               leader_id: User.find(TeamMember.where(team_id: f.id, is_leader: true)
+                                                        .first.user_id).id})
       }
 
       # dps do mapeamento, s�o enviadas para a fabrica que trata da transforma��o
@@ -91,41 +111,5 @@ class HomepageController < ApplicationController
       puts "CLOSE cena cena"
       sse.close
     end
-
-  end
-
-  def index
-    @most_active_users = User.all.order(sign_in_count: :desc).limit(15)
-    @recently_changed_teams = Team.all.order(updated_at: :desc).limit(15)
-
-    gon.user_id = current_user.id
-  end
-
-  def get_geo_entities
-    require 'rgeo'
-    require 'rgeo-geojson'
-
-    features = GeoEntity.all
-    # puts features
-
-    # cria a fabrica de entidades
-    factory = RGeo::GeoJSON::EntityFactory.instance
-    # puts factory
-
-    # dps de obter todas as entidades do servidor, mapeia-as num objeto de forma a que sejam correctamente
-    # transformadas em json
-    mapped_feats = factory.map_feature_collection(features) {
-        |f| factory.feature(f.latlon, nil, {f_id: f.id, name: f.name, user_id: f.user_id,
-                                            description: f.description, radius: f.radius,
-                                            created_at: f.created_at, entity_type: f.entity_type})
-    }
-
-    # puts mapped_feats
-
-    # dps do mapeamento, s�o enviadas para a fabrica que trata da transforma��o para json para serem apresentadas no mapa
-    features_to_json = RGeo::GeoJSON.encode factory.feature_collection(mapped_feats)
-
-    # puts teste
-    render json: features_to_json
   end
 end
