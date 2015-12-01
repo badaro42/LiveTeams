@@ -10,7 +10,7 @@ var map, osmUrl, osmAttrib, osm, sidebar, cluster;
 var drawnItems;
 var e_type, e_radius, e_coords, coords_to_display, e_length, e_area, e_layer, e_num_points;
 var source;
-var all_geo_entities; // cada entrada é da forma {id: feature_id, type: tipo (em portugues), marker: L.marker(L.latLng(lat, lng))}
+var all_geo_entities; // cada entrada é da forma {id: feature_id, type: tipo (em portugues), latlon: array com objetos L.latLng)}
 var all_teams; // cada entrada é da forma {id: feature_id, marker: L.marker(L.latLng(lat, lng))}
 var previous_user_location; // {timestamp: Date(), position: L.latLng(lat, lng)}
 var no_sleep_enabled = false;
@@ -34,6 +34,10 @@ var user_pos_icon = L.icon({
 
 
 $(document).ready(function () {
+
+  // TODO: TENTATIVA DE FAZER CACHE DOS PEDIDOS AJAX.. MAS NAO SEI SE DÁ
+//  $.ajaxSetup({ cache:true });
+
   $('#button-da-merda').on('click', function () {
     console.log("CARREGUEI NO BOTAO!!! HEHE");
     $('#modal_entity_coordinates').openModal();
@@ -75,7 +79,7 @@ $(document).ready(function () {
   cluster = L.markerClusterGroup();
 
   osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-  osm = L.tileLayer(osmUrl, {maxZoom: 20});
+  osm = L.tileLayer(osmUrl, {maxZoom: 19});
 
   /* mapa principal */
   map = L.map("map", {
@@ -115,7 +119,7 @@ $(document).ready(function () {
         outsideMapBoundsMsg: "Parece que se encontra fora dos limites do mapa"
       },
       locateOptions: {
-        maxZoom: 20,
+        maxZoom: 19,
         watch: true,
         enableHighAccuracy: true,
         maximumAge: 15000,
@@ -328,6 +332,12 @@ $(document).ready(function () {
       text: 'Entidades geográficas carregadas com sucesso!', timeout: 3500,
       type: 'success', layout: 'bottomCenter'
     });
+
+    // caso haja parametro, centra o mapa na entidade enviada
+    var entity_id = parseInt(getURLParameter('entity_id'));
+
+    if (!isNaN(entity_id))
+      centerMapOnGeoEntity(entity_id);
   });
 
   geo_entities.on('data:error', function (err) {
@@ -480,15 +490,41 @@ $(document).ready(function () {
 //});
 });
 
-//$(document).keyup(function(e) {
-//    //if (e.keyCode == 13) $('.save').click();     // enter
-//    if (e.keyCode == 27) { // esc
-//        if(modal_is_open) {
-//            drawnItems.removeLayer(e_layer);
-//            modal_is_open = false;
-//        }
-//    }
-//});
+// listeners para quando se carrega numa tecla predefinida.
+$(document).keyup(function (e) {
+  var elem, parent, tab_name, keyCode;
+  keyCode = e.keyCode;
+
+  // teclas que ativam a sidebar lateral
+  if (keyCode == 69 || keyCode == 80 || keyCode == 85 || keyCode == 87 || keyCode == 83) {
+    if (keyCode == 69) { // tecla 'E'
+      elem = $('#teams-tab-icon');
+      tab_name = 'teams';
+    }
+    else if (keyCode == 80) { // tecla 'P'
+      elem = $('#profile-tab-icon');
+      tab_name = 'profile';
+    }
+    else if (keyCode == 85) { // tecla 'U'
+      elem = $('#users-tab-icon');
+      tab_name = 'users';
+    }
+    else if (keyCode == 87) { // tecla 'W'
+      elem = $('#warnings-tab-icon');
+      tab_name = 'warnings';
+    }
+    else if (keyCode == 83) { // tecla 'S'
+      elem = $('#search-tab-icon');
+      tab_name = 'search';
+    }
+
+    parent = elem.parent();
+    if (parent.hasClass('active'))
+      sidebar.close(tab_name);
+    else
+      sidebar.open(tab_name);
+  }
+});
 
 
 //// o parametro "coords" � da forma -> "POINT(33.333 11.111)"
@@ -1037,11 +1073,6 @@ function onEachGeoEntity(feature, layer) {
   var ent_type, temp_latlon;
   var popup = L.popup({maxWidth: 250});
 
-//  console.log("FEATURE PÁ!!!");
-//  console.log(feature);
-//  console.log("LAYER PÁ!!!");
-//  console.log(layer);
-
   var popupContent = '<span>Entidade geográfica nº <b>' + feature.properties.f_id +
       '</b>, adicionada pelo utilizador <a data-method="get" href="/users/' + feature.properties.user_id + '">' +
       feature.properties.user_name + '</a>.</span><p><b>Tipo: </b>' + feature.properties.entity_type + '<br>';
@@ -1075,4 +1106,34 @@ function onEachGeoEntity(feature, layer) {
     temp_latlon = layer.getLatLngs();
 
   all_geo_entities.push({id: feature.properties.f_id, latlon: temp_latlon, type: ent_type});
+}
+
+// caso o URL contenha o campo 'entity_id', vamos verificar se a entidade existe no mapa
+// se sim, centramos o mapa nessa entidade.
+function centerMapOnGeoEntity(entity_id) {
+  var indexOnArray = geoEntityIsInMap(entity_id);
+
+  if(indexOnArray > -1) { // a entidade existe, centramos
+    var entity = all_geo_entities[indexOnArray];
+    map.fitBounds(entity.latlon);
+
+    noty({
+      text: 'Mapa centrado na entidade nº' + entity_id + '.', timeout: 3500,
+      type: 'information', layout: 'bottomCenter'
+    });
+  }
+}
+
+// função que verifica se o parametro passado em argumento esta presente no URL
+// se sim, devolve o valor correspondente a esse parametro
+function getURLParameter(param) {
+  var search_params = window.location.search.substring(1);
+  var search_vars = search_params.split('&');
+
+  for (var i = 0; i < search_vars.length; i++) {
+    var param_name = search_vars[i].split('=');
+
+    if (param_name[0] == param)
+      return param_name[1];
+  }
 }

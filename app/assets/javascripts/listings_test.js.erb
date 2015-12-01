@@ -3,6 +3,7 @@ var team_map, user_map;
 var curr_marker = undefined, remove_btn;
 var cluster;
 var parent_list_entry_id, username_to_be_removed;
+var uri;
 
 // variaveis da cena da search bar
 var allEntityEntries, allEntityNames, entityNamesIndexed = [], entityEntriesIndexed = [];
@@ -47,7 +48,8 @@ $(document).ready(function () {
     });
   });
 
-  var href = document.location.pathname;
+  uri = document.location;
+  var href = uri.pathname;
   var users_pages = href.indexOf("users") > -1;
   var teams_pages = href.indexOf("teams") > -1;
   var account_pages = href.indexOf("account") > -1;
@@ -647,3 +649,20 @@ function checkUsersWithoutTeam() {
     $('#no_user_to_add').css('display', 'none');
   }
 }
+
+// redirecciona para a pagina principal e centra o mapa na entidade selecionada
+function goToGeoEntity(entity_id) {
+  var new_uri = "http://" + uri.host + "?entity_id=" + entity_id;
+  console.log(new_uri);
+}
+
+//function updateQueryStringParameter(param_uri, key, value) {
+//  var re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
+//  var separator = param_uri.indexOf('?') !== -1 ? "&" : "?";
+//  if (param_uri.match(re)) {
+//    return param_uri.replace(re, '$1' + key + "=" + value + '$2');
+//  }
+//  else {
+//    return param_uri + separator + key + "=" + value;
+//  }
+//}
