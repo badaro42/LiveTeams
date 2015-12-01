@@ -116,7 +116,7 @@
     <div id="add_user_form">
       <div class="col s7 l9 m8" style="padding-left: 0;">
         <%= select_tag 'dropdown_add_user_to_team', options_from_collection_for_select(
-            @users_not_in_any_team, :id, :full_name, nil),
+            @users_without_team, :id, :full_name, nil),
                        {prompt: 'Escolha um utilizador', class: 'browser-default', id: "dropdown_add_user_to_team"} %>
       </div>
 
@@ -141,7 +141,7 @@
       <ul class="collection">
         <% @team.users.each do |user| %>
             <% is_leader = false %>
-            <% in_charge_of_location = false %>
+            <% is_in_charge_of_location = false %>
             <% if user.id == @team_leader_entry.user_id %>
                 <% is_leader = true %>
             <% end %>

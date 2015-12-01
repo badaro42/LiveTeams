@@ -1,6 +1,6 @@
 class TeamsController < ApplicationController
   before_action :set_team, only: [:show, :edit, :update, :destroy]
-  before_action :set_all_users, only: [:new, :edit]
+  before_action :set_users_without_team, only: [:new, :edit, :show]
   before_filter :authenticate_user!
 
   layout "listings"
@@ -58,15 +58,13 @@ class TeamsController < ApplicationController
       flash[:error] = "A equipa que procura nao existe!"
       redirect_to teams_url
     else
-      members_unique_ids = TeamMember.uniq(:user_id).select(:user_id)
-      @users_not_in_any_team = User.where.not(id: members_unique_ids)
-      puts @users_not_in_any_team.inspect
-
       puts "TAMANHO DAS VERSOES DESTA EQUIPA!!!!"
       puts @team.versions.size
       puts @team.versions.inspect
       puts @team.versions.first.reify.inspect
       puts @team.versions.last.reify.inspect
+
+      puts @team.latlon
 
       gon.highlight_latlon = @team.latlon_highlight
 
@@ -91,6 +89,9 @@ class TeamsController < ApplicationController
   def new
     @team = Team.new
     @users_in_team = @team.users
+
+    # faz a uniao entre os utilizadores que nao têm equipa e aqueles que estao nesta equipa
+    @users_to_show = @users_in_team | @users_without_team
   end
 
   # GET /teams/1/edit
@@ -101,6 +102,9 @@ class TeamsController < ApplicationController
     else
       @users_in_team = @team.users
       @team_leader = TeamMember.find_by(team_id: @team.id, is_leader: true)
+
+      # faz a uniao entre os utilizadores que nao têm equipa e aqueles que estao nesta equipa
+      @users_to_show = @users_in_team | @users_without_team
 
       if @team_leader.user_id == current_user.id || current_user.profile == User::ADMINISTRADOR
         puts "PODE EDITAR"
@@ -159,7 +163,19 @@ class TeamsController < ApplicationController
   # PATCH/PUT /teams/1.json
   def update
     respond_to do |format|
+
+      # verificamos se o utilizador responsavel pela posição foi alterado
+      # se sim, atualizamos a posição atual da equipa
+      if @team.location_user_id != params[:team][:location_user_id].to_i
+        @team.location_user_id = params[:team][:location_user_id].to_i
+        @team.latlon = User.find(params[:team][:location_user_id].to_i).latlon
+        params[:team].delete(:location_user_id)
+      end
+
       if @team.update(team_params)
+
+
+
 
         # come�amos por remover todas as entradas da tabela para esta equipa
         TeamMember.delete_all(["team_id = ?", @team.id.to_s])
@@ -244,8 +260,9 @@ class TeamsController < ApplicationController
     # @team = Team.find(params[:id])
   end
 
-  def set_all_users
-    @all_users = User.all.order(id: :asc)
+  def set_users_without_team
+    members_unique_ids = TeamMember.uniq(:user_id).select(:user_id)
+    @users_without_team = User.where.not(id: members_unique_ids)
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.
