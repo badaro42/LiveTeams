@@ -30,129 +30,127 @@
 <% end %>
 
 
-<div class="container">
-  <div class="row" style="margin-top: 20px;">
-    <div id="teams_info_div" class="col l4 m12 s12 center-align z-depth-1 white"
-         style="padding-left: 20px; padding-top: 0px; padding-bottom: 20px; padding-right: 20px;">
-      <h5 style="font-weight: 300;">Detalhes</h5>
+<div class="row" style="margin-top: 20px;">
+  <div id="teams_info_div" class="col l4 m12 s12 center-align z-depth-1 white"
+       style="padding-left: 20px; padding-top: 0px; padding-bottom: 20px; padding-right: 20px;">
+    <h5 style="font-weight: 300;">Detalhes</h5>
+
+    <div class="divider divider-margin"></div>
+    <div class="col l12 m6 s12 offset-m6 hide-on-med-only">
+      <h6 style="font-weight: 300; margin-top: 0 !important;">
+        <strong><%= @team.name.mb_chars.upcase %></strong>
+      </h6>
 
       <div class="divider divider-margin"></div>
-      <div class="col l12 m6 s12 offset-m6 hide-on-med-only">
-        <h6 style="font-weight: 300; margin-top: 0 !important;">
-          <strong><%= @team.name.mb_chars.upcase %></strong>
-        </h6>
-
-        <div class="divider divider-margin"></div>
-      </div>
-
-      <div class="col l12 m6 s12">
-        <%= image_tag @team_leader.avatar.url(:small), class: 'circle responsive-img' %>
-
-        <h6 class="hide-on-med-only" style="font-weight: 300;">
-          Chefe:
-          <%= link_to @team_leader, method: :get do %>
-              <%= @team_leader.full_name %>
-          <% end %>
-        </h6>
-        <h6 class="hide-on-med-only" style="font-weight: 300;">
-          Responsável por atualizar a posição:
-          <%= link_to @location_user, method: :get do %>
-              <%= @location_user.full_name %>
-          <% end %>
-        </h6>
-      </div>
-
-      <div class="col l12 m6 s12 hide-on-large-only hide-on-small-only">
-        <h6 style="font-weight: 300;">
-          <strong><%= @team.name.upcase %></strong>
-        </h6>
-
-        <div class="divider divider-margin"></div>
-      </div>
-
-      <div class="col l12 m6 s12">
-
-        <h6 class="hide-on-small-only hide-on-large-only" style="font-weight: 300;">
-          Chefe:
-          <%= link_to @team_leader, method: :get do %>
-              <%= @team_leader.full_name %>
-          <% end %>
-        </h6>
-
-        <div class="divider divider-margin"></div>
-
-
-        <!--<div class="divider divider-margin show-on-medium"></div>-->
-
-        <div style="font-weight: 300;">
-          <i title="Data da criação" class="material-icons tiny">access_time</i>
-          <span style="padding-left: 10px"><%= @team.created_at.to_datetime.to_formatted_s(:long_ordinal) %></span>
-        </div>
-
-        <div style="font-weight: 300; ">
-          <i title="Data da última atualização" class="material-icons tiny">edit</i>
-          <span style="padding-left: 10px"><%= @team.updated_at.to_datetime.to_formatted_s(:long_ordinal) %></span>
-        </div>
-      </div>
     </div>
 
-    <div id="team_coordinates" class="center col s12 m12 l8 z-depth-1 white"
-         style="padding-left: 20px; padding-top: 0px; padding-bottom: 20px; padding-right: 20px;">
-      <h5 style="font-weight: 300;">Coordenadas</h5>
+    <div class="col l12 m6 s12">
+      <%= image_tag @team_leader.avatar.url(:small), class: 'circle responsive-img' %>
+
+      <h6 class="hide-on-med-only" style="font-weight: 300;">
+        Chefe:
+        <%= link_to @team_leader, method: :get do %>
+            <%= @team_leader.full_name %>
+        <% end %>
+      </h6>
+      <h6 class="hide-on-med-only" style="font-weight: 300;">
+        Responsável por atualizar a posição:
+        <%= link_to @location_user, method: :get do %>
+            <%= @location_user.full_name %>
+        <% end %>
+      </h6>
+    </div>
+
+    <div class="col l12 m6 s12 hide-on-large-only hide-on-small-only">
+      <h6 style="font-weight: 300;">
+        <strong><%= @team.name.upcase %></strong>
+      </h6>
+
+      <div class="divider divider-margin"></div>
+    </div>
+
+    <div class="col l12 m6 s12">
+
+      <h6 class="hide-on-small-only hide-on-large-only" style="font-weight: 300;">
+        Chefe:
+        <%= link_to @team_leader, method: :get do %>
+            <%= @team_leader.full_name %>
+        <% end %>
+      </h6>
 
       <div class="divider divider-margin"></div>
 
-      <div id="team_map" style="height: 350px;"></div>
+
+      <!--<div class="divider divider-margin show-on-medium"></div>-->
+
+      <div style="font-weight: 300;">
+        <i title="Data da criação" class="material-icons tiny">access_time</i>
+        <span style="padding-left: 10px"><%= @team.created_at.to_datetime.to_formatted_s(:long_ordinal) %></span>
+      </div>
+
+      <div style="font-weight: 300; ">
+        <i title="Data da última atualização" class="material-icons tiny">edit</i>
+        <span style="padding-left: 10px"><%= @team.updated_at.to_datetime.to_formatted_s(:long_ordinal) %></span>
+      </div>
     </div>
   </div>
 
-  <div class="row z-depth-1 white"
-       style="padding-left: 20px; padding-top: 1px; padding-bottom: 20px; padding-right: 20px;">
-    <div class="section">
-      <h5>Adicionar membro a esta equipa</h5>
-      <span><i>Nota: apenas é possível selecionar utilizadores que ainda não estejam em nenhuma equipa.</i></span>
-    </div>
-
-    <div id="add_user_form">
-      <div class="col s7 l9 m8" style="padding-left: 0;">
-        <%= select_tag 'dropdown_add_user_to_team', options_from_collection_for_select(
-            @users_without_team, :id, :full_name, nil),
-                       {prompt: 'Escolha um utilizador', class: 'browser-default', id: "dropdown_add_user_to_team"} %>
-      </div>
-
-      <div class="col s5 l3 m4 right-align" style="padding-right: 0;">
-        <a id="confirm_add_user" class="waves-effect waves-light btn"
-           style="height: 41px; line-height: 41px;">Adicionar!</a>
-      </div>
-    </div>
-
-    <blockquote id="no_user_to_add" style="display: none;">
-      De momento não há nenhum utilizador sem equipa.
-    </blockquote>
-  </div>
-
-  <div class="row z-depth-1 white"
-       style="padding-left: 20px; padding-top: 1px; padding-bottom: 20px; padding-right: 20px;">
-    <h5 id="team_members_count" class="center" style="font-weight: 300;">Membros (<%= @team.users.size %>)</h5>
+  <div id="team_coordinates" class="center col s12 m12 l8 z-depth-1 white"
+       style="padding-left: 20px; padding-top: 0px; padding-bottom: 20px; padding-right: 20px;">
+    <h5 style="font-weight: 300;">Coordenadas</h5>
 
     <div class="divider divider-margin"></div>
 
-    <div class="s12 l12 m12">
-      <ul class="collection">
-        <% @team.users.each do |user| %>
-            <% is_leader = false %>
-            <% is_in_charge_of_location = false %>
-            <% if user.id == @team_leader_entry.user_id %>
-                <% is_leader = true %>
-            <% end %>
-            <% if user.id == @location_user.id %>
-                <% is_in_charge_of_location = true %>
-            <% end %>
-            <%= render partial: 'list_entry',
-                       locals: {user: user, is_leader: is_leader, in_charge_of_location: is_in_charge_of_location} %>
-        <% end %>
-      </ul>
+    <div id="team_map" style="height: 350px;"></div>
+  </div>
+</div>
+
+<div class="row z-depth-1 white"
+     style="padding-left: 20px; padding-top: 1px; padding-bottom: 20px; padding-right: 20px;">
+  <div class="section">
+    <h5>Adicionar membro a esta equipa</h5>
+    <span><i>Nota: apenas é possível selecionar utilizadores que ainda não estejam em nenhuma equipa.</i></span>
+  </div>
+
+  <div id="add_user_form">
+    <div class="col s7 l9 m8" style="padding-left: 0;">
+      <%= select_tag 'dropdown_add_user_to_team', options_from_collection_for_select(
+          @users_without_team, :id, :full_name, nil),
+                     {prompt: 'Escolha um utilizador', class: 'browser-default', id: "dropdown_add_user_to_team"} %>
     </div>
+
+    <div class="col s5 l3 m4 right-align" style="padding-right: 0;">
+      <a id="confirm_add_user" class="waves-effect waves-light btn"
+         style="height: 41px; line-height: 41px;">Adicionar!</a>
+    </div>
+  </div>
+
+  <blockquote id="no_user_to_add" style="display: none;">
+    De momento não há nenhum utilizador sem equipa.
+  </blockquote>
+</div>
+
+<div class="row z-depth-1 white"
+     style="padding-left: 20px; padding-top: 1px; padding-bottom: 20px; padding-right: 20px;">
+  <h5 id="team_members_count" class="center" style="font-weight: 300;">Membros (<%= @team.users.size %>)</h5>
+
+  <div class="divider divider-margin"></div>
+
+  <div class="s12 l12 m12">
+    <ul class="collection">
+      <% @team.users.each do |user| %>
+          <% is_leader = false %>
+          <% is_in_charge_of_location = false %>
+          <% if user.id == @team_leader_entry.user_id %>
+              <% is_leader = true %>
+          <% end %>
+          <% if user.id == @location_user.id %>
+              <% is_in_charge_of_location = true %>
+          <% end %>
+          <%= render partial: 'list_entry',
+                     locals: {user: user, is_leader: is_leader, in_charge_of_location: is_in_charge_of_location} %>
+      <% end %>
+    </ul>
   </div>
 </div>
 

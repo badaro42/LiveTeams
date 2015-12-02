@@ -43,11 +43,6 @@ label {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
-.brand-logo {
-    margin-top: 15px;
-    margin-bottom: 15px;
-    font-weight: 300;
-}
 
 @media only screen and (max-width: 601px) {
     .navbar-btn-wrapper {
@@ -135,6 +130,20 @@ label {
     nav img {
         margin-top: 3px;
     }
+
+    /*botao que ativa a caixa de pesquisa. regra aplicada apenas em ecras pequenos*/
+    #navbar-search-btn {
+        margin-right: 15px;
+    }
+
+    #navbar-search-btn > a {
+        padding-top: 15px;
+        height: 56px;
+    }
+
+    #navbar-map-btn {
+        padding-top: 14px;
+    }
 }
 
 /* ECRA MEDIO */
@@ -174,6 +183,11 @@ label {
 
     #nav li.active {
         background-color: #4db6ac;
+    }
+
+
+    #navbar-search-btn {
+        margin-right: 15px;
     }
 }
 
@@ -271,11 +285,6 @@ label {
     }
 }
 
-@media only screen and (min-width: 1100px) {
-    footer .btn {
-        display: inline-block;
-    }
-}
 
 
 /* cena da pesquisa */
@@ -293,4 +302,13 @@ label {
 
 .no-results.is-visible {
     display: block;
+}
+
+
+.leaflet-top.leaflet-left {
+    z-index: 98;
+}
+
+#user-edit-pushpin {
+    margin-top: 0;
 }

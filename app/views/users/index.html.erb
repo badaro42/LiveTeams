@@ -43,34 +43,32 @@
 <!--<a href="" class="test-alphabet waves-effect waves-light btn">Z</a>-->
 <!--</div>-->
 
-<div class="container">
-  <div class="row" style="margin-top: 10px;">
-    <% @users.each do |user| %>
+<div class="row" style="margin-top: 10px;">
+  <% @users.each do |user| %>
 
-        <div class="user-card col l3 m4 s6">
-          <div class="card small hoverable">
-            <div class="card-image">
-              <%= image_tag user.avatar.url(:small) %>
-            </div>
-            <div class="card-content" style="padding-top: 10px;">
+      <div class="user-card col l3 m4 s6">
+        <div class="card small hoverable">
+          <div class="card-image">
+            <%= image_tag user.avatar.url(:small) %>
+          </div>
+          <div class="card-content" style="padding-top: 10px;">
             <span class="card-title grey-text text-darken-4 truncate">
               <%= user.first_name %> <%= user.last_name %>
             </span>
 
-              <p class="truncate"><%= user.profile %></p>
-            </div>
-            <div class="card-action">
-              <%= link_to "Ver perfil", user_path(user), method: :get %>
-            </div>
+            <p class="truncate"><%= user.profile %></p>
+          </div>
+          <div class="card-action">
+            <%= link_to "Ver perfil", user_path(user), method: :get %>
           </div>
         </div>
+      </div>
 
-    <% end %>
+  <% end %>
 
-    <div class="no-results col l6 m8 s10 push-l3 push-m2 push-s1 center-align" style="margin-top: 30px;">
-      <i><span>Nenhum utilizador corresponde à pesquisa efetuada...</span>
+  <div class="no-results col l6 m8 s10 push-l3 push-m2 push-s1 center-align" style="margin-top: 30px;">
+    <i><span>Nenhum utilizador corresponde à pesquisa efetuada...</span>
       <br>
       <span>Tente refinar a pesquisa para obter resultados.</span></i>
-    </div>
   </div>
 </div>

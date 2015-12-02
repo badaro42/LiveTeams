@@ -18,42 +18,116 @@
 </head>
 <body class="grey lighten-3">
 
-<nav id="nav" class="cyan">
-  <div class="container">
-    <div class="nav-wrapper">
-      <ul id="nav-mobile" class="left navbar-btn-wrapper">
-        <li id="nav-back-btn">
-          <%= yield(:back_page) %>
+<div class="navbar-fixed">
+  <nav class="indigo darken-4" role="navigation" style="box-shadow: none;">
+    <div class="nav-wrapper container">
+      <ul class="left">
+        <li>
+          <%= link_to root_path, style: 'font-size: 1.2rem; font-weight: 100; margin-top: 0;',
+                      class: 'navbar-padding-top brand-logo left', method: :get do %>
+              <i id="navbar-map-btn" class="material-icons left">map</i>Mapa
+          <% end %>
+          </a>
         </li>
       </ul>
-      <h2 id="page-title-center" class="brand-logo center"><%= yield(:page_purpose) %></h2>
-
-      <ul id="nav-mobile" class="right navbar-btn-wrapper">
+      <a href="#" data-activates="mobile-demo" class="right button-collapse">
+        <i class="material-icons">menu</i>
+      </a>
+      <ul class="right hide-on-med-and-down">
+        <li>
+          <%= link_to teams_path, class: 'navbar-button', method: :get do %>
+              Equipas
+          <% end %>
+        </li>
+        <li>
+          <%= link_to users_path, class: 'navbar-button', method: :get do %>
+              Membros
+          <% end %>
+        </li>
+        <li>
+          <%= link_to current_user, class: 'navbar-button', method: :get do %>
+              Perfil
+          <% end %>
+        </li>
         <% if @show_search_stuff %>
-            <li id="nav-search-btn">
-              <a href="#!" class="tooltipped navbar-button" data-position="left" data-delay="15"
-                 data-tooltip="Pesquisar" id="toggle-search"><i class="material-icons md-36">search</i></a>
+            <li>
+              <a href="#!" class="navbar-button"id="toggle-search">
+                <i class="material-icons">search</i>
+              </a>
             </li>
         <% end %>
-        <li id="nav-add-edit-btn">
-          <%= yield(:model_actions) %>
+      </ul>
+      <% if @show_search_stuff %>
+          <ul class="right hide-on-large-only">
+            <li id="navbar-search-btn">
+              <a href="#!" class="navbar-button" id="toggle-search">
+                <i class="material-icons">search</i>
+              </a>
+            </li>
+          </ul>
+      <% end %>
+      <ul class="side-nav" id="mobile-demo">
+        <li>
+          <%= link_to teams_path, class: 'navbar-button', method: :get do %>
+              Equipas
+          <% end %>
+        </li>
+        <li>
+          <%= link_to users_path, class: 'navbar-button', method: :get do %>
+              Membros
+          <% end %>
+        </li>
+        <li>
+          <%= link_to current_user, class: 'navbar-button', method: :get do %>
+              Perfil
+          <% end %>
         </li>
       </ul>
     </div>
-  </div>
-</nav>
+  </nav>
+</div>
 
 <% if @show_search_stuff %>
-    <div class="row white-text cyan" id="search" style="display: none;">
+    <div class="row white-text indigo darken-4" id="search" style="display: none; position: fixed; width: 100%; z-index: 9999;">
       <div class="container">
-        <!--<form action="#" method="get">-->
-          <input id="search-bar" class="form-control white-text" type="text" name="q" placeholder="Introduza o nome do utilizador...">
-        <!--</form>-->
+        <input id="search-bar" class="form-control white-text" type="text" name="q"
+               placeholder="Introduza o nome do utilizador...">
       </div>
     </div>
 <% end %>
 
-<%= yield %>
+
+
+<!--<nav id="nav" class="cyan">-->
+<!--<div class="container">-->
+<!--<div class="nav-wrapper">-->
+<!--<ul id="nav-mobile" class="left navbar-btn-wrapper">-->
+<!--<li id="nav-back-btn">-->
+<!--<%= yield(:back_page) %>-->
+<!--</li>-->
+<!--</ul>-->
+<!--<h2 id="page-title-center" class="brand-logo center"><%= yield(:page_purpose) %></h2>-->
+
+<!--<ul id="nav-mobile" class="right navbar-btn-wrapper">-->
+<!--
+<% if @show_search_stuff %>-->
+    <!--<li id="nav-search-btn">-->
+    <!--<a href="#!" class="tooltipped navbar-button" data-position="left" data-delay="15"-->
+    <!--data-tooltip="Pesquisar" id="toggle-search"><i class="material-icons md-36">search</i></a>-->
+    <!--</li>-->
+    <!--
+<% end %>-->
+<!--<li id="nav-add-edit-btn">-->
+<!--<%= yield(:model_actions) %>-->
+<!--</li>-->
+<!--</ul>-->
+<!--</div>-->
+<!--</div>-->
+<!--</nav>-->
+
+<div class="container" id="page-content">
+  <%= yield %>
+</div>
 
 </body>
 </html>

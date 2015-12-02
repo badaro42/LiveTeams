@@ -18,6 +18,8 @@ var team_highlight_icon = L.icon({
 
 
 $(document).ready(function () {
+  $(".button-collapse").sideNav();
+
   cluster = L.markerClusterGroup({chunkedLoading: true});
 
   // atualizar posição do utilizador
@@ -314,7 +316,7 @@ $(document).ready(function () {
       $(".numeric").numeric();
 
       // barra lateral que acompanha o scroll - pagina para editar utilizador
-      $('.pushpin').pushpin({top: 84});
+      $('.pushpin').pushpin({top: 84, offset: 74});
       $('.scrollspy').scrollSpy();
     }
     else {
@@ -326,9 +328,16 @@ $(document).ready(function () {
   // Toggle search
   $('a#toggle-search').click(function () {
     var search = $('div#search');
-    search.is(":visible") ? search.slideUp() : search.slideDown(function () {
-      search.find('input').focus();
-    });
+    if (search.is(":visible")) {
+      search.slideUp({queue: false});
+      $('#page-content').animate({'margin-top': '0', queue: false});
+    }
+    else {
+      search.slideDown({queue: false}, function () {
+        search.find('input').focus();
+      });
+      $('#page-content').animate({'margin-top': '71px', queue: false});
+    }
     return false;
   });
 

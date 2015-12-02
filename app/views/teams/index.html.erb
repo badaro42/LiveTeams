@@ -19,46 +19,44 @@
     <% end %>
 <% end %>
 
-<div class="container">
-  <strong><span><%= flash.now[:error] %></span></strong>
-  <ul class="collapsible popout" data-collapsible="accordion" style="margin-left: 10px; margin-right: 10px;">
-    <% @teams.each do |team| %>
-        <li class="team-entry">
-          <% arr_is_empty = true %>
-          <% if !team.latlon.nil? %>
-              <% arr_coords = team.latlon.to_s.split('(')[1].split(')')[0].split(' ') %>
-              <% arr_is_empty = false %>
+<strong><span><%= flash.now[:error] %></span></strong>
+<ul class="collapsible popout" data-collapsible="accordion" style="margin-left: 10px; margin-right: 10px;">
+  <% @teams.each do |team| %>
+      <li class="team-entry">
+        <% arr_is_empty = true %>
+        <% if !team.latlon.nil? %>
+            <% arr_coords = team.latlon.to_s.split('(')[1].split(')')[0].split(' ') %>
+            <% arr_is_empty = false %>
+        <% end %>
+        <div class="collapsible-header truncate">
+          <strong>
+            <%= link_to team, method: :get do %>
+                <span class="team-title"><%= team.name %></span>
+            <% end %> |
+          </strong>
+          <% if arr_is_empty %>
+              [Sem localização definida]
+          <% else %>
+              [<%= arr_coords[1] %>; <%= arr_coords[0] %>]
           <% end %>
-          <div class="collapsible-header truncate">
-            <strong>
-              <%= link_to team, method: :get do %>
-                  <span class="team-title"><%= team.name %></span>
-              <% end %> |
-            </strong>
-            <% if arr_is_empty %>
-                [Sem localização definida]
-            <% else %>
-                [<%= arr_coords[1] %>; <%= arr_coords[0] %>]
+        </div>
+        <div class="collapsible-body">
+          <p style="padding: 15px;">
+            <% team_users = team.users %>
+            <% team_users.each do |user| %>
+                <%= link_to user, method: :get do %>
+                    <%= user.full_name %>,
+                <% end %> <%= user.profile %>
+                <br>
             <% end %>
-          </div>
-          <div class="collapsible-body">
-            <p style="padding: 15px;">
-              <% team_users = team.users %>
-              <% team_users.each do |user| %>
-                  <%= link_to user, method: :get do %>
-                      <%= user.full_name %>,
-                  <% end %> <%= user.profile %>
-                  <br>
-              <% end %>
-            </p>
-          </div>
-        </li>
-    <% end %>
-  </ul>
+          </p>
+        </div>
+      </li>
+  <% end %>
+</ul>
 
-  <div class="no-results col l6 m8 s10 push-l3 push-m2 push-s1 center-align" style="margin-top: 30px;">
-    <i><span>Nenhuma equipa corresponde à pesquisa efetuada...</span>
-      <br>
-      <span>Tente refinar a pesquisa para obter resultados.</span></i>
-  </div>
+<div class="no-results col l6 m8 s10 push-l3 push-m2 push-s1 center-align" style="margin-top: 30px;">
+  <i><span>Nenhuma equipa corresponde à pesquisa efetuada...</span>
+    <br>
+    <span>Tente refinar a pesquisa para obter resultados.</span></i>
 </div>

@@ -19,92 +19,89 @@
     <% end %>
 <% end %>
 
+<div class="row" style="margin-top: 20px;">
+  <%= form_for(@user) do |f| %>
+      <div class="col l10 m10 s12">
 
-<div class="container">
-  <div class="row" style="margin-top: 20px;">
-    <%= form_for(@user) do |f| %>
-        <div class="col l10 m10 s12">
-
-          <div id="profile" class="scrollspy col l12 s12 z-depth-1 white" style="margin-bottom: 20px;">
-            <div class="section">
-              <h5 style="margin-left: 10px; display: inline;">Alterar perfil do utilizador</h5>
-            </div>
-
-            <div class="input-field col s12 m12 l12">
-              <%= select_tag "user[profile]", options_for_select(User::PROFILES, :selected=>@user.profile) %>
-            </div>
+        <div id="profile" class="scrollspy col l12 s12 z-depth-1 white" style="margin-bottom: 20px;">
+          <div class="section">
+            <h5 style="margin-left: 10px; display: inline;">Alterar perfil do utilizador</h5>
           </div>
 
-          <div id="basic-info" class="scrollspy col l12 s12 z-depth-1 white">
-            <div class="section">
-              <h5 style="margin-left: 10px;">Dados Básicos</h5>
-            </div>
+          <div class="input-field col s12 m12 l12">
+            <%= select_tag "user[profile]", options_for_select(User::PROFILES, :selected => @user.profile) %>
+          </div>
+        </div>
 
-            <div class="input-field col s12 m6 l6">
-              <%= f.label "Primeiro Nome" %>
-              <%= f.text_field :first_name, autofocus: true, required: true %>
-            </div>
-
-            <div class="input-field col s12 m6 l6">
-              <%= f.label "Último Nome" %>
-              <%= f.text_field :last_name, required: true %>
-            </div>
-
-            <div class="input-field col s12 m6 l6">
-              <%= f.label "Endereço de email", class: "fixed-position" %>
-              <%= f.text_field :email, required: true %>
-            </div>
-
-            <div class="input-field col s12 m6 l6">
-              <%= f.label "Contacto telefónico" %>
-              <%= f.text_field :phone_number, class: 'numeric', maxlength: 9, required: true %>
-            </div>
+        <div id="basic-info" class="scrollspy col l12 s12 z-depth-1 white">
+          <div class="section">
+            <h5 style="margin-left: 10px;">Dados Básicos</h5>
           </div>
 
-          <div id="optional" class="scrollspy col l12 s12 z-depth-1 white" style="margin-top: 20px;">
-            <div class="section">
-              <h5 style="margin-left: 10px; display: inline;">Avatar/palavra-passe </h5>
-              <span>(deixe em branco se não quiser alterar)</span>
-            </div>
-
-            <div class="input-field col s12 m12 l6">
-              <%= f.label "Nova palavra-passe (opcional)", class: "fixed-position" %>
-              <%= f.password_field :password, autocomplete: "off" %>
-            </div>
-
-            <div class="input-field col s12 m12 l6">
-              <%= f.label "Confirme a palavra-passe", class: "fixed-position" %>
-              <%= f.password_field :password_confirmation, autocomplete: "off" %>
-            </div>
-
-            <div class="file-field input-field col s12 m12 l12">
-              <div class="btn">
-                <span>Ficheiro</span>
-                <%= f.file_field :avatar, class: 'file' %>
-              </div>
-              <div class="file-path-wrapper">
-                <input class="file-path validate" type="text" placeholder="Imagem de perfil">
-              </div>
-            </div>
+          <div class="input-field col s12 m6 l6">
+            <%= f.label "Primeiro Nome" %>
+            <%= f.text_field :first_name, autofocus: true, required: true %>
           </div>
 
-          <div class="col s12 m12 l12 center-align" style="margin-top: 20px;">
-            <div class="actions">
-              <%= f.submit 'Atualizar', class: "btn waves-effect waves-light" %>
+          <div class="input-field col s12 m6 l6">
+            <%= f.label "Último Nome" %>
+            <%= f.text_field :last_name, required: true %>
+          </div>
+
+          <div class="input-field col s12 m6 l6">
+            <%= f.label "Endereço de email", class: "fixed-position" %>
+            <%= f.text_field :email, required: true %>
+          </div>
+
+          <div class="input-field col s12 m6 l6">
+            <%= f.label "Contacto telefónico" %>
+            <%= f.text_field :phone_number, class: 'numeric', maxlength: 9, required: true %>
+          </div>
+        </div>
+
+        <div id="optional" class="scrollspy col l12 s12 z-depth-1 white" style="margin-top: 20px;">
+          <div class="section">
+            <h5 style="margin-left: 10px; display: inline;">Avatar/palavra-passe </h5>
+            <span>(deixe em branco se não quiser alterar)</span>
+          </div>
+
+          <div class="input-field col s12 m12 l6">
+            <%= f.label "Nova palavra-passe (opcional)", class: "fixed-position" %>
+            <%= f.password_field :password, autocomplete: "off" %>
+          </div>
+
+          <div class="input-field col s12 m12 l6">
+            <%= f.label "Confirme a palavra-passe", class: "fixed-position" %>
+            <%= f.password_field :password_confirmation, autocomplete: "off" %>
+          </div>
+
+          <div class="file-field input-field col s12 m12 l12">
+            <div class="btn">
+              <span>Ficheiro</span>
+              <%= f.file_field :avatar, class: 'file' %>
+            </div>
+            <div class="file-path-wrapper">
+              <input class="file-path validate" type="text" placeholder="Imagem de perfil">
             </div>
           </div>
         </div>
 
-        <div id="scroll" class="col l2 m2 hide-on-small-only right-align">
-          <div class="pushpin">
-            <ul class="table-of-contents">
-              <li><a href="#profile">Alterar papel</a></li>
-              <li><a href="#basic-info">Dados básicos</a></li>
-              <li><a href="#optional">Foto de perfil</a></li>
-            </ul>
+        <div class="col s12 m12 l12 center-align" style="margin-top: 20px;">
+          <div class="actions">
+            <%= f.submit 'Atualizar', class: "btn waves-effect waves-light" %>
           </div>
         </div>
+      </div>
 
-    <% end %>
-  </div>
+      <div id="scroll" class="col l2 m2 hide-on-small-only right-align">
+        <div class="pushpin">
+          <ul id="user-edit-pushpin" class="table-of-contents">
+            <li><a href="#profile">Alterar papel</a></li>
+            <li><a href="#basic-info">Dados básicos</a></li>
+            <li><a href="#optional">Foto de perfil</a></li>
+          </ul>
+        </div>
+      </div>
+
+  <% end %>
 </div>
