@@ -45,13 +45,15 @@
           <% end %>
         </li>
         <li>
-          <%= link_to current_user, class: 'navbar-button', method: :get do %>
-              Perfil
+          <%= link_to current_user, class: 'navbar-button', style: 'height: 64px;', method: :get do %>
+              <%= image_tag current_user.avatar.url(:thumb), class: 'circle', style: 'margin-top: 15px;',
+                            height: '32', width: '32' %>
           <% end %>
+
         </li>
         <% if @show_search_stuff %>
             <li>
-              <a href="#!" class="navbar-button"id="toggle-search">
+              <a href="#!" class="navbar-button" id="toggle-search">
                 <i class="material-icons">search</i>
               </a>
             </li>
@@ -66,7 +68,25 @@
             </li>
           </ul>
       <% end %>
+
+
+
+
+
+
+
       <ul class="side-nav" id="mobile-demo">
+        <li style="padding: 0;">
+          <div id="teste-sidenav" style="height: 120px;">
+            <div style="padding-top: 56px; height: 120px; padding-left: 15px; padding-right: 15px;" class="valign-wrapper">
+                <%= image_tag current_user.avatar.url(:thumb), class: 'circle valign', style: 'margin-top: 0;',
+                              height: '32', width: '32' %>
+                <%= link_to current_user, class: 'valign white-text', style: ' margin-bottom: 28px; height: 32px;', method: :get do %>
+                    <%= current_user.full_name %>
+                <% end %>
+            </div>
+          </div>
+        </li>
         <li>
           <%= link_to teams_path, class: 'navbar-button', method: :get do %>
               Equipas
@@ -86,6 +106,7 @@
     </div>
   </nav>
 </div>
+
 
 <% if @show_search_stuff %>
     <div class="row white-text indigo darken-4" id="search" style="display: none; position: fixed; width: 100%; z-index: 9999;">

@@ -1,0 +1,308 @@
+/* ------------------------------------------ */
+.fixed-position {
+  left: auto !important;
+}
+
+.center-btn {
+  text-align: center;
+}
+
+.test-alphabet {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+#profile-tabs-list a.active {
+  border: none;
+}
+
+.profile-tab-content.col {
+  padding-left: 0px;
+  padding-right: 0px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.divider-margin {
+  margin-top: 12px;
+  margin-bottom: 12px;
+}
+
+#profile-user-info {
+  padding: 10px;
+}
+
+label {
+  font-size: 13px;
+}
+
+#team_map {
+  height: 250px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+@media only screen and (max-width: 601px) {
+  .navbar-btn-wrapper {
+    padding-top: 5px;
+  }
+
+  .navbar-btn-wrapper a {
+    padding-top: 5px;
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-bottom: 5px;
+  }
+
+  #page-title-center {
+    margin-top: 10px;
+  }
+}
+
+/* ------------------------------------------ */
+
+.row.content {
+  margin-bottom: 0 !important;
+}
+
+#tab-wrapper {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+}
+
+#left-nav {
+  display: none;
+}
+
+.left-nav-visible {
+  position: fixed;
+  left: 0;
+  top: 0;
+  overflow: scroll;
+  background: #fff;
+  width: 240px;
+  z-index: 10001;
+  padding: 10px;
+}
+
+#toggle-menu {
+  width: 100%;
+}
+
+#search {
+  display: none;
+  margin-bottom: 0;
+}
+
+#search form {
+  margin: 0;
+}
+
+#search input {
+  color: #ccc;
+  border-bottom: 1px solid #333;
+}
+
+#search input:focus {
+  box-shadow: none;
+  border-bottom: 1px solid #00AE96;
+}
+
+/* ECRA PEQUENO */
+@media only screen and (max-width: 600px) {
+  #team_coordinates,
+  #user_coordinates {
+    margin-top: 20px;
+  }
+
+  .odd-user,
+  .even-user {
+    padding: 0px !important;
+  }
+
+  .profile-tabs {
+    margin-top: 15px;
+  }
+
+  nav img {
+    margin-top: 3px;
+  }
+
+  /*botao que ativa a caixa de pesquisa. regra aplicada apenas em ecras pequenos*/
+  #navbar-search-btn {
+    margin-right: 15px;
+  }
+
+  #navbar-search-btn > a {
+    padding-top: 15px;
+    height: 56px;
+  }
+
+  #navbar-map-btn {
+    padding-top: 14px;
+  }
+}
+
+/* ECRA MEDIO */
+@media only screen and (min-width: 600px) and (max-width: 992px) {
+  #team_coordinates,
+  #user_coordinates {
+    margin-top: 20px;
+  }
+
+  .odd-user,
+  .even-user {
+    padding: 0px !important;
+  }
+
+  .profile-tabs {
+    margin-top: 15px;
+  }
+
+  #profile-user-info > div:last-child {
+    margin-top: 20px;
+  }
+
+  nav img {
+    margin-top: 7px;
+  }
+
+  .hero {
+    height: 400px;
+  }
+
+  #nav li:hover {
+    background-color: #4db6ac;
+  }
+
+  #nav li.active {
+    background-color: #4db6ac;
+  }
+
+  #navbar-search-btn {
+    margin-right: 15px;
+  }
+}
+
+/* ECRA GRANDE */
+@media only screen and (min-width: 993px) {
+  #teams_info_div,
+  #profile-user-info {
+    margin-right: 3.3%;
+    width: 30%;
+  }
+
+  .odd-user {
+    padding-right: 0px !important;
+  }
+
+  .even-user {
+    padding-left: 0px !important;
+  }
+
+  .profile-div {
+    margin-right: 40px;
+    margin-left: 20px;
+    padding: 10px;
+  }
+
+  .profile-tab-content {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding: 0px;
+  }
+
+  nav img {
+    margin-top: 15%;
+  }
+
+  .hero {
+    height: 400px;
+  }
+
+  .dropdown-content.nav-dropdown {
+    width: auto !important;
+  }
+
+  #toggle-menu {
+    display: none;
+  }
+
+  #left-nav {
+    display: block;
+  }
+
+  .left-menu {
+    padding: 0 !important;
+  }
+
+  .menu-header {
+    background: #23C5A0;
+    padding: 5px;
+    color: #fff;
+    font-weight: bold;
+    text-shadow: 1px 1px 0 #1B8C6B;
+  }
+
+  .menu-items {
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  .menu-items p {
+    margin: 0;
+    margin-top: 4px;
+  }
+
+  .menu-items a {
+    width: auto;
+    display: block;
+    padding: 5px;
+    padding-left: 20px;
+    border: 1px solid transparent;
+    text-decoration: none;
+  }
+
+  .menu-items a:hover, a.active {
+    background: #fff;
+    border: 1px solid #ccc;
+  }
+
+  .menu-items a:hover:not(.active) {
+    background: rgba(255, 255, 255, 0.5);
+    border-right: 1px solid #ccc;
+  }
+}
+
+/* cena da pesquisa */
+.highlight {
+  background-color: #fffd77;
+}
+
+.is-hidden {
+  display: none;
+}
+
+.no-results {
+  display: none
+}
+
+.no-results.is-visible {
+  display: block;
+}
+
+.leaflet-top.leaflet-left {
+  z-index: 98;
+}
+
+#user-edit-pushpin {
+  margin-top: 0;
+}
+
+
+
+
+#teste-sidenav {
+  background-image: image-url("google_back_black_red.jpg");
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+}
