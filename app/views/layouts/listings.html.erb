@@ -69,12 +69,7 @@
           </ul>
       <% end %>
 
-
-
-
-
-
-
+      <!-- barra lateral ativada em ecras mais pequenos -->
       <ul class="side-nav" id="mobile-demo">
         <li style="padding: 0;">
           <div id="teste-sidenav" style="height: 120px;">
@@ -88,18 +83,16 @@
           </div>
         </li>
         <li>
-          <%= link_to teams_path, class: 'navbar-button', method: :get do %>
-              Equipas
+          <!--<a class="waves-effect waves-light btn"></a>-->
+          <%= link_to teams_path, style: 'text-transform: none; padding-left: 0;',
+                      class: 'btn-flat navbar-button', method: :get do %>
+              <i class="material-icons left">people</i>Equipas
           <% end %>
         </li>
         <li>
-          <%= link_to users_path, class: 'navbar-button', method: :get do %>
-              Membros
-          <% end %>
-        </li>
-        <li>
-          <%= link_to current_user, class: 'navbar-button', method: :get do %>
-              Perfil
+          <%= link_to users_path, style: 'text-transform: none; padding-left: 0;',
+                      class: 'btn-flat navbar-button', method: :get do %>
+              <i class="material-icons left">person</i>Membros
           <% end %>
         </li>
       </ul>
@@ -107,46 +100,11 @@
   </nav>
 </div>
 
-
-<% if @show_search_stuff %>
-    <div class="row white-text indigo darken-4" id="search" style="display: none; position: fixed; width: 100%; z-index: 9999;">
-      <div class="container">
-        <input id="search-bar" class="form-control white-text" type="text" name="q"
-               placeholder="Introduza o nome do utilizador...">
-      </div>
-    </div>
-<% end %>
-
-
-
-<!--<nav id="nav" class="cyan">-->
-<!--<div class="container">-->
-<!--<div class="nav-wrapper">-->
-<!--<ul id="nav-mobile" class="left navbar-btn-wrapper">-->
-<!--<li id="nav-back-btn">-->
-<!--<%= yield(:back_page) %>-->
-<!--</li>-->
-<!--</ul>-->
-<!--<h2 id="page-title-center" class="brand-logo center"><%= yield(:page_purpose) %></h2>-->
-
-<!--<ul id="nav-mobile" class="right navbar-btn-wrapper">-->
-<!--
-<% if @show_search_stuff %>-->
-    <!--<li id="nav-search-btn">-->
-    <!--<a href="#!" class="tooltipped navbar-button" data-position="left" data-delay="15"-->
-    <!--data-tooltip="Pesquisar" id="toggle-search"><i class="material-icons md-36">search</i></a>-->
-    <!--</li>-->
-    <!--
-<% end %>-->
-<!--<li id="nav-add-edit-btn">-->
-<!--<%= yield(:model_actions) %>-->
-<!--</li>-->
-<!--</ul>-->
-<!--</div>-->
-<!--</div>-->
-<!--</nav>-->
+<%= yield(:search_stuff) %>
 
 <div class="container" id="page-content">
+  <%= yield(:model_actions) %>
+
   <%= yield %>
 </div>
 
