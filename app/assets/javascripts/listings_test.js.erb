@@ -663,6 +663,7 @@ function checkUsersWithoutTeam() {
 function goToGeoEntity(entity_id) {
   var new_uri = "http://" + uri.host + "?entity_id=" + entity_id;
   console.log(new_uri);
+  window.location.replace(new_uri);
 }
 
 //function updateQueryStringParameter(param_uri, key, value) {
