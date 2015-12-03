@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151122185954) do
+ActiveRecord::Schema.define(version: 20151203143935) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -26,8 +26,10 @@ ActiveRecord::Schema.define(version: 20151122185954) do
     t.datetime  "updated_at",                                                              null: false
     t.string    "entity_type",                                                             null: false
     t.integer   "radius",                                                                  null: false
+    t.integer   "team_id",                                                                 null: false
   end
 
+  add_index "geo_entities", ["team_id"], name: "index_geo_entities_on_team_id", using: :btree
   add_index "geo_entities", ["user_id"], name: "index_geo_entities_on_user_id", using: :btree
 
   create_table "team_members", force: :cascade do |t|
@@ -90,6 +92,7 @@ ActiveRecord::Schema.define(version: 20151122185954) do
 
   add_index "versions", ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id", using: :btree
 
+  add_foreign_key "geo_entities", "teams"
   add_foreign_key "geo_entities", "users"
   add_foreign_key "team_members", "teams"
   add_foreign_key "team_members", "users"

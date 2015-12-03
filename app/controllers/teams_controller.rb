@@ -82,6 +82,7 @@ class TeamsController < ApplicationController
       puts @team_leader.inspect
 
       @location_user = User.find(@team.location_user_id)
+      @team_geo_entities = @team.geo_entities
     end
   end
 

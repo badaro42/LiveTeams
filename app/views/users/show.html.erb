@@ -105,7 +105,7 @@
         </li>
         <li class="tab col s6">
           <a href="#user-entities" class="stay-where-you-are">
-            Entidades (<%= @user_entities.count %>)
+            Geo-entidades (<%= @user_entities.count %>)
           </a>
         </li>
       </ul>
@@ -150,28 +150,32 @@
     </div>
     <div id="user-entities" class="col s12 profile-tab-content">
       <ul class="collection with-header">
-        <li class="collection-header"><h5>Entidades que adicionou</h5></li>
+        <li class="collection-header"><h5>Geo-entidades que adicionou</h5></li>
         <% if @user_entities.count == 0 %>
             <li class="collection-item">
-              Não criou nenhuma entidade
+              Não criou nenhuma geo-entidade
             </li>
         <% else %>
             <% @user_entities.each do |entity| %>
                 <%= puts "ENTYITY ENTITYTHIUTR" %>
                 <%= puts entity.inspect %>
                 <li class="collection-item">
-                  <div>
-                    <strong>
-                      <span style="font-size: 15px;"><%= entity.name %></span>
-                      <span> | </span>
-                      <span style="font-size: 12px;"><%= entity.entity_type %></span>
-                      <span> | </span>
-                    </strong>
-                    <span class="entity-latlon" style="font-size: 12px;"><%= entity.latlon %></span>
-                    <a data-position="left" onclick="goToGeoEntity(<%= entity.id %>)" data-delay="15" data-tooltip="Centrar mapa"
-                       class="tooltipped secondary-content">
-                      <i class="material-icons">my_location</i>
-                    </a>
+                  <div class="row">
+                    <div class="col l11 m11 s11">
+                      <strong>
+                        <span style="font-size: 15px;"><%= entity.name %></span>
+                        <span> | </span>
+                        <span style="font-size: 12px;"><%= entity.entity_type %></span>
+                        <span> | </span>
+                      </strong>
+                      <span class="entity-latlon" style="font-size: 12px;"><%= entity.latlon %></span>
+                    </div>
+                    <div class="col l1 m1 s1 center-align">
+                      <a data-position="left" onclick="goToGeoEntity(<%= entity.id %>)" data-delay="15" data-tooltip="Centrar mapa"
+                         class="tooltipped secondary-content">
+                        <i class="material-icons">my_location</i>
+                      </a>
+                    </div>
                   </div>
                 </li>
             <% end %>

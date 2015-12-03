@@ -9,6 +9,7 @@ class GeoEntity < ActiveRecord::Base
   validates_inclusion_of :entity_type, :in => TYPES
 
   belongs_to :user
+  belongs_to :team
 
   validates :user_id, presence: true
   validates :name, presence: true
