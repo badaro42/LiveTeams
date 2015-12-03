@@ -7,23 +7,6 @@ class GeoEntitiesController < ApplicationController
     @geo_entities = GeoEntity.all
   end
 
-  # def stream
-  #   response.headers['Content-Type'] = 'text/event-stream'
-  #   sse = SSE.new(response.stream)
-  #   begin
-  #     GeoEntity.on_change do |id|
-  #       geo_entity = GeoEntity.find(id)
-  #       t = render_to_string(partial: 'entity', formats: [:html], locals: {geo_entity: geo_entity})
-  #       sse.write(t)
-  #     end
-  #   rescue IOError
-  #     # Client Disconnected
-  #   ensure
-  #     sse.close
-  #   end
-  #   render nothing: true
-  # end
-
   # GET /geo_entities/1
   # GET /geo_entities/1.json
   def show
@@ -48,6 +31,7 @@ class GeoEntitiesController < ApplicationController
     @geo_entity.latlon = params[:geo_entity][:latlon]
     @geo_entity.user_id = current_user.id
     @geo_entity.radius = params[:geo_entity][:radius]
+    @geo_entity.team_id = params[:geo_entity][:team_id]
 
     puts @geo_entity.inspect
 
@@ -97,6 +81,6 @@ class GeoEntitiesController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def geo_entity_params
-    params.require(:geo_entity).permit(:name, :latlon, :user_id, :description, :entity_type, :radius)
+    params.require(:geo_entity).permit(:name, :latlon, :user_id, :description, :entity_type, :radius, :team_id)
   end
 end

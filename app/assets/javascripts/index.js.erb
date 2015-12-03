@@ -402,9 +402,34 @@ $(document).ready(function () {
         $('#e_type').text("Marcador");
       }
 
-      $('#e_coords').val(e_layer.getLatLng());
-      $('#e_coords').trigger('autoresize');
-      $('#e_coords_div label').addClass('active');
+      var select = $('#select_team_id');
+
+      // vai obter todas as equipas para popular a select box
+      // assim garante-se que as equipas para selecionar estão sempre de acordo com a base de dados!
+      $.ajax({
+        type: "GET",
+        url: "/teams",
+        dataType: "json",
+        success: function (res) {
+          // todas as equipas retornadas pelo servidor
+          $.each(res, function (index, elem) {
+            console.log(elem);
+
+            var text = elem.name + " (ID: " + elem.id + ")";
+            select.append($("<option/>", {
+              value: elem.id,
+              text: text
+            }));
+          });
+
+          $('#select_team_id_div label').addClass('active');
+          console.log("final do each.");
+        },
+        error: function (res) {
+          console.log("erro a popular as equipas: dropdown nova geo-entidade!!!");
+          console.log(res);
+        }
+      });
 
       console.log(e_layer);
       e_coords = "POINT(" + e_layer.getLatLng().lng + " " + e_layer.getLatLng().lat + ")";
@@ -598,6 +623,7 @@ function insertGeoEntity() {
 
   var name = $('#e_name').val();
   var description = $('#e_description').val();
+  var selected_team_id = $('#select_team_id :selected').val();
 
   console.log("***** PROPRIEDADES DA ENTIDADE *****");
   console.log("nome: " + name);
@@ -605,6 +631,7 @@ function insertGeoEntity() {
   console.log("raio: " + e_radius);
   console.log("descriçao: " + description);
   console.log("coordenadas: " + e_coords);
+  console.log("id da equipa a associar: " + selected_team_id);
   console.log("************************************");
 
   $.ajax({
@@ -617,7 +644,8 @@ function insertGeoEntity() {
         entity_type: e_type,
         radius: e_radius,
         description: description,
-        latlon: e_coords
+        latlon: e_coords,
+        team_id: selected_team_id
       }
     },
     // adicionamos o id à lista de ids e criamos uma popup para essa entidade
@@ -1113,7 +1141,7 @@ function onEachGeoEntity(feature, layer) {
 function centerMapOnGeoEntity(entity_id) {
   var indexOnArray = geoEntityIsInMap(entity_id);
 
-  if(indexOnArray > -1) { // a entidade existe, centramos
+  if (indexOnArray > -1) { // a entidade existe, centramos
     var entity = all_geo_entities[indexOnArray];
     map.fitBounds(entity.latlon);
 
