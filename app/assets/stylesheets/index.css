@@ -93,6 +93,20 @@ html, body, #container {
         bottom: 22px;
         left: 29px;
     }
+
+
+    #select_all_teams {
+        padding: 0;
+    }
+
+    #select_no_teams {
+        margin-top: 10px;
+        padding: 0;
+    }
+
+    #entity_description_div {
+        padding-bottom: 25px;
+    }
 }
 
 /* TABLETS E ECRAS MEDIOS */
@@ -108,6 +122,20 @@ html, body, #container {
         bottom: 22px;
         left: 29px;
     }
+
+
+    #select_all_teams {
+        padding: 0;
+    }
+
+    #select_no_teams {
+        margin-top: 10px;
+        padding: 0;
+    }
+
+    #entity_description_div {
+        padding-bottom: 25px;
+    }
 }
 
 /* DESKTOPS E ECRAS GRANDES */
@@ -117,6 +145,19 @@ html, body, #container {
         left: 53px;
         bottom: -40px;
         z-index: 98;
+    }
+
+
+    #select_all_teams {
+        padding-left: 0;
+    }
+
+    #select_no_teams {
+        padding-right: 0;
+    }
+
+    #select_team_ids {
+        height: 150px;
     }
 }
 

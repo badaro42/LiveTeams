@@ -18,18 +18,17 @@ ActiveRecord::Schema.define(version: 20151203143935) do
   enable_extension "postgis"
 
   create_table "geo_entities", force: :cascade do |t|
-    t.string    "name",                                                                    null: false
-    t.geography "latlon",      limit: {:srid=>4326, :type=>"geometry", :geographic=>true}, null: false
-    t.integer   "user_id",                                                                 null: false
+    t.string    "name",                                                                                 null: false
+    t.geography "latlon",      limit: {:srid=>4326, :type=>"geometry", :geographic=>true},              null: false
+    t.integer   "user_id",                                                                              null: false
     t.text      "description"
-    t.datetime  "created_at",                                                              null: false
-    t.datetime  "updated_at",                                                              null: false
-    t.string    "entity_type",                                                             null: false
-    t.integer   "radius",                                                                  null: false
-    t.integer   "team_id",                                                                 null: false
+    t.datetime  "created_at",                                                                           null: false
+    t.datetime  "updated_at",                                                                           null: false
+    t.string    "entity_type",                                                                          null: false
+    t.integer   "radius",                                                                               null: false
+    t.text      "team_ids",                                                                default: [],              array: true
   end
 
-  add_index "geo_entities", ["team_id"], name: "index_geo_entities_on_team_id", using: :btree
   add_index "geo_entities", ["user_id"], name: "index_geo_entities_on_user_id", using: :btree
 
   create_table "team_members", force: :cascade do |t|
@@ -92,7 +91,6 @@ ActiveRecord::Schema.define(version: 20151203143935) do
 
   add_index "versions", ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id", using: :btree
 
-  add_foreign_key "geo_entities", "teams"
   add_foreign_key "geo_entities", "users"
   add_foreign_key "team_members", "teams"
   add_foreign_key "team_members", "users"

@@ -14,6 +14,7 @@ var all_geo_entities; // cada entrada é da forma {id: feature_id, type: tipo (e
 var all_teams; // cada entrada é da forma {id: feature_id, marker: L.marker(L.latLng(lat, lng))}
 var previous_user_location; // {timestamp: Date(), position: L.latLng(lat, lng)}
 var no_sleep_enabled = false;
+var is_modal_open = false;
 
 // var incrementada quando um dos conjuntos de dados é carregado - equipas e entidades
 var geo_data_loaded = 0;
@@ -37,6 +38,18 @@ $(document).ready(function () {
 
   // TODO: TENTATIVA DE FAZER CACHE DOS PEDIDOS AJAX.. MAS NAO SEI SE DÁ
 //  $.ajaxSetup({ cache:true });
+
+  // seleciona todas as equipas no modal para criar entidade
+  $('#select_all_teams').on('click', function () {
+    console.log("select_all_teams clique");
+    $('#select_team_ids option').prop('selected', true);
+  });
+
+  // remove a selecção de todas as equipas no modal para criar entidade
+  $('#select_no_teams').on('click', function () {
+    console.log("select_no_teams clique");
+    $('#select_team_ids option').prop('selected', false);
+  });
 
   $('#button-da-merda').on('click', function () {
     console.log("CARREGUEI NO BOTAO!!! HEHE");
@@ -402,7 +415,7 @@ $(document).ready(function () {
         $('#e_type').text("Marcador");
       }
 
-      var select = $('#select_team_id');
+      var select = $('#select_team_ids');
 
       // vai obter todas as equipas para popular a select box
       // assim garante-se que as equipas para selecionar estão sempre de acordo com a base de dados!
@@ -422,7 +435,7 @@ $(document).ready(function () {
             }));
           });
 
-          $('#select_team_id_div label').addClass('active');
+          $('#select_team_ids_div label').addClass('active');
           console.log("final do each.");
         },
         error: function (res) {
@@ -503,7 +516,17 @@ $(document).ready(function () {
       else
         e_coords += "))";
     }
-    $('#confirm_entity_creation').openModal();
+
+    // função executada quando a modal para inserir nova entidade é fechada
+    var onModalHide = function () {
+      is_modal_open = false;
+    };
+
+    $('#confirm_entity_creation').openModal({
+      complete: onModalHide
+    });
+
+    is_modal_open = true;
   });
 
   /* listener invocado quando se edita uma feature */
@@ -520,34 +543,38 @@ $(document).keyup(function (e) {
   var elem, parent, tab_name, keyCode;
   keyCode = e.keyCode;
 
-  // teclas que ativam a sidebar lateral
-  if (keyCode == 69 || keyCode == 80 || keyCode == 85 || keyCode == 87 || keyCode == 83) {
-    if (keyCode == 69) { // tecla 'E'
-      elem = $('#teams-tab-icon');
-      tab_name = 'teams';
-    }
-    else if (keyCode == 80) { // tecla 'P'
-      elem = $('#profile-tab-icon');
-      tab_name = 'profile';
-    }
-    else if (keyCode == 85) { // tecla 'U'
-      elem = $('#users-tab-icon');
-      tab_name = 'users';
-    }
-    else if (keyCode == 87) { // tecla 'W'
-      elem = $('#warnings-tab-icon');
-      tab_name = 'warnings';
-    }
-    else if (keyCode == 83) { // tecla 'S'
-      elem = $('#search-tab-icon');
-      tab_name = 'search';
-    }
+  // apenas queremos apanhar estas teclas quando a modal esta fechada, caso contrario
+  // sempre que se introduzisse texto nas caixas de texto as abas laterais eram ativadas
+  if (!is_modal_open) {
+    // teclas que ativam a sidebar lateral
+    if (keyCode == 69 || keyCode == 80 || keyCode == 85 || keyCode == 87 || keyCode == 83) {
+      if (keyCode == 69) { // tecla 'E'
+        elem = $('#teams-tab-icon');
+        tab_name = 'teams';
+      }
+      else if (keyCode == 80) { // tecla 'P'
+        elem = $('#profile-tab-icon');
+        tab_name = 'profile';
+      }
+      else if (keyCode == 85) { // tecla 'U'
+        elem = $('#users-tab-icon');
+        tab_name = 'users';
+      }
+      else if (keyCode == 87) { // tecla 'W'
+        elem = $('#warnings-tab-icon');
+        tab_name = 'warnings';
+      }
+      else if (keyCode == 83) { // tecla 'S'
+        elem = $('#search-tab-icon');
+        tab_name = 'search';
+      }
 
-    parent = elem.parent();
-    if (parent.hasClass('active'))
-      sidebar.close(tab_name);
-    else
-      sidebar.open(tab_name);
+      parent = elem.parent();
+      if (parent.hasClass('active'))
+        sidebar.close(tab_name);
+      else
+        sidebar.open(tab_name);
+    }
   }
 });
 
@@ -567,11 +594,11 @@ function parsePointCoordinates(coords) {
 
 
 function parseCoordinates(coords) {
-
   var i;
   var str_aux = "";
   var result = [];
   var temp_latlon;
+
   if (coords.indexOf("POINT") > -1) { // coordenadas de um ponto ou circulo
     str_aux = coords.split("(");
     str_aux = str_aux[1].split(")");
@@ -605,15 +632,6 @@ function parseCoordinates(coords) {
     }
   }
 
-
-//  var split_res = coords.split("(");
-//  var new_split_res = split_res[1].split(" ");
-//
-//
-//  var res = [];
-//  res.push(new_split_res[0]); //latitude
-//  res.push(new_split_res[1].split(")")[0]); //longitude
-
   return result;
 }
 
@@ -623,7 +641,12 @@ function insertGeoEntity() {
 
   var name = $('#e_name').val();
   var description = $('#e_description').val();
-  var selected_team_id = $('#select_team_id :selected').val();
+
+  var sel_team_ids = [];
+  $('#select_team_ids :selected').each(function () {
+    sel_team_ids.push(parseInt($(this).val()));
+  });
+
 
   console.log("***** PROPRIEDADES DA ENTIDADE *****");
   console.log("nome: " + name);
@@ -631,7 +654,7 @@ function insertGeoEntity() {
   console.log("raio: " + e_radius);
   console.log("descriçao: " + description);
   console.log("coordenadas: " + e_coords);
-  console.log("id da equipa a associar: " + selected_team_id);
+  console.log("id da equipa a associar: " + sel_team_ids);
   console.log("************************************");
 
   $.ajax({
@@ -645,7 +668,7 @@ function insertGeoEntity() {
         radius: e_radius,
         description: description,
         latlon: e_coords,
-        team_id: selected_team_id
+        team_ids: sel_team_ids
       }
     },
     // adicionamos o id à lista de ids e criamos uma popup para essa entidade
@@ -1135,6 +1158,7 @@ function onEachGeoEntity(feature, layer) {
 
   all_geo_entities.push({id: feature.properties.f_id, latlon: temp_latlon, type: ent_type});
 }
+
 
 // caso o URL contenha o campo 'entity_id', vamos verificar se a entidade existe no mapa
 // se sim, centramos o mapa nessa entidade.

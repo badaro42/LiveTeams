@@ -166,7 +166,7 @@ puts 'Adding Geographic Entities'
 GeoEntity.create(name: "Entrada para o Arsenal do Alfeite", user_id: 2, entity_type: "marker", radius: 0,
                  latlon: "POINT(-9.154230505228043 38.658546181023475)",
                  description: "Tambem conhecida por Portao Verde",
-                 team_id: 5) # Port�o Verde
+                 team_ids: [5,7]) # Port�o Verde
 
 GeoEntity.create(name: "Belo caminho por Portugal", user_id: 1, entity_type: "polyline", radius: 0,
                  latlon: "LINESTRING(-9.166889190673828 38.64583568648869, -8.715591430664062 39.257778150283336, " +
@@ -174,11 +174,11 @@ GeoEntity.create(name: "Belo caminho por Portugal", user_id: 1, entity_type: "po
                      "-7.912387847900391 40.65095033081072, -7.702789306640625 41.306697618181886, " +
                      "-7.412896156311036 41.34846396411108)",
                  description: "Demora-se um bocado a chegar, mas a recompensa vale a pena",
-                 team_id: 3) # Lisboa - Sta. Eug�nia
+                 team_ids: [2,3,6,8]) # Lisboa - Sta. Eug�nia
 
 GeoEntity.create(name: "Base Naval de Lisboa - Arsenal do Alfeite", user_id: 3, entity_type: "polygon", radius: 0,
                  latlon: "POLYGON((-9.157555103302002 38.66761893813652, -9.144165515899658 38.67324799343888, " +
                      "-9.128201007843018 38.65749892823337, -9.13764238357544 38.64811486000121, " +
                      "-9.145710468292236 38.6563594998049, -9.157555103302002 38.66761893813652))",
                  description: "Zona bem grande e com alguns navios porreiros",
-                 team_id: 1) # �rea do Arsenal do Alfeite
+                 team_ids: [1,4]) # �rea do Arsenal do Alfeite
