@@ -1,6 +1,7 @@
 class TeamsController < ApplicationController
   before_action :set_team, only: [:show, :edit, :update, :destroy]
-  before_action :set_users_without_team, only: [:new, :edit, :show]
+  before_action :set_all_users, only: [:new, :edit]
+  before_action :set_users_not_in_this_team, only: [:show]
   before_filter :authenticate_user!
 
   layout "listings"
@@ -52,37 +53,29 @@ class TeamsController < ApplicationController
   # GET /teams/1
   # GET /teams/1.json
   def show
-    @team.inspect
-
     if @team.nil?
       flash[:error] = "A equipa que procura nao existe!"
       redirect_to teams_url
     else
-      puts "TAMANHO DAS VERSOES DESTA EQUIPA!!!!"
-      puts @team.versions.size
-      puts @team.versions.inspect
-      puts @team.versions.first.reify.inspect
-      puts @team.versions.last.reify.inspect
-
-      puts @team.latlon
-
       gon.highlight_latlon = @team.latlon_highlight
-
       gon.current_latlon = @team.latlon
+      gon.current_team_id = @team.id
       gon.team_versions = []
+
       @team.versions.each do |version|
         gon.team_versions.push(version.reify)
       end
 
-      gon.current_team_id = @team.id
+      # obtem o utilizador que é lider da equipa
+      team_leader_entry = @team.team_members.where(is_leader: true).first
+      @team_leader = @team.users.where(id: team_leader_entry.user_id).first
 
-      @team_leader_entry = @team.team_members.where(is_leader: true).first
-      puts @team_leader_entry.inspect
-      @team_leader = @team.users.where(id: @team_leader_entry.user_id).first
-      puts @team_leader.inspect
-
+      # utilizador responsavel por atualizar a posição da equipa
       @location_user = User.find(@team.location_user_id)
-      @team_geo_entities = @team.geo_entities
+
+      # devolve todas as geo-entidades que tenham o id da equipa
+      @team_geo_entities = GeoEntity.find_by_sql("select * from geo_entities where '" +
+                                                     @team.id.to_s + "' = ANY(team_ids);")
     end
   end
 
@@ -90,9 +83,6 @@ class TeamsController < ApplicationController
   def new
     @team = Team.new
     @users_in_team = @team.users
-
-    # faz a uniao entre os utilizadores que nao têm equipa e aqueles que estao nesta equipa
-    @users_to_show = @users_in_team | @users_without_team
   end
 
   # GET /teams/1/edit
@@ -103,9 +93,6 @@ class TeamsController < ApplicationController
     else
       @users_in_team = @team.users
       @team_leader = TeamMember.find_by(team_id: @team.id, is_leader: true)
-
-      # faz a uniao entre os utilizadores que nao têm equipa e aqueles que estao nesta equipa
-      @users_to_show = @users_in_team | @users_without_team
 
       if @team_leader.user_id == current_user.id || current_user.profile == User::ADMINISTRADOR
         puts "PODE EDITAR"
@@ -176,8 +163,6 @@ class TeamsController < ApplicationController
       if @team.update(team_params)
 
 
-
-
         # come�amos por remover todas as entradas da tabela para esta equipa
         TeamMember.delete_all(["team_id = ?", @team.id.to_s])
 
@@ -215,9 +200,8 @@ class TeamsController < ApplicationController
     puts "ADD_USER_TO_TEAM HEHEHEHEHEHEHE"
     puts "**********************************************"
 
-    t_member = TeamMember.new(:user_id => params[:user_id], :team_id => params[:team_id], :is_leader => false)
+    t_member = TeamMember.new(:user_id => params[:user_id].to_i, :team_id => params[:team_id].to_i, :is_leader => false)
     if t_member.save
-      gon.recently_added_user = User.where(id: params[:user_id]).first
       @recently_added_user = User.where(id: params[:user_id]).first
 
       puts @recently_added_user.inspect
@@ -225,6 +209,7 @@ class TeamsController < ApplicationController
       # o utilizador que acabamos de introduzir nao é nem o lider nem o responsavel pela posição
       render partial: 'list_entry', locals: {user: @recently_added_user, is_leader: false, in_charge_of_location: false}
     else # em caso de erro enviar codigo de erro para o jquery
+      puts t_member.errors.inspect
       render :nothing => true, :status => 500, :content_type => 'text/html'
     end
   end
@@ -258,12 +243,47 @@ class TeamsController < ApplicationController
         @team = Team.find(params[:id])
       end
     end
-    # @team = Team.find(params[:id])
   end
 
-  def set_users_without_team
-    members_unique_ids = TeamMember.uniq(:user_id).select(:user_id)
-    @users_without_team = User.where.not(id: members_unique_ids)
+  # def set_users_without_team
+  #   members_unique_ids = TeamMember.uniq(:user_id).select(:user_id)
+  #   @users_without_team = User.where.not(id: members_unique_ids)
+  # end
+
+  def set_all_users
+    @all_users = User.all
+  end
+
+  def set_users_not_in_this_team
+    @all_users_arr = [["Administradores", []], ["Gestores", []], ["Operacionais", []]]
+
+    members_ids = TeamMember.where(team_id: @team.id).select(:user_id)
+    users_not_in_this_team = User.where.not(id: members_ids).order(first_name: :asc, last_name: :asc)
+
+    # os ciclos de baixo colocam os utilizadores que ainda nao estao na equipa dentro dum array
+    # para dps ser apresentado com grupos por perfil
+    users_not_in_this_team.where(profile: User::ADMINISTRADOR).each do |user|
+      elem = []
+      elem.push(user.full_name)
+      elem.push(user.id)
+      @all_users_arr[0][1].push(elem)
+    end
+
+    users_not_in_this_team.where(profile: User::GESTOR).each do |user|
+      elem = []
+      elem.push(user.full_name)
+      elem.push(user.id)
+      @all_users_arr[1][1].push(elem)
+    end
+
+    users_not_in_this_team.where(profile: User::OPERACIONAL).each do |user|
+      elem = []
+      elem.push(user.full_name)
+      elem.push(user.id)
+      @all_users_arr[2][1].push(elem)
+    end
+
+    puts @all_users_arr.inspect
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.

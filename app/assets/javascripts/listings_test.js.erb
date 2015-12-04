@@ -649,7 +649,7 @@ function openConfirmRemovalModal() {
 // verifica se há utilizadores na dropdown
 // caso nao haja, esconde o formulario a apresenta uma mensagem a informar que nao ha users sem equipa
 function checkUsersWithoutTeam() {
-  if ($('#dropdown_add_user_to_team > option').length == 1) {
+  if ($('#dropdown_add_user_to_team option').length == 1) {
     $('#add_user_form').css('display', 'none');
     $('#no_user_to_add').css('display', 'block');
   }

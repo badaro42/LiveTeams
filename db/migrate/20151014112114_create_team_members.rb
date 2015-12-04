@@ -1,7 +1,7 @@
 class CreateTeamMembers < ActiveRecord::Migration
   def change
     create_table :team_members do |t|
-      t.references :team, index: true, unique: true
+      t.references :team, index: true
       t.references :user, index: true
       t.boolean :is_leader
       t.timestamps null: false

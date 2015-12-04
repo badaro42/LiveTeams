@@ -30,7 +30,7 @@
       <%= f.label "Adicionar utilizadores à equipa", for: "add_users", style: "padding-left: 10px;" %>
 
       <div class="add_users">
-        <% @users_to_show.each do |user| %>
+        <% @all_users.each do |user| %>
             <div class="col m4 l3 s6">
               <% full_name = user.first_name + " " + user.last_name %>
               <p>
