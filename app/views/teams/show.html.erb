@@ -10,13 +10,13 @@
       </a>
       <ul>
         <li>
-          <%= link_to @team, :data => {:position => 'left', :delay => '15', :tooltip => 'Criar equipa'},
+          <%= link_to @team, :data => {:position => 'left', :delay => '15', :tooltip => 'Eliminar equipa'},
                       class: 'btn-floating green tooltipped', method: :delete do %>
               <i class="material-icons">delete</i>
           <% end %>
         </li>
         <li>
-          <%= link_to edit_team_path(@team), :data => {:position => 'left', :delay => '15', :tooltip => 'Eliminar equipa'},
+          <%= link_to edit_team_path(@team), :data => {:position => 'left', :delay => '15', :tooltip => 'Editar equipa'},
                       class: 'btn-floating blue tooltipped', method: :get do %>
               <i class="material-icons">edit</i>
           <% end %>

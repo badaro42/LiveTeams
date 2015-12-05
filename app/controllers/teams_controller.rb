@@ -2,6 +2,7 @@ class TeamsController < ApplicationController
   before_action :set_team, only: [:show, :edit, :update, :destroy]
   before_action :set_all_users, only: [:new, :edit]
   before_action :set_users_not_in_this_team, only: [:show]
+  before_action :set_team_geo_entities, only: [:show, :destroy]
   before_filter :authenticate_user!
 
   layout "listings"
@@ -72,10 +73,6 @@ class TeamsController < ApplicationController
 
       # utilizador responsavel por atualizar a posição da equipa
       @location_user = User.find(@team.location_user_id)
-
-      # devolve todas as geo-entidades que tenham o id da equipa
-      @team_geo_entities = GeoEntity.find_by_sql("select * from geo_entities where '" +
-                                                     @team.id.to_s + "' = ANY(team_ids);")
     end
   end
 
@@ -161,9 +158,7 @@ class TeamsController < ApplicationController
       end
 
       if @team.update(team_params)
-
-
-        # come�amos por remover todas as entradas da tabela para esta equipa
+        # começamos por remover todas as entradas da tabela para esta equipa
         TeamMember.delete_all(["team_id = ?", @team.id.to_s])
 
         # por fim, adicionamos novamente os membros da equipa, bem como qual o capit�o
@@ -188,7 +183,16 @@ class TeamsController < ApplicationController
   # DELETE /teams/1
   # DELETE /teams/1.json
   def destroy
+    team_id = @team.id.to_s
+
+    # elimina a equipa. se o delete for bem sucedido, removemos os ids da equipa das geo-entidades
     @team.destroy
+    if @team.destroyed?
+      @team_geo_entities.each do |geo_entity|
+        geo_entity.team_ids.delete(team_id)
+      end
+    end
+
     respond_to do |format|
       format.html { redirect_to teams_url, notice: 'Team was successfully destroyed.' }
       format.json { head :no_content }
@@ -243,6 +247,12 @@ class TeamsController < ApplicationController
         @team = Team.find(params[:id])
       end
     end
+  end
+
+  # agrega todas as entidades que estejam associadas a esta equipa
+  def set_team_geo_entities
+    @team_geo_entities = GeoEntity.find_by_sql("select * from geo_entities where '" +
+                                                   @team.id.to_s + "' = ANY(team_ids);")
   end
 
   # def set_users_without_team

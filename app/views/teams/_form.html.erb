@@ -84,7 +84,7 @@
 
 
     <div class="actions col m12 l12 s12" style="padding: 0;">
-      <% if @create_new_team %>
+      <% if current_page?(action: 'new') %>
           <%= f.button 'Criar equipa', style: "width: 100%;",
                        class: "btn waves-effect waves-light disabled", id: "team-submit-form" %>
       <% else %>
