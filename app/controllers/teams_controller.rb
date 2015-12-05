@@ -255,7 +255,7 @@ class TeamsController < ApplicationController
   end
 
   def set_users_not_in_this_team
-    @all_users_arr = [["Administradores", []], ["Gestores", []], ["Operacionais", []]]
+    @all_users_arr = [["Administrador", []], ["Gestor", []], ["Operacional", []]]
 
     members_ids = TeamMember.where(team_id: @team.id).select(:user_id)
     users_not_in_this_team = User.where.not(id: members_ids).order(first_name: :asc, last_name: :asc)

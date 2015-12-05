@@ -7,8 +7,9 @@
                   <%= user.full_name %>
                 <% end %>
               </span>
-  <p><%= user.profile %><br>
-    Membro desde <%= user.created_at.to_datetime.to_formatted_s(:short) %>
+  <p>
+    <span class="user-role"><%= user.profile %></span><br>
+    <span>Membro desde <%= user.created_at.to_datetime.to_formatted_s(:short) %></span>
   </p>
 
   <% if is_leader %>

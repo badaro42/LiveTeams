@@ -2,7 +2,7 @@ var osm, osmUrl;
 var team_map, user_map;
 var curr_marker = undefined, remove_btn;
 var cluster;
-var parent_list_entry_id, username_to_be_removed;
+var parent_list_entry_id, username_to_be_removed, user_role_to_be_removed;
 var uri;
 
 // variaveis da cena da search bar
@@ -593,6 +593,10 @@ function addUserToTeam(e) {
 }
 
 function removeUserFromTeam(entry_id_to_remove, user_id) {
+  var entry_to_remove = $('#' + entry_id_to_remove);
+  console.log(entry_to_remove);
+  console.log(entry_id_to_remove);
+
   $.ajax({
     type: "POST",
     url: "/remove_user_from_team",
@@ -602,13 +606,13 @@ function removeUserFromTeam(entry_id_to_remove, user_id) {
     },
     success: function (result) {
       console.log(result);
-      console.log("sucesso add_user_to_team");
+      console.log("sucesso remove_user_to_team");
 
       // remove a entrada da lista correspondente ao utilizador
       // o codigo da atualização tem que estar aqui dentro pois o metodo animate recebe um parametro
       // que atrasa a execução do remove por meio segundo, o que fazia com que a contagem desse valores errados
-      $("#" + entry_id_to_remove).animate({opacity: 0}, 500, function () {
-        $("#" + entry_id_to_remove).remove();
+      entry_to_remove.animate({opacity: 0}, 500, function () {
+        entry_to_remove.remove();
 
         // atualiza a contagem de elementos na equipa
         var entries_count = $('.collection li').length;
@@ -616,7 +620,7 @@ function removeUserFromTeam(entry_id_to_remove, user_id) {
         $("#team_members_count").text("Membros (" + entries_count + ")");
 
         //remove a entrada da dropdown para impedir que se introduza o mesmo user outra vez
-        $("#dropdown_add_user_to_team").append($('<option></option>').val(user_id).text(username_to_be_removed));
+        $("optgroup[label='" + user_role_to_be_removed + "']").append($('<option></option>').val(user_id).text(username_to_be_removed));
         checkUsersWithoutTeam();
 
         noty({
@@ -638,9 +642,13 @@ function removeUserFromTeam(entry_id_to_remove, user_id) {
 function openConfirmRemovalModal() {
   // $('this') representa o botao. o seu pai é a entrada que queremos remover.
   var parent = $(this).parent();
+
+  user_role_to_be_removed = parent.find('.user-role').text();
   parent_list_entry_id = parent.attr('id');
   username_to_be_removed = parent.find('.username').text().trim();
+
   console.log("username_to_be_removed: " + username_to_be_removed);
+  console.log("user_role_to_be_removed: " + user_role_to_be_removed);
 
   $('#modal_user_name').text(username_to_be_removed);
   $('#remove_user_confirm').openModal();
