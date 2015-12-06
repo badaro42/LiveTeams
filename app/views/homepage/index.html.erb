@@ -50,32 +50,69 @@
         <div class="sidebar-close"><i class="fa fa-caret-right"></i></div>
       </h1>
 
-      <div class="list_wrapper" style="left: 0;">
-        <div class="row valign-wrapper z-depth-1" style="margin-top: 10px; margin-left: 10px; margin-right: 10px;">
-          <div class="col s5" style="padding: 10px;">
-            <!--<img src="images/sec-estado-jorge-barreto-xavier.jpg" alt="" class="circle responsive-img">-->
-            <%= image_tag current_user.avatar.url(:small), class: 'circle responsive-img' %>
+      <div class="list_wrapper white z-depth-1" style="left: 0;">
+        <div class="white z-depth-1" style="margin: 10px; padding-top: 10px; padding-bottom: 10px;">
+          <div class="row center" style="">
+            <div class="col l4 m12 s5">
+              <%= image_tag current_user.avatar.url(:small), class: 'circle', height: '100', width: '100' %>
+            </div>
+
+            <div class="col l8 m12 s7">
+              <h5 style="font-weight: 300;">
+                <%= link_to current_user.full_name, current_user, :method => :get %>
+              </h5>
+
+              <div class="divider center-align" style="width: 50%;"></div>
+
+              <div>
+                <span><%= current_user.profile %></span>
+              </div>
+
+              <div>
+                <span>Registado há <%= (Time.now.to_date - current_user.created_at.to_date).to_i %> dias</span>
+              </div>
+            </div>
           </div>
-          <div class="col s7">
-            <h5 style="font-weight: 300; margin-top: 0;">
-              <%= link_to current_user.full_name, current_user, :method => :get %>
-            </h5>
-            <hr>
-            <span><%= current_user.profile %></span><br>
-            <span>Registado há 100 dias</span>
+
+          <!-- row a apresentar em ecras grandes!!! -->
+          <div class="row hide-on-med-and-down" style="margin-bottom: 0px;">
+            <div class="col l6" style="padding-right: 3px;">
+              <%= link_to destroy_user_session_path, method: :get, class: 'right red waves-effect waves-light btn',
+                          style: 'padding-left: 10px; padding-right: 10px;' do %>
+                  <i class="material-icons left">power_settings_new</i>Logout
+              <% end %>
+            </div>
+
+            <div class="col l6" style="padding-left: 3px;">
+              <%= link_to edit_user_path(current_user), method: :get, class: 'left waves-effect waves-light btn',
+                          style: 'padding-left: 10px; padding-right: 10px;' do %>
+                  <i class="material-icons left">edit</i>Editar
+              <% end %>
+            </div>
+          </div>
+
+          <!-- row a apresentar em ecras medios e pequenos!!! -->
+          <div class="row center hide-on-large-only" style="margin-bottom: 0px;">
+            <div class="col m6 s6" style="padding-right: 3px;">
+              <%= link_to destroy_user_session_path, method: :get, class: 'right red waves-effect waves-light btn',
+                          style: 'padding-left: 10px; padding-right: 10px;' do %>
+                  <i class="material-icons">power_settings_new</i>
+              <% end %>
+            </div>
+
+            <div class="col m6 s6" style="padding-left: 3px;">
+              <%= link_to edit_user_path(current_user), method: :get, class: 'left waves-effect waves-light btn',
+                          style: 'padding-left: 10px; padding-right: 10px;' do %>
+                  <i class="material-icons">edit</i>
+              <% end %>
+            </div>
           </div>
         </div>
-        <div class="row z-depth-1 center-align" style="margin-top: 10px; margin-left: 10px; margin-right: 10px;">
-          <%#= button_to 'Encerrar sessão', destroy_user_session_path, :method => :delete %>
-          <%#= button_to 'Perfil do utilizador', current_user, :method => :get %>
 
-          <%= link_to destroy_user_session_path, method: :get, class: 'waves-effect waves-light btn' do %>
-              Encerrar sessão
-          <% end %>
-          <a id="button-da-merda" class="waves-effect waves-light btn">Modal</a>
+        <div class="white z-depth-1" style="margin: 10px; padding-top: 10px; padding-bottom: 10px;">
+          As minhas equipas
         </div>
       </div>
-
     </div>
 
     <div class="sidebar-pane" id="teams">
@@ -103,14 +140,22 @@
 
           <% @recently_changed_teams.each do |team| %>
               <li>
-                <div class="collapsible-header">
-                  <%= team.name %>
-                  <%= link_to team, method: :get, :data => {:position => 'left', :delay => '15',
-                                                            :tooltip => 'Ver mais detalhes'},
-                              class: 'tooltipped edit-team-btn waves-effect waves-teal btn-flat right' do %>
-                      <i class="material-icons">more_vert</i>
-                  <% end %>
+                <div class="collapsible-header" style="padding-top: 5px; padding-bottom: 5px;">
+                  <div class="collapse_header_text">
+                    <span><%= team.name %></span><br>
+                    <span style="font-size: 12px;">
+                      atualizada há <%= time_ago_in_words(team.updated_at) %>
+                    </span>
+                  </div>
+                  <div class="collapse_header_link">
+                    <%= link_to team, method: :get, :data => {:position => 'left', :delay => '15',
+                                                              :tooltip => 'Ver mais detalhes'},
+                                class: 'tooltipped edit-team-btn waves-effect waves-teal btn-flat' do %>
+                        <i class="material-icons">more_vert</i>
+                    <% end %>
+                  </div>
                 </div>
+
                 <div class="collapsible-body">
                   <ul class="collection">
 
@@ -118,7 +163,6 @@
                         <% @t_user = User.find_by(id: t_member.user_id) %>
 
                         <li class="collection-item avatar team-list-item">
-
                           <% if (t_member.is_leader) %>
                               <!-- RIBBON PARA INDICAR O CHEFE DE EQUIPA -->
                               <div class="corner-ribbon top-right red shadow">Chefe</div>
@@ -126,11 +170,10 @@
 
                           <%= image_tag @t_user.avatar.url, class: 'circle' %>
                           <span class="title" style="font-weight: 300">
-                              <%= @t_user.first_name %> <%= @t_user.last_name %>
-                          </span><br>
+                              <%= @t_user.full_name %>
+                          </span>
 
-                          <!-- TODO: CRIAR TABELA PARA PERFIS E MUDAR ISTO! -->
-                          <p>Administrador</p>
+                          <p><%= @t_user.profile %></p>
                         </li>
                     <% end %>
 

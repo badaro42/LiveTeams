@@ -271,7 +271,7 @@ $(document).ready(function () {
   });
 
   //altera o background da lista das equipas quando o utilizador faz hover com o rato
-  $("#recent_teams_list div:first-child")
+  $("div.collapsible-header")
       .mouseenter(function () {
         if (!($(this).hasClass("active")))
           $(this).css("background", "#eaeaea")
