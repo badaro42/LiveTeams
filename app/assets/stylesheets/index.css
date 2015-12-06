@@ -136,6 +136,10 @@ html, body, #container {
     #entity_description_div {
         padding-bottom: 25px;
     }
+
+    .sidebar {
+        width: 50%;
+    }
 }
 
 /* DESKTOPS E ECRAS GRANDES */
@@ -158,6 +162,10 @@ html, body, #container {
 
     #select_team_ids {
         height: 150px;
+    }
+
+    .sidebar {
+        width: 40%;
     }
 }
 
@@ -345,4 +353,22 @@ html, body, #container {
 .modal-element-title {
     font-weight: 200;
     font-size: 12px;
+}
+
+/*regras para o header da lista expansivel de equipas*/
+.collapse_header_text {
+    float: left;
+    width: 90%;
+    line-height: 1.5rem;
+    display: inline-block;
+}
+
+.collapse_header_link {
+    width: 10%;
+    line-height: 1.5rem;
+    display: inline-block;
+}
+
+.collapse_header_link > a {
+    margin-top: 0;
 }
