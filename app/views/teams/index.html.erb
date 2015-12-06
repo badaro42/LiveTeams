@@ -23,7 +23,7 @@
 <% end %>
 
 <strong><span><%= flash.now[:error] %></span></strong>
-<ul class="collapsible popout" data-collapsible="accordion" style="margin-left: 10px; margin-right: 10px;">
+<ul class="collapsible" data-collapsible="expandable">
   <% @teams.each do |team| %>
       <li class="team-entry">
         <% arr_is_empty = true %>
@@ -44,7 +44,7 @@
           <% end %>
         </div>
         <div class="collapsible-body">
-          <p style="padding: 15px;">
+          <blockquote style="margin-left: 15px; margin-top: 10px; margin-bottom: 10px;">
             <% team_users = team.users %>
             <% team_users.each do |user| %>
                 <%= link_to user, method: :get do %>
@@ -52,7 +52,7 @@
                 <% end %> <%= user.profile %>
                 <br>
             <% end %>
-          </p>
+          </blockquote>
         </div>
       </li>
   <% end %>

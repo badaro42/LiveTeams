@@ -49,9 +49,10 @@
           <% end %>
         </li>
         <li>
-          <%= link_to current_user, class: 'navbar-button', style: 'height: 64px;', method: :get do %>
+          <%= link_to "#!", class: 'dropdown-button', data: {activates: "dropdown1"}, style: 'height: 64px;' do %>
               <%= image_tag current_user.avatar.url(:thumb), class: 'circle', style: 'margin-top: 15px;',
                             height: '32', width: '32' %>
+              <i class="material-icons right">arrow_drop_down</i>
           <% end %>
 
         </li>
@@ -72,6 +73,25 @@
             </li>
           </ul>
       <% end %>
+
+      <ul id="dropdown1" class="dropdown-content">
+        <li>
+          <%= link_to current_user, style: 'padding: 14px 5px;', method: :get do %>
+              Ver perfil
+          <% end %>
+        </li>
+        <li>
+          <%= link_to edit_user_path(current_user), style: 'padding: 14px 5px;', method: :get do %>
+              Editar perfil
+          <% end %>
+        </li>
+        <li class="divider"></li>
+        <li>
+          <%= link_to destroy_user_session_path, style: 'padding: 14px 5px;', method: :delete do %>
+              Logout
+          <% end %>
+        </li>
+      </ul>
 
       <!-- barra lateral ativada em ecras mais pequenos -->
       <ul class="side-nav" id="mobile-demo">

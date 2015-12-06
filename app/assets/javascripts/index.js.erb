@@ -396,6 +396,35 @@ $(document).ready(function () {
     e_layer = e.layer;
     e_num_points = 1;
 
+    var select = $('#select_team_ids');
+
+    // vai obter todas as equipas para popular a select box
+    // assim garante-se que as equipas para selecionar estão sempre de acordo com a base de dados!
+    $.ajax({
+      type: "GET",
+      url: "/teams",
+      dataType: "json",
+      success: function (res) {
+        // todas as equipas retornadas pelo servidor
+        $.each(res, function (index, elem) {
+          console.log(elem);
+
+          var text = elem.name + " (ID: " + elem.id + ")";
+          select.append($("<option/>", {
+            value: elem.id,
+            text: text
+          }));
+        });
+
+        $('#select_team_ids_div label').addClass('active');
+        console.log("final do each.");
+      },
+      error: function (res) {
+        console.log("erro a popular as equipas: dropdown nova geo-entidade!!!");
+        console.log(res);
+      }
+    });
+
     if (e_type === 'marker' || e_type === 'circle') {
       $("#e_area_div").prop('hidden', true);
       $("#e_length_div").prop('hidden', true);
@@ -414,35 +443,6 @@ $(document).ready(function () {
         $("#e_radius_div").prop('hidden', true);
         $('#e_type').text("Marcador");
       }
-
-      var select = $('#select_team_ids');
-
-      // vai obter todas as equipas para popular a select box
-      // assim garante-se que as equipas para selecionar estão sempre de acordo com a base de dados!
-      $.ajax({
-        type: "GET",
-        url: "/teams",
-        dataType: "json",
-        success: function (res) {
-          // todas as equipas retornadas pelo servidor
-          $.each(res, function (index, elem) {
-            console.log(elem);
-
-            var text = elem.name + " (ID: " + elem.id + ")";
-            select.append($("<option/>", {
-              value: elem.id,
-              text: text
-            }));
-          });
-
-          $('#select_team_ids_div label').addClass('active');
-          console.log("final do each.");
-        },
-        error: function (res) {
-          console.log("erro a popular as equipas: dropdown nova geo-entidade!!!");
-          console.log(res);
-        }
-      });
 
       console.log(e_layer);
       e_coords = "POINT(" + e_layer.getLatLng().lng + " " + e_layer.getLatLng().lat + ")";
@@ -1070,6 +1070,14 @@ function showEntityCoordinates(entity_index) {
 }
 
 
+function removeGeoEntity(entity_index) {
+  if (confirm("De certeza que pretende remover esta geo-entidade? Esta ação é irreversível!")) {
+    var index_in_array = geoEntityIsInMap(entity_index);
+    console.log("user quer remover geoentidade!");
+  }
+}
+
+
 // função executada pelo onEachFeature do metodo geoJSON das equipas
 function onEachTeam(feature, layer) {
   var popup = L.popup({maxWidth: 250});
@@ -1144,9 +1152,12 @@ function onEachGeoEntity(feature, layer) {
 
   popupContent += '<b>Nome: </b>' + feature.properties.name + '<br>' +
       '<b>Descrição: </b>' + feature.properties.description + '</p>' +
-      '<div class="center-align"><a id="submit_new_geo_entity" href="javascript:showEntityCoordinates(' +
-      feature.properties.f_id + ');" class="waves-effect waves-light btn white-text" style="width: 100%;">' +
-      'Ver lista de coordenadas</a></div>';
+      '<div style="display: inline-block"><a href="javascript:showEntityCoordinates(' +
+      feature.properties.f_id + ');" class="geo-popup-btn waves-effect waves-light btn white-text">' +
+      'Ver coordenadas</a></div><div style="display: inline-block" class="right">' +
+      '<a href="javascript:removeGeoEntity(' + feature.properties.f_id +
+      ');" class="geo-popup-btn red waves-effect waves-light btn white-text">' +
+      '<i class="material-icons">delete</i></a></div>';
 
   popup.setContent(popupContent);
   layer.bindPopup(popup);

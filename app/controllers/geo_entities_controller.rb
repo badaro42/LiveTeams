@@ -37,12 +37,9 @@ class GeoEntitiesController < ApplicationController
 
     respond_to do |format|
       if @geo_entity.save
-        # format.json { redirect_to @geo_entity }
         format.html { redirect_to @geo_entity, notice: 'Geo entity was successfully created.' }
         format.json { render :show, status: :created, location: @geo_entity }
-        # format.json { render :nothing => true, :status => 200, :content_type => 'text/html' }
       else
-        # format.json { redirect_to @geo_entity }
         format.html { render :new }
         format.json { render json: @geo_entity.errors, status: :unprocessable_entity }
       end

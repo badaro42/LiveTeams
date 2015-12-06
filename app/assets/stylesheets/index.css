@@ -352,6 +352,7 @@ html, body, #container {
     font-size: 12px;
 }
 
+
 /*regras para o header da lista expansivel de equipas*/
 .collapse_header_text {
     float: left;
@@ -390,4 +391,12 @@ html, body, #container {
     line-height: 18px;
     border-radius: 50%;
     box-shadow: 0 0 1px #333;
+}
+
+
+/*regras para os botoes das popups das entidades geograficas*/
+
+.geo-popup-btn {
+    padding-left: 20px;
+    padding-right: 20px;
 }
