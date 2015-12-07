@@ -25,20 +25,9 @@
       <%= devise_error_messages! %>
 
       <div class="col l10 m10 s12">
-
-        <div id="profile" class="scrollspy col l12 s12 z-depth-1 white">
+        <div id="basic-info" class="scrollspy col l12 s12 z-depth-1 white">
           <div class="section">
-            <h5 style="margin-left: 10px; display: inline;">Alterar perfil do utilizador</h5>
-          </div>
-
-          <div class="input-field col s12 m12 l12">
-            <%= select_tag "user[profile]", options_for_select(User::PROFILES, :selected => @user.profile) %>
-          </div>
-        </div>
-
-        <div id="basic-info" class="scrollspy col l12 s12 z-depth-1 white" style="margin-top: 20px;">
-          <div class="section">
-            <h5 style="margin-left: 10px;">Dados Básicos</h5>
+            <h5 style="margin-left: 10px;">Dados do <%= resource.first_name %></h5>
           </div>
 
           <div class="input-field col s12 m6 l6">
@@ -64,6 +53,16 @@
           <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
               <div>Aguardando confirmação de: <%= resource.unconfirmed_email %></div>
           <% end %>
+        </div>
+
+        <div id="profile" class="scrollspy col l12 s12 z-depth-1 white" style="margin-top: 20px;">
+          <div class="section">
+            <h5 style="margin-left: 10px; display: inline;">Alterar perfil do utilizador</h5>
+          </div>
+
+          <div class="input-field col s12 m12 l12">
+            <%= select_tag "user[profile]", options_for_select(User::PROFILES, :selected => @user.profile) %>
+          </div>
         </div>
 
         <div id="optional" class="scrollspy col l12 s12 z-depth-1 white" style="margin-top: 20px; margin-bottom: 20px;">
@@ -103,8 +102,8 @@
       <div id="scroll" class="col l2 m2 hide-on-small-only right-align">
         <div class="pushpin">
           <ul class="table-of-contents">
-            <li><a href="#profile">Alterar papel</a></li>
             <li><a href="#basic-info">Dados básicos</a></li>
+            <li><a href="#profile">Alterar papel</a></li>
             <li><a href="#optional">Foto de perfil</a></li>
           </ul>
         </div>
