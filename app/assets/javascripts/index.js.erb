@@ -15,6 +15,10 @@ var all_teams; // cada entrada é da forma {id: feature_id, marker: L.marker(L.l
 var previous_user_location; // {timestamp: Date(), position: L.latLng(lat, lng)}
 var no_sleep_enabled = false;
 var is_modal_open = false;
+var curr_user_preferences;
+
+// local storage - objeto com as preferencias do utilizador!
+var options_to_store = {};
 
 // var incrementada quando um dos conjuntos de dados é carregado - equipas e entidades
 var geo_data_loaded = 0;
@@ -38,6 +42,17 @@ $(document).ready(function () {
 
   // TODO: TENTATIVA DE FAZER CACHE DOS PEDIDOS AJAX.. MAS NAO SEI SE DÁ
 //  $.ajaxSetup({ cache:true });
+
+  // verifica as preferencias do utilizador no objeto localStorage
+  checkUserPreferences();
+
+  // listener para quando o utilizador carrega na checkbox para mostrar/esconder a navbar
+  $('#homepage-toggle-navbar').on('change', function () {
+    if ($(this).is(':checked'))
+      toggleNavBar(true);
+    else
+      toggleNavBar(false);
+  });
 
   // seleciona todas as equipas no modal para criar entidade
   $('#select_all_teams').on('click', function () {
@@ -1199,4 +1214,51 @@ function getURLParameter(param) {
     if (param_name[0] == param)
       return param_name[1];
   }
+}
+
+/*
+ * Le as preferencias do utilizador a partir do localStorage
+ */
+function checkUserPreferences() {
+  curr_user_preferences = JSON.parse(localStorage.getItem('user' + gon.user_id));
+  console.log("preferencias do utilizador");
+  console.log(curr_user_preferences);
+
+  var show_navbar_checkbox = $('#homepage-toggle-navbar');
+
+  // o utilizador ja iniciou sessão, vamos obter as suas preferencias
+  if (curr_user_preferences !== null) {
+    if (!curr_user_preferences.show_navbar) {
+      toggleNavBar(false);
+      show_navbar_checkbox.prop('checked', false);
+    }
+    else
+      show_navbar_checkbox.prop('checked', true);
+  }
+  else {
+    options_to_store.show_navbar = true;
+    localStorage.setItem('user' + gon.user_id, JSON.stringify(options_to_store));
+  }
+}
+
+// mostra ou esconde a barra de navegação
+// grava no localStorage o estado atual da navbar
+function toggleNavBar(to_show) {
+  if (to_show) {
+    var height_percentage = (1 - (64/window.innerHeight))*100;
+//    var map_height = $('#map').height() - 64;
+    console.log(height_percentage);
+
+    $('#frontpage-navbar').slideDown({duration: 'slow', queue: false});
+    $('#map').animate({'height': height_percentage+'%', queue: false});
+    $('#sidebar').animate({'top': '74px', queue: false});
+    options_to_store.show_navbar = true;
+  }
+  else {
+    $('#frontpage-navbar').slideUp({duration: 'slow', queue: false});
+    $('#map').animate({'height': '100%', queue: false});
+    $('#sidebar').animate({'top': '10px', queue: false});
+    options_to_store.show_navbar = false;
+  }
+  localStorage.setItem('user' + gon.user_id, JSON.stringify(options_to_store));
 }

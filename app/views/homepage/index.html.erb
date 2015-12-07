@@ -1,6 +1,89 @@
 <%# encoding: utf-8 %>
 
-<!--<iframe src="background_test.html" style="display:none;"></iframe>-->
+<div id="frontpage-navbar" class="navbar-fixed">
+  <nav class="indigo darken-4" role="navigation" style="box-shadow: none;">
+    <div class="nav-wrapper">
+      <ul class="left navbar-buttons">
+        <li>
+          <%= link_to 'http://www.prociv.pt/Pages/default.aspx', target: '_blank', id: 'navbar-icon-div',
+                      style: 'font-size: 1.2rem; font-weight: 100; margin-top: 0;',
+                      class: 'navbar-padding-top brand-logo left', method: :get do %>
+              <!--<i id="navbar-map-btn" class="material-icons left">map</i>Mapa-->
+              <%= image_tag 'prociv_logotipo.gif', class: 'circle left',
+                            style: 'margin-top: 8px; margin-right: 10px;', height: '48', width: '48' %>
+              <span>PROCIV</span>
+          <% end %>
+          </a>
+        </li>
+      </ul>
+      <a href="#" data-activates="mobile-demo" class="right button-collapse">
+        <i class="material-icons">menu</i>
+      </a>
+      <ul class="navbar-buttons right hide-on-med-and-down">
+        <%= yield(:navbar_buttons) %>
+        <li>
+          <%= link_to "#!", id: 'navbar-profile-div', class: 'dropdown-button', data: {activates: "dropdown-profile"},
+                      style: 'height: 64px;' do %>
+              <%= image_tag current_user.avatar.url(:thumb), class: 'circle left',
+                            style: 'margin-top: 15px; margin-right: 10px;', height: '32', width: '32' %>
+              <%= current_user.first_name %><i class="material-icons right">arrow_drop_down</i>
+          <% end %>
+        </li>
+      </ul>
+
+      <ul id="dropdown-profile" class="dropdown-content">
+        <li>
+          <%= link_to current_user, method: :get do %>
+              Ver perfil
+          <% end %>
+        </li>
+        <li>
+          <%= link_to edit_user_path(current_user), method: :get do %>
+              Editar perfil
+          <% end %>
+        </li>
+        <li class="divider"></li>
+        <li>
+          <%= link_to destroy_user_session_path, method: :delete do %>
+              Logout
+          <% end %>
+        </li>
+      </ul>
+
+      <!-- barra lateral ativada em ecras mais pequenos -->
+      <ul class="side-nav" id="mobile-demo">
+        <li style="padding: 0;">
+          <div id="teste-sidenav" style="height: 120px;">
+            <div style="padding-top: 56px; height: 120px; padding-left: 15px; padding-right: 15px;" class="valign-wrapper">
+              <%= image_tag current_user.avatar.url(:thumb), class: 'circle valign', style: 'margin-top: 0;',
+                            height: '32', width: '32' %>
+              <%= link_to current_user, class: 'valign white-text', style: ' margin-bottom: 28px; height: 32px;', method: :get do %>
+                  <%= current_user.full_name %>
+              <% end %>
+            </div>
+          </div>
+        </li>
+        <li>
+          <!--<a class="waves-effect waves-light btn"></a>-->
+          <%= link_to teams_path, style: 'text-transform: none; padding-left: 0;',
+                      class: 'btn-flat navbar-button', method: :get do %>
+              <i class="material-icons left">people</i>Equipas
+          <% end %>
+        </li>
+        <li>
+          <%= link_to users_path, style: 'text-transform: none; padding-left: 0;',
+                      class: 'btn-flat navbar-button', method: :get do %>
+              <i class="material-icons left">person</i>Membros
+          <% end %>
+        </li>
+      </ul>
+    </div>
+  </nav>
+</div>
+
+<div id="map"></div>
+
+
 
 <!-- TODO: MARGIN-BOTTOM A 150PX OU MAIS PEQUENO E MUDAR CONTROLOS DE ZOOM DE LUGAR!? -->
 <div id="sidebar" class="sidebar sidebar-right collapsed" style="max-height: 75%; min-height: 200px;">
@@ -37,7 +120,7 @@
     <ul role="tablist">
       <li>
         <a id="about-tab-icon" href="#about_sidebar" role="tab">
-          <i class="material-icons extra-padding">help</i>
+          <i class="material-icons extra-padding">settings</i>
         </a>
       </li>
     </ul>
@@ -113,6 +196,11 @@
         <div class="white z-depth-1" style="margin: 10px; padding: 10px;">
           <h5>As minhas equipas</h5>
           <div class="divider"></div>
+          <div class="center" style="margin-bottom: 10px;">
+            <%= link_to "#!", id: 'remove-navbar', class: 'waves-effect waves-light btn' do %>
+                Remover barra
+            <% end %>
+          </div>
         </div>
       </div>
     </div>
@@ -286,6 +374,7 @@
       <h1 class="sidebar-header">Teste Localização
         <div class="sidebar-close"><i class="fa fa-caret-right"></i></div>
       </h1>
+
       <div class="list_wrapper" style="padding-right: 10px;">
         <p class="center" style="font-weight: 300;">UPDATES DA LOCALIZAÇÃO ATUAL!</p>
         <ul id="current_position_list" class="collection" style="margin-bottom: 7.5px;">
@@ -295,14 +384,19 @@
     </div>
 
     <div class="sidebar-pane" id="about_sidebar">
-      <h1 class="sidebar-header" style="font-weight: 300">Acerca do projeto
+      <h1 class="sidebar-header" style="font-weight: 300">Definições
         <div class="sidebar-close"><i class="fa fa-caret-right"></i></div>
       </h1>
+
+      <div class="list_wrapper" style="padding-right: 10px;">
+        <p>
+          <input type="checkbox" class="filled-in" id="homepage-toggle-navbar" checked="checked"/>
+          <label for="homepage-toggle-navbar">Mostrar barra de navegação</label>
+        </p>
+      </div>
     </div>
   </div>
 </div>
-
-<div id="map"></div>
 
 <!--<div id="location_div">-->
 <!--<div id="location_symbol">-->
