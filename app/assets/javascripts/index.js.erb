@@ -826,7 +826,7 @@ function addTeamToMap(json) {
     onEachFeature: onEachTeam
   });
 
-  if (json_arr.features.length == 1)
+  if (json_arr.type === "Feature")
     noty({
       text: 'Uma equipa foi atualizada!', timeout: 3500,
       type: 'success', layout: 'bottomCenter'
@@ -1091,7 +1091,7 @@ function onEachTeam(feature, layer) {
       '<b>Latitude: </b>' + feature.geometry.coordinates[1] + ';<br>' +
       '<b>Longitude: </b>' + feature.geometry.coordinates[0] + '</p>' +
       '<div class="center-align"><a data-method="get" href="/teams/' + feature.properties.f_id + '" ' +
-      'class="waves-effect waves-light btn white-text" style="width: 100%;">Ir para equipa</a></div>');
+      'class="waves-effect waves-light btn white-text" target="_blank" style="width: 100%;">Ir para equipa</a></div>');
 
   layer.bindPopup(popup);
 }

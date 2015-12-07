@@ -59,7 +59,7 @@
 
             <div class="col l8 m12 s7">
               <h5 style="font-weight: 300;">
-                <%= link_to current_user.full_name, current_user, :method => :get %>
+                <%= link_to current_user.full_name, current_user, target: '_blank', :method => :get %>
               </h5>
 
               <div class="divider center-align" style="width: 70%; margin-left: 15%;"></div>
@@ -84,7 +84,8 @@
             </div>
 
             <div class="col l6" style="padding-left: 3px;">
-              <%= link_to edit_user_path(current_user), method: :get, class: 'left waves-effect waves-light btn',
+              <%= link_to edit_user_path(current_user), method: :get, target: '_blank',
+                          class: 'left waves-effect waves-light btn',
                           style: 'padding-left: 10px; padding-right: 10px;' do %>
                   <i class="material-icons left">edit</i>Editar
               <% end %>
@@ -124,9 +125,19 @@
       </h1>
 
       <div class="list_wrapper">
-        <p class="center" style="font-weight: 300;">A mostrar as 15 equipas alteradas recentemente</p>
-        <ul id="recent_teams_list" class="collapsible" data-collapsible="accordion" style="margin-right: 10px;">
+        <div class="row valign-wrapper" style="margin-top: 10px; margin-bottom: 10px;">
+          <div class="col l7 m7 s7" style="padding: 0;">
+            <p class="center" style="font-weight: 300; margin: 0;">A mostrar as 15 equipas alteradas recentemente</p>
+          </div>
+          <div class="col l5 m5 s5">
+            <%= link_to teams_url, method: :get, target: '_blank', style: 'width: 100%; padding: 0 10px;',
+                        class: 'right waves-effect waves-light btn valign' do %>
+                Ver todas
+            <% end %>
+          </div>
+        </div>
 
+        <ul id="recent_teams_list" class="collapsible" data-collapsible="accordion" style="margin-right: 10px;">
           <% @recently_changed_teams.each do |team| %>
               <li>
                 <div class="collapsible-header" style="padding-top: 5px; padding-bottom: 5px;">
@@ -137,8 +148,8 @@
                     </span>
                   </div>
                   <div class="collapse_header_link">
-                    <%= link_to team, method: :get, :data => {:position => 'left', :delay => '15',
-                                                              :tooltip => 'Ver mais detalhes'},
+                    <%= link_to team, method: :get, target: '_blank', :data => {:position => 'left', :delay => '15',
+                                                                                :tooltip => 'Ver mais detalhes'},
                                 class: 'tooltipped edit-team-btn waves-effect waves-teal btn-flat' do %>
                         <i class="material-icons">more_vert</i>
                     <% end %>
@@ -147,7 +158,6 @@
 
                 <div class="collapsible-body">
                   <ul class="collection">
-
                     <% TeamMember.where(team_id: team.id).order(is_leader: :desc).each do |t_member| %>
                         <% @t_user = User.find_by(id: t_member.user_id) %>
 
@@ -165,16 +175,56 @@
                           <p><%= @t_user.profile %></p>
                         </li>
                     <% end %>
-
                   </ul>
                 </div>
               </li>
           <% end %>
-
         </ul>
         <div class="center" style="margin-bottom: 10px;">
-          <%= link_to teams_url, method: :get, class: 'waves-effect waves-light btn' do %>
+          <%= link_to teams_url, method: :get, target: '_blank', class: 'waves-effect waves-light btn' do %>
               Ver todas
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar-pane" id="users">
+      <h1 class="sidebar-header" style="font-weight: 300">Utilizadores mais ativos
+        <div class="sidebar-close"><i class="fa fa-caret-right"></i></div>
+      </h1>
+
+      <div class="list_wrapper" style="padding-right: 10px;">
+        <div class="row valign-wrapper" style="margin-top: 10px; margin-bottom: 10px;">
+          <div class="col l7 m7 s7" style="padding: 0;">
+            <p class="center" style="font-weight: 300; margin: 0;">A mostrar os 15 utilizadores mais ativos</p>
+          </div>
+          <div class="col l5 m5 s5">
+            <%= link_to users_url, method: :get, target: '_blank', style: 'width: 100%; padding: 0 10px;',
+                        class: 'right waves-effect waves-light btn valign' do %>
+                Ver todos
+            <% end %>
+          </div>
+        </div>
+
+        <ul class="collection" style="margin-bottom: 7.5px;">
+          <% @most_active_users.each do |user| %>
+              <li class="collection-item avatar">
+                <%= image_tag user.avatar.url(:thumb), class: 'circle responsive-img' %>
+                <span class="title" style="font-weight: 300">
+                  <%= link_to user, method: :get, target: '_blank',
+                              class: '' do %>
+                      <%= user.first_name %> <%= user.last_name %>
+                  <% end %>
+                </span>
+
+                <p><%= user.email %></p>
+              </li>
+          <% end %>
+        </ul>
+
+        <div class="center" style="margin-bottom: 10px;">
+          <%= link_to users_url, method: :get, target: '_blank', class: 'waves-effect waves-light btn' do %>
+              Ver todos
           <% end %>
         </div>
       </div>
@@ -230,39 +280,6 @@
           </div>
         </div>
       </div>
-    </div>
-
-    <div class="sidebar-pane" id="users">
-      <h1 class="sidebar-header" style="font-weight: 300">Utilizadores mais ativos
-        <div class="sidebar-close"><i class="fa fa-caret-right"></i></div>
-      </h1>
-      <div class="list_wrapper" style="padding-right: 10px;">
-        <p class="center" style="font-weight: 300;">A mostrar os 15 utilizadores mais ativos</p>
-        <ul class="collection" style="margin-bottom: 7.5px;">
-
-          <% @most_active_users.each do |user| %>
-              <li class="collection-item avatar">
-                <%= image_tag user.avatar.url(:thumb), class: 'circle responsive-img' %>
-                <span class="title" style="font-weight: 300">
-
-                  <%= link_to user, method: :get,
-                              class: '' do %>
-                      <%= user.first_name %> <%= user.last_name %>
-                  <% end %>
-                </span>
-
-                <p><%= user.email %></p>
-              </li>
-          <% end %>
-
-        </ul>
-        <div class="center" style="margin-bottom: 10px;">
-          <%= link_to users_url, method: :get, class: 'waves-effect waves-light btn' do %>
-              Ver todos
-          <% end %>
-        </div>
-      </div>
-
     </div>
 
     <div class="sidebar-pane" id="search">
