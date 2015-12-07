@@ -2,7 +2,7 @@
 
 <% @show_search_stuff = true %>
 
-<% content_for :title, "Utilizadores :: GestãoEmergência" %>
+<% content_for :title, "Utilizadores :: PROCIV Portugal" %>
 
 <% content_for :search_stuff do %>
     <div class="row white-text indigo darken-4" id="search" style="display: none; position: fixed; width: 100%; z-index: 9999;">
@@ -11,6 +11,24 @@
                placeholder="Comece a escrever o nome do utilizador...">
       </div>
     </div>
+<% end %>
+
+<% content_for :navbar_buttons do %>
+    <li>
+      <%= link_to root_path, class: 'navbar-button', target: '_blank', method: :get do %>
+          Mapa
+      <% end %>
+    </li>
+    <li>
+      <%= link_to teams_path, class: 'navbar-button', target: '_blank', method: :get do %>
+          Equipas
+      <% end %>
+    </li>
+    <li>
+      <%= link_to users_path, class: 'navbar-button active', target: '_blank', method: :get do %>
+          Membros
+      <% end %>
+    </li>
 <% end %>
 
 

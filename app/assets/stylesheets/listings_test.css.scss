@@ -307,3 +307,9 @@ label {
   background-position: center center;
   background-size: cover;
 }
+
+
+.navbar-buttons a.active {
+  border: none;
+  background-color: rgba(0, 0, 0, 0.1);
+}

@@ -27,9 +27,12 @@
     <div class="nav-wrapper container">
       <ul class="left">
         <li>
-          <%= link_to root_path, style: 'font-size: 1.2rem; font-weight: 100; margin-top: 0;',
+          <%= link_to 'http://www.prociv.pt/Pages/default.aspx', target: '_blank', id: 'navbar-icon-div',
+                      style: 'font-size: 1.2rem; font-weight: 100; margin-top: 0;',
                       class: 'navbar-padding-top brand-logo left', method: :get do %>
-              <i id="navbar-map-btn" class="material-icons left">map</i>Mapa
+              <!--<i id="navbar-map-btn" class="material-icons left">map</i>Mapa-->
+              <%= image_tag 'prociv_logotipo.gif', class: 'circle left',
+                            style: 'margin-top: 8px; margin-right: 10px;', height: '48', width: '48' %>PROCIV
           <% end %>
           </a>
         </li>
@@ -37,22 +40,14 @@
       <a href="#" data-activates="mobile-demo" class="right button-collapse">
         <i class="material-icons">menu</i>
       </a>
-      <ul class="right hide-on-med-and-down">
+      <ul class="navbar-buttons right hide-on-med-and-down">
+        <%= yield(:navbar_buttons) %>
         <li>
-          <%= link_to teams_path, class: 'navbar-button', method: :get do %>
-              Equipas
-          <% end %>
-        </li>
-        <li>
-          <%= link_to users_path, class: 'navbar-button', method: :get do %>
-              Membros
-          <% end %>
-        </li>
-        <li>
-          <%= link_to "#!", class: 'dropdown-button', data: {activates: "dropdown1"}, style: 'height: 64px;' do %>
-              <%= image_tag current_user.avatar.url(:thumb), class: 'circle', style: 'margin-top: 15px;',
-                            height: '32', width: '32' %>
-              <i class="material-icons right">arrow_drop_down</i>
+          <%= link_to "#!", id: 'navbar-profile-div', class: 'dropdown-button', data: {activates: "dropdown-profile"},
+                      style: 'height: 64px;' do %>
+              <%= image_tag current_user.avatar.url(:thumb), class: 'circle left',
+                            style: 'margin-top: 15px; margin-right: 10px;', height: '32', width: '32' %>
+              <%= current_user.first_name %><i class="material-icons right">arrow_drop_down</i>
           <% end %>
 
         </li>
@@ -74,20 +69,20 @@
           </ul>
       <% end %>
 
-      <ul id="dropdown1" class="dropdown-content">
+      <ul id="dropdown-profile" class="dropdown-content">
         <li>
-          <%= link_to current_user, style: 'padding: 14px 5px;', method: :get do %>
+          <%= link_to current_user, method: :get do %>
               Ver perfil
           <% end %>
         </li>
         <li>
-          <%= link_to edit_user_path(current_user), style: 'padding: 14px 5px;', method: :get do %>
+          <%= link_to edit_user_path(current_user), method: :get do %>
               Editar perfil
           <% end %>
         </li>
         <li class="divider"></li>
         <li>
-          <%= link_to destroy_user_session_path, style: 'padding: 14px 5px;', method: :delete do %>
+          <%= link_to destroy_user_session_path, method: :delete do %>
               Logout
           <% end %>
         </li>
@@ -98,11 +93,11 @@
         <li style="padding: 0;">
           <div id="teste-sidenav" style="height: 120px;">
             <div style="padding-top: 56px; height: 120px; padding-left: 15px; padding-right: 15px;" class="valign-wrapper">
-                <%= image_tag current_user.avatar.url(:thumb), class: 'circle valign', style: 'margin-top: 0;',
-                              height: '32', width: '32' %>
-                <%= link_to current_user, class: 'valign white-text', style: ' margin-bottom: 28px; height: 32px;', method: :get do %>
-                    <%= current_user.full_name %>
-                <% end %>
+              <%= image_tag current_user.avatar.url(:thumb), class: 'circle valign', style: 'margin-top: 0;',
+                            height: '32', width: '32' %>
+              <%= link_to current_user, class: 'valign white-text', style: ' margin-bottom: 28px; height: 32px;', method: :get do %>
+                  <%= current_user.full_name %>
+              <% end %>
             </div>
           </div>
         </li>

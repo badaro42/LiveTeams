@@ -1,7 +1,25 @@
 <%# encoding: utf-8 %>
 
 <% @show_search_stuff = false %>
-<% content_for :title, "Nova equipa :: GestãoEmergência" %>
+<% content_for :title, "Nova equipa :: PROCIV Portugal" %>
+
+<% content_for :navbar_buttons do %>
+    <li>
+      <%= link_to root_path, class: 'navbar-button', target: '_blank', method: :get do %>
+          Mapa
+      <% end %>
+    </li>
+    <li>
+      <%= link_to teams_path, class: 'navbar-button active', target: '_blank', method: :get do %>
+          Equipas
+      <% end %>
+    </li>
+    <li>
+      <%= link_to users_path, class: 'navbar-button', target: '_blank', method: :get do %>
+          Membros
+      <% end %>
+    </li>
+<% end %>
 
 <div class="white z-depth-2">
   <div class="row" style="margin: 20px; padding-bottom: 15px;">
