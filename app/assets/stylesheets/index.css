@@ -75,7 +75,10 @@ html, body, #container {
 /* ************************* OVERRIDE DO Z-INDEX DA SIDEBAR LATERAL ************************** */
 .sidebar {
     z-index: 99;
-    top: 74px;
+    min-height: 240px;
+
+    /*max-height: 75%;*/
+    /*max-height: 90%;*/
 }
 
 /* ******************************************************************************************* */
@@ -106,6 +109,23 @@ html, body, #container {
 
     #entity_description_div {
         padding-bottom: 25px;
+    }
+
+    #navbar-icon-div {
+        margin-left: 3px;
+    }
+
+    #navbar-icon-div img {
+        margin-top: 7px;
+        margin-right: 10px;
+    }
+
+    .sidebar {
+        top: 56px;
+    }
+
+    #hamburguer-homepage {
+        margin-right: 2px;
     }
 }
 
@@ -138,6 +158,20 @@ html, body, #container {
 
     .sidebar {
         width: 50%;
+        top: 74px;
+    }
+
+    #navbar-icon-div {
+        margin-left: 3px;
+    }
+
+    #navbar-icon-div img {
+        margin-top: 11px;
+        margin-right: 10px;
+    }
+
+    #hamburguer-homepage {
+        margin-right: 10px;
     }
 }
 
@@ -164,6 +198,20 @@ html, body, #container {
 
     .sidebar {
         width: 40%;
+        top: 74px;
+    }
+
+    #navbar-icon-div {
+        margin-left: 10px;
+    }
+
+    #navbar-icon-div img {
+        margin-top: 11px;
+        margin-right: 10px;
+    }
+
+    .navbar-buttons {
+        margin-right: 10px;
     }
 }
 
@@ -353,7 +401,6 @@ html, body, #container {
     font-size: 12px;
 }
 
-
 /*regras para o header da lista expansivel de equipas*/
 .collapse_header_text {
     float: left;
@@ -371,7 +418,6 @@ html, body, #container {
 .collapse_header_link > a {
     margin-top: 0;
 }
-
 
 /*css para aquele pequeno badge na barra lateral dos alertas*/
 .badge1 {
@@ -393,7 +439,6 @@ html, body, #container {
     border-radius: 50%;
     box-shadow: 0 0 1px #333;
 }
-
 
 /*regras para os botoes das popups das entidades geograficas*/
 

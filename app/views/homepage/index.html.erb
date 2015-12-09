@@ -9,18 +9,31 @@
                       style: 'font-size: 1.2rem; font-weight: 100; margin-top: 0;',
                       class: 'navbar-padding-top brand-logo left', method: :get do %>
               <!--<i id="navbar-map-btn" class="material-icons left">map</i>Mapa-->
-              <%= image_tag 'prociv_logotipo.gif', class: 'circle left',
-                            style: 'margin-top: 8px; margin-right: 10px;', height: '48', width: '48' %>
+              <%= image_tag 'prociv_logotipo.gif', class: 'circle left', height: '42', width: '42' %>
               <span>PROCIV</span>
           <% end %>
           </a>
         </li>
       </ul>
-      <a href="#" data-activates="mobile-demo" class="right button-collapse">
+      <a href="#" id="hamburguer-homepage" data-activates="mobile-demo" class="right button-collapse">
         <i class="material-icons">menu</i>
       </a>
       <ul class="navbar-buttons right hide-on-med-and-down">
-        <%= yield(:navbar_buttons) %>
+        <li>
+          <%= link_to root_path, class: 'navbar-button active', method: :get do %>
+              Mapa
+          <% end %>
+        </li>
+        <li>
+          <%= link_to teams_path, class: 'navbar-button', target: '_blank', method: :get do %>
+              Equipas
+          <% end %>
+        </li>
+        <li>
+          <%= link_to users_path, class: 'navbar-button active', target: '_blank', method: :get do %>
+              Membros
+          <% end %>
+        </li>
         <li>
           <%= link_to "#!", id: 'navbar-profile-div', class: 'dropdown-button', data: {activates: "dropdown-profile"},
                       style: 'height: 64px;' do %>
@@ -86,7 +99,7 @@
 
 
 <!-- TODO: MARGIN-BOTTOM A 150PX OU MAIS PEQUENO E MUDAR CONTROLOS DE ZOOM DE LUGAR!? -->
-<div id="sidebar" class="sidebar sidebar-right collapsed" style="max-height: 75%; min-height: 200px;">
+<div id="sidebar" class="sidebar sidebar-right collapsed">
   <!-- Nav tabs -->
   <div class="sidebar-tabs">
     <ul role="tablist">
@@ -389,10 +402,16 @@
       </h1>
 
       <div class="list_wrapper" style="padding-right: 10px;">
-        <p>
-          <input type="checkbox" class="filled-in" id="homepage-toggle-navbar" checked="checked"/>
-          <label for="homepage-toggle-navbar">Mostrar barra de navegação</label>
-        </p>
+        <div>
+          <div style="margin-top: 15px;">
+            <input type="checkbox" class="filled-in" id="homepage-toggle-navbar" checked="checked"/>
+            <label for="homepage-toggle-navbar">Mostrar barra de navegação</label>
+          </div>
+          <blockquote style="margin-top: 5px;">
+            Ao esconder a barra de navegação superior, a barra lateral passa a apresentar mais 2 abas,
+            que contém a listagem das equipas e dos utilizadores.
+          </blockquote>
+        </div>
       </div>
     </div>
   </div>

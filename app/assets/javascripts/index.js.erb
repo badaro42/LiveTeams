@@ -1,3 +1,6 @@
+// constantes
+var SMARTHPHONE_MAX_WIDTH = 600;
+
 var entity_types = {
   circle: "Círculo",
   rectangle: "Rectângulo",
@@ -15,10 +18,13 @@ var all_teams; // cada entrada é da forma {id: feature_id, marker: L.marker(L.l
 var previous_user_location; // {timestamp: Date(), position: L.latLng(lat, lng)}
 var no_sleep_enabled = false;
 var is_modal_open = false;
-var curr_user_preferences;
 
-// local storage - objeto com as preferencias do utilizador!
-var options_to_store = {};
+
+// variaveis relacionadas com a navbar
+var curr_user_preferences = { // local storage - objeto com as preferencias do utilizador!
+  show_navbar: null
+};
+var last_window_height;
 
 // var incrementada quando um dos conjuntos de dados é carregado - equipas e entidades
 var geo_data_loaded = 0;
@@ -44,7 +50,11 @@ $(document).ready(function () {
 //  $.ajaxSetup({ cache:true });
 
   // verifica as preferencias do utilizador no objeto localStorage
+  last_window_height = window.innerHeight;
   checkUserPreferences();
+
+  // listener que é executado quando a janela é redimensionada
+  window.onresize = onWindowResize;
 
   // listener para quando o utilizador carrega na checkbox para mostrar/esconder a navbar
   $('#homepage-toggle-navbar').on('change', function () {
@@ -1220,45 +1230,120 @@ function getURLParameter(param) {
  * Le as preferencias do utilizador a partir do localStorage
  */
 function checkUserPreferences() {
-  curr_user_preferences = JSON.parse(localStorage.getItem('user' + gon.user_id));
+  var local_storage_user_prefs = JSON.parse(localStorage.getItem('user' + gon.user_id));
   console.log("preferencias do utilizador");
   console.log(curr_user_preferences);
 
   var show_navbar_checkbox = $('#homepage-toggle-navbar');
 
   // o utilizador ja iniciou sessão, vamos obter as suas preferencias
-  if (curr_user_preferences !== null) {
-    if (!curr_user_preferences.show_navbar) {
+  if (local_storage_user_prefs !== null) {
+    if (!local_storage_user_prefs.show_navbar) {
       toggleNavBar(false);
       show_navbar_checkbox.prop('checked', false);
     }
-    else
+    else {
+      toggleNavBar(true);
       show_navbar_checkbox.prop('checked', true);
+    }
   }
   else {
-    options_to_store.show_navbar = true;
-    localStorage.setItem('user' + gon.user_id, JSON.stringify(options_to_store));
+    toggleNavBar(true);
+//    curr_user_preferences.show_navbar = true;
+//    localStorage.setItem('user' + gon.user_id, JSON.stringify(curr_user_preferences));
+
+    console.log(curr_user_preferences);
   }
 }
 
+// ESTA A FUNCIONAR BEM, FALTA O RESIZE!
 // mostra ou esconde a barra de navegação
 // grava no localStorage o estado atual da navbar
 function toggleNavBar(to_show) {
-  if (to_show) {
-    var height_percentage = (1 - (64/window.innerHeight))*100;
-//    var map_height = $('#map').height() - 64;
-    console.log(height_percentage);
+  var new_sidebar_height, new_top;
+  var curr_window_height = window.innerHeight,
+      curr_window_width = window.innerWidth,
+      navbar_height = $('#frontpage-navbar').height(),
+      new_map_height = window.innerHeight - navbar_height,
+      sidebar_padding = 10;
 
-    $('#frontpage-navbar').slideDown({duration: 'slow', queue: false});
-    $('#map').animate({'height': height_percentage+'%', queue: false});
-    $('#sidebar').animate({'top': '74px', queue: false});
-    options_to_store.show_navbar = true;
+  if (to_show) {
+    if (curr_window_width <= SMARTHPHONE_MAX_WIDTH) {
+      new_top = navbar_height;
+      new_sidebar_height = curr_window_height - navbar_height;
+    }
+    else {
+      new_top = navbar_height + sidebar_padding;
+      new_sidebar_height = curr_window_height - navbar_height - 2*sidebar_padding;
+    }
+
+    $('#frontpage-navbar').slideDown({queue: false});
+    $('#map').animate({'height': new_map_height, duration: 'slow', queue: false});
+    $('#sidebar').animate({'top': new_top+'px', 'height': new_sidebar_height+'px', duration: 'slow', queue: false});
+    curr_user_preferences.show_navbar = true;
   }
   else {
-    $('#frontpage-navbar').slideUp({duration: 'slow', queue: false});
+    if (curr_window_width <= SMARTHPHONE_MAX_WIDTH) {
+      new_top = 0;
+      new_sidebar_height = curr_window_height;
+    }
+    else {
+      new_top = sidebar_padding;
+      new_sidebar_height = curr_window_height - 2*sidebar_padding;
+    }
+
+    $('#frontpage-navbar').slideUp({queue: false});
+
+    $('#sidebar').animate({'top': new_top+'px', 'height': new_sidebar_height+'px', duration: 'slow', queue: false});
     $('#map').animate({'height': '100%', queue: false});
-    $('#sidebar').animate({'top': '10px', queue: false});
-    options_to_store.show_navbar = false;
+    curr_user_preferences.show_navbar = false;
   }
-  localStorage.setItem('user' + gon.user_id, JSON.stringify(options_to_store));
+  localStorage.setItem('user' + gon.user_id, JSON.stringify(curr_user_preferences));
+}
+
+//TODO: ^^^^^^^^^^
+//TODO: CORRIGIR ALGUNS PROBLEMAS NAS DIMENSOES DOS ELEMENTOS AQUANDO DO RESIZE!!!!!
+//TODO: vvvvvvvvv
+
+function onWindowResize(event) {
+  var new_sidebar_top, new_sidebar_height;
+  var curr_window_height = window.innerHeight,
+      curr_window_width = window.innerWidth,
+      navbar_height = $('#frontpage-navbar').height(),
+      new_map_height = curr_window_height - navbar_height;
+
+  if (curr_user_preferences.show_navbar) {
+    if (curr_window_width <= SMARTHPHONE_MAX_WIDTH) {
+      new_sidebar_top = 56;
+      new_sidebar_height = curr_window_height - navbar_height;
+    }
+    else {
+      new_sidebar_top = 74;
+      new_sidebar_height = curr_window_height - navbar_height - 20;
+      console.log("aqui aqui");
+    }
+
+    // reajusta a altura do mapa sempre que a altura da janela se altera
+    $('#map').css({height: new_map_height});
+
+    // reajusta a altura do mapa sempre que a altura da janela se altera
+    $('#sidebar').css({height: new_sidebar_height, top: new_sidebar_top+'px'});
+  }
+  else {
+    if (curr_window_width <= SMARTHPHONE_MAX_WIDTH) {
+      new_sidebar_top = 0;
+      new_sidebar_height = curr_window_height;
+    }
+    else {
+      new_sidebar_top = 10;
+      new_sidebar_height = curr_window_height - 20;
+      console.log("aqui aqui");
+    }
+
+    // reajusta a altura do mapa sempre que a altura da janela se altera
+    $('#map').css({height: '100%'});
+
+    // reajusta a altura do mapa sempre que a altura da janela se altera
+    $('#sidebar').css({height: new_sidebar_height, top: new_sidebar_top+'px'});
+  }
 }
