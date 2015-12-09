@@ -49,6 +49,21 @@ $(document).ready(function () {
   // TODO: TENTATIVA DE FAZER CACHE DOS PEDIDOS AJAX.. MAS NAO SEI SE DÁ
 //  $.ajaxSetup({ cache:true });
 
+  // inicialização da dropdown da barra de navegação
+  $('.dropdown-button').dropdown({
+        inDuration: 300,
+        outDuration: 225,
+        constrain_width: true, // Does not change width of dropdown to that of the activator
+        hover: true, // Activate on hover
+        gutter: 0, // Spacing from edge
+        belowOrigin: true, // Displays dropdown below the button
+        alignment: 'left' // Displays dropdown with edge aligned to the left of button
+      }
+  );
+
+  // inicialização da barra de navegação lateral
+  $(".button-collapse").sideNav();
+
   // verifica as preferencias do utilizador no objeto localStorage
   last_window_height = window.innerHeight;
   checkUserPreferences();
@@ -1249,9 +1264,6 @@ function checkUserPreferences() {
   }
   else {
     toggleNavBar(true);
-//    curr_user_preferences.show_navbar = true;
-//    localStorage.setItem('user' + gon.user_id, JSON.stringify(curr_user_preferences));
-
     console.log(curr_user_preferences);
   }
 }

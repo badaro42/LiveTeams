@@ -71,12 +71,12 @@
 
       <ul id="dropdown-profile" class="dropdown-content">
         <li>
-          <%= link_to current_user, method: :get do %>
+          <%= link_to current_user, target: '_blank', method: :get do %>
               Ver perfil
           <% end %>
         </li>
         <li>
-          <%= link_to edit_user_path(current_user), method: :get do %>
+          <%= link_to edit_user_path(current_user), target: '_blank', method: :get do %>
               Editar perfil
           <% end %>
         </li>
@@ -91,18 +91,18 @@
       <!-- barra lateral ativada em ecras mais pequenos -->
       <ul class="side-nav" id="mobile-demo">
         <li style="padding: 0;">
-          <div id="teste-sidenav" style="height: 120px;">
+          <div id="profile-sidenav" style="height: 120px;">
             <div style="padding-top: 56px; height: 120px; padding-left: 15px; padding-right: 15px;" class="valign-wrapper">
               <%= image_tag current_user.avatar.url(:thumb), class: 'circle valign', style: 'margin-top: 0;',
                             height: '32', width: '32' %>
-              <%= link_to current_user, class: 'valign white-text', style: ' margin-bottom: 28px; height: 32px;', method: :get do %>
+              <%= link_to current_user, class: 'valign white-text', style: ' margin-bottom: 28px; height: 32px;',
+                          method: :get do %>
                   <%= current_user.full_name %>
               <% end %>
             </div>
           </div>
         </li>
         <li>
-          <!--<a class="waves-effect waves-light btn"></a>-->
           <%= link_to teams_path, style: 'text-transform: none; padding-left: 0;',
                       class: 'btn-flat navbar-button', method: :get do %>
               <i class="material-icons left">people</i>Equipas
@@ -112,6 +112,26 @@
           <%= link_to users_path, style: 'text-transform: none; padding-left: 0;',
                       class: 'btn-flat navbar-button', method: :get do %>
               <i class="material-icons left">person</i>Membros
+          <% end %>
+        </li>
+        <li class="divider"></li>
+        <li>
+          <%= link_to current_user, style: 'text-transform: none; padding-left: 0;',
+                      class: 'btn-flat navbar-button', method: :get do %>
+              <i class="material-icons left">account_box</i>Ver perfil
+          <% end %>
+        </li>
+        <li>
+          <%= link_to edit_user_path(current_user), style: 'text-transform: none; padding-left: 0;',
+                      class: 'btn-flat navbar-button', method: :get do %>
+              <i class="material-icons left">edit</i>Editar perfil
+          <% end %>
+        </li>
+        <li class="divider"></li>
+        <li>
+          <%= link_to destroy_user_session_path, style: 'text-transform: none; padding-left: 0;',
+                      class: 'btn-flat navbar-button', method: :get do %>
+              <i class="material-icons left">power_settings_new</i>Logout
           <% end %>
         </li>
       </ul>

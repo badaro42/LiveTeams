@@ -441,8 +441,21 @@ html, body, #container {
 }
 
 /*regras para os botoes das popups das entidades geograficas*/
-
 .geo-popup-btn {
     padding-left: 20px;
     padding-right: 20px;
+}
+
+
+/*cenas para a barra de navegação da pagina principal*/
+.navbar-buttons a.active {
+    border: none;
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+#profile-sidenav {
+    background-image: image-url("google_back_black_red.jpg");
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
 }
