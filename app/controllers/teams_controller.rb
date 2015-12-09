@@ -1,7 +1,6 @@
 class TeamsController < ApplicationController
   before_action :set_team, only: [:show, :edit, :update, :destroy]
-  before_action :set_all_users, only: [:new, :edit]
-  before_action :set_users_not_in_this_team, only: [:show]
+  # before_action :set_users_not_in_this_team, only: [:show, :edit]
   before_action :set_team_geo_entities, only: [:show, :destroy]
   before_filter :authenticate_user!
 
@@ -80,6 +79,9 @@ class TeamsController < ApplicationController
   def new
     @team = Team.new
     @users_in_team = @team.users
+
+    users_that_can_be_added("new")
+    users_that_can_be_removed("new")
   end
 
   # GET /teams/1/edit
@@ -88,6 +90,9 @@ class TeamsController < ApplicationController
       flash[:error] = "A equipa que procura não existe!"
       redirect_to teams_url
     else
+      users_that_can_be_added("edit")
+      users_that_can_be_removed("edit")
+
       @users_in_team = @team.users
       @team_leader = TeamMember.find_by(team_id: @team.id, is_leader: true)
 
@@ -255,46 +260,61 @@ class TeamsController < ApplicationController
                                                    @team.id.to_s + "' = ANY(team_ids);")
   end
 
-  # def set_users_without_team
-  #   members_unique_ids = TeamMember.uniq(:user_id).select(:user_id)
-  #   @users_without_team = User.where.not(id: members_unique_ids)
-  # end
 
-  def set_all_users
-    @all_users = User.all
+  # todos os utilizadores que podem ser adicionados à equipa
+  # CREATE: todos os utilizadores que estejam no sistema e nao sejam "básicos"
+  # EDIT: todos os utilizadores que não estejam na equipa e não sejam "básicos"
+  def users_that_can_be_added(action)
+    @users_for_add_select = []
+    if action == "new"
+      users_arr = User.all
+      @users_for_add_select = set_users_for_multiple_select(users_arr, false)
+    else
+      members_ids = TeamMember.where(team_id: @team.id).select(:user_id)
+      users_not_in_this_team = User.where.not(id: members_ids).order(first_name: :asc, last_name: :asc)
+      @users_for_add_select = set_users_for_multiple_select(users_not_in_this_team, false)
+    end
   end
 
-  def set_users_not_in_this_team
-    @all_users_arr = [["Administrador", []], ["Gestor", []], ["Operacional", []]]
-
-    members_ids = TeamMember.where(team_id: @team.id).select(:user_id)
-    users_not_in_this_team = User.where.not(id: members_ids).order(first_name: :asc, last_name: :asc)
-
-    # os ciclos de baixo colocam os utilizadores que ainda nao estao na equipa dentro dum array
-    # para dps ser apresentado com grupos por perfil
-    users_not_in_this_team.where(profile: User::ADMINISTRADOR).each do |user|
-      elem = []
-      elem.push(user.full_name)
-      elem.push(user.id)
-      @all_users_arr[0][1].push(elem)
+  # os utilizadores que ja se encontrem na equipa
+  # CREATE: nenhum utilizador irá ser retornado
+  # EDIT: todos os utilizadores que estejam na equipa
+  def users_that_can_be_removed(action)
+    @users_for_remove_select = []
+    if action == "new"
+      @users_for_remove_select = set_users_for_multiple_select([], true) #retorna o arr vazio, apenas com as categorias
+      puts @users_for_remove_select.inspect
+    else
+      members_ids = TeamMember.where(team_id: @team.id).select(:user_id)
+      users_in_this_team = User.where(id: members_ids).order(first_name: :asc, last_name: :asc)
+      @users_for_remove_select = set_users_for_multiple_select(users_in_this_team, false)
     end
-
-    users_not_in_this_team.where(profile: User::GESTOR).each do |user|
-      elem = []
-      elem.push(user.full_name)
-      elem.push(user.id)
-      @all_users_arr[1][1].push(elem)
-    end
-
-    users_not_in_this_team.where(profile: User::OPERACIONAL).each do |user|
-      elem = []
-      elem.push(user.full_name)
-      elem.push(user.id)
-      @all_users_arr[2][1].push(elem)
-    end
-
-    puts @all_users_arr.inspect
   end
+
+  # retorna o array de utilizadores ja ordenados por categoria
+  def set_users_for_multiple_select(users_arr, to_return_empty)
+    values_for_select = [["Administrador", []], ["Gestor", []], ["Operacional", []]]
+
+    if !to_return_empty
+      values_for_select = get_users_by_profile(users_arr, values_for_select, 0, User::ADMINISTRADOR)
+      values_for_select = get_users_by_profile(users_arr, values_for_select, 1, User::GESTOR)
+      values_for_select = get_users_by_profile(users_arr, values_for_select, 2, User::OPERACIONAL)
+    end
+
+    return values_for_select
+  end
+
+  # para cada perfil, coloca os utilizadores dentro do array para depois apresentar no select multiplo
+  def get_users_by_profile(users_arr, return_arr, index, profile)
+    users_arr.where(profile: profile).each do |user|
+      elem = []
+      elem.push(user.full_name)
+      elem.push(user.id)
+      return_arr[index][1].push(elem)
+    end
+    return return_arr
+  end
+
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def team_params

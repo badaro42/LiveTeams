@@ -27,22 +27,42 @@
     </div>
 
     <div class="row">
-      <%= f.label "Adicionar utilizadores à equipa", for: "add_users", style: "padding-left: 10px;" %>
+      <%#= f.label "Adicionar utilizadores à equipa", for: "add_users", style: "padding-left: 10px;" %>
 
-      <div class="add_users">
-        <% @all_users.each do |user| %>
-            <div class="col m4 l3 s6">
-              <% full_name = user.first_name + " " + user.last_name %>
-              <p>
-                <% if @users_in_team.include?(user) %>
-                    <%= f.check_box("users", {:multiple => true, :checked => "checked"}, user.id.to_s, nil) %>
-                <% else %>
-                    <%= f.check_box("users", {:multiple => true}, user.id.to_s, nil) %>
-                <% end %>
-                <%= f.label :full_name, full_name, class: "truncate", for: "team_users_"+user.id.to_s %>
-              </p>
-            </div>
-        <% end %>
+      <div class="row">
+        <div class="col l5 m5 s5">
+          <p class="center" style="text-transform: uppercase">Todos os utilizadores</p>
+        </div>
+        <div class="col l5 m5 s5 push-l2 push-m2 push-s2">
+          <p class="center" style="text-transform: uppercase">Utilizadores na equipa</p>
+        </div>
+      </div>
+
+      <div class="users_forms">
+        <div class="col l5 m5 s5">
+          <%= select_tag 'dropdown_all_users', grouped_options_for_select(@users_for_add_select),
+                         {multiple: true, class: 'browser-default',
+                          style: 'height: 200px;', id: "dropdown_all_users"} %>
+        </div>
+        <div class="col l2 m2 s2 center">
+          <div title="Adicionar utilizadores à equipa">
+            <a id="add_users_to_team" class="waves-effect waves-light btn"
+               style="padding-left: 10px; padding-right: 10px;">
+              <i class="material-icons">keyboard_arrow_right</i>
+            </a>
+          </div>
+          <div title="Remover utilizadores da equipa">
+            <a id="remove_users_from_team" class="red waves-effect waves-light btn"
+               style="padding-left: 10px; padding-right: 10px; margin-top: 10px;">
+              <i class="material-icons">keyboard_arrow_left</i>
+            </a>
+          </div>
+        </div>
+        <div class="col l5 m5 s5" style="height: 200px;">
+          <%= select_tag 'dropdown_users_in_team', grouped_options_for_select(@users_for_remove_select),
+                         {multiple: true, class: 'browser-default',
+                          style: 'height: 200px;', id: "dropdown_users_in_team"} %>
+        </div>
       </div>
     </div>
 
@@ -56,7 +76,7 @@
                             required: true} %>
         <% else %>
             <%= select_tag 'team[is_leader]', options_from_collection_for_select(
-                                                    @users_in_team, :id, :full_name, @team_leader.user_id),
+                @users_in_team, :id, :full_name, @team_leader.user_id),
                            {prompt: 'Escolha um utilizador', class: 'browser-default', id: "select_team_leader",
                             required: true} %>
         <% end %>

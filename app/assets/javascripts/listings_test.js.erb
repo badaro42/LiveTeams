@@ -354,6 +354,49 @@ $(document).ready(function () {
     return false;
   });
 
+  // TODO: DA ESQUERDA PARA A DIREITA ESTA A FUNCIONAR!!!
+  // TODO: FALTA ADICIONAR AS NOVAS ENTRADAS ÀS DROPDOWNS DO FUNDO DA PAGINA
+  // TODO: FALTA IMPLEMENTAR DA DIREITA PARA A ESQUERDA, REMOVENDO AS ENTRADAS DAS DROPDOWNS DO FUNDO
+  // TODO: FALTA CONFIRMAR SE A INSERÇÃO/ATUALIZAÇÃO DA EQUIPA ESTA FUNCIONAL COM ESTAS ALTERAÇÕES TODAS.
+
+  $('#add_users_to_team').on('click', function (e) {
+    console.log("add_users_to_team");
+
+    var users_in_team_select = $('#dropdown_users_in_team');
+    var users_selected = $('#dropdown_all_users :selected');
+
+    $.each(users_selected, function (index, elem) {
+
+      var n_elem = $(elem);
+      var parent = n_elem.parent();
+      var parent_label = parent[0].label;
+
+      console.log(n_elem.val());
+      console.log(n_elem.text());
+
+      console.log(elem);
+      console.log(parent_label);
+      console.log(parent);
+
+      $("#dropdown_users_in_team optgroup[label='" + parent_label + "']")
+          .append($('<option></option>').val(n_elem.val()).text(n_elem.text()));
+
+      $("#dropdown_all_users option[value='" + n_elem.val() + "']").remove();
+    });
+  });
+
+  $('#remove_users_from_team').on('click', function (e) {
+    console.log("remove_users_from_team");
+
+    var users_in_team_select = $('#dropdown_users_in_team');
+    var all_users_select = $('#dropdown_all_users');
+
+
+    var lol = $('#dropdown_users_in_team :selected').length;
+    console.log(lol);
+  });
+
+
   /**
    * Listener para quando uma checkbox é marcada ou desmarcada
    */
