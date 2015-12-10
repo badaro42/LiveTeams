@@ -68,7 +68,8 @@
 <!--</div>-->
 
 <div class="row" style="margin-top: 20px;">
-  <div id="profile-user-info" class="col l4 m12 s12 center-align z-depth-1 profile-div white">
+  <div id="profile-user-info" class="col l4 m12 s12 center-align z-depth-1 profile-div white"
+       style="margin-left: 0px;">
     <div class="col l12 m6 s12">
       <%= image_tag @user.avatar.url(:small), class: 'circle responsive-img' %>
     </div>
@@ -115,7 +116,7 @@
 <div class="row z-depth-1 white">
   <div class="profile-tabs col s12 m12 l12 z-depth-1 white" style="margin-top: 0;">
     <div>
-      <ul id="profile-tabs-list" class="tabs">
+      <ul id="profile-tabs-list" class="tabs" style="overflow-x: auto;">
         <li class="tab col s6">
           <a class="stay-where-you-are active" href="#user-teams">
             Equipas (<%= @user_teams.count %>)

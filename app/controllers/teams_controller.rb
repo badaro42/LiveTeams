@@ -57,6 +57,8 @@ class TeamsController < ApplicationController
       flash[:error] = "A equipa que procura nao existe!"
       redirect_to teams_url
     else
+      users_that_can_be_added("show")
+
       gon.highlight_latlon = @team.latlon_highlight
       gon.current_latlon = @team.latlon
       gon.current_team_id = @team.id
@@ -93,6 +95,8 @@ class TeamsController < ApplicationController
       users_that_can_be_added("edit")
       users_that_can_be_removed("edit")
 
+      gon.current_team_id = @team.id
+
       @users_in_team = @team.users
       @team_leader = TeamMember.find_by(team_id: @team.id, is_leader: true)
 
@@ -119,25 +123,26 @@ class TeamsController < ApplicationController
 
         # adicionar os v�rios membros da equipa, colocar aqui um FOR!
         # todos os elementos sao adicionados como nao sendo lider
-        params[:team][:users].each do |u_id|
-          puts "LOOOOOOOOOOOOOOOL"
-          puts u_id
-          puts params[:team][:id]
+        params[:team][:users][0].split(",").each do |u_id|
+          if u_id.to_i > 0
+            puts "LOOOOOOOOOOOOOOOL"
+            puts u_id
+            puts params[:team][:id]
 
-          puts "LEADER LEADER LEADER LEADER"
-          puts params[:team][:is_leader]
+            puts "LEADER LEADER LEADER LEADER"
+            puts params[:team][:is_leader]
 
-          puts "RESPONSAVEL LOCALIZAÇÃO"
-          puts params[:team][:location_user_id]
+            puts "RESPONSAVEL LOCALIZAÇÃO"
+            puts params[:team][:location_user_id]
 
-          # é o lider, adiciona-se com o parametro a true
-          if u_id == params[:team][:is_leader]
-            team_member = TeamMember.new(:user_id => u_id.to_i, :team_id => @team.id, :is_leader => true)
-          else
-            team_member = TeamMember.new(:user_id => u_id.to_i, :team_id => @team.id, :is_leader => false)
+            # é o lider, adiciona-se com o parametro a true
+            if u_id == params[:team][:is_leader]
+              team_member = TeamMember.new(:user_id => u_id.to_i, :team_id => @team.id, :is_leader => true)
+            else
+              team_member = TeamMember.new(:user_id => u_id.to_i, :team_id => @team.id, :is_leader => false)
+            end
+            team_member.save
           end
-
-          team_member.save
         end
 
         format.html { redirect_to @team, notice: 'create_success' }
@@ -164,14 +169,24 @@ class TeamsController < ApplicationController
 
       if @team.update(team_params)
         # começamos por remover todas as entradas da tabela para esta equipa
-        TeamMember.delete_all(["team_id = ?", @team.id.to_s])
+        TeamMember.delete_all(["team_id = ?", @team.id.to_i])
 
         # por fim, adicionamos novamente os membros da equipa, bem como qual o capit�o
-        params[:team][:users].each do |u_id|
-          if u_id == params[:team][:is_leader]
-            team_member = TeamMember.new(:user_id => u_id, :team_id => @team.id, :is_leader => true)
+        params[:team][:users][0].split(",").each do |u_id|
+          new_id = u_id.to_i
+          leader_id = params[:team][:is_leader].to_i
+          puts "==============================="
+          puts "new_id: "
+          puts new_id
+          puts "leader id: "
+          puts leader_id
+          puts "é a mesma merda?:"
+          puts (new_id === leader_id)
+          puts "==============================="
+          if new_id === leader_id
+            team_member = TeamMember.new(:user_id => new_id, :team_id => @team.id, :is_leader => true)
           else
-            team_member = TeamMember.new(:user_id => u_id, :team_id => @team.id, :is_leader => false)
+            team_member = TeamMember.new(:user_id => new_id, :team_id => @team.id, :is_leader => false)
           end
           team_member.save
         end
@@ -269,7 +284,7 @@ class TeamsController < ApplicationController
     if action == "new"
       users_arr = User.all
       @users_for_add_select = set_users_for_multiple_select(users_arr, false)
-    else
+    elsif action == "edit" || action == "show"
       members_ids = TeamMember.where(team_id: @team.id).select(:user_id)
       users_not_in_this_team = User.where.not(id: members_ids).order(first_name: :asc, last_name: :asc)
       @users_for_add_select = set_users_for_multiple_select(users_not_in_this_team, false)
@@ -281,8 +296,10 @@ class TeamsController < ApplicationController
   # EDIT: todos os utilizadores que estejam na equipa
   def users_that_can_be_removed(action)
     @users_for_remove_select = []
-    if action == "new"
+    if action === "new"
       @users_for_remove_select = set_users_for_multiple_select([], true) #retorna o arr vazio, apenas com as categorias
+
+      puts "CENA DO REMOVE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
       puts @users_for_remove_select.inspect
     else
       members_ids = TeamMember.where(team_id: @team.id).select(:user_id)

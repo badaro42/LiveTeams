@@ -8,6 +8,7 @@ var uri;
 // variaveis da cena da search bar
 var allEntityEntries, allEntityNames, entityNamesIndexed = [], entityEntriesIndexed = [];
 var searchBar, noResultsDiv;
+var create_team_page;
 
 var team_highlight_icon = L.icon({
   iconUrl: '/assets/bullseye-64.png',
@@ -85,6 +86,9 @@ $(document).ready(function () {
   // estamos na pagina para editar equipa - /teams/12/edit
   if (teams_pages) {
     if (edit_page) {
+      create_team_page = false;
+      $('#edit_team_' + gon.current_team_id).submit(selectAllUsersHack);
+
       // TODO: MAPA COM LOCALIZAÇÃO ATUAL, PERMITE ARRASTAR MARCADOR!
       console.log("PÁGINA PARA EDITAR EQUIPA!!!");
 
@@ -138,6 +142,9 @@ $(document).ready(function () {
       team_map.on('click', onMapClick);
     }
     else if (new_page) {
+      create_team_page = true;
+      $('#new_team').submit(selectAllUsersHack);
+
       // TODO: MAPA VAZIO
       console.log("PÁGINA PARA CRIAR NOVA EQUIPA!!!");
 
@@ -354,48 +361,10 @@ $(document).ready(function () {
     return false;
   });
 
-  // TODO: DA ESQUERDA PARA A DIREITA ESTA A FUNCIONAR!!!
-  // TODO: FALTA ADICIONAR AS NOVAS ENTRADAS ÀS DROPDOWNS DO FUNDO DA PAGINA
-  // TODO: FALTA IMPLEMENTAR DA DIREITA PARA A ESQUERDA, REMOVENDO AS ENTRADAS DAS DROPDOWNS DO FUNDO
-  // TODO: FALTA CONFIRMAR SE A INSERÇÃO/ATUALIZAÇÃO DA EQUIPA ESTA FUNCIONAL COM ESTAS ALTERAÇÕES TODAS.
-
-  $('#add_users_to_team').on('click', function (e) {
-    console.log("add_users_to_team");
-
-    var users_in_team_select = $('#dropdown_users_in_team');
-    var users_selected = $('#dropdown_all_users :selected');
-
-    $.each(users_selected, function (index, elem) {
-
-      var n_elem = $(elem);
-      var parent = n_elem.parent();
-      var parent_label = parent[0].label;
-
-      console.log(n_elem.val());
-      console.log(n_elem.text());
-
-      console.log(elem);
-      console.log(parent_label);
-      console.log(parent);
-
-      $("#dropdown_users_in_team optgroup[label='" + parent_label + "']")
-          .append($('<option></option>').val(n_elem.val()).text(n_elem.text()));
-
-      $("#dropdown_all_users option[value='" + n_elem.val() + "']").remove();
-    });
-  });
-
-  $('#remove_users_from_team').on('click', function (e) {
-    console.log("remove_users_from_team");
-
-    var users_in_team_select = $('#dropdown_users_in_team');
-    var all_users_select = $('#dropdown_all_users');
-
-
-    var lol = $('#dropdown_users_in_team :selected').length;
-    console.log(lol);
-  });
-
+  // Listeners para quando se carrega nas setas para passar os utilizadores
+  // dum select para o outro :)
+  $('#add_users_to_team').on('click', addUserToTeam);
+  $('#remove_users_from_team').on('click', removeUserFromTeam);
 
   /**
    * Listener para quando uma checkbox é marcada ou desmarcada
@@ -730,13 +699,88 @@ function goToGeoEntity(entity_id) {
   window.location.replace(new_uri);
 }
 
-//function updateQueryStringParameter(param_uri, key, value) {
-//  var re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
-//  var separator = param_uri.indexOf('?') !== -1 ? "&" : "?";
-//  if (param_uri.match(re)) {
-//    return param_uri.replace(re, '$1' + key + "=" + value + '$2');
-//  }
-//  else {
-//    return param_uri + separator + key + "=" + value;
-//  }
-//}
+function addUserToTeam() {
+  var n_elem, parent, parent_label, i_value, i_text;
+  var users_selected = $('#dropdown_all_users :selected'),
+      select_leader = $('#select_team_leader'),
+      select_team_position = $('#select_team_position');
+
+  if (users_selected.length == 0)
+    noty({text: 'Nenhum utilizador selecionado.', timeout: 2000, type: 'alert', layout: 'bottomCenter'});
+  else {
+    $.each(users_selected, function (index, elem) {
+      n_elem = $(elem);
+      parent = n_elem.parent();
+      parent_label = parent[0].label;
+      i_value = n_elem.val();
+      i_text = n_elem.text();
+
+      select_leader.append($("<option/>", {
+        value: i_value,
+        text: i_text
+      }));
+      select_team_position.append($("<option/>", {
+        value: i_value,
+        text: i_text
+      }));
+
+      $("#dropdown_users_in_team optgroup[label='" + parent_label + "']")
+          .append($('<option></option>').val(i_value).text(i_text));
+      $("#dropdown_all_users option[value='" + i_value + "']").remove();
+    });
+  }
+}
+
+function removeUserFromTeam() {
+  var n_elem, parent, parent_label, i_value, i_text;
+  var users_selected = $('#dropdown_users_in_team :selected'),
+      select_leader = $('#select_team_leader'),
+      select_team_position = $('#select_team_position');
+
+  if (users_selected.length == 0)
+    noty({text: 'Nenhum utilizador selecionado.', timeout: 2000, type: 'alert', layout: 'bottomCenter'});
+  else {
+    $.each(users_selected, function (index, elem) {
+      n_elem = $(elem);
+      parent = n_elem.parent();
+      parent_label = parent[0].label;
+      i_value = n_elem.val();
+      i_text = n_elem.text();
+
+      select_leader.append($("<option/>", {
+        value: i_value,
+        text: i_text
+      }));
+      select_team_position.append($("<option/>", {
+        value: i_value,
+        text: i_text
+      }));
+
+      $("#select_team_leader option[value=" + i_value + "]").remove();
+      $("#select_team_position option[value=" + i_value + "]").remove();
+
+      $("#dropdown_all_users optgroup[label='" + parent_label + "']")
+          .append($('<option></option>').val(i_value).text(i_text));
+      $("#dropdown_users_in_team option[value='" + i_value + "']").remove();
+    });
+  }
+}
+
+function selectAllUsersHack() {
+  var arr = [];
+  var all_users_to_add = $('#dropdown_users_in_team option');
+
+  $.each(all_users_to_add, function (index, elem) {
+    arr.push($(elem).val());
+  });
+
+  var input = $("<input>",
+      {type: "hidden", id: "users_to_add_array", name: "team[users][]", value: arr});
+
+  if(create_team_page)
+    $('#new_team').append($(input));
+  else
+    $('#edit_team_' + gon.current_team_id).append($(input));
+
+  return true;
+}

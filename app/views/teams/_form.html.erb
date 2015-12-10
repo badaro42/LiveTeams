@@ -13,7 +13,8 @@
         </div>
     <% end %>
 
-    <div class="row input-field col s12 m12 l12" style="margin-top: 20px; margin-bottom: 15px; padding: 0;">
+    <div class="row input-field col s12 m12 l12"
+         style="margin-top: 20px; margin-bottom: 15px; margin-left: 0; margin-right: 0; padding: 0;">
       <%= f.label "Nome da equipa", class: "fixed-position" %>
       <%= f.text_field :name, required: true, autofocus: true %>
     </div>
@@ -40,7 +41,7 @@
 
       <div class="users_forms">
         <div class="col l5 m5 s5">
-          <%= select_tag 'dropdown_all_users', grouped_options_for_select(@users_for_add_select),
+          <%= select_tag 'users_left', grouped_options_for_select(@users_for_add_select),
                          {multiple: true, class: 'browser-default',
                           style: 'height: 200px;', id: "dropdown_all_users"} %>
         </div>
@@ -59,9 +60,12 @@
           </div>
         </div>
         <div class="col l5 m5 s5" style="height: 200px;">
-          <%= select_tag 'dropdown_users_in_team', grouped_options_for_select(@users_for_remove_select),
-                         {multiple: true, class: 'browser-default',
-                          style: 'height: 200px;', id: "dropdown_users_in_team"} %>
+          <%#= f.select 'users_right', grouped_options_for_select(@users_for_remove_select), {prompt: false},
+                       class: 'browser-default', multiple: true,
+                       style: 'height: 200px;', id: "dropdown_users_in_team" %>
+          <%= select_tag 'users_right', grouped_options_for_select(@users_for_remove_select),
+                       class: 'browser-default', multiple: true,
+                       style: 'height: 200px;', id: "dropdown_users_in_team" %>
         </div>
       </div>
     </div>
