@@ -71,12 +71,12 @@
 
       <ul id="dropdown-profile" class="dropdown-content">
         <li>
-          <%= link_to current_user, target: '_blank', method: :get do %>
+          <%= link_to current_user, method: :get do %>
               Ver perfil
           <% end %>
         </li>
         <li>
-          <%= link_to edit_user_path(current_user), target: '_blank', method: :get do %>
+          <%= link_to edit_user_path(current_user), method: :get do %>
               Editar perfil
           <% end %>
         </li>
@@ -102,26 +102,32 @@
             </div>
           </div>
         </li>
-        <li>
+        <li id="list_root_path_entry">
+          <%= link_to root_path, target: '_blank', style: 'text-transform: none; padding-left: 0;',
+                      class: 'btn-flat navbar-button', method: :get do %>
+              <i class="material-icons left">map</i>Mapa
+          <% end %>
+        </li>
+        <li id="list_teams_path_entry">
           <%= link_to teams_path, style: 'text-transform: none; padding-left: 0;',
                       class: 'btn-flat navbar-button', method: :get do %>
               <i class="material-icons left">people</i>Equipas
           <% end %>
         </li>
-        <li>
+        <li id="list_users_path_entry">
           <%= link_to users_path, style: 'text-transform: none; padding-left: 0;',
                       class: 'btn-flat navbar-button', method: :get do %>
               <i class="material-icons left">person</i>Membros
           <% end %>
         </li>
         <li class="divider"></li>
-        <li>
+        <li id="list_profile_path_entry">
           <%= link_to current_user, style: 'text-transform: none; padding-left: 0;',
                       class: 'btn-flat navbar-button', method: :get do %>
               <i class="material-icons left">account_box</i>Ver perfil
           <% end %>
         </li>
-        <li>
+        <li id="list_edit_profile_path_entry">
           <%= link_to edit_user_path(current_user), style: 'text-transform: none; padding-left: 0;',
                       class: 'btn-flat navbar-button', method: :get do %>
               <i class="material-icons left">edit</i>Editar perfil
@@ -150,27 +156,27 @@
 </body>
 
 <!--<footer class="page-footer indigo darken-4">-->
-  <!--<div class="container">-->
-    <!--<div class="row">-->
-      <!--<div class="col l6 s12">-->
-        <!--<h5 class="white-text">Footer Content</h5>-->
-        <!--<p class="grey-text text-lighten-4">You can use rows and columns here to organize your footer content.</p>-->
-      <!--</div>-->
-      <!--<div class="col l4 offset-l2 s12">-->
-        <!--<h5 class="white-text">Links</h5>-->
-        <!--<ul>-->
-          <!--<li><a class="grey-text text-lighten-3" href="#!">Link 1</a></li>-->
-          <!--<li><a class="grey-text text-lighten-3" href="#!">Link 2</a></li>-->
-        <!--</ul>-->
-      <!--</div>-->
-    <!--</div>-->
-  <!--</div>-->
-  <!--<div class="footer-copyright">-->
-    <!--<div class="container">-->
-      <!--© 2015 Todos os direitos reservados-->
-      <!--<a class="grey-text text-lighten-4 right" href="http://www.di.fct.unl.pt/">DI FCT/UNL</a>-->
-    <!--</div>-->
-  <!--</div>-->
+<!--<div class="container">-->
+<!--<div class="row">-->
+<!--<div class="col l6 s12">-->
+<!--<h5 class="white-text">Footer Content</h5>-->
+<!--<p class="grey-text text-lighten-4">You can use rows and columns here to organize your footer content.</p>-->
+<!--</div>-->
+<!--<div class="col l4 offset-l2 s12">-->
+<!--<h5 class="white-text">Links</h5>-->
+<!--<ul>-->
+<!--<li><a class="grey-text text-lighten-3" href="#!">Link 1</a></li>-->
+<!--<li><a class="grey-text text-lighten-3" href="#!">Link 2</a></li>-->
+<!--</ul>-->
+<!--</div>-->
+<!--</div>-->
+<!--</div>-->
+<!--<div class="footer-copyright">-->
+<!--<div class="container">-->
+<!--© 2015 Todos os direitos reservados-->
+<!--<a class="grey-text text-lighten-4 right" href="http://www.di.fct.unl.pt/">DI FCT/UNL</a>-->
+<!--</div>-->
+<!--</div>-->
 <!--</footer>-->
 
 </html>

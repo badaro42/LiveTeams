@@ -81,6 +81,8 @@ class UsersController < ApplicationController
   def show
     # variavel para fornecer o id no jquery
     gon.user_id = @user.id
+    gon.current_user_id = current_user.id
+
     gon.curr_user_pos = @user.latlon
 
     @user_teams = @user.teams
@@ -102,6 +104,9 @@ class UsersController < ApplicationController
     if params[:id] == nil
       @user = User.find(current_user.id)
     else
+      gon.user_id = @user.id
+      gon.current_user_id = current_user.id
+
       @user = User.find(params[:id])
     end
   end

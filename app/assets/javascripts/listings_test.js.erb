@@ -85,6 +85,8 @@ $(document).ready(function () {
   // TODO: EX: /users/new antes de /users
   // estamos na pagina para editar equipa - /teams/12/edit
   if (teams_pages) {
+    $('#list_teams_path_entry').addClass('active');
+
     if (edit_page) {
       create_team_page = false;
       $('#edit_team_' + gon.current_team_id).submit(selectAllUsersHack);
@@ -304,6 +306,12 @@ $(document).ready(function () {
   // estamos na pagina para apresentar utilizador - /users/12
   else if (users_pages || account_pages) {
     if (is_a_number) {
+      // a pagina atual é a do proprio utilizador
+      if(gon.user_id == gon.current_user_id)
+        $('#list_profile_path_entry').addClass('active');
+      else
+        $('#list_users_path_entry').addClass('active');
+
       console.log("PÁGINA PARA APRESENTAR UTILIZADOR!!!");
 
       osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
@@ -330,6 +338,13 @@ $(document).ready(function () {
       }
     }
     else if (edit_page) {
+      // a pagina atual é a do proprio utilizador
+      if(gon.user_id == gon.current_user_id)
+        $('#list_edit_profile_path_entry').addClass('active');
+      else
+        $('#list_users_path_entry').addClass('active');
+
+
       console.log("PÁGINA PARA editar UTILIZADOR!!!");
 
       // apenas permite numeros no campo do numero de telefone
@@ -340,6 +355,8 @@ $(document).ready(function () {
       $('.scrollspy').scrollSpy();
     }
     else {
+      $('#list_users_path_entry').addClass('active');
+
       console.log("PÁGINA COM TODOS OS UTILIZADORES!!!");
       initSearchEngine('user');
     }
@@ -366,50 +383,50 @@ $(document).ready(function () {
   $('#add_users_to_team').on('click', addUserToTeam);
   $('#remove_users_from_team').on('click', removeUserFromTeam);
 
-  /**
-   * Listener para quando uma checkbox é marcada ou desmarcada
-   */
-  $('input:checkbox').change(
-      function () {
-        // select para escolher o lider
-        var select_leader = $('#select_team_leader');
-        // select para escolher o user responsavel pela posição da equipa
-        var select_team_position = $('#select_team_position');
-        var i_value, i_text;
-
-        var len = $("input[name='team[users][]']:checked").length;
-        console.log(len);
-
-        if (len > 0)
-          $('#team-submit-form').removeClass("disabled");
-        else if (len == 0)
-          $('#team-submit-form').addClass("disabled");
-
-        if ($(this).is(':checked')) {
-          i_value = $(this).prop('value');
-          i_text = $(this).next("label").text();
-
-          console.log("++++++ CHECKED ++++++");
-          console.log(i_value);
-          console.log(i_text);
-
-          select_leader.append($("<option/>", {
-            value: i_value,
-            text: i_text
-          }));
-          select_team_position.append($("<option/>", {
-            value: i_value,
-            text: i_text
-          }));
-        }
-        else if (!($(this).is(':checked'))) {
-          i_value = $(this).prop('value');
-          console.log("------ UNCHECKED ------");
-          $("#select_team_leader option[value=" + i_value + "]").remove();
-          $("#select_team_position option[value=" + i_value + "]").remove();
-        }
-      }
-  );
+//  /**
+//   * Listener para quando uma checkbox é marcada ou desmarcada
+//   */
+//  $('input:checkbox').change(
+//      function () {
+//        // select para escolher o lider
+//        var select_leader = $('#select_team_leader');
+//        // select para escolher o user responsavel pela posição da equipa
+//        var select_team_position = $('#select_team_position');
+//        var i_value, i_text;
+//
+//        var len = $("input[name='team[users][]']:checked").length;
+//        console.log(len);
+//
+//        if (len > 0)
+//          $('#team-submit-form').removeClass("disabled");
+//        else if (len == 0)
+//          $('#team-submit-form').addClass("disabled");
+//
+//        if ($(this).is(':checked')) {
+//          i_value = $(this).prop('value');
+//          i_text = $(this).next("label").text();
+//
+//          console.log("++++++ CHECKED ++++++");
+//          console.log(i_value);
+//          console.log(i_text);
+//
+//          select_leader.append($("<option/>", {
+//            value: i_value,
+//            text: i_text
+//          }));
+//          select_team_position.append($("<option/>", {
+//            value: i_value,
+//            text: i_text
+//          }));
+//        }
+//        else if (!($(this).is(':checked'))) {
+//          i_value = $(this).prop('value');
+//          console.log("------ UNCHECKED ------");
+//          $("#select_team_leader option[value=" + i_value + "]").remove();
+//          $("#select_team_position option[value=" + i_value + "]").remove();
+//        }
+//      }
+//  );
 
   // inicializa a select box para escolher o lider
   $('select').material_select();

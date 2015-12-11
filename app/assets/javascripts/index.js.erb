@@ -12,12 +12,17 @@ var entity_types = {
 var map, osmUrl, osmAttrib, osm, sidebar, cluster;
 var drawnItems;
 var e_type, e_radius, e_coords, coords_to_display, e_length, e_area, e_layer, e_num_points;
+
 var source;
 var all_geo_entities; // cada entrada é da forma {id: feature_id, type: tipo (em portugues), latlon: array com objetos L.latLng)}
 var all_teams; // cada entrada é da forma {id: feature_id, marker: L.marker(L.latLng(lat, lng))}
+var teams_to_remove = [];
+
 var previous_user_location; // {timestamp: Date(), position: L.latLng(lat, lng)}
 var no_sleep_enabled = false;
 var is_modal_open = false;
+
+var noty_message_to_show = "";
 
 
 // variaveis relacionadas com a navbar
@@ -857,7 +862,7 @@ function addGeoEntityToMap(json) {
 function addTeamToMap(json) {
   console.log("RECEBEMOS NOVA EQUIPA!!!!");
 
-  var new_layer, new_marker, old_marker, index;
+  var new_layer;
   var json_arr = JSON.parse(json);
   console.log(json_arr);
 
@@ -901,7 +906,29 @@ function eventSourceSetup() {
   // listener para a receçao de updates das equipas
   source.addEventListener('team_updates', function (e) {
     addTeamToMap(e.data);
+    cleanRemovedTeams();
   }, false);
+}
+
+function cleanRemovedTeams() {
+  console.log("equipas para remover:");
+  console.log(teams_to_remove);
+
+  if (teams_to_remove.length > 0) {
+    var temp_arr = [];
+    $.each(teams_to_remove, function (index, elem) {
+      cluster.removeLayer(elem.marker);
+      map.removeLayer(elem.marker);
+      temp_arr.push(elem.id);
+    });
+
+    all_teams = $.grep(all_teams, function (elem, index) {
+      return $.inArray(elem.id, temp_arr) == -1;
+    });
+
+    teams_to_remove = [];
+    console.log("acabei de limpar as equipas que ja tinham sido removidas!");
+  }
 }
 
 
@@ -1120,41 +1147,53 @@ function removeGeoEntity(entity_index) {
 
 // função executada pelo onEachFeature do metodo geoJSON das equipas
 function onEachTeam(feature, layer) {
-  var popup = L.popup({maxWidth: 250});
-  popup.setContent('<span>Equipa número <b>' + feature.properties.f_id + '</b><br>' +
-      '<b>Nome: </b>' + feature.properties.name + '<br>' +
-      '<b>Líder: </b><a data-method="get" href="/users/' + feature.properties.leader_id + '">' +
-      feature.properties.leader_name + '</a><br><b>Responsável pela posição: </b>' +
-      '<a data-method="get" href="/users/' + feature.properties.location_user_id + '">' +
-      feature.properties.location_user_name + '</a></span>' +
-      '<p>Esta equipa está destacada para as coordenadas: <br>' +
-      '<b>Latitude: </b>' + feature.geometry.coordinates[1] + ';<br>' +
-      '<b>Longitude: </b>' + feature.geometry.coordinates[0] + '</p>' +
-      '<div class="center-align"><a data-method="get" href="/teams/' + feature.properties.f_id + '" ' +
-      'class="waves-effect waves-light btn white-text" target="_blank" style="width: 100%;">Ir para equipa</a></div>');
+  // se a data de atualização for null é porque a equipa é para remover!!!!
+  // caso contrario, associamos a popup como normal!
+  if (feature.properties.updated_at !== null) {
+    var popup = L.popup({maxWidth: 250});
+    popup.setContent('<span>Equipa número <b>' + feature.properties.f_id + '</b><br>' +
+        '<b>Nome: </b>' + feature.properties.name + '<br>' +
+        '<b>Líder: </b><a data-method="get" href="/users/' + feature.properties.leader_id + '">' +
+        feature.properties.leader_name + '</a><br><b>Responsável pela posição: </b>' +
+        '<a data-method="get" href="/users/' + feature.properties.location_user_id + '">' +
+        feature.properties.location_user_name + '</a></span>' +
+        '<p>Esta equipa está destacada para as coordenadas: <br>' +
+        '<b>Latitude: </b>' + feature.geometry.coordinates[1] + ';<br>' +
+        '<b>Longitude: </b>' + feature.geometry.coordinates[0] + '</p>' +
+        '<div class="center-align"><a data-method="get" href="/teams/' + feature.properties.f_id + '" ' +
+        'class="waves-effect waves-light btn white-text" target="_blank" style="width: 100%;">Ir para equipa</a></div>');
 
-  layer.bindPopup(popup);
+    layer.bindPopup(popup);
+  }
 }
 
 // função executada pelo pointToLayer do metodo geoJSON das equipas
+// verifica se esta entidade ja existe no sistema
+// se sim, removemos para voltar a introduzir
+// caso a data de atualização for null, removemos a entidade
 function teamPointToLayer(feature, latlng) {
-  // verifica se esta entidade ja existe no sistema
-  // se sim, removemos para voltar a introduzir
+  console.log(feature);
   var index = teamIsInMap(feature.properties.f_id);
   var new_marker = L.marker(latlng, {icon: team_icon});
+  var old_marker, team_to_push;
 
   if (index == -1) {//equipa nao existe no mapa
-    all_teams.push({id: feature.properties.f_id, marker: new_marker});
+    team_to_push = {id: feature.properties.f_id, marker: new_marker};
+    all_teams.push(team_to_push);
+
     console.log("NOVA EQUIPA RECEBIDA!!!");
   }
-
   else {
-    var old_marker = all_teams[index].marker;
+    old_marker = all_teams[index].marker;
     all_teams[index].marker = new_marker;
+    team_to_push = all_teams[index];
 
     cluster.removeLayer(old_marker);
     map.removeLayer(old_marker);
   }
+
+  if (feature.properties.updated_at === null)
+    teams_to_remove.push(team_to_push);
 
   return new_marker;
 }
@@ -1286,12 +1325,12 @@ function toggleNavBar(to_show) {
     }
     else {
       new_top = navbar_height + sidebar_padding;
-      new_sidebar_height = curr_window_height - navbar_height - 2*sidebar_padding;
+      new_sidebar_height = curr_window_height - navbar_height - 2 * sidebar_padding;
     }
 
     $('#frontpage-navbar').slideDown({queue: false});
     $('#map').animate({'height': new_map_height, duration: 'slow', queue: false});
-    $('#sidebar').animate({'top': new_top+'px', 'height': new_sidebar_height+'px', duration: 'slow', queue: false});
+    $('#sidebar').animate({'top': new_top + 'px', 'height': new_sidebar_height + 'px', duration: 'slow', queue: false});
     curr_user_preferences.show_navbar = true;
   }
   else {
@@ -1301,12 +1340,12 @@ function toggleNavBar(to_show) {
     }
     else {
       new_top = sidebar_padding;
-      new_sidebar_height = curr_window_height - 2*sidebar_padding;
+      new_sidebar_height = curr_window_height - 2 * sidebar_padding;
     }
 
     $('#frontpage-navbar').slideUp({queue: false});
 
-    $('#sidebar').animate({'top': new_top+'px', 'height': new_sidebar_height+'px', duration: 'slow', queue: false});
+    $('#sidebar').animate({'top': new_top + 'px', 'height': new_sidebar_height + 'px', duration: 'slow', queue: false});
     $('#map').animate({'height': '100%', queue: false});
     curr_user_preferences.show_navbar = false;
   }
@@ -1339,7 +1378,7 @@ function onWindowResize(event) {
     $('#map').css({height: new_map_height});
 
     // reajusta a altura do mapa sempre que a altura da janela se altera
-    $('#sidebar').css({height: new_sidebar_height, top: new_sidebar_top+'px'});
+    $('#sidebar').css({height: new_sidebar_height, top: new_sidebar_top + 'px'});
   }
   else {
     if (curr_window_width <= SMARTHPHONE_MAX_WIDTH) {
@@ -1356,6 +1395,6 @@ function onWindowResize(event) {
     $('#map').css({height: '100%'});
 
     // reajusta a altura do mapa sempre que a altura da janela se altera
-    $('#sidebar').css({height: new_sidebar_height, top: new_sidebar_top+'px'});
+    $('#sidebar').css({height: new_sidebar_height, top: new_sidebar_top + 'px'});
   }
 }

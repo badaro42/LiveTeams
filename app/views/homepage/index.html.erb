@@ -25,12 +25,12 @@
           <% end %>
         </li>
         <li>
-          <%= link_to teams_path, target: '_blank', class: 'navbar-button', target: '_blank', method: :get do %>
+          <%= link_to teams_path, class: 'navbar-button', target: '_blank', method: :get do %>
               Equipas
           <% end %>
         </li>
         <li>
-          <%= link_to users_path, target: '_blank', class: 'navbar-button', target: '_blank', method: :get do %>
+          <%= link_to users_path, class: 'navbar-button', target: '_blank', method: :get do %>
               Membros
           <% end %>
         </li>
@@ -77,7 +77,12 @@
             </div>
           </div>
         </li>
-
+        <li>
+          <%= link_to root_path, target: '_blank', style: 'text-transform: none; padding-left: 0;',
+                      class: 'btn-flat navbar-button active', method: :get do %>
+              <i class="material-icons left">map</i>Mapa
+          <% end %>
+        </li>
         <li>
           <%= link_to teams_path, target: '_blank', style: 'text-transform: none; padding-left: 0;',
                       class: 'btn-flat navbar-button', method: :get do %>

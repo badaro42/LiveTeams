@@ -6,6 +6,9 @@ class RegistrationsController < Devise::RegistrationsController
   end
 
   def edit
+    gon.user_id = @user.id
+    gon.current_user_id = current_user.id
+
     super
   end
 
