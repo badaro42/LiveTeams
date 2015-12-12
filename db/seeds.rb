@@ -41,12 +41,12 @@ User.create(first_name: 'Carlos', last_name: 'Dias', email: 'carlos4@mail.com', 
 # id 6
 User.create(first_name: 'Miguel', last_name: 'Alberto', email: 'miguel5@mail.com', password: 'qweqweqwe',
             avatar: File.open(Rails.root + "app/assets/teste.png"), password_confirmation: 'qweqweqwe',
-            profile: User::BASICO, phone_number: '212111116',
+            profile: User::OPERACIONAL, phone_number: '212111116',
             latlon: 'POINT(-9.171277284622192 38.678508079563805)') # Cristo Rei
 # id 7
 User.create(first_name: 'Bruno', last_name: 'Aleixo', email: 'bruno6@mail.com', password: 'qweqweqwe',
             avatar: File.open(Rails.root + "app/assets/teste.png"), password_confirmation: 'qweqweqwe',
-            profile: User::BASICO, phone_number: '212111117',
+            profile: User::OPERACIONAL, phone_number: '212111117',
             latlon: 'POINT(-9.136432707309723 38.70748187656837)') # Pra�a do Com�rcio
 # id 8
 User.create(first_name: 'Rui', last_name: 'Coelho', email: 'rui7@mail.com', password: 'qweqweqwe',
@@ -61,12 +61,12 @@ User.create(first_name: 'Rafael', last_name: 'Bizarra', email: 'rafael8@mail.com
 # id 10
 User.create(first_name: 'Roberto', last_name: 'Frangueiro', email: 'roberto9@mail.com', password: 'qweqweqwe',
             avatar: File.open(Rails.root + "app/assets/teste.png"), password_confirmation: 'qweqweqwe',
-            profile: User::BASICO, phone_number: '212111120',
+            profile: User::OPERACIONAL, phone_number: '212111120',
             latlon: 'POINT(-8.903088569641113 38.49027879470561)') # Pen�nsula de Tr�ia
 # id 11
 User.create(first_name: 'Artur', last_name: 'Bacano', email: 'artur10@mail.com', password: 'qweqweqwe',
             avatar: File.open(Rails.root + "app/assets/teste.png"), password_confirmation: 'qweqweqwe',
-            profile: User::BASICO, phone_number: '212111121',
+            profile: User::GESTOR, phone_number: '212111121',
             latlon: 'POINT(-9.22276496887207 38.6275996886131)')
 # id 12
 User.create(first_name: 'Álvaro', last_name: 'Branco', email: 'alvaro11@mail.com', password: 'qweqweqwe',
@@ -86,7 +86,7 @@ User.create(first_name: 'Valter', last_name: 'Costa', email: 'valter13@mail.com'
 # id 15
 User.create(first_name: 'Diogo', last_name: 'Fonseca', email: 'diogo14@mail.com', password: 'qweqweqwe',
             avatar: File.open(Rails.root + "app/assets/teste.png"), password_confirmation: 'qweqweqwe',
-            profile: User::BASICO, phone_number: '212111125',
+            profile: User::ADMINISTRADOR, phone_number: '212111125',
             latlon: 'POINT(-9.20628547668457 38.69756846453178)')
 # id 16
 User.create(first_name: 'David', last_name: 'António', email: 'david15@mail.com', password: 'qweqweqwe',
@@ -101,17 +101,17 @@ User.create(first_name: 'António', last_name: 'Esteves', email: 'antonio16@mail
 # id 18
 User.create(first_name: 'Filipe', last_name: 'Jesus', email: 'filipe17@mail.com', password: 'qweqweqwe',
             avatar: File.open(Rails.root + "app/assets/teste.png"), password_confirmation: 'qweqweqwe',
-            profile: User::BASICO, phone_number: '212111128',
+            profile: User::OPERACIONAL, phone_number: '212111128',
             latlon: 'POINT(-9.298982620239258 38.659777730712534)')
 # id 19
 User.create(first_name: 'Adalberto', last_name: 'Feio', email: 'adalberto18@mail.com', password: 'qweqweqwe',
             avatar: File.open(Rails.root + "app/assets/teste.png"), password_confirmation: 'qweqweqwe',
-            profile: User::BASICO, phone_number: '212111129',
+            profile: User::GESTOR, phone_number: '212111129',
             latlon: 'POINT(-9.257440567016602 38.662458581979436)')
 # id 20
 User.create(first_name: 'João', last_name: 'Rodrigues', email: 'joao19@mail.com', password: 'qweqweqwe',
             avatar: File.open(Rails.root + "app/assets/teste.png"), password_confirmation: 'qweqweqwe',
-            profile: User::BASICO, phone_number: '212111130',
+            profile: User::OPERACIONAL, phone_number: '212111130',
             latlon: 'POINT(-9.105348587036133 38.666747735267805)')
 
 
@@ -136,14 +136,15 @@ TeamMember.create(team_id: 1, user_id: 1, is_leader: true)
 TeamMember.create(team_id: 1, user_id: 2, is_leader: false)
 TeamMember.create(team_id: 2, user_id: 3, is_leader: true)
 TeamMember.create(team_id: 3, user_id: 4, is_leader: false)
-TeamMember.create(team_id: 3, user_id: 5, is_leader: true)
+TeamMember.create(team_id: 3, user_id: 6, is_leader: true)
 TeamMember.create(team_id: 4, user_id: 7, is_leader: true)
 TeamMember.create(team_id: 5, user_id: 8, is_leader: true)
 TeamMember.create(team_id: 6, user_id: 9, is_leader: true)
 TeamMember.create(team_id: 6, user_id: 10, is_leader: false)
-TeamMember.create(team_id: 7, user_id: 14, is_leader: true)
-TeamMember.create(team_id: 7, user_id: 15, is_leader: false)
-TeamMember.create(team_id: 8, user_id: 17, is_leader: true)
+TeamMember.create(team_id: 6, user_id: 11, is_leader: false)
+TeamMember.create(team_id: 7, user_id: 15, is_leader: true)
+TeamMember.create(team_id: 7, user_id: 17, is_leader: false)
+TeamMember.create(team_id: 8, user_id: 18, is_leader: true)
 TeamMember.create(team_id: 9, user_id: 19, is_leader: true)
 TeamMember.create(team_id: 10, user_id: 20, is_leader: true)
 
@@ -156,8 +157,8 @@ Team.update(4, location_user_id: 7, latlon: User.find(7).latlon)
 Team.update(5, location_user_id: 8, latlon: User.find(8).latlon)
 Team.update(6, location_user_id: 11, latlon: User.find(11).latlon)
 Team.update(7, location_user_id: 15, latlon: User.find(15).latlon)
-Team.update(8, location_user_id: 17, latlon: User.find(17).latlon)
-Team.update(9, location_user_id: 18, latlon: User.find(18).latlon)
+Team.update(8, location_user_id: 18, latlon: User.find(18).latlon)
+Team.update(9, location_user_id: 19, latlon: User.find(19).latlon)
 Team.update(10, location_user_id: 20, latlon: User.find(20).latlon)
 
 
