@@ -1,6 +1,6 @@
 <%# encoding: utf-8 %>
 
-<% content_for :title, "Equipa " + @team.id.to_s + " :: PROCIV Portugal" %>
+<% content_for :title, @team.name + " :: PROCIV Portugal" %>
 
 <% content_for :model_actions do %>
     <div class="fixed-action-btn" style="bottom: 25px; right: 25px;">
@@ -61,6 +61,7 @@
     <h5 style="font-weight: 300;">Detalhes</h5>
 
     <div class="divider divider-margin"></div>
+
     <div class="col l12 m6 s12 hide-on-med-only">
       <h6 style="font-weight: 300; margin-top: 0 !important;">
         <strong><%= @team.name.mb_chars.upcase %></strong>
@@ -88,14 +89,13 @@
 
     <div class="col l12 m6 s12 hide-on-large-only hide-on-small-only">
       <h6 style="font-weight: 300;">
-        <strong><%= @team.name.upcase %></strong>
+        <strong><%= @team.name.mb_chars.upcase %></strong>
       </h6>
 
       <div class="divider divider-margin"></div>
     </div>
 
     <div class="col l12 m6 s12">
-
       <h6 class="hide-on-small-only hide-on-large-only" style="font-weight: 300;">
         Chefe:
         <%= link_to @team_leader, method: :get do %>
@@ -103,10 +103,16 @@
         <% end %>
       </h6>
 
-      <div class="divider divider-margin"></div>
+      <div class="divider divider-margin hide-on-med-only"></div>
 
+      <h6 class="hide-on-small-only hide-on-large-only" style="font-weight: 300;">
+        Responsável por atualizar a posição:
+        <%= link_to @location_user, method: :get do %>
+            <%= @location_user.full_name %>
+        <% end %>
+      </h6>
 
-      <!--<div class="divider divider-margin show-on-medium"></div>-->
+      <div class="divider divider-margin hide-on-small-only hide-on-large-only"></div>
 
       <div style="font-weight: 300;">
         <i title="Data da criação" class="material-icons tiny">access_time</i>
@@ -150,13 +156,12 @@
   </div>
 
   <blockquote id="no_user_to_add" style="display: none;">
-    De momento não há nenhum utilizador sem equipa.
+    De momento não é possível adicionar qualquer utilizador a esta equipa.
   </blockquote>
 </div>
 
 <div class="row z-depth-1 white">
   <div class="s12 l12 m12">
-
     <div class="col s12">
       <ul id="teams-tabs-list" class="tabs" style="overflow-x: auto;">
         <li class="tab col s3">
@@ -167,8 +172,9 @@
         </li>
       </ul>
     </div>
+
     <div id="team_members" class="col s12">
-      <ul class="collection">
+      <ul class="collection" id="users_in_team_list">
         <% @team.users.each do |user| %>
             <% is_leader = false %>
             <% is_in_charge_of_location = false %>
@@ -183,6 +189,7 @@
         <% end %>
       </ul>
     </div>
+
     <div id="team_geo_entities" class="col s12">
       <ul class="collection with-header">
         <li class="collection-header">
@@ -227,7 +234,6 @@
   <div class="modal-content">
     <h4>Remover membro</h4>
     <p>Tem a certeza que pretende remover o membro <b id="modal_user_name"></b> desta equipa?
-      <!--<b id="modal_team_name"></b>?-->
     </p>
   </div>
   <div class="modal-footer">

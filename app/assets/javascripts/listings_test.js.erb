@@ -181,7 +181,7 @@ $(document).ready(function () {
       checkUsersWithoutTeam();
 
       // LISTENER PARA QUANDO O ADMIN ADICIONA UM USER À EQUIPA
-      $('#confirm_add_user').on('click', addUserToTeam);
+      $('#confirm_add_user').on('click', addSingleUserToTeam);
 
       // abre o modal para confirmar a remoção do membro da equipa
       $('.remove-user-from-team').on('click', openConfirmRemovalModal);
@@ -193,7 +193,7 @@ $(document).ready(function () {
         console.log(parent_list_entry_id);
         console.log(user_id);
 
-        removeUserFromTeam(parent_list_entry_id, user_id);
+        removeSingleUserFromTeam(parent_list_entry_id, user_id);
       });
 
       osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
@@ -572,16 +572,37 @@ function searchListenerKeyPressed(param) {
   noResultsDiv.toggleClass('is-visible', allEntityEntries.not('.is-hidden').length == 0);
 }
 
-// função responsavel por associar o utilizador selecionado à equipa atual
-function addUserToTeam(e) {
+// metodo que trata da associação do user seleccionado na dropdown à equipa atual
+// esta dropdown encontra-se na pagina teams/#id
+function addSingleUserToTeam(e) {
   e.preventDefault();
   var selected_item = $('#dropdown_add_user_to_team').find(":selected");
 
   if (selected_item.text() === "Escolha um utilizador")
     noty({
       text: 'Não selecionou nenhum utilizador.',
-      timeout: 3500, type: 'error', layout: 'bottomCenter'
+      timeout: 3500, type: 'alert', layout: 'bottomCenter'
     });
+//    noty({
+//      text: 'Do you want to continue?',
+//      layout: 'center',
+//      buttons: [
+//        {addClass: 'btn btn-primary', text: 'Ok', onClick: function($noty) {
+//
+//          // this = button element
+//          // $noty = $noty element
+//
+//          $noty.close();
+//          noty({text: 'You clicked "Ok" button', type: 'success'});
+//        }
+//        },
+//        {addClass: 'btn btn-danger', text: 'Cancel', onClick: function($noty) {
+//          $noty.close();
+//          noty({text: 'You clicked "Cancel" button', type: 'error'});
+//        }
+//        }
+//      ]
+//    });
   else {
     var selected_user_id = parseInt(selected_item[0].value);
     console.log(selected_item);
@@ -602,7 +623,7 @@ function addUserToTeam(e) {
         $(".collection").append(result);
 
         // atualiza a contagem de elementos na equipa
-        var entries_count = $('.collection li').length;
+        var entries_count = $('#users_in_team_list li').length;
         console.log(entries_count);
         $("#team_members_count").text("Membros (" + entries_count + ")");
 
@@ -634,7 +655,9 @@ function addUserToTeam(e) {
   }
 }
 
-function removeUserFromTeam(entry_id_to_remove, user_id) {
+// metodo que trata da remoção do user quando o utilizador carrega no botao para remover
+// utilizador que se encontra na listagem de membros na pagina teams/#id
+function removeSingleUserFromTeam(entry_id_to_remove, user_id) {
   var entry_to_remove = $('#' + entry_id_to_remove);
   console.log(entry_to_remove);
   console.log(entry_id_to_remove);
@@ -657,7 +680,7 @@ function removeUserFromTeam(entry_id_to_remove, user_id) {
         entry_to_remove.remove();
 
         // atualiza a contagem de elementos na equipa
-        var entries_count = $('.collection li').length;
+        var entries_count = $('#users_in_team_list li').length;
         console.log(entries_count);
         $("#team_members_count").text("Membros (" + entries_count + ")");
 

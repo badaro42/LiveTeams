@@ -1,6 +1,5 @@
 class TeamsController < ApplicationController
   before_action :set_team, only: [:show, :edit, :update, :destroy]
-  # before_action :set_users_not_in_this_team, only: [:show, :edit]
   before_action :set_team_geo_entities, only: [:show, :destroy]
   before_filter :authenticate_user!
 
@@ -54,6 +53,7 @@ class TeamsController < ApplicationController
   # GET /teams/1.json
   def show
     if @team.nil?
+      puts "equipa nao existe !!!!!!!!!!!!!!!!!!!!!!!!"
       flash[:error] = "A equipa que procura nao existe!"
       redirect_to teams_url
     else
@@ -270,9 +270,12 @@ class TeamsController < ApplicationController
   end
 
   # agrega todas as entidades que estejam associadas a esta equipa
+  # este metodo só executa o codigo caso a equipa nao seja nula!
   def set_team_geo_entities
-    @team_geo_entities = GeoEntity.find_by_sql("select * from geo_entities where '" +
-                                                   @team.id.to_s + "' = ANY(team_ids);")
+    unless @team.nil?
+      @team_geo_entities = GeoEntity.find_by_sql("select * from geo_entities where '" +
+                                                     @team.id.to_s + "' = ANY(team_ids);")
+    end
   end
 
 
