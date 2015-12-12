@@ -1344,7 +1344,6 @@ function toggleNavBar(to_show) {
     }
 
     $('#frontpage-navbar').slideUp({queue: false});
-
     $('#sidebar').animate({'top': new_top + 'px', 'height': new_sidebar_height + 'px', duration: 'slow', queue: false});
     $('#map').animate({'height': '100%', queue: false});
     curr_user_preferences.show_navbar = false;

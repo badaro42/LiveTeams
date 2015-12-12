@@ -30,3 +30,4 @@
 //= require spin.min
 //= require leaflet.spin
 //= require jquery.noty.packaged.min
+//= require jqueryRotate.min

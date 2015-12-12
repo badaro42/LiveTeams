@@ -10,6 +10,8 @@ var allEntityEntries, allEntityNames, entityNamesIndexed = [], entityEntriesInde
 var searchBar, noResultsDiv;
 var create_team_page;
 
+var advanced_options_open = false;
+
 var team_highlight_icon = L.icon({
   iconUrl: '/assets/bullseye-64.png',
   iconSize: [38, 38], // size of the icon
@@ -301,13 +303,41 @@ $(document).ready(function () {
     else {
       console.log("PÁGINA COM TODOS AS EQUIPAS!!!");
       initSearchEngine('team');
+
+      $('#expand_all').on('click', toggleEntriesClass);
+      $('#collapse_all').on('click', toggleEntriesClass);
+
+      // anima a rotação do botao para expandir/colapsar a div
+      $("#arrow_up").rotate({
+        bind: {
+          click: function () {
+            if (advanced_options_open)
+              $(this).rotate({angle: 0, animateTo: 180});
+            else
+              $(this).rotate({angle: 180, animateTo: 0});
+          }
+        }
+      });
+
+      // anima a div qque contem as opções avançadas de filtragem
+      $('#toggle_options_panel').on('click', function () {
+        if (advanced_options_open) {// painel esta aberto -> vamos fechar
+          //$('#advanced_options').animate({height: '71px', duration: 'slow', queue: false});
+          $('#options_div').slideUp();
+        }
+        else {
+//          $('#advanced_options').animate({height: '107px', duration: 'slow', queue: false});
+          $('#options_div').slideDown();
+        }
+        advanced_options_open = !advanced_options_open;
+      });
     }
   }
-  // estamos na pagina para apresentar utilizador - /users/12
+  // estamos na pagina para apresentar utilizador - p.e. /users/12
   else if (users_pages || account_pages) {
     if (is_a_number) {
       // a pagina atual é a do proprio utilizador
-      if(gon.user_id == gon.current_user_id)
+      if (gon.user_id == gon.current_user_id)
         $('#list_profile_path_entry').addClass('active');
       else
         $('#list_users_path_entry').addClass('active');
@@ -339,7 +369,7 @@ $(document).ready(function () {
     }
     else if (edit_page) {
       // a pagina atual é a do proprio utilizador
-      if(gon.user_id == gon.current_user_id)
+      if (gon.user_id == gon.current_user_id)
         $('#list_edit_profile_path_entry').addClass('active');
       else
         $('#list_users_path_entry').addClass('active');
@@ -367,13 +397,13 @@ $(document).ready(function () {
     var search = $('div#search');
     if (search.is(":visible")) {
       search.slideUp({queue: false});
-      $('#page-content').animate({'margin-top': '0', queue: false});
+      $('#page-content').animate({duration: 'slow', 'margin-top': '0', queue: false});
     }
     else {
       search.slideDown({queue: false}, function () {
         search.find('input').focus();
       });
-      $('#page-content').animate({'margin-top': '71px', queue: false});
+      $('#page-content').animate({duration: 'slow', 'margin-top': '71px', queue: false});
     }
     return false;
   });
@@ -817,10 +847,29 @@ function selectAllUsersHack() {
   var input = $("<input>",
       {type: "hidden", id: "users_to_add_array", name: "team[users][]", value: arr});
 
-  if(create_team_page)
+  if (create_team_page)
     $('#new_team').append($(input));
   else
     $('#edit_team_' + gon.current_team_id).append($(input));
 
   return true;
+}
+
+
+//TODO: verificar se todas as entradas têm a classe 'active'
+//TODO: se sim, caso botao seja 'expand_all', nao faz nada. caso seja o outro, colapsa todas as entradas
+//TODO: se nao, caso botao seja 'expand_all', expande todas as entradas. caso seja o outro, nao faz nada
+//TODO: se só alguns têm, caso seja botao 'expand_all', expande todas as que nao tenhas a classe 'active'
+//TODO: se só alguns têm, caso seja botão 'collapse_all', colapsa todas as que têm a classe 'active'
+function toggleEntriesClass(e) {
+  if(e.toElement.id === "expand_all") {
+//    $('.collapsible').trigger('click');
+//    $('.collapsible li').trigger('click');
+    $('.collapsible-header').trigger('click');
+//    $('.collapsible-header').addClass('active');
+
+  }
+  else if(e.toElement.id === "collapse_all") {
+    $('.collapsible li').removeClass('active');
+  }
 }
