@@ -85,7 +85,7 @@
                             required: true} %>
         <% end %>
 
-        <%= f.label "Responsável pela equipa", for: "select_team_leader", style: "font-size: 13px;" %>
+        <%= f.label "Líder da equipa", for: "select_team_leader", style: "font-size: 13px;" %>
       </div>
       <div id="choose_team_position_dropdown" class="input-field col s12 m12 l6"
            style="margin-bottom: 20px; padding-top: 40px; margin-top: 0px;">
@@ -101,7 +101,7 @@
                             required: true} %>
         <% end %>
 
-        <%= f.label "Utilizador responsável por atualizar a posição da equipa", for: "select_team_position",
+        <%= f.label "Responsável por atualizar a posição da equipa", for: "select_team_position",
                     style: "font-size: 13px;" %>
       </div>
     </div>
@@ -110,7 +110,7 @@
     <div class="actions col m12 l12 s12" style="padding: 0;">
       <% if current_page?(action: 'new') %>
           <%= f.button 'Criar equipa', style: "width: 100%;",
-                       class: "btn waves-effect waves-light disabled", id: "team-submit-form" %>
+                       class: "btn waves-effect waves-light", id: "team-submit-form" %>
       <% else %>
           <%= f.button 'Atualizar', style: "width: 100%;",
                        class: "btn waves-effect waves-light", id: "team-submit-form" %>
