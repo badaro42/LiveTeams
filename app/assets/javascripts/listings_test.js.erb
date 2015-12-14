@@ -312,9 +312,9 @@ $(document).ready(function () {
         bind: {
           click: function () {
             if (advanced_options_open)
-              $(this).rotate({angle: 0, animateTo: 180});
+              $(this).rotate({angle: 0, animateTo: -180});
             else
-              $(this).rotate({angle: 180, animateTo: 0});
+              $(this).rotate({angle: -180, animateTo: 0});
           }
         }
       });
@@ -862,14 +862,21 @@ function selectAllUsersHack() {
 //TODO: se só alguns têm, caso seja botao 'expand_all', expande todas as que nao tenhas a classe 'active'
 //TODO: se só alguns têm, caso seja botão 'collapse_all', colapsa todas as que têm a classe 'active'
 function toggleEntriesClass(e) {
+  // expandir as entradas
+  // caso nenhuma esteja expandida, expandimos todas
+  // caso contrario, expandimos apenas as que estão colapsadas
   if(e.toElement.id === "expand_all") {
-//    $('.collapsible').trigger('click');
-//    $('.collapsible li').trigger('click');
-    $('.collapsible-header').trigger('click');
-//    $('.collapsible-header').addClass('active');
-
+    var active_entries = $(".collapsible-header.active").toArray();
+    if(active_entries.length > 0)
+      $(".collapsible-header").not(".active").trigger('click');
+    else
+      $('.collapsible-header').trigger('click');
   }
   else if(e.toElement.id === "collapse_all") {
-    $('.collapsible li').removeClass('active');
+    var inactive_entries = $(".collapsible-header").not(".active").toArray();
+    if(inactive_entries.length > 0)
+      $(".collapsible-header.active").trigger('click');
+    else
+      $('.collapsible-header').trigger('click');
   }
 }
