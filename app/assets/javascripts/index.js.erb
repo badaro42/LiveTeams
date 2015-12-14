@@ -362,7 +362,7 @@ $(document).ready(function () {
   });
 
   // retorna todas as entidades que estao na BD
-  var geo_entities = new L.GeoJSON.AJAX("/users/get_geo_entities.json", {
+  var geo_entities = new L.GeoJSON.AJAX("/geo_entities/geo_entities_to_json.json", {
     pointToLayer: geoPointToLayer,
     onEachFeature: onEachGeoEntity
   });
@@ -411,6 +411,7 @@ $(document).ready(function () {
     console.log("vector com os indices das equipas!!!!!:");
     console.log(all_teams);
     console.log("finish");
+
     cluster.addLayer(teams_json);
     map.addLayer(cluster);
 
@@ -692,7 +693,6 @@ function insertGeoEntity() {
     sel_team_ids.push(parseInt($(this).val()));
   });
 
-
   console.log("***** PROPRIEDADES DA ENTIDADE *****");
   console.log("nome: " + name);
   console.log("tipo: " + e_type);
@@ -718,47 +718,56 @@ function insertGeoEntity() {
     },
     // adicionamos o id à lista de ids e criamos uma popup para essa entidade
     success: function (data) {
+      console.log("MARCADOR ADICIONADO COM SUCESSO");
+      console.log(data);
+
+      if (data.geometry.type === "Point") {
+        var latlon = L.latLng(data.geometry.coordinates[1], data.geometry.coordinates[0]);
+        geoPointToLayer(data, latlon);
+      }
+
+      onEachGeoEntity(data, e_layer);
+
       noty({
         text: 'Entidade geográfica introduzida com sucesso!', timeout: 3500,
         type: 'success', layout: 'bottomCenter'
       });
 
-      console.log("MARCADOR ADICIONADO COM SUCESSO");
-      console.log(data);
+//      var ent_type;
+//      var latlng_arr = parseCoordinates(data.latlon);
+//      console.log(latlng_arr);
+//
+//      // parece-me que nao é possivel diferenciar o rectangulo do poligono
+//      if (data.entity_type === "polyline")
+//        ent_type = entity_types.linestring;
+//      else if (data.entity_type === "polygon")
+//        ent_type = entity_types.polygon;
+//      else if (data.entity_type === "marker")
+//        ent_type = entity_types.point;
+//      else if (data.entity_type === "circle")
+//        ent_type = entity_types.circle;
+//
+//      all_geo_entities.push({id: data.id, latlon: latlng_arr, type: ent_type});
+//
+//      var popup = L.popup({
+//        maxWidth: 400
+//      });
+//
+//      popup.setContent("<span>" + name + "</span><br><span>" + e_coords + "</span><br><span>" + description + "</span>");
+//      e_layer.bindPopup(popup);
+//
+//      cluster.addLayer(e_layer);
+//      map.addLayer(cluster);
 
-      var ent_type;
-      var latlng_arr = parseCoordinates(data.latlon);
-      console.log(latlng_arr);
-
-      // parece-me que nao é possivel diferenciar o rectangulo do poligono
-      if (data.entity_type === "polyline")
-        ent_type = entity_types.linestring;
-      else if (data.entity_type === "polygon")
-        ent_type = entity_types.polygon;
-      else if (data.entity_type === "marker")
-        ent_type = entity_types.point;
-      else if (data.entity_type === "circle")
-        ent_type = entity_types.circle;
-
-      all_geo_entities.push({id: data.id, latlon: latlng_arr, type: ent_type});
-
-      var popup = L.popup({
-        maxWidth: 400
-      });
-      popup.setContent("<span>" + name + "</span><br><span>" + e_coords + "</span><br><span>" + description + "</span>");
-      e_layer.bindPopup(popup);
-
-      cluster.addLayer(e_layer);
-      map.addLayer(cluster);
-
-//      drawnItems.addLayer(e_layer);
-//      map.addLayer(drawnItems);
+      drawnItems.addLayer(e_layer);
+      map.addLayer(drawnItems);
 
       e_layer = null;
 
       // remove os valores do nome e descriçao que estavam no modal
       $('#e_name').val("");
       $('#e_description').val("");
+      $("#select_team_ids option").prop("selected", false);
     },
     error: function (err) {
       noty({
@@ -1208,17 +1217,14 @@ function geoPointToLayer(feature, latlng) {
 
 // função executada pelo onEachFeature do metodo geoJSON das entidades geograficas
 function onEachGeoEntity(feature, layer) {
-  var ent_type, temp_latlon;
+  var ent_type, temp_latlon, radius = 0;
   var popup = L.popup({maxWidth: 250});
-
-  var popupContent = '<span>Entidade geográfica nº <b>' + feature.properties.f_id +
-      '</b>, adicionada pelo utilizador <a data-method="get" href="/users/' + feature.properties.user_id + '">' +
-      feature.properties.user_name + '</a>.</span><p><b>Tipo: </b>' + feature.properties.entity_type + '<br>';
 
   // no caso de ser circulo, introduzimos o raio na popup
   if (feature.properties.radius > 0) {
     ent_type = entity_types.circle;
-    popupContent += "<b>Raio: </b>" + feature.properties.radius + " metros<br>";
+    radius = feature.properties.radius;
+    //popupContent += "<b>Raio: </b>" + feature.properties.radius + " metros<br>";
   }
   else {
     if (feature.geometry.type === "LineString")
@@ -1229,13 +1235,15 @@ function onEachGeoEntity(feature, layer) {
       ent_type = entity_types.point;
   }
 
-  popupContent += '<b>Nome: </b>' + feature.properties.name + '<br>' +
-      '<b>Descrição: </b>' + feature.properties.description + '</p>' +
-      '<div style="display: inline-block"><a href="javascript:showEntityCoordinates(' +
-      feature.properties.f_id + ');" class="geo-popup-btn waves-effect waves-light btn white-text">' +
-      'Ver coordenadas</a></div><div style="display: inline-block" class="right">' +
-      '<a href="javascript:removeGeoEntity(' + feature.properties.f_id +
-      ');" class="geo-popup-btn red waves-effect waves-light btn white-text">' +
+  var popupContent = '<span>Entidade geográfica nº <b>' + feature.properties.f_id +
+      '</b>, adicionada pelo utilizador <a data-method="get" href="/users/' + feature.properties.user_id + '">' +
+      feature.properties.username + '</a>.</span><p><b>Tipo: </b>' + ent_type + '<br>' +
+      (radius > 0 ? '<b>Raio: </b>' + radius + ' metros<br>' : '') + '<b>Nome: </b>' + feature.properties.name + '<br>' +
+      '<b>Descrição: </b>' + feature.properties.description + '</p><div style="display: inline-block">' +
+      '<a href="javascript:showEntityCoordinates(' + feature.properties.f_id + ');" ' +
+      'class="geo-popup-btn waves-effect waves-light btn white-text">Ver coordenadas</a></div>' +
+      '<div style="display: inline-block" class="right"><a href="javascript:removeGeoEntity(' +
+      feature.properties.f_id + ');" class="geo-popup-btn red waves-effect waves-light btn white-text">' +
       '<i class="material-icons">delete</i></a></div>';
 
   popup.setContent(popupContent);
@@ -1260,10 +1268,15 @@ function centerMapOnGeoEntity(entity_id) {
     map.fitBounds(entity.latlon);
 
     noty({
-      text: 'Mapa centrado na entidade nº' + entity_id + '.', timeout: 3500,
+      text: 'Mapa centrado na geo-entidade nº' + entity_id + '.', timeout: 3500,
       type: 'information', layout: 'bottomCenter'
     });
   }
+  else
+    noty({
+      text: 'A geo-entidade nº' + entity_id + ' não existe no sistema.', timeout: 3500,
+      type: 'error', layout: 'bottomCenter'
+    });
 }
 
 // função que verifica se o parametro passado em argumento esta presente no URL

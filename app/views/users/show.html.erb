@@ -149,7 +149,7 @@
                       <span style="font-size: 15px;"><%= team.name %></span>
                       <span> | </span>
                       <% if team_entry.is_leader? %>
-                          <span style="font-size: 12px;">Chefe</span>
+                          <span style="font-size: 12px;">Líder da equipa</span>
                       <% else %>
                           <span style="font-size: 12px;">Membro</span>
                       <% end %>
@@ -157,7 +157,7 @@
 
                     <%= link_to team, :data => {:position => 'left', :delay => '15',
                                                 :tooltip => 'Ir para a equipa'},
-                                class: 'tooltipped secondary-content', method: :get do %>
+                                class: 'tooltipped secondary-content', method: :get, style: 'cursor: pointer;' do %>
                         <i class="material-icons">send</i>
                     <% end %>
                   </div>
@@ -190,8 +190,8 @@
                       <span class="entity-latlon" style="font-size: 12px;"><%= entity.latlon %></span>
                     </div>
                     <div class="col l1 m1 s1 center-align">
-                      <a data-position="left" onclick="goToGeoEntity(<%= entity.id %>)" data-delay="15" data-tooltip="Centrar mapa"
-                         class="tooltipped secondary-content">
+                      <a data-position="left" onclick="goToGeoEntity(<%= entity.id %>)" data-delay="15"
+                         data-tooltip="Centrar mapa" class="tooltipped secondary-content" style="cursor: pointer;" >
                         <i class="material-icons">my_location</i>
                       </a>
                     </div>

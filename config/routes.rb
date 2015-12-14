@@ -5,7 +5,7 @@ Rails.application.routes.draw do
 
   # rotas para as chamadas ajax na pagina principal
   get '/teams/teams_to_json', to: 'teams#teams_to_json'
-  get '/users/get_geo_entities', to: 'users#get_geo_entities'
+  get '/geo_entities/geo_entities_to_json', to: 'geo_entities#geo_entities_to_json'
 
   # altera as rotas predefinidas do devise
   devise_for :users, :controllers => { registrations: 'registrations' },

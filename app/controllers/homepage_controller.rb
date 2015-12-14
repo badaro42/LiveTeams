@@ -9,7 +9,6 @@ class HomepageController < ApplicationController
     gon.user_id = current_user.id
   end
 
-
   def entity_updates
     require 'rgeo'
     require 'rgeo-geojson'
@@ -53,17 +52,17 @@ class HomepageController < ApplicationController
 
     # codifica as entidades geograficas
     if new_or_updated_geo_entity.size == 1
-      ent = new_or_updated_geo_entity.first
-      feature = geo_factory.feature(ent.latlon, nil, {f_id: ent.id, name: ent.name, username: User.find(ent.user_id).full_name,
-                                                      description: ent.description, radius: ent.radius,
-                                                      created_at: ent.created_at, entity_type: ent.entity_type})
+      f = new_or_updated_geo_entity.first
+      feature = geo_factory.feature(f.latlon, nil, {f_id: f.id, name: f.name, username: User.find(f.user_id).full_name,
+                                                    user_id: f.user_id, description: f.description, radius: f.radius,
+                                                    created_at: f.created_at, entity_type: f.entity_type})
       features_to_json = RGeo::GeoJSON.encode feature
     else
       # dps de obter todas as entidades do servidor, mapeia-as num objeto de forma a que sejam correctamente
       # transformadas em json
       mapped_feats = geo_factory.map_feature_collection(new_or_updated_geo_entity) {
           |f| geo_factory.feature(f.latlon, nil, {f_id: f.id, name: f.name, username: User.find(f.user_id).full_name,
-                                                  description: f.description, radius: f.radius,
+                                                  user_id: f.user_id, description: f.description, radius: f.radius,
                                                   created_at: f.created_at, entity_type: f.entity_type})
       }
 
@@ -77,7 +76,6 @@ class HomepageController < ApplicationController
                                   {name: ent.name, f_id: ent.id, location_user_id: ent.location_user_id,
                                    created_at: ent.created_at, updated_at: ent.updated_at,
                                    location_user_name: User.find(ent.location_user_id).full_name,
-
                                    leader_name: ((TeamMember.where(team_id: ent.id, is_leader: true) == []) ? "" :
                                        User.find(TeamMember.where(team_id: ent.id, is_leader: true).first.user_id).full_name),
                                    leader_id: ((TeamMember.where(team_id: ent.id, is_leader: true) == []) ? 0 :

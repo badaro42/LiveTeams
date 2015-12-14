@@ -298,7 +298,7 @@ $(document).ready(function () {
       team_map.addLayer(cluster);
 
       console.log(bounds_arr);
-      team_map.fitBounds(bounds_arr);
+      team_map.fitBounds(bounds_arr, {maxZoom: 15});
     }
     else {
       console.log("PÁGINA COM TODOS AS EQUIPAS!!!");

@@ -4,38 +4,6 @@ class UsersController < ApplicationController
   before_filter :authenticate_user!
   layout "listings"
 
-
-
-  def get_geo_entities
-    require 'rgeo'
-    require 'rgeo-geojson'
-
-    features = GeoEntity.all
-    # puts features
-
-    # cria a fabrica de entidades
-    factory = RGeo::GeoJSON::EntityFactory.instance
-    # puts factory
-
-    # dps de obter todas as entidades do servidor, mapeia-as num objeto de forma a que sejam correctamente
-    # transformadas em json
-    mapped_feats = factory.map_feature_collection(features) {
-        |f| factory.feature(f.latlon, nil, {f_id: f.id, name: f.name, user_name: User.find(f.user_id).full_name,
-                                            user_id: f.user_id, description: f.description, radius: f.radius,
-                                            created_at: f.created_at, entity_type: f.entity_type})
-    }
-
-    # puts mapped_feats
-
-    # dps do mapeamento, s�o enviadas para a fabrica que trata da transforma��o para json para serem apresentadas no mapa
-    features_to_json = RGeo::GeoJSON.encode factory.feature_collection(mapped_feats)
-
-    # puts teste
-    render json: features_to_json
-  end
-
-
-
   def update_location
     current_latlon = current_user.latlon
     gon.update_successful = false
