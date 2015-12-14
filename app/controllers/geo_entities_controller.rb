@@ -1,5 +1,27 @@
 class GeoEntitiesController < ApplicationController
   before_action :set_geo_entity, only: [:show, :edit, :update, :destroy]
+  before_action :authenticate_user!
+
+
+  def geo_entities_to_json
+    require 'rgeo'
+    require 'rgeo-geojson'
+
+    features = GeoEntity.all # todas as entidades presentes no sistema
+    factory = RGeo::GeoJSON::EntityFactory.instance # cria a fabrica de entidades
+
+    # dps de obter todas as entidades do servidor, mapeia-as num objeto de forma a que sejam correctamente
+    # transformadas em json
+    mapped_feats = factory.map_feature_collection(features) {
+        |f| factory.feature(f.latlon, nil, {f_id: f.id, name: f.name, username: User.find(f.user_id).full_name,
+                                            user_id: f.user_id, description: f.description, radius: f.radius,
+                                            created_at: f.created_at, entity_type: f.entity_type})
+    }
+
+    # dps do mapeamento, s�o enviadas para a fabrica que trata da transforma��o para json para serem apresentadas no mapa
+    features_to_json = RGeo::GeoJSON.encode factory.feature_collection(mapped_feats)
+    render json: features_to_json
+  end
 
   # GET /geo_entities
   # GET /geo_entities.json
@@ -37,8 +59,19 @@ class GeoEntitiesController < ApplicationController
 
     respond_to do |format|
       if @geo_entity.save
+        geo_factory = RGeo::GeoJSON::EntityFactory.instance
+        feature = geo_factory.feature(@geo_entity.latlon, nil, {f_id: @geo_entity.id, name: @geo_entity.name,
+                                                                username: User.find(@geo_entity.user_id).full_name,
+                                                                user_id: @geo_entity.user_id,
+                                                                description: @geo_entity.description,
+                                                                radius: @geo_entity.radius,
+                                                                created_at: @geo_entity.created_at,
+                                                                entity_type: @geo_entity.entity_type})
+        feature_to_json = RGeo::GeoJSON.encode feature
+
         format.html { redirect_to @geo_entity, notice: 'Geo entity was successfully created.' }
-        format.json { render :show, status: :created, location: @geo_entity }
+        # format.json { render :show, status: :created, location: @geo_entity }
+        format.json { render json: feature_to_json }
       else
         format.html { render :new }
         format.json { render json: @geo_entity.errors, status: :unprocessable_entity }
