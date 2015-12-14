@@ -1147,9 +1147,35 @@ function showEntityCoordinates(entity_index) {
 
 
 function removeGeoEntity(entity_index) {
-  if (confirm("De certeza que pretende remover esta geo-entidade? Esta ação é irreversível!")) {
+  if (confirm("De certeza que pretende remover esta geo-entidade?\nEsta ação é irreversível!")) {
     var index_in_array = geoEntityIsInMap(entity_index);
-    console.log("user quer remover geoentidade!");
+
+    if (index_in_array > -1) {
+
+      $.ajax({
+        type: "GET",
+        url: "/teams",
+        dataType: "json",
+        success: function (res) {
+          // removemos a entidade do array de entidades presentes no mapa
+          all_geo_entities = $.grep(all_geo_entities, function (elem, index) {
+            return elem.id != entity_index;
+          });
+        },
+        error: function (res) {
+          noty({
+            text: 'Ocorreu um erro a remover a entidade.\nTente novamente mais tarde.', timeout: 4000,
+            type: 'alert', layout: 'bottomCenter'
+          });
+        }
+      });
+    }
+    else {
+      noty({
+        text: 'Ocorreu um erro a remover a entidade.\nExperimente recarregar a página.', timeout: 4000,
+        type: 'alert', layout: 'bottomCenter'
+      });
+    }
   }
 }
 
