@@ -13,10 +13,13 @@ var map, osmUrl, osmAttrib, osm, sidebar, cluster;
 var drawnItems;
 var e_type, e_radius, e_coords, coords_to_display, e_length, e_area, e_layer, e_num_points;
 
-var source;
-var all_geo_entities; // cada entrada é da forma {id: feature_id, type: tipo (em portugues), latlon: array com objetos L.latLng)}
+
+// cada entrada é da forma {id: feature_id, type: tipo (em portugues),
+// latlon: array com objetos L.latLng), layer: o objeto que esta no mapa}
+var all_geo_entities;
 var all_teams; // cada entrada é da forma {id: feature_id, marker: L.marker(L.latLng(lat, lng))}
 var teams_to_remove = [];
+var source;
 
 var previous_user_location; // {timestamp: Date(), position: L.latLng(lat, lng)}
 var no_sleep_enabled = false;
@@ -169,7 +172,7 @@ $(document).ready(function () {
         weight: 1,
         clickable: false
       },
-      icon: "fa fa-map-marker",
+      icon: "fa fa-location-arrow",
       metric: true,
       strings: {
         title: "Clique aqui para ativar/desativar a geolocalização",
@@ -733,32 +736,6 @@ function insertGeoEntity() {
         type: 'success', layout: 'bottomCenter'
       });
 
-//      var ent_type;
-//      var latlng_arr = parseCoordinates(data.latlon);
-//      console.log(latlng_arr);
-//
-//      // parece-me que nao é possivel diferenciar o rectangulo do poligono
-//      if (data.entity_type === "polyline")
-//        ent_type = entity_types.linestring;
-//      else if (data.entity_type === "polygon")
-//        ent_type = entity_types.polygon;
-//      else if (data.entity_type === "marker")
-//        ent_type = entity_types.point;
-//      else if (data.entity_type === "circle")
-//        ent_type = entity_types.circle;
-//
-//      all_geo_entities.push({id: data.id, latlon: latlng_arr, type: ent_type});
-//
-//      var popup = L.popup({
-//        maxWidth: 400
-//      });
-//
-//      popup.setContent("<span>" + name + "</span><br><span>" + e_coords + "</span><br><span>" + description + "</span>");
-//      e_layer.bindPopup(popup);
-//
-//      cluster.addLayer(e_layer);
-//      map.addLayer(cluster);
-
       drawnItems.addLayer(e_layer);
       map.addLayer(drawnItems);
 
@@ -1151,15 +1128,24 @@ function removeGeoEntity(entity_index) {
     var index_in_array = geoEntityIsInMap(entity_index);
 
     if (index_in_array > -1) {
-
       $.ajax({
-        type: "GET",
-        url: "/teams",
+        type: "DELETE",
+        url: "/geo_entities/" + entity_index,
         dataType: "json",
         success: function (res) {
+          // a entidade foi removida com sucesso da base de dados: vamos remove-la do mapa e do vector de entidades
+          var layer_to_remove = all_geo_entities[index_in_array].layer;
+          cluster.removeLayer(layer_to_remove);
+          map.removeLayer(layer_to_remove);
+
           // removemos a entidade do array de entidades presentes no mapa
           all_geo_entities = $.grep(all_geo_entities, function (elem, index) {
             return elem.id != entity_index;
+          });
+
+          noty({
+            text: 'Geo-entidade removida com sucesso.', timeout: 3500,
+            type: 'success', layout: 'bottomCenter'
           });
         },
         error: function (res) {
@@ -1186,18 +1172,27 @@ function onEachTeam(feature, layer) {
   // caso contrario, associamos a popup como normal!
   if (feature.properties.updated_at !== null) {
     var popup = L.popup({maxWidth: 250});
-    popup.setContent('<span>Equipa número <b>' + feature.properties.f_id + '</b><br>' +
+    var content = '<span>Equipa número <b>' + feature.properties.f_id + '</b><br>' +
         '<b>Nome: </b>' + feature.properties.name + '<br>' +
         '<b>Líder: </b><a data-method="get" href="/users/' + feature.properties.leader_id + '">' +
         feature.properties.leader_name + '</a><br><b>Responsável pela posição: </b>' +
         '<a data-method="get" href="/users/' + feature.properties.location_user_id + '">' +
-        feature.properties.location_user_name + '</a></span>' +
-        '<p>Esta equipa está destacada para as coordenadas: <br>' +
-        '<b>Latitude: </b>' + feature.geometry.coordinates[1] + ';<br>' +
-        '<b>Longitude: </b>' + feature.geometry.coordinates[0] + '</p>' +
-        '<div class="center-align"><a data-method="get" href="/teams/' + feature.properties.f_id + '" ' +
-        'class="waves-effect waves-light btn white-text" target="_blank" style="width: 100%;">Ir para equipa</a></div>');
+        feature.properties.location_user_name + '</a></span>';
 
+    // so coloca as coordenadas de destaque na popup caso a equipa em questao esteja destacada
+    if (feature.properties.highlight_coords !== undefined) {
+      var parsed_highlight_coords = parsePointCoordinates(feature.properties.highlight_coords);
+      content += '<p>Esta equipa está destacada para as coordenadas: <br>' +
+          '<b>Latitude: </b>' + parsed_highlight_coords[1] + ';<br>' +
+          '<b>Longitude: </b>' + parsed_highlight_coords[0] + '</p>'
+    }
+    else
+      content += '<p>Esta equipa não está destacada para nenhum ponto. </p>';
+
+    content += '<div class="center-align"><a data-method="get" href="/teams/' + feature.properties.f_id + '" ' +
+        'class="waves-effect waves-light btn white-text" target="_blank" style="width: 100%;">Ir para equipa</a></div>';
+
+    popup.setContent(content);
     layer.bindPopup(popup);
   }
 }
@@ -1280,7 +1275,7 @@ function onEachGeoEntity(feature, layer) {
   else if (layer.hasOwnProperty('_latlngs')) // tem mais do que um par de coordenadas
     temp_latlon = layer.getLatLngs();
 
-  all_geo_entities.push({id: feature.properties.f_id, latlon: temp_latlon, type: ent_type});
+  all_geo_entities.push({id: feature.properties.f_id, latlon: temp_latlon, type: ent_type, layer: layer});
 }
 
 

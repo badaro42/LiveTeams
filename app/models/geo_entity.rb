@@ -1,4 +1,6 @@
 class GeoEntity < ActiveRecord::Base
+  has_paper_trail
+
   MARKER = "marker"
   POLYLINE = "polyline"
   POLYGON = "polygon"

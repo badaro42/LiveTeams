@@ -2,44 +2,12 @@ class TeamsController < ApplicationController
   before_action :set_team, only: [:show, :edit, :update, :destroy]
   before_action :set_team_geo_entities, only: [:show, :destroy]
   before_filter :authenticate_user!
+  require 'encode_to_json'
 
   layout "listings"
 
   def teams_to_json
-    require 'rgeo'
-    require 'rgeo-geojson'
-
-    # apenas carrega as equipas que tenham localização
-    # equipas sem localização dava merda no mapeamento para json
-    teams = Team.all
-
-    # puts "EQUIPAS NO SISTEMA!!!!!!"
-    # puts teams
-
-    # cria a fabrica de entidades
-    factory = RGeo::GeoJSON::EntityFactory.instance
-    # puts factory
-
-    # dps de obter todas as equipas do servidor, mapeia-as num objeto de forma a que sejam correctamente
-    # transformadas em json
-    mapped_teams = factory.map_feature_collection(teams) {
-        |f| factory.feature(User.find(f.location_user_id).latlon, nil,
-                            {name: f.name, f_id: f.id, location_user_id: f.location_user_id,
-                             created_at: f.created_at, updated_at: f.updated_at,
-                             location_user_name: User.find(f.location_user_id).full_name,
-                             leader_name: User.find(TeamMember.where(team_id: f.id, is_leader: true)
-                                                        .first.user_id).full_name,
-                             leader_id: User.find(TeamMember.where(team_id: f.id, is_leader: true)
-                                                      .first.user_id).id})
-    }
-
-    # puts mapped_teams
-
-    # dps do mapeamento, s�o enviadas para a fabrica que trata da transforma��o
-    # para json para serem apresentadas no mapa
-    teams_to_json = RGeo::GeoJSON.encode factory.feature_collection(mapped_teams)
-
-    # puts teste
+    teams_to_json = EncodeToJson::encode_teams_to_json(Team.all)
     render json: teams_to_json
   end
 
@@ -250,6 +218,10 @@ class TeamsController < ApplicationController
       render :nothing => true, :status => 500, :content_type => 'text/html'
     end
   end
+
+  # def encode_teams_to_json(teams)
+  #
+  # end
 
 
   private
