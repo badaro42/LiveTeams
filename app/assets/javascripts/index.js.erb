@@ -12,9 +12,9 @@ var object_type = {
   geo_entity: "Geo-entidade"
 };
 var actions = {
-  update: "Atualização",
-  remove: "Remoção",
-  create: "Criação"
+  update: "atualizada",
+  remove: "removida",
+  create: "criada"
 };
 
 var map, osmUrl, osmAttrib, osm, sidebar, cluster;
@@ -138,7 +138,6 @@ $(document).ready(function () {
 //    alert("Dispositivo Fixo.");
   }
 
-
   all_teams = [];
   all_geo_entities = [];
 
@@ -160,7 +159,6 @@ $(document).ready(function () {
     zoomControl: true,
     attributionControl: false
   });
-
 
   // ativa a geolocalização apenas se o browser a suportar
   if ("geolocation" in navigator) { /* geolocation is available */
@@ -348,9 +346,6 @@ $(document).ready(function () {
   // inicializa as dropdowns que existem na pagina!
   $('select').material_select();
 
-
-  // ****************** CHAMADAS ASSINCRONAS PARA POPULAR O MAPA ******************
-
   map.spin(true, {
     lines: 15, // The number of lines to draw
     length: 0, // The length of each line
@@ -374,6 +369,7 @@ $(document).ready(function () {
     position: 'absolute' // Element positioning
   });
 
+  // ****************** CHAMADAS ASSINCRONAS PARA POPULAR O MAPA ******************
   // retorna todas as entidades que estao na BD
   var geo_entities = new L.GeoJSON.AJAX("/geo_entities/geo_entities_to_json.json", {
     pointToLayer: geoPointToLayer,
@@ -385,7 +381,7 @@ $(document).ready(function () {
     onEachFeature: onEachTeam
   });
 
-// listener invocado quando a chamada ajax das entidades terminar!
+  // listener invocado quando a chamada ajax das entidades terminar!
   geo_entities.on('data:loaded', function () {
     console.log("vector com os indices das geo_entities: " + all_geo_entities);
     console.log("finish");
@@ -419,7 +415,7 @@ $(document).ready(function () {
     });
   });
 
-// listener invocado quando a chamada ajax das equipas terminar!
+  // listener invocado quando a chamada ajax das equipas terminar!
   teams_json.on('data:loaded', function () {
     console.log("vector com os indices das equipas!!!!!:");
     console.log(all_teams);
@@ -1475,4 +1471,51 @@ function createNewHistoryEntry(o_type, o_id, time, event) {
 
   curr_user_saved_prefs.events_history.push(history_entry);
   localStorage.setItem('user' + gon.user_id, JSON.stringify(curr_user_saved_prefs));
+
+  prependHistoryDivEntry(history_entry);
+}
+
+
+function prependHistoryDivEntry(entry) {
+  console.log("PREPEND DA CENA DO HISTORICO!!!");
+  var icon, new_element, info_text;
+  var icon_to_center = "";
+
+  if (entry.action === actions.create || entry.action === actions.update) {
+    icon_to_center = '<i class="material-icons right">my_location</i>';
+    if (entry.action === actions.create) {
+      icon = 'add';
+      info_text = 'adicionada ao mapa.';
+    }
+    else if (entry.action === actions.update) {
+      icon = 'edit';
+      info_text = 'atualizada.';
+    }
+  }
+  else if (entry.action === actions.remove) {
+    icon = 'trash';
+    info_text = 'removida do sistema.';
+  }
+
+  new_element = '<div class="timeline-item">' +
+      '<div class="timeline-icon valign-wrapper"><i class="timeline-custom-icon material-icons md-24">' +
+      icon + '</i></div><div class="timeline-content z-depth-1"><h6 style="font-size: large;">' + entry.obj_type +
+      ' ' + entry.action + icon_to_center + '</h6><div style="margin-top: 5px;"><div>' +
+      '<span style="font-style: italic; font-size: 12px;">Há 2 segundos</span></div><div><p style="margin: 0;">A ' +
+      entry.obj_type.toLowerCase() + ' número ' + entry.obj_id + ' foi ' + info_text + '</p></div></div></div></div>';
+
+  $('#timeline').prepend(new_element);
+
+  var badge_icon = $('#history-tab-icon');
+  var nr_of_pending_notifs = $(badge_icon).attr('data-badge'); // undefined se não houver nenhuma notificação
+
+//  if(nr_of_pending_notifs === undefined) {
+//    $(badge_icon).attr('data-badge', 1);
+//  }
+//  else {
+//
+//  }
+
+  nr_of_pending_notifs === undefined ? $(badge_icon).attr('data-badge', '1')
+      : $(badge_icon).attr('data-badge', parseInt(nr_of_pending_notifs) + 1);
 }

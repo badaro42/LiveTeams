@@ -1,84 +1,81 @@
 /* ******************** INDEX.HTML ******************** */
 
 html, body, #container {
-    height: 100%;
-    width: 100%;
-    overflow: hidden;
-    font-family: "Roboto", sans-serif;
-    font-weight: 300;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  font-family: "Roboto", sans-serif;
+  font-weight: 200;
 }
 
 /* ********************* REGRAS PARA PERSONALIZAR OS ICONES DA GOOGLE ********************** */
 /*Rules for sizing the icon.*/
 .material-icons.md-18 {
-    font-size: 18px;
+  font-size: 18px;
 }
 
 .material-icons.md-24 {
-    font-size: 24px;
+  font-size: 24px;
 }
 
 .material-icons.md-36 {
-    font-size: 36px;
+  font-size: 36px;
 }
 
 .material-icons.md-48 {
-    font-size: 48px;
+  font-size: 48px;
 }
 
 /*Rules for using icons as black on a light background.*/
 .material-icons.md-dark {
-    color: rgba(0, 0, 0, 0.54);
+  color: rgba(0, 0, 0, 0.54);
 }
 
 .material-icons.md-dark.md-inactive {
-    color: rgba(0, 0, 0, 0.26);
+  color: rgba(0, 0, 0, 0.26);
 }
 
 /*Rules for using icons as white on a dark background.*/
 .material-icons.md-light {
-    color: rgba(255, 255, 255, 1);
+  color: rgba(255, 255, 255, 1);
 }
 
 .material-icons.md-light.md-inactive {
-    color: rgba(255, 255, 255, 0.3);
+  color: rgba(255, 255, 255, 0.3);
 }
 
 /* ******************************************************************************************* */
 
 /* ********************* MODAL HEADER PERSONALIZADO (BASEADO NO FOOTER) ********************** */
 .modal-header {
-    position: absolute;
-    height: 56px;
-    left: 0;
-    top: 0;
-    width: 100%;
-    background: #fafafa;
-    overflow: hidden;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-    line-height: 56px;
+  position: absolute;
+  height: 56px;
+  left: 0;
+  top: 0;
+  width: 100%;
+  background: #fafafa;
+  overflow: hidden;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  line-height: 56px;
 }
 
 .modal-header > h5 {
-    line-height: 56px;
-    margin: 0;
-    padding-left: 36px;
+  line-height: 56px;
+  margin: 0;
+  padding-left: 36px;
 }
 
 .modal.modal-fixed-footer .modal-content {
-    top: 56px;
-    height: calc(100% - 112px);
+  top: 56px;
+  height: calc(100% - 112px);
 }
 
 /* ******************************************************************************************* */
 
 /* ************************* OVERRIDE DO Z-INDEX DA SIDEBAR LATERAL ************************** */
 .sidebar {
-    z-index: 99;
-    min-height: 240px;
-
-    /*max-height: 75%;*/
-    /*max-height: 90%;*/
+  z-index: 99;
+  min-height: 240px;
 }
 
 /* ******************************************************************************************* */
@@ -86,259 +83,259 @@ html, body, #container {
 /* ******************* USADO DA RODAR OS CONTROLOS DA CRIA��O DE ENTIDADES ******************* */
 /* SMARTPHONES E ECRAS PEQUENOS */
 @media only screen and (max-width: 600px) {
-    .leaflet-bottom.leaflet-left {
-        transform: rotate(90deg);
-        left: 38px;
-        bottom: -18px;
-        z-index: 98;
-    }
+  .leaflet-bottom.leaflet-left {
+    transform: rotate(90deg);
+    left: 38px;
+    bottom: -18px;
+    z-index: 98;
+  }
 
-    .leaflet-draw {
-        bottom: 22px;
-        left: 29px;
-    }
+  .leaflet-draw {
+    bottom: 22px;
+    left: 29px;
+  }
 
-    #select_all_teams {
-        padding: 0;
-    }
+  #select_all_teams {
+    padding: 0;
+  }
 
-    #select_no_teams {
-        margin-top: 10px;
-        padding: 0;
-    }
+  #select_no_teams {
+    margin-top: 10px;
+    padding: 0;
+  }
 
-    #entity_description_div {
-        padding-bottom: 25px;
-    }
+  #entity_description_div {
+    padding-bottom: 25px;
+  }
 
-    #navbar-icon-div {
-        margin-left: 3px;
-    }
+  #navbar-icon-div {
+    margin-left: 3px;
+  }
 
-    #navbar-icon-div img {
-        margin-top: 7px;
-        margin-right: 10px;
-    }
+  #navbar-icon-div img {
+    margin-top: 7px;
+    margin-right: 10px;
+  }
 
-    .sidebar {
-        top: 56px;
-    }
+  .sidebar {
+    top: 56px;
+  }
 
-    #hamburguer-homepage {
-        margin-right: 2px;
-    }
+  #hamburguer-homepage {
+    margin-right: 2px;
+  }
 }
 
 /* TABLETS E ECRAS MEDIOS */
 @media only screen and (min-width: 601px) and (max-width: 991px) {
-    .leaflet-bottom.leaflet-left {
-        transform: rotate(90deg);
-        left: 38px;
-        bottom: -18px;
-        z-index: 98;
-    }
+  .leaflet-bottom.leaflet-left {
+    transform: rotate(90deg);
+    left: 38px;
+    bottom: -18px;
+    z-index: 98;
+  }
 
-    .leaflet-draw {
-        bottom: 22px;
-        left: 29px;
-    }
+  .leaflet-draw {
+    bottom: 22px;
+    left: 29px;
+  }
 
-    #select_all_teams {
-        padding: 0;
-    }
+  #select_all_teams {
+    padding: 0;
+  }
 
-    #select_no_teams {
-        margin-top: 10px;
-        padding: 0;
-    }
+  #select_no_teams {
+    margin-top: 10px;
+    padding: 0;
+  }
 
-    #entity_description_div {
-        padding-bottom: 25px;
-    }
+  #entity_description_div {
+    padding-bottom: 25px;
+  }
 
-    .sidebar {
-        width: 50%;
-        top: 74px;
-    }
+  .sidebar {
+    width: 65%;
+    top: 74px;
+  }
 
-    #navbar-icon-div {
-        margin-left: 3px;
-    }
+  #navbar-icon-div {
+    margin-left: 3px;
+  }
 
-    #navbar-icon-div img {
-        margin-top: 11px;
-        margin-right: 10px;
-    }
+  #navbar-icon-div img {
+    margin-top: 11px;
+    margin-right: 10px;
+  }
 
-    #hamburguer-homepage {
-        margin-right: 10px;
-    }
+  #hamburguer-homepage {
+    margin-right: 10px;
+  }
 }
 
 /* DESKTOPS E ECRAS GRANDES */
 @media only screen and (min-width: 992px) {
-    .leaflet-bottom.leaflet-left {
-        transform: rotate(90deg);
-        left: 53px;
-        bottom: -40px;
-        z-index: 98;
-    }
+  .leaflet-bottom.leaflet-left {
+    transform: rotate(90deg);
+    left: 53px;
+    bottom: -40px;
+    z-index: 98;
+  }
 
-    #select_all_teams {
-        padding-left: 0;
-    }
+  #select_all_teams {
+    padding-left: 0;
+  }
 
-    #select_no_teams {
-        padding-right: 0;
-    }
+  #select_no_teams {
+    padding-right: 0;
+  }
 
-    #select_team_ids {
-        height: 150px;
-    }
+  #select_team_ids {
+    height: 150px;
+  }
 
-    .sidebar {
-        width: 40%;
-        top: 74px;
-    }
+  .sidebar {
+    width: 40%;
+    top: 74px;
+  }
 
-    #navbar-icon-div {
-        margin-left: 10px;
-    }
+  #navbar-icon-div {
+    margin-left: 10px;
+  }
 
-    #navbar-icon-div img {
-        margin-top: 11px;
-        margin-right: 10px;
-    }
+  #navbar-icon-div img {
+    margin-top: 11px;
+    margin-right: 10px;
+  }
 
-    .navbar-buttons {
-        margin-right: 10px;
-    }
+  .navbar-buttons {
+    margin-right: 10px;
+  }
 }
 
 .leaflet-top.leaflet-left {
-    z-index: 98;
+  z-index: 98;
 }
 
 .leaflet-draw-section a:first-child {
-    border-top-left-radius: 0;
-    border-bottom-right-radius: 4px;
-    border-top-right-radius: 4px;
+  border-top-left-radius: 0;
+  border-bottom-right-radius: 4px;
+  border-top-right-radius: 4px;
 }
 
 .leaflet-draw-section a:last-child {
-    border-top-left-radius: 4px;
-    border-bottom-right-radius: 0;
-    border-bottom: 1px solid #ccc;
+  border-top-left-radius: 4px;
+  border-bottom-right-radius: 0;
+  border-bottom: 1px solid #ccc;
 }
 
 .leaflet-draw-section a {
-    border-left: 1px solid #ccc;
+  border-left: 1px solid #ccc;
 }
 
 .leaflet-draw-actions.leaflet-draw-actions-bottom,
 .leaflet-draw-actions.leaflet-draw-actions-top {
-    left: -102px;
-    bottom: 1px;
+  left: -102px;
+  bottom: 1px;
 }
 
 .leaflet-draw-actions.leaflet-draw-actions-bottom li,
 .leaflet-draw-actions.leaflet-draw-actions-top li {
-    transform: rotate(270deg);
+  transform: rotate(270deg);
 }
 
 .leaflet-draw-actions.leaflet-draw-actions-bottom a,
 .leaflet-draw-actions.leaflet-draw-actions-top a {
-    border-bottom: none;
-    border-right: 1px solid #ccc;
+  border-bottom: none;
+  border-right: 1px solid #ccc;
 }
 
 /* ******************************************************************************************* */
 
 /* ******************* RIBBON PARA INDICAR O CHEFE DA EQUIPA ******************* */
 .corner-ribbon {
-    width: 100px;
-    background: #e43;
-    position: absolute;
-    top: 25px;
-    left: -50px;
-    text-align: center;
-    line-height: 30px;
-    letter-spacing: 1px;
-    color: #f0f0f0;
-    transform: rotate(-45deg);
-    -webkit-transform: rotate(-45deg);
+  width: 100px;
+  background: #e43;
+  position: absolute;
+  top: 25px;
+  left: -50px;
+  text-align: center;
+  line-height: 30px;
+  letter-spacing: 1px;
+  color: #f0f0f0;
+  transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
 }
 
 /* Custom styles */
 
 .corner-ribbon.sticky {
-    position: fixed;
+  position: fixed;
 }
 
 .corner-ribbon.shadow {
-    box-shadow: 0 0 3px rgba(0, 0, 0, .3);
+  box-shadow: 0 0 3px rgba(0, 0, 0, .3);
 }
 
 .corner-ribbon.top-right {
-    top: 10px;
-    right: -30px;
-    left: auto;
-    transform: rotate(45deg);
-    -webkit-transform: rotate(45deg);
+  top: 10px;
+  right: -30px;
+  left: auto;
+  transform: rotate(45deg);
+  -webkit-transform: rotate(45deg);
 }
 
 /* ******************************************************************************************* */
 
 .collection-item.avatar p {
-    padding: 0;
-    line-height: 14px;
-    font-size: 14px;
+  padding: 0;
+  line-height: 14px;
+  font-size: 14px;
 }
 
 .collection-item.avatar p:first-child {
-    padding: 3px 0 3px;
+  padding: 3px 0 3px;
 }
 
 .collection .collection-item.avatar {
-    min-height: 65px;
-    background: #f8f8f8;
+  min-height: 65px;
+  background: #f8f8f8;
 }
 
 .card .card-content {
-    padding-top: 10px;
+  padding-top: 10px;
 }
 
 .edit-team-btn {
-    padding-left: 3px;
-    padding-right: 3px;
-    margin-top: 4px;
+  padding-left: 3px;
+  padding-right: 3px;
+  margin-top: 4px;
 }
 
 .edit-team-btn > i {
-    line-height: 36px;
-    margin: 0;
+  line-height: 36px;
+  margin: 0;
 }
 
 .list_wrapper {
-    position: absolute;
-    top: 40px;
-    left: 10px;
-    right: 0;
-    bottom: 0;
-    overflow-y: auto;
+  position: absolute;
+  top: 40px;
+  left: 10px;
+  right: 0;
+  bottom: 0;
+  overflow-y: auto;
 }
 
 #map {
-    width: auto;
-    height: calc(100% - 64px);
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  width: auto;
+  height: calc(100% - 64px);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
 #create_team_map,
 #edit_team_map {
-    /*width: auto;*/
-    height: 200px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  /*width: auto;*/
+  height: 200px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
 /* regras para ecras com no maximo 600px de largura */
@@ -358,104 +355,215 @@ html, body, #container {
 
 /* Print Handling */
 @media print {
-    .leaflet-control-container {
-        display: none !important;
-    }
+  .leaflet-control-container {
+    display: none !important;
+  }
 }
 
 #location_div {
-    top: 10px;
-    left: 10px;
-    max-width: 450px;
-    width: 60%;
-    height: 40px;
-    position: absolute;
-    z-index: 98;
-    background: white;
-    font-size: 15px;
-    border-radius: 2px;
-    box-shadow: 1px 2px 5px -1px rgba(56, 56, 56, 1);
-    /*max-width: 600px;*/
+  top: 10px;
+  left: 10px;
+  max-width: 450px;
+  width: 60%;
+  height: 40px;
+  position: absolute;
+  z-index: 98;
+  background: white;
+  font-size: 15px;
+  border-radius: 2px;
+  box-shadow: 1px 2px 5px -1px rgba(56, 56, 56, 1);
+  /*max-width: 600px;*/
 }
 
 #curr_location {
-    line-height: 40px;
-    float: left;
-    height: 40px;
-    overflow: hidden;
+  line-height: 40px;
+  float: left;
+  height: 40px;
+  overflow: hidden;
 }
 
 #location_symbol {
-    float: left;
-    padding-left: 10px;
-    padding-right: 10px;
-    padding-top: 8px;
+  float: left;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 8px;
 }
 
 .extra-padding {
-    padding-top: 8px;
+  padding-top: 8px;
 }
 
 .modal-element-title {
-    font-weight: 200;
-    font-size: 12px;
+  font-weight: 200;
+  font-size: 12px;
 }
 
 /*regras para o header da lista expansivel de equipas*/
 .collapse_header_text {
-    float: left;
-    width: 90%;
-    line-height: 1.5rem;
-    display: inline-block;
+  float: left;
+  width: 90%;
+  line-height: 1.5rem;
+  display: inline-block;
 }
 
 .collapse_header_link {
-    width: 10%;
-    line-height: 1.5rem;
-    display: inline-block;
+  width: 10%;
+  line-height: 1.5rem;
+  display: inline-block;
 }
 
 .collapse_header_link > a {
-    margin-top: 0;
+  margin-top: 0;
 }
 
 /*css para aquele pequeno badge na barra lateral dos alertas*/
 .badge1 {
-    position: relative;
+  position: relative;
 }
 
 .badge1[data-badge]:after {
-    content: attr(data-badge);
-    position: absolute;
-    top: 20px;
-    right: 1px;
-    font-size: 0.7em;
-    background: green;
-    color: white;
-    width: 18px;
-    height: 18px;
-    text-align: center;
-    line-height: 18px;
-    border-radius: 50%;
-    box-shadow: 0 0 1px #333;
+  content: attr(data-badge);
+  position: absolute;
+  top: 20px;
+  right: 1px;
+  font-size: 0.7em;
+  background: green;
+  color: white;
+  width: 18px;
+  height: 18px;
+  text-align: center;
+  line-height: 18px;
+  border-radius: 50%;
+  box-shadow: 0 0 1px #333;
 }
 
 /*regras para os botoes das popups das entidades geograficas*/
 .geo-popup-btn {
-    padding-left: 20px;
-    padding-right: 20px;
+  padding-left: 20px;
+  padding-right: 20px;
 }
-
 
 /*cenas para a barra de navegação da pagina principal*/
 .navbar-buttons a.active {
-    border: none;
-    background-color: rgba(0, 0, 0, 0.1);
+  border: none;
+  background-color: rgba(0, 0, 0, 0.1);
 }
 
 #profile-sidenav {
-    background-image: image-url("google_back_black_red.jpg");
-    background-repeat: no-repeat;
-    background-position: center center;
-    background-size: cover;
+  background-image: image-url("google_back_black_red.jpg");
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+}
+
+/*regras para a timeline da sidebar com o historico de eventos*/
+/*adaptado de: http://www.cssscript.com/demo/responsive-flat-style-timeline-with-pure-css-css3/#*/
+#timeline .timeline-item:after, #timeline .timeline-item:before {
+  content: '';
+  display: block;
+  width: 100%;
+  clear: both
+}
+
+*, *:before, *:after {
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box
+}
+
+#timeline {
+  padding: 0;
+  width: 94%;
+  margin-left: 24px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  position: relative;
+}
+
+#timeline:before {
+  content: "";
+  width: 3px;
+  height: 100%;
+  background: #90caf9;
+  left: 0;
+  top: 0;
+  position: absolute;
+}
+
+#timeline:after {
+  content: "";
+  clear: both;
+  display: table;
+  width: 100%;
+}
+
+#timeline .timeline-item {
+  margin-bottom: 20px;
+  position: relative;
+}
+
+#timeline .timeline-item .timeline-icon {
+  background: #90caf9;
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  margin-left: -23px;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  -ms-border-radius: 50%;
+  border-radius: 50%;
+}
+
+#timeline .timeline-item .timeline-icon img {
+  position: relative;
+  top: 14px;
+  left: 14px;
+}
+
+#timeline .timeline-item .timeline-content {
+  width: 90%;
+  background: #e3f2fd;
+  padding: 20px 20px 10px 20px;
+  float: right;
+}
+
+#timeline .timeline-item .timeline-content h6 {
+  padding: 15px;
+  background: #90caf9;
+  color: #000;
+  margin: -20px -20px 0 -20px;
+  font-weight: 200;
+}
+
+#timeline .timeline-item .timeline-content:before {
+  content: '';
+  position: absolute;
+  left: 10%;
+  top: 20px;
+  width: 0;
+  height: 0;
+  margin-left: -6px;
+}
+
+#timeline .timeline-item .timeline-content.right {
+  float: right;
+}
+
+#timeline .timeline-item .timeline-content.right:before {
+  content: '';
+  right: 45%;
+  left: 10%;
+  margin-left: -6px;
+}
+
+.timeline-custom-icon {
+  padding-left: 11px;
+  font-size: 28px !important;
+}
+
+#timeline > div:last-child {
+  margin-bottom: 0 !important;
 }
