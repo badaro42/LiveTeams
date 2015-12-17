@@ -1206,10 +1206,12 @@ function teamPointToLayer(feature, latlng) {
   var index = teamIsInMap(feature.properties.f_id);
   var new_marker = L.marker(latlng, {icon: team_icon});
   var old_marker, team_to_push;
+  var curr_action;
 
   if (index == -1) {//equipa nao existe no mapa
     team_to_push = {id: feature.properties.f_id, marker: new_marker};
     all_teams.push(team_to_push);
+    curr_action = actions.create;
 
     console.log("NOVA EQUIPA RECEBIDA!!!");
   }

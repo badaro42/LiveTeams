@@ -16,7 +16,7 @@ module EncodeToJson
                                   User.find(TeamMember.where(team_id: ent.id, is_leader: true).first.user_id).full_name),
                               leader_id: ((TeamMember.where(team_id: ent.id, is_leader: true) == []) ? 0 :
                                   User.find(TeamMember.where(team_id: ent.id, is_leader: true).first.user_id).id),
-                              highlight_coords: f.latlon_highlight
+                              highlight_coords: ent.latlon_highlight
                              }
       )
       teams_to_json = RGeo::GeoJSON.encode team
