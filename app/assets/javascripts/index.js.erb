@@ -1,6 +1,5 @@
 // constantes
 var SMARTHPHONE_MAX_WIDTH = 600;
-
 var entity_types = {
   circle: "Círculo",
   rectangle: "Rectângulo",
@@ -8,11 +7,21 @@ var entity_types = {
   polygon: "Polígono",
   linestring: "Linha Poligonal"
 };
+var object_type = {
+  team: "Equipa",
+  geo_entity: "Geo-entidade"
+};
+var actions = {
+  update: "Atualização",
+  remove: "Remoção",
+  create: "Criação"
+};
 
 var map, osmUrl, osmAttrib, osm, sidebar, cluster;
 var drawnItems;
 var e_type, e_radius, e_coords, coords_to_display, e_length, e_area, e_layer, e_num_points;
 
+var is_sse_update = false;
 
 // cada entrada é da forma {id: feature_id, type: tipo (em portugues),
 // latlon: array com objetos L.latLng), layer: o objeto que esta no mapa}
@@ -28,11 +37,16 @@ var is_modal_open = false;
 var noty_message_to_show = "";
 
 
-// variaveis relacionadas com a navbar
-var curr_user_preferences = { // local storage - objeto com as preferencias do utilizador!
-  show_navbar: null
+// variaveis relacionadas a informação guardada no browser - localStorage
+var curr_user_saved_prefs = { // local storage - objeto com as preferencias do utilizador!
+  show_navbar: null, // o estado de visibilidade da navbar na pagina inicial
+  events_history: [] // array com todas as entradas do historico
 };
 var last_window_height;
+
+// variaveis relacionadas com o historico de eventos
+var last_update_timestamp;
+
 
 // var incrementada quando um dos conjuntos de dados é carregado - equipas e entidades
 var geo_data_loaded = 0;
@@ -53,10 +67,6 @@ var user_pos_icon = L.icon({
 
 
 $(document).ready(function () {
-
-  // TODO: TENTATIVA DE FAZER CACHE DOS PEDIDOS AJAX.. MAS NAO SEI SE DÁ
-//  $.ajaxSetup({ cache:true });
-
   // inicialização da dropdown da barra de navegação
   $('.dropdown-button').dropdown({
         inDuration: 300,
@@ -886,16 +896,21 @@ function eventSourceSetup() {
 
   // listener para a receção de updates de entidades geograficas
   source.addEventListener('entity_updates', function (e) {
+    is_sse_update = true;
     addGeoEntityToMap(e.data);
+    is_sse_update = false;
   }, false);
 
   // listener para a receçao de updates das equipas
   source.addEventListener('team_updates', function (e) {
+    is_sse_update = true;
     addTeamToMap(e.data);
+    is_sse_update = false;
     cleanRemovedTeams();
   }, false);
 }
 
+// remove do array de equipas todas as equipas que tenham sido eliminadas através dos updates via SSE
 function cleanRemovedTeams() {
   console.log("equipas para remover:");
   console.log(teams_to_remove);
@@ -1122,7 +1137,7 @@ function showEntityCoordinates(entity_index) {
     });
 }
 
-
+// função chamada quando o utilizador quer remover uma geo-entidade
 function removeGeoEntity(entity_index) {
   if (confirm("De certeza que pretende remover esta geo-entidade?\nEsta ação é irreversível!")) {
     var index_in_array = geoEntityIsInMap(entity_index);
@@ -1180,7 +1195,7 @@ function onEachTeam(feature, layer) {
         feature.properties.location_user_name + '</a></span>';
 
     // so coloca as coordenadas de destaque na popup caso a equipa em questao esteja destacada
-    if (feature.properties.highlight_coords !== undefined) {
+    if (feature.properties.highlight_coords !== null) {
       var parsed_highlight_coords = parsePointCoordinates(feature.properties.highlight_coords);
       content += '<p>Esta equipa está destacada para as coordenadas: <br>' +
           '<b>Latitude: </b>' + parsed_highlight_coords[1] + ';<br>' +
@@ -1222,10 +1237,21 @@ function teamPointToLayer(feature, latlng) {
 
     cluster.removeLayer(old_marker);
     map.removeLayer(old_marker);
+
+    curr_action = actions.update;
   }
 
-  if (feature.properties.updated_at === null)
+  if (feature.properties.updated_at === null) {
     teams_to_remove.push(team_to_push);
+    curr_action = actions.remove;
+  }
+
+  // updates periodicos enviados pelo servidor
+  // apenas precisamos de guardar historico para updates do servidor ou ações do utilizador criadas durante a sessao
+  if (is_sse_update) {
+    createNewHistoryEntry(object_type.team, feature.properties.f_id, new Date(), curr_action);
+  }
+
 
   return new_marker;
 }
@@ -1247,7 +1273,6 @@ function onEachGeoEntity(feature, layer) {
   if (feature.properties.radius > 0) {
     ent_type = entity_types.circle;
     radius = feature.properties.radius;
-    //popupContent += "<b>Raio: </b>" + feature.properties.radius + " metros<br>";
   }
   else {
     if (feature.geometry.type === "LineString")
@@ -1322,12 +1347,14 @@ function getURLParameter(param) {
 function checkUserPreferences() {
   var local_storage_user_prefs = JSON.parse(localStorage.getItem('user' + gon.user_id));
   console.log("preferencias do utilizador");
-  console.log(curr_user_preferences);
+  console.log(curr_user_saved_prefs);
 
   var show_navbar_checkbox = $('#homepage-toggle-navbar');
 
   // o utilizador ja iniciou sessão, vamos obter as suas preferencias
   if (local_storage_user_prefs !== null) {
+    populateEventHistory(local_storage_user_prefs);
+
     if (!local_storage_user_prefs.show_navbar) {
       toggleNavBar(false);
       show_navbar_checkbox.prop('checked', false);
@@ -1339,7 +1366,7 @@ function checkUserPreferences() {
   }
   else {
     toggleNavBar(true);
-    console.log(curr_user_preferences);
+    console.log(curr_user_saved_prefs);
   }
 }
 
@@ -1367,7 +1394,7 @@ function toggleNavBar(to_show) {
     $('#frontpage-navbar').slideDown({queue: false});
     $('#map').animate({'height': new_map_height, duration: 'slow', queue: false});
     $('#sidebar').animate({'top': new_top + 'px', 'height': new_sidebar_height + 'px', duration: 'slow', queue: false});
-    curr_user_preferences.show_navbar = true;
+    curr_user_saved_prefs.show_navbar = true;
   }
   else {
     if (curr_window_width <= SMARTHPHONE_MAX_WIDTH) {
@@ -1382,15 +1409,18 @@ function toggleNavBar(to_show) {
     $('#frontpage-navbar').slideUp({queue: false});
     $('#sidebar').animate({'top': new_top + 'px', 'height': new_sidebar_height + 'px', duration: 'slow', queue: false});
     $('#map').animate({'height': '100%', queue: false});
-    curr_user_preferences.show_navbar = false;
+    curr_user_saved_prefs.show_navbar = false;
   }
-  localStorage.setItem('user' + gon.user_id, JSON.stringify(curr_user_preferences));
+  localStorage.setItem('user' + gon.user_id, JSON.stringify(curr_user_saved_prefs));
 }
 
-//TODO: ^^^^^^^^^^
-//TODO: CORRIGIR ALGUNS PROBLEMAS NAS DIMENSOES DOS ELEMENTOS AQUANDO DO RESIZE!!!!!
-//TODO: vvvvvvvvv
+function populateEventHistory(loaded_prefs) {
+  console.log("vamos popular o historico do user");
+  curr_user_saved_prefs.events_history = loaded_prefs.events_history;
+}
 
+
+// ajusta o tamanho do mapa, navbar e sidebar quando a janela é redimensionada
 function onWindowResize(event) {
   var new_sidebar_top, new_sidebar_height;
   var curr_window_height = window.innerHeight,
@@ -1398,7 +1428,7 @@ function onWindowResize(event) {
       navbar_height = $('#frontpage-navbar').height(),
       new_map_height = curr_window_height - navbar_height;
 
-  if (curr_user_preferences.show_navbar) {
+  if (curr_user_saved_prefs.show_navbar) {
     if (curr_window_width <= SMARTHPHONE_MAX_WIDTH) {
       new_sidebar_top = 56;
       new_sidebar_height = curr_window_height - navbar_height;
@@ -1432,4 +1462,17 @@ function onWindowResize(event) {
     // reajusta a altura do mapa sempre que a altura da janela se altera
     $('#sidebar').css({height: new_sidebar_height, top: new_sidebar_top + 'px'});
   }
+}
+
+// recebe os parametros do novo evento, adiciona-o ao localStorage do utilizador atual
+// TODO: criar a entrada na sidebar
+function createNewHistoryEntry(o_type, o_id, time, event) {
+  var history_entry = {};
+  history_entry.obj_type = o_type; // o tipo do objecto
+  history_entry.obj_id = o_id; // o id do objecto
+  history_entry.timestamp = time; // a data em que ocorreu a ação
+  history_entry.action = event; // o evento que ocorreu
+
+  curr_user_saved_prefs.events_history.push(history_entry);
+  localStorage.setItem('user' + gon.user_id, JSON.stringify(curr_user_saved_prefs));
 }
