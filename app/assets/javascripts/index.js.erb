@@ -1,3 +1,4 @@
+// **************************************
 // constantes
 var SMARTHPHONE_MAX_WIDTH = 600;
 var entity_types = {
@@ -17,6 +18,26 @@ var actions = {
   create: "criada"
 };
 
+
+// **************************************
+// objectos
+function HistoryEntry(o_type, o_id, time, event) {
+  this.obj_type = o_type; // o tipo do objecto
+  this.obj_id = o_id; // o id do objecto
+  this.timestamp = time; // a data em que ocorreu a ação
+  this.action = event; // o evento que ocorreu
+}
+// override do metodo 'equals' para comparar os campos que queremos nas entradas do historico
+// ver comentario do metodo 'containsHistoryEntry' para uma melhor explicação
+HistoryEntry.prototype.equals = function (o) {
+  var time_diff = Math.abs(o.timestamp - this.timestamp);
+  return this.obj_type === o.obj_type && this.action === o.action && this.obj_id === o.obj_id &&
+      (time_diff < 20000);
+};
+
+
+// **************************************
+// variaveis da mais variada especie :)
 var map, osmUrl, osmAttrib, osm, sidebar, cluster;
 var drawnItems;
 var e_type, e_radius, e_coords, coords_to_display, e_length, e_area, e_layer, e_num_points;
@@ -81,6 +102,15 @@ $(document).ready(function () {
 
   // inicialização da barra de navegação lateral
   $(".button-collapse").sideNav();
+
+  // remove as notificações da sidebar quando o utilizador fecha a sidebar apenas quando a tab aberta era
+  // a do historico de eventos
+  $('#history-tab-icon').on('click', function (e) {
+    console.log(e.currentTarget);
+    var parent = $(e.currentTarget).parent();
+    if (parent.hasClass('active'))
+      $(e.currentTarget).attr('data-badge', null);
+  });
 
   // verifica as preferencias do utilizador no objeto localStorage
   last_window_height = window.innerHeight;
@@ -1343,13 +1373,13 @@ function getURLParameter(param) {
 function checkUserPreferences() {
   var local_storage_user_prefs = JSON.parse(localStorage.getItem('user' + gon.user_id));
   console.log("preferencias do utilizador");
-  console.log(curr_user_saved_prefs);
+  console.log(local_storage_user_prefs);
 
   var show_navbar_checkbox = $('#homepage-toggle-navbar');
 
   // o utilizador ja iniciou sessão, vamos obter as suas preferencias
   if (local_storage_user_prefs !== null) {
-    populateEventHistory(local_storage_user_prefs);
+    populateEventHistory(local_storage_user_prefs.events_history);
 
     if (!local_storage_user_prefs.show_navbar) {
       toggleNavBar(false);
@@ -1410,9 +1440,19 @@ function toggleNavBar(to_show) {
   localStorage.setItem('user' + gon.user_id, JSON.stringify(curr_user_saved_prefs));
 }
 
-function populateEventHistory(loaded_prefs) {
+// cria novos objectos HistoryEntry a partir do que foi lido do localStorage
+function populateEventHistory(loaded_events) {
   console.log("vamos popular o historico do user");
-  curr_user_saved_prefs.events_history = loaded_prefs.events_history;
+  var arr = [], i, entry;
+
+  for (i = 0; i < loaded_events.length; i++) {
+    entry = new HistoryEntry(loaded_events[i].obj_type, loaded_events[i].obj_id, loaded_events[i].timestamp,
+        loaded_events[i].action);
+    prependHistoryDivEntry(entry);
+    arr.push(entry);
+  }
+
+  curr_user_saved_prefs.events_history = arr;
 }
 
 
@@ -1461,24 +1501,24 @@ function onWindowResize(event) {
 }
 
 // recebe os parametros do novo evento, adiciona-o ao localStorage do utilizador atual
-// TODO: criar a entrada na sidebar
 function createNewHistoryEntry(o_type, o_id, time, event) {
-  var history_entry = {};
-  history_entry.obj_type = o_type; // o tipo do objecto
-  history_entry.obj_id = o_id; // o id do objecto
-  history_entry.timestamp = time; // a data em que ocorreu a ação
-  history_entry.action = event; // o evento que ocorreu
+  var h_entry = new HistoryEntry(o_type, o_id, time, event);
 
-  curr_user_saved_prefs.events_history.push(history_entry);
-  localStorage.setItem('user' + gon.user_id, JSON.stringify(curr_user_saved_prefs));
+  if (!containsHistoryEntry(h_entry)) {
+    curr_user_saved_prefs.events_history.push(h_entry);
+    localStorage.setItem('user' + gon.user_id, JSON.stringify(curr_user_saved_prefs));
 
-  prependHistoryDivEntry(history_entry);
+    prependHistoryDivEntry(h_entry);
+    console.log("esta entrada nao existe, espetamos a gaja no historico kkkkkk!");
+  }
+  else
+    console.log("esta entrada ja existe, nao fazemos nada!");
 }
 
 
 function prependHistoryDivEntry(entry) {
   console.log("PREPEND DA CENA DO HISTORICO!!!");
-  var icon, new_element, info_text;
+  var icon, new_element, info_text, time_span_to_string;
   var icon_to_center = "";
 
   if (entry.action === actions.create || entry.action === actions.update) {
@@ -1493,29 +1533,74 @@ function prependHistoryDivEntry(entry) {
     }
   }
   else if (entry.action === actions.remove) {
-    icon = 'trash';
+    icon = 'delete';
     info_text = 'removida do sistema.';
   }
+
+  // a diferença entre duas datas é retornada em milisegundos
+  // divide-se por 1000 para ficar com o valor em segundos
+  var date_param = Math.round(Math.abs(new Date(entry.timestamp) - new Date()) / 1000);
+  time_span_to_string = timeDiffToString(date_param);
 
   new_element = '<div class="timeline-item">' +
       '<div class="timeline-icon valign-wrapper"><i class="timeline-custom-icon material-icons md-24">' +
       icon + '</i></div><div class="timeline-content z-depth-1"><h6 style="font-size: large;">' + entry.obj_type +
       ' ' + entry.action + icon_to_center + '</h6><div style="margin-top: 5px;"><div>' +
-      '<span style="font-style: italic; font-size: 12px;">Há 2 segundos</span></div><div><p style="margin: 0;">A ' +
-      entry.obj_type.toLowerCase() + ' número ' + entry.obj_id + ' foi ' + info_text + '</p></div></div></div></div>';
+      '<span style="font-style: italic; font-size: 12px;">Há ' + time_span_to_string + '</span></div><div>' +
+      '<p style="margin: 0;">A ' + entry.obj_type.toLowerCase() + ' número ' + entry.obj_id + ' foi ' + info_text +
+      '</p></div></div></div></div>';
 
   $('#timeline').prepend(new_element);
 
   var badge_icon = $('#history-tab-icon');
   var nr_of_pending_notifs = $(badge_icon).attr('data-badge'); // undefined se não houver nenhuma notificação
 
-//  if(nr_of_pending_notifs === undefined) {
-//    $(badge_icon).attr('data-badge', 1);
-//  }
-//  else {
-//
-//  }
-
   nr_of_pending_notifs === undefined ? $(badge_icon).attr('data-badge', '1')
       : $(badge_icon).attr('data-badge', parseInt(nr_of_pending_notifs) + 1);
+}
+
+/**
+ * metodo que verifica se a entrada passada como parametro ja existe no array de entradas do utilizador
+ * devolve 'true' caso a ação, o id e o tipo sejam iguais e a diferença entre as timestamps seja menor que 22 segundos
+ * (o tempo que vai entre 2 updates automaticos do servidor!)
+ * devolve 'false' caso alguma destas condições falhe.
+ *
+ * Exemplo1:
+ * obj1 = {obj_type: "Equipa", obj_id: 17, timestamp: "2015-12-18T15:12:29.654Z", action: "atualizada"}
+ * obj2 = {obj_type: "Equipa", obj_id: 17, timestamp: "2015-12-18T15:12:49.654Z", action: "atualizada"}
+ * devolve 'true' pois todas as condições são verdadeiras - caso a timestamp tivesse mais 3 segundos
+ * ja devolvia 'false' - podia tratar-se de outro update que não o mesmo
+ */
+function containsHistoryEntry(obj) {
+  var i;
+  for (i = 0; i < curr_user_saved_prefs.events_history.length; i++) {
+    if (curr_user_saved_prefs.events_history[i].equals(obj))
+      return true;
+  }
+
+  return false;
+}
+
+/**
+ * recebe como parametro os segundos que queremos tratar
+ */
+function timeDiffToString(s) {
+  var d, h, m, string_to_ret = "";
+  d = Math.floor(s / 86400); // numero de dias
+  s -= d * 86400;
+  h = Math.floor(s / 3600); // numero de horas inteiras
+  s -= h * 3600;
+  m = Math.floor(s / 60); // numero de minutos que sobram
+  s -= m * 60;
+
+  if (d > 0)
+    string_to_ret += d + (d == 1 ? " dia, " : " dias, ");
+  if (h > 0)
+    string_to_ret += h + (h == 1 ? " hora, " : " horas, ");
+  if (m > 0)
+    string_to_ret += m + (m == 1 ? " minuto e " : " minutos e ");
+  if (s > 0)
+    string_to_ret += s + (s == 1 ? " segundo" : " segundos");
+
+  return string_to_ret;
 }

@@ -145,7 +145,7 @@
         </a>
       </li>
       <li>
-        <!--<a id="warnings-tab-icon" class="badge1" data-badge="3" href="#warnings" role="tab">-->
+        <!--<a id="history-tab-icon" class="badge1" data-badge="3" href="#history" role="tab">-->
         <a id="history-tab-icon" class="badge1" href="#history" role="tab">
           <i class="material-icons extra-padding">history</i>
         </a>
@@ -173,67 +173,45 @@
         <div class="sidebar-close"><i class="fa fa-caret-right"></i></div>
       </h1>
 
-      <div class="list_wrapper white z-depth-1" style="left: 0;">
-        <div class="white z-depth-1" style="margin: 10px; padding-top: 10px; padding-bottom: 10px;">
-          <div class="row center" style="">
-            <div class="col l4 m12 s5">
-              <%= image_tag current_user.avatar.url(:small), class: 'circle', height: '100', width: '100' %>
+      <div class="list_wrapper white z-depth-1">
+        <div class="white z-depth-1" style="margin-top: 10px; padding-top: 10px; padding-bottom: 10px;">
+          <div class="row center valign-wrapper" style="margin-bottom: 0;">
+            <div class="col l4 m12 s5 valign">
+              <%= image_tag current_user.avatar.url(:small), class: 'circle', height: '128', width: '128' %>
             </div>
 
             <div class="col l8 m12 s7">
-              <h5 style="font-weight: 300;">
+              <h5 style="font-weight: 300; margin-top: 10px; margin-bottom: 10px;">
                 <%= link_to current_user.full_name, current_user, target: '_blank', :method => :get %>
               </h5>
 
               <div class="divider center-align" style="width: 70%; margin-left: 15%;"></div>
 
-              <div>
+              <div style="margin-top: 5px;">
                 <span><%= current_user.profile %></span>
               </div>
 
               <div>
                 <span>Registado há <%= time_ago_in_words(current_user.created_at) %></span>
               </div>
-            </div>
-          </div>
 
-          <!-- row a apresentar em ecras grandes!!! -->
-          <div class="row hide-on-med-and-down" style="margin-bottom: 0px;">
-            <div class="col l6" style="padding-right: 3px;">
-              <%= link_to destroy_user_session_path, method: :delete, class: 'right red waves-effect waves-light btn',
-                          style: 'padding-left: 10px; padding-right: 10px;' do %>
-                  <i class="material-icons left">power_settings_new</i>Logout
-              <% end %>
-            </div>
-
-            <div class="col l6" style="padding-left: 3px;">
-              <%= link_to edit_user_path(current_user), method: :get, target: '_blank',
-                          class: 'left waves-effect waves-light btn',
-                          style: 'padding-left: 10px; padding-right: 10px;' do %>
-                  <i class="material-icons left">edit</i>Editar
-              <% end %>
-            </div>
-          </div>
-
-          <!-- row a apresentar em ecras medios e pequenos!!! -->
-          <div class="row center hide-on-large-only" style="margin-bottom: 0px;">
-            <div class="col m6 s6" style="padding-right: 3px;">
-              <%= link_to destroy_user_session_path, method: :get, class: 'right red waves-effect waves-light btn',
-                          style: 'padding-left: 10px; padding-right: 10px;' do %>
-                  <i class="material-icons">power_settings_new</i>
-              <% end %>
-            </div>
-
-            <div class="col m6 s6" style="padding-left: 3px;">
-              <%= link_to edit_user_path(current_user), method: :get, class: 'left waves-effect waves-light btn',
-                          style: 'padding-left: 10px; padding-right: 10px;' do %>
-                  <i class="material-icons">edit</i>
-              <% end %>
+              <div class="center" style="margin-top: 10px; margin-bottom: 10px;">
+                <%= link_to destroy_user_session_path, method: :delete, class: 'red waves-effect waves-light btn',
+                            style: 'margin-right: 2px; padding-left: 10px; padding-right: 10px;',
+                            title: 'Encerrar sessão' do %>
+                    <i class="material-icons">power_settings_new</i>
+                <% end %>
+                <%= link_to edit_user_path(current_user), method: :get, target: '_blank',
+                            class: 'waves-effect waves-light btn', title: 'Editar o seu perfil',
+                            style: 'margin-left: 2px; padding-left: 10px; padding-right: 10px;' do %>
+                    <i class="material-icons">edit</i>
+                <% end %>
+              </div>
             </div>
           </div>
         </div>
 
-        <div class="white z-depth-1" style="margin: 10px; padding: 10px;">
+        <div class="white z-depth-1" style="margin-top: 10px; padding: 10px;">
           <h5>As minhas equipas</h5>
           <div class="divider"></div>
           <div class="center" style="margin-bottom: 10px;">
@@ -255,9 +233,11 @@
       <div class="list_wrapper">
         <div class="row valign-wrapper" style="margin-top: 10px; margin-bottom: 10px;">
           <div class="col l7 m7 s7" style="padding: 0;">
-            <p class="center" style="font-weight: 300; margin: 0;">A mostrar as 15 equipas alteradas recentemente</p>
+            <p class="center" style="font-weight: 300; margin: 0;">
+              A mostrar as 15 equipas alteradas recentemente
+            </p>
           </div>
-          <div class="col l5 m5 s5">
+          <div class="col l5 m5 s5" style="padding: 0;">
             <%= link_to teams_url, method: :get, target: '_blank', style: 'width: 100%; padding: 0 10px;',
                         class: 'right waves-effect waves-light btn valign' do %>
                 Ver todas
@@ -265,7 +245,7 @@
           </div>
         </div>
 
-        <ul id="recent_teams_list" class="collapsible" data-collapsible="accordion" style="margin-right: 10px;">
+        <ul id="recent_teams_list" class="collapsible" data-collapsible="accordion" style="">
           <% @recently_changed_teams.each do |team| %>
               <li>
                 <div class="collapsible-header" style="padding-top: 5px; padding-bottom: 5px;">
@@ -368,60 +348,65 @@
       </h1>
 
       <div class="list_wrapper" style="padding-right: 10px;">
+        <div class="white z-depth-1" style="width: 100%">
+          <p id="no_history_entries_div" style="display: none; font-style: italic; padding: 20px;" class="center">
+            Ainda não há nenhuma alteração no histórico. Apenas alterações às equipas e às geo-entidades são registadas.
+          </p>
+        </div>
         <div id="timeline">
-          <div class="timeline-item">
-            <div class="timeline-icon valign-wrapper">
-              <i class="timeline-custom-icon material-icons md-24">add</i>
-            </div>
-            <div class="timeline-content z-depth-1">
-              <h6 style="font-size: large;">Equipa atualizada<i class="material-icons right">my_location</i></h6>
+          <!--<div class="timeline-item">-->
+            <!--<div class="timeline-icon valign-wrapper">-->
+              <!--<i class="timeline-custom-icon material-icons md-24">add</i>-->
+            <!--</div>-->
+            <!--<div class="timeline-content z-depth-1">-->
+              <!--<h6 style="font-size: large;">Equipa atualizada<i class="material-icons right">my_location</i></h6>-->
 
-              <div style="margin-top: 5px;">
-                <div>
-                  <span style="font-style: italic; font-size: 12px;">Há 15 segundos</span>
-                </div>
-                <div>
-                  <p style="margin: 0;">A equipa número 10 foi atualizada</p>
-                </div>
-              </div>
-            </div>
-          </div>
+              <!--<div style="margin-top: 5px;">-->
+                <!--<div>-->
+                  <!--<span style="font-style: italic; font-size: 12px;">Há 15 segundos</span>-->
+                <!--</div>-->
+                <!--<div>-->
+                  <!--<p style="margin: 0;">A equipa número 10 foi atualizada</p>-->
+                <!--</div>-->
+              <!--</div>-->
+            <!--</div>-->
+          <!--</div>-->
 
-          <div class="timeline-item">
-            <div class="timeline-icon valign-wrapper">
-              <i class="timeline-custom-icon material-icons md-24">edit</i>
-            </div>
-            <div class="timeline-content z-depth-1">
-              <h6 style="font-size: large;">Geo-entidade criada<i class="material-icons right">my_location</i></h6>
+          <!--<div class="timeline-item">-->
+            <!--<div class="timeline-icon valign-wrapper">-->
+              <!--<i class="timeline-custom-icon material-icons md-24">edit</i>-->
+            <!--</div>-->
+            <!--<div class="timeline-content z-depth-1">-->
+              <!--<h6 style="font-size: large;">Geo-entidade criada<i class="material-icons right">my_location</i></h6>-->
 
-              <div style="margin-top: 5px;">
-                <div>
-                  <span style="font-style: italic; font-size: 12px;">Há 2 minutos e 28 segundos</span>
-                </div>
-                <div>
-                  <p style="margin: 0;">A geo-entidade número 5 foi adicionada ao mapa.</p>
-                </div>
-              </div>
-            </div>
-          </div>
+              <!--<div style="margin-top: 5px;">-->
+                <!--<div>-->
+                  <!--<span style="font-style: italic; font-size: 12px;">Há 2 minutos e 28 segundos</span>-->
+                <!--</div>-->
+                <!--<div>-->
+                  <!--<p style="margin: 0;">A geo-entidade número 5 foi adicionada ao mapa.</p>-->
+                <!--</div>-->
+              <!--</div>-->
+            <!--</div>-->
+          <!--</div>-->
 
-          <div class="timeline-item">
-            <div class="timeline-icon valign-wrapper">
-              <i class="timeline-custom-icon material-icons md-24">delete</i>
-            </div>
-            <div class="timeline-content z-depth-1">
-              <h6 style="font-size: large;">Equipa removida</h6>
+          <!--<div class="timeline-item">-->
+            <!--<div class="timeline-icon valign-wrapper">-->
+              <!--<i class="timeline-custom-icon material-icons md-24">delete</i>-->
+            <!--</div>-->
+            <!--<div class="timeline-content z-depth-1">-->
+              <!--<h6 style="font-size: large;">Equipa removida</h6>-->
 
-              <div style="margin-top: 5px;">
-                <div>
-                  <span style="font-style: italic; font-size: 12px;">Há 10 minutos e 15 segundos</span>
-                </div>
-                <div>
-                  <p style="margin: 0;">A equipa número 1 foi removida do sistema.</p>
-                </div>
-              </div>
-            </div>
-          </div>
+              <!--<div style="margin-top: 5px;">-->
+                <!--<div>-->
+                  <!--<span style="font-style: italic; font-size: 12px;">Há 10 minutos e 15 segundos</span>-->
+                <!--</div>-->
+                <!--<div>-->
+                  <!--<p style="margin: 0;">A equipa número 1 foi removida do sistema.</p>-->
+                <!--</div>-->
+              <!--</div>-->
+            <!--</div>-->
+          <!--</div>-->
         </div>
 
 

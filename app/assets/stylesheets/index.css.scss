@@ -319,10 +319,12 @@ html, body, #container {
 .list_wrapper {
   position: absolute;
   top: 40px;
-  left: 10px;
+  left: 0;
   right: 0;
   bottom: 0;
   overflow-y: auto;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
 #map {
@@ -561,7 +563,7 @@ html, body, #container {
 
 .timeline-custom-icon {
   padding-left: 11px;
-  font-size: 28px !important;
+  font-size: 29px !important;
 }
 
 #timeline > div:last-child {

@@ -22,18 +22,18 @@ class HomepageController < ApplicationController
 
     # devolve os utilizadores criados ou atualizados nos ultimos 22 segundos
     geo_entities_to_parse = GeoEntity.where("created_at between (?) and (?) OR updated_at between (?) and (?)",
-                                                22.seconds.ago, Time.now, 22.seconds.ago, Time.now)
+                                            21.seconds.ago, Time.now, 21.seconds.ago, Time.now)
     # devolve as equipas criadas ou atualizadas nos ultimos 22 segundos
     teams_to_parse = Team.where("created_at between (?) and (?) OR updated_at between (?) and (?)",
-                                22.seconds.ago, Time.now, 22.seconds.ago, Time.now)
+                                21.seconds.ago, Time.now, 21.seconds.ago, Time.now)
 
     # devolve as equipas e geo-entidade eliminadas nos ultimos 22 segundos
     recently_deleted_team_array = []
     recently_deleted_geo_entity_array = []
     recently_deleted_team_versions = PaperTrail::Version.where('event = ? and created_at > ? and item_type = ?',
-                                                               'destroy', 22.seconds.ago, 'Team')
+                                                               'destroy', 21.seconds.ago, 'Team')
     recently_deleted_geo_entity_versions = PaperTrail::Version.where('event = ? and created_at > ? and item_type = ?',
-                                                               'destroy', 22.seconds.ago, 'GeoEntity')
+                                                                     'destroy', 21.seconds.ago, 'GeoEntity')
 
 
     # pomos a data de atualização a nil para no javascript sabermos que é para remover
