@@ -519,6 +519,14 @@ html, body, #container {
   border-radius: 50%;
 }
 
+.new-entry-icon, .new-entry-header {
+  background: #ffc107 !important;
+}
+
+.new-entry-content {
+  background: #ffecb3 !important;
+}
+
 #timeline .timeline-item .timeline-icon img {
   position: relative;
   top: 14px;

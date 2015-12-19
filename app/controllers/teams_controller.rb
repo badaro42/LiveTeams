@@ -135,6 +135,8 @@ class TeamsController < ApplicationController
         params[:team].delete(:location_user_id)
       end
 
+      @team.updated_at = Time.now
+
       if @team.update(team_params)
         # começamos por remover todas as entradas da tabela para esta equipa
         TeamMember.delete_all(["team_id = ?", @team.id.to_i])

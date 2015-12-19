@@ -21,11 +21,12 @@ var actions = {
 
 // **************************************
 // objectos
-function HistoryEntry(o_type, o_id, time, event) {
+function HistoryEntry(o_type, o_id, time, event, watch) {
   this.obj_type = o_type; // o tipo do objecto
   this.obj_id = o_id; // o id do objecto
   this.timestamp = time; // a data em que ocorreu a ação
   this.action = event; // o evento que ocorreu
+  this.watched = watch; // indica se a entrada atual ja foi vista pelo utilizador
 }
 // override do metodo 'equals' para comparar os campos que queremos nas entradas do historico
 // ver comentario do metodo 'containsHistoryEntry' para uma melhor explicação
@@ -108,13 +109,32 @@ $(document).ready(function () {
   $('#history-tab-icon').on('click', function (e) {
     console.log(e.currentTarget);
     var parent = $(e.currentTarget).parent();
-    if (parent.hasClass('active'))
-      $(e.currentTarget).attr('data-badge', null);
+
+    // remove o indicador de notificações novas, coloca todas as entradas como vistas e grava-as no localStorage
+    if (!parent.hasClass('active')) {
+      $.each(curr_user_saved_prefs.events_history, function (index, elem) {
+        elem.watched = true;
+      });
+      localStorage.setItem('user' + gon.user_id, JSON.stringify(curr_user_saved_prefs));
+
+      if ($(e.currentTarget).attr('data-badge') !== undefined) {
+        console.log("ha pelo menos uma entrada nova, vamos limpar as notificaçoes e remover as classes");
+        setTimeout(function () {
+          $(e.currentTarget).attr('data-badge', null);
+          $('.timeline-item div').removeClass("new-entry-content new-entry-icon");
+          $('.timeline-content h6').removeClass("new-entry-header");
+        }, 10000);
+      }
+    }
   });
 
   // verifica as preferencias do utilizador no objeto localStorage
   last_window_height = window.innerHeight;
   checkUserPreferences();
+
+  // chama a função para atualizar as timestamps da entradas
+  // esta função é executada a cada 30 segundos
+  setTimeout(updateTimestamps, 30000);
 
   // listener que é executado quando a janela é redimensionada
   window.onresize = onWindowResize;
@@ -1238,10 +1258,15 @@ function onEachTeam(feature, layer) {
   }
 }
 
-// função executada pelo pointToLayer do metodo geoJSON das equipas
-// verifica se esta entidade ja existe no sistema
-// se sim, removemos para voltar a introduzir
-// caso a data de atualização for null, removemos a entidade
+/**
+ * função executada pelo pointToLayer do metodo geoJSON das equipas
+ * verifica se esta entidade ja existe no sistema
+ * se sim, removemos para voltar a introduzir
+ * caso a data de atualização for null, removemos a entidade
+ *
+ * @param feature
+ * @param latlng
+ */
 function teamPointToLayer(feature, latlng) {
   console.log(feature);
   var index = teamIsInMap(feature.properties.f_id);
@@ -1367,7 +1392,7 @@ function getURLParameter(param) {
   }
 }
 
-/*
+/**
  * Le as preferencias do utilizador a partir do localStorage
  */
 function checkUserPreferences() {
@@ -1396,9 +1421,11 @@ function checkUserPreferences() {
   }
 }
 
-// ESTA A FUNCIONAR BEM, FALTA O RESIZE!
-// mostra ou esconde a barra de navegação
-// grava no localStorage o estado atual da navbar
+/**
+ * mostra ou esconde a barra de navegação
+ * grava no localStorage o estado atual da navbar
+ * @param to_show
+ */
 function toggleNavBar(to_show) {
   var new_sidebar_height, new_top;
   var curr_window_height = window.innerHeight,
@@ -1447,7 +1474,7 @@ function populateEventHistory(loaded_events) {
 
   for (i = 0; i < loaded_events.length; i++) {
     entry = new HistoryEntry(loaded_events[i].obj_type, loaded_events[i].obj_id, loaded_events[i].timestamp,
-        loaded_events[i].action);
+        loaded_events[i].action, loaded_events[i].watched);
     prependHistoryDivEntry(entry);
     arr.push(entry);
   }
@@ -1501,8 +1528,8 @@ function onWindowResize(event) {
 }
 
 // recebe os parametros do novo evento, adiciona-o ao localStorage do utilizador atual
-function createNewHistoryEntry(o_type, o_id, time, event) {
-  var h_entry = new HistoryEntry(o_type, o_id, time, event);
+function createNewHistoryEntry(o_type, o_id, time, event, watch) {
+  var h_entry = new HistoryEntry(o_type, o_id, time, event, watch);
 
   if (!containsHistoryEntry(h_entry)) {
     curr_user_saved_prefs.events_history.push(h_entry);
@@ -1520,9 +1547,17 @@ function prependHistoryDivEntry(entry) {
   console.log("PREPEND DA CENA DO HISTORICO!!!");
   var icon, new_element, info_text, time_span_to_string;
   var icon_to_center = "";
+  var when_was_updated = "";
+
+  console.log(entry.watched);
 
   if (entry.action === actions.create || entry.action === actions.update) {
-    icon_to_center = '<i class="material-icons right">my_location</i>';
+    //icon_to_center = '<i class="material-icons right">my_location</i>';
+    icon_to_center = '<a class="waves-effect waves-light btn-flat right" ' +
+        'onclick="javascript:centerMapOnGeoEntity(' + entry.obj_id + ')"' +
+        'style="padding: 8px; line-height: normal; top: -10px; height: 38px;">' +
+        '<i style="line-height: 23px !important;" class="material-icons md-24">my_location</i></a>';
+
     if (entry.action === actions.create) {
       icon = 'add';
       info_text = 'adicionada ao mapa.';
@@ -1537,26 +1572,36 @@ function prependHistoryDivEntry(entry) {
     info_text = 'removida do sistema.';
   }
 
-  // a diferença entre duas datas é retornada em milisegundos
-  // divide-se por 1000 para ficar com o valor em segundos
-  var date_param = Math.round(Math.abs(new Date(entry.timestamp) - new Date()) / 1000);
-  time_span_to_string = timeDiffToString(date_param);
+  if(is_sse_update)
+    when_was_updated = "Agora mesmo";
+  else {
+    // a diferença entre duas datas é retornada em milisegundos
+    // divide-se por 1000 para ficar com o valor em segundos
+    var date_param = Math.round(Math.abs(new Date(entry.timestamp) - new Date()) / 1000);
+    time_span_to_string = timeDiffToString(date_param);
+    when_was_updated = "Há " + time_span_to_string;
+  }
 
   new_element = '<div class="timeline-item">' +
-      '<div class="timeline-icon valign-wrapper"><i class="timeline-custom-icon material-icons md-24">' +
-      icon + '</i></div><div class="timeline-content z-depth-1"><h6 style="font-size: large;">' + entry.obj_type +
-      ' ' + entry.action + icon_to_center + '</h6><div style="margin-top: 5px;"><div>' +
-      '<span style="font-style: italic; font-size: 12px;">Há ' + time_span_to_string + '</span></div><div>' +
-      '<p style="margin: 0;">A ' + entry.obj_type.toLowerCase() + ' número ' + entry.obj_id + ' foi ' + info_text +
-      '</p></div></div></div></div>';
+      '<div class="timeline-icon valign-wrapper ' + (entry.watched ? "" : "new-entry-icon") + '">' +
+      '<i class="timeline-custom-icon material-icons md-24">' + icon + '</i></div>' +
+      '<div class="timeline-content z-depth-1 ' + (entry.watched ? "" : "new-entry-content") + '">' +
+      '<h6 class="' + (entry.watched ? "" : "new-entry-header") + '" style="font-size: large;"><span>' +
+      entry.obj_type + ' ' + entry.action + '</span>' + icon_to_center + '</h6><div style="margin-top: 5px;"><div>' +
+      '<span class="timeline-timestamp" style="font-style: italic; font-size: 12px;">' + when_was_updated +
+      '</span></div><div><p style="margin: 0;">A ' + entry.obj_type.toLowerCase() + ' número ' +
+      '<a data-method="get" target="_blank" href="/teams/' + entry.obj_id + '">' + entry.obj_id +
+      '</a> foi ' + info_text + '</p></div></div></div></div>';
 
   $('#timeline').prepend(new_element);
 
-  var badge_icon = $('#history-tab-icon');
-  var nr_of_pending_notifs = $(badge_icon).attr('data-badge'); // undefined se não houver nenhuma notificação
+  if (!entry.watched) {
+    var badge_icon = $('#history-tab-icon');
+    var nr_of_pending_notifs = $(badge_icon).attr('data-badge'); // undefined se não houver nenhuma notificação
 
-  nr_of_pending_notifs === undefined ? $(badge_icon).attr('data-badge', '1')
-      : $(badge_icon).attr('data-badge', parseInt(nr_of_pending_notifs) + 1);
+    nr_of_pending_notifs === undefined ? $(badge_icon).attr('data-badge', '1')
+        : $(badge_icon).attr('data-badge', parseInt(nr_of_pending_notifs) + 1);
+  }
 }
 
 /**
@@ -1577,30 +1622,53 @@ function containsHistoryEntry(obj) {
     if (curr_user_saved_prefs.events_history[i].equals(obj))
       return true;
   }
-
   return false;
 }
 
 /**
  * recebe como parametro os segundos que queremos tratar
  */
-function timeDiffToString(s) {
-  var d, h, m, string_to_ret = "";
-  d = Math.floor(s / 86400); // numero de dias
-  s -= d * 86400;
-  h = Math.floor(s / 3600); // numero de horas inteiras
-  s -= h * 3600;
-  m = Math.floor(s / 60); // numero de minutos que sobram
-  s -= m * 60;
+function timeDiffToString(seconds) {
+  var days, hours, minutes, string_to_ret = "";
 
-  if (d > 0)
-    string_to_ret += d + (d == 1 ? " dia, " : " dias, ");
-  if (h > 0)
-    string_to_ret += h + (h == 1 ? " hora, " : " horas, ");
-  if (m > 0)
-    string_to_ret += m + (m == 1 ? " minuto e " : " minutos e ");
-  if (s > 0)
-    string_to_ret += s + (s == 1 ? " segundo" : " segundos");
+  days = Math.floor(seconds / 86400); // numero de dias
+  seconds -= days * 86400;
+  hours = Math.floor(seconds / 3600); // numero de horas inteiras
+  seconds -= hours * 3600;
+  minutes = Math.floor(seconds / 60); // numero de minutos que sobram
+  seconds -= minutes * 60;
+
+  if (days > 0)
+    string_to_ret += days + (days == 1 ? " dia, " : " dias, ");
+  if (hours > 0)
+    string_to_ret += hours + (hours == 1 ? " hora, " : " horas, ");
+  if (minutes > 0)
+    string_to_ret += minutes + (minutes == 1 ? " minuto e " : " minutos e ");
+  if (seconds > 0)
+    string_to_ret += seconds + (seconds == 1 ? " segundo" : " segundos");
 
   return string_to_ret;
+}
+
+/**
+ * Atualiza as timestamps das entradas do historico a cada x segundos
+ * Por enquanto esse valor fica nos 30 segundos - 30k milissegundos
+ */
+function updateTimestamps() {
+  console.log("ATUALIZAR AS TIMESTAMPS!!!!!");
+  console.log(new Date());
+
+  var dom_elem, t_stamp_span, date_param;
+  var items = $('.timeline-item');
+  var length = items.length - 1; //para evitar aceder a posições fora de alcance - famoso indexOutOfBounds kkkk
+
+  $.each(curr_user_saved_prefs.events_history, function (index, elem) {
+    dom_elem = $(items).get(length - index);
+    t_stamp_span = $(dom_elem).find('.timeline-timestamp');
+
+    date_param = Math.round(Math.abs(new Date(elem.timestamp) - new Date()) / 1000);
+    $(t_stamp_span).text("Há " + timeDiffToString(date_param));
+  });
+
+  setTimeout(updateTimestamps, 30000);
 }
