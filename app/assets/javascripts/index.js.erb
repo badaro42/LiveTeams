@@ -56,18 +56,14 @@ var previous_user_location; // {timestamp: Date(), position: L.latLng(lat, lng)}
 var no_sleep_enabled = false;
 var is_modal_open = false;
 
-var noty_message_to_show = "";
-
 
 // variaveis relacionadas a informação guardada no browser - localStorage
 var curr_user_saved_prefs = { // local storage - objeto com as preferencias do utilizador!
   show_navbar: null, // o estado de visibilidade da navbar na pagina inicial
-  events_history: [] // array com todas as entradas do historico
+  events_history: [], // array com todas as entradas do historico
+  max_zoom: 16 // valor default: se houver valor no localStorage, substitui este
 };
 var last_window_height;
-
-// variaveis relacionadas com o historico de eventos
-var last_update_timestamp;
 
 
 // var incrementada quando um dos conjuntos de dados é carregado - equipas e entidades
@@ -166,6 +162,13 @@ $(document).ready(function () {
 
   // apenas permite numeros no campo do numero de telefone
   $(".numeric").numeric();
+
+  // listener para quando o valor do slider nas opções é alterado
+  $('#range_max_zoom').on('change', function () {
+    console.log("slider max zoom!!!");
+    curr_user_saved_prefs.max_zoom = $(this).val();
+    localStorage.setItem('user' + gon.user_id, JSON.stringify(curr_user_saved_prefs));
+  });
 
   // apenas ativa a cena do wake lock caso seja um dispositivo movel
   if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.
@@ -1364,7 +1367,8 @@ function centerMapOnGeoEntity(entity_id) {
 
   if (indexOnArray > -1) { // a entidade existe, centramos
     var entity = all_geo_entities[indexOnArray];
-    map.fitBounds(entity.latlon);
+    map.fitBounds(entity.latlon, {maxZoom: parseInt(curr_user_saved_prefs.max_zoom)});
+    entity.layer.openPopup();
 
     noty({
       text: 'Mapa centrado na geo-entidade nº' + entity_id + '.', timeout: 3500,
@@ -1404,8 +1408,14 @@ function checkUserPreferences() {
 
   // o utilizador ja iniciou sessão, vamos obter as suas preferencias
   if (local_storage_user_prefs !== null) {
+    // le as entradas a partir do localStorage e coloca-as na timeline
     populateEventHistory(local_storage_user_prefs.events_history);
 
+    // altera o nivel de zoom máximo para aquele que o utilizador definiu previamente
+    $("#range_max_zoom").val(local_storage_user_prefs.max_zoom);
+    curr_user_saved_prefs.max_zoom = local_storage_user_prefs.max_zoom;
+
+    // apresenta ou esconde a navbar consoante as preferencias do utilizador
     if (!local_storage_user_prefs.show_navbar) {
       toggleNavBar(false);
       show_navbar_checkbox.prop('checked', false);
