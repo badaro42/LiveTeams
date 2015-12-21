@@ -28,46 +28,77 @@
     </div>
 
     <div class="row">
-      <%#= f.label "Adicionar utilizadores à equipa", for: "add_users", style: "padding-left: 10px;" %>
+      <%= f.label "Adicionar utilizadores à equipa", for: "dropdown_all_users", style: "padding-left: 10px;" %>
 
-      <div class="row">
-        <div class="col l5 m5 s5">
-          <p class="center" style="text-transform: uppercase">Todos os utilizadores</p>
-        </div>
-        <div class="col l5 m5 s5 push-l2 push-m2 push-s2">
-          <p class="center" style="text-transform: uppercase">Utilizadores na equipa</p>
-        </div>
-      </div>
+      <!--<div class="row">-->
+      <!--<div class="col l5 m5 s5">-->
+      <!--<p class="center" style="text-transform: uppercase">Todos os utilizadores</p>-->
+      <!--</div>-->
+      <!--&lt;!&ndash;<div class="col l5 m5 s5 push-l2 push-m2 push-s2">&ndash;&gt;-->
+      <!--&lt;!&ndash;<p class="center" style="text-transform: uppercase">Utilizadores na equipa</p>&ndash;&gt;-->
+      <!--&lt;!&ndash;</div>&ndash;&gt;-->
+      <!--</div>-->
 
-      <div class="users_forms">
-        <div class="col l5 m5 s5">
-          <%= select_tag 'users_left', grouped_options_for_select(@users_for_add_select),
+      <div class="users_forms" style="margin-top: 10px;">
+        <div class="col l12 m12 s12">
+          <%= select_tag 'team[users]', grouped_options_for_select(@users_for_select),
                          {multiple: true, class: 'browser-default',
                           style: 'height: 200px;', id: "dropdown_all_users"} %>
+
         </div>
-        <div class="col l2 m2 s2 center">
-          <div title="Adicionar utilizadores à equipa">
-            <a id="add_users_to_team" class="waves-effect waves-light btn"
-               style="padding-left: 10px; padding-right: 10px;">
-              <i class="material-icons">keyboard_arrow_right</i>
-            </a>
-          </div>
-          <div title="Remover utilizadores da equipa">
-            <a id="remove_users_from_team" class="red waves-effect waves-light btn"
-               style="padding-left: 10px; padding-right: 10px; margin-top: 10px;">
-              <i class="material-icons">keyboard_arrow_left</i>
-            </a>
-          </div>
-        </div>
-        <div class="col l5 m5 s5" style="height: 200px;">
-          <%#= f.select 'users_right', grouped_options_for_select(@users_for_remove_select), {prompt: false},
-                       class: 'browser-default', multiple: true,
-                       style: 'height: 200px;', id: "dropdown_users_in_team" %>
-          <%= select_tag 'users_right', grouped_options_for_select(@users_for_remove_select),
-                       class: 'browser-default', multiple: true,
-                       style: 'height: 200px;', id: "dropdown_users_in_team" %>
-        </div>
+
+
+        <!--<div class="col l5 m5 s5" style="height: 200px;">-->
+        <!--<%#= f.select 'users_right', grouped_options_for_select(@users_for_remove_select), {prompt: false},-->
+                       <!--class: 'browser-default', multiple: true,-->
+                       <!--style: 'height: 200px;', id: "dropdown_users_in_team" %>-->
+        <!--<%#= select_tag 'users_right', grouped_options_for_select(@users_for_remove_select),-->
+                       <!--class: 'browser-default', multiple: true,-->
+                       <!--style: 'height: 200px;', id: "dropdown_users_in_team" %>-->
+        <!--</div>-->
       </div>
+    </div>
+
+    <div class="row">
+      <div id="select-all-btn" class="col l4 m12 s12" title="Selecionar todos os utilizadores">
+        <a id="select_all" class="waves-effect waves-light btn right"
+           style="padding-left: 10px; padding-right: 10px; width: 100%;">
+          <i class="material-icons md-24 left">done_all</i>Todos
+        </a>
+      </div>
+      <div id="select-none-btn" class="col l4 m12 s12 center" title="Limpar utilizadores selecionados">
+        <a id="select_none" class="waves-effect waves-light btn"
+           style="padding-left: 10px; padding-right: 10px; width: 100%;">
+          <i class="material-icons md-24 left">delete</i>Nenhum
+        </a>
+      </div>
+      <div id="select-undo-btn" class="col l4 m12 s12" title="Anular alterações efectuadas à lista">
+        <a id="select_none" class="red waves-effect waves-light btn left"
+           style="padding-left: 10px; padding-right: 10px; width: 100%;">Desfazer
+          <i class="material-icons md-24 left">undo</i>
+        </a>
+      </div>
+
+
+      <!--<div id="select_left_btn" class="col l2 m4 s4 push-l2" title="Selecionar todos os utilizadores">-->
+      <!--<a id="select_all" class="waves-effect waves-light btn right"-->
+      <!--style="padding-left: 10px; padding-right: 10px; width: 100%;">-->
+      <!--<i class="material-icons left">done_all</i>Todos-->
+      <!--</a>-->
+      <!--</div>-->
+      <!--<div id="select_middle_btn"  class="col l2 m4 s4 center push-l3" title="Limpar utilizadores selecionados">-->
+      <!--<a id="select_none" class="waves-effect waves-light btn"-->
+      <!--style="padding-left: 10px; padding-right: 10px; width: 100%;">-->
+      <!--<i class="material-icons left">keyboard_arrow_left</i>Nenhum-->
+      <!--</a>-->
+      <!--</div>-->
+      <!--<div id="select_right_btn"  class="col l2 m4 s4 push-l4" title="Voltar ao estado inicial">-->
+      <!--<a id="select_none" class="red waves-effect waves-light btn left"-->
+      <!--style="padding-left: 10px; padding-right: 10px; width: 100%;">-->
+      <!--<i class="material-icons left">settings_backup_restore</i>Desfazer-->
+      <!--</a>-->
+      <!--</div>-->
+      <!--</div>-->
     </div>
 
     <div class="row">

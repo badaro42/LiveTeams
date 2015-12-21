@@ -25,7 +25,7 @@ class TeamsController < ApplicationController
       flash[:error] = "A equipa que procura nao existe!"
       redirect_to teams_url
     else
-      users_that_can_be_added("show")
+      set_users_for_multiple_select("show")
 
       gon.highlight_latlon = @team.latlon_highlight
       gon.current_latlon = @team.latlon
@@ -50,8 +50,7 @@ class TeamsController < ApplicationController
     @team = Team.new
     @users_in_team = @team.users
 
-    users_that_can_be_added("new")
-    users_that_can_be_removed("new")
+    set_users_for_multiple_select("new")
   end
 
   # GET /teams/1/edit
@@ -60,15 +59,15 @@ class TeamsController < ApplicationController
       flash[:error] = "A equipa que procura não existe!"
       redirect_to teams_url
     else
-      users_that_can_be_added("edit")
-      users_that_can_be_removed("edit")
-
-      gon.current_team_id = @team.id
-
-      @users_in_team = @team.users
       @team_leader = TeamMember.find_by(team_id: @team.id, is_leader: true)
 
       if @team_leader.user_id == current_user.id || current_user.profile == User::ADMINISTRADOR
+        gon.current_team_id = @team.id
+        gon.users_in_team = set_users_in_team
+
+        @users_in_team = @team.users # para as dropdowns de escolha de lider/responsavel localização
+        set_users_for_multiple_select("new")
+
         puts "PODE EDITAR"
       else
         flash[:error] = "Não tem permissões para realizar essa ação!"
@@ -91,7 +90,7 @@ class TeamsController < ApplicationController
 
         # adicionar os v�rios membros da equipa, colocar aqui um FOR!
         # todos os elementos sao adicionados como nao sendo lider
-        params[:team][:users][0].split(",").each do |u_id|
+        params[:team][:users].each do |u_id|
           if u_id.to_i > 0
             puts "LOOOOOOOOOOOOOOOL"
             puts u_id
@@ -142,7 +141,7 @@ class TeamsController < ApplicationController
         TeamMember.delete_all(["team_id = ?", @team.id.to_i])
 
         # por fim, adicionamos novamente os membros da equipa, bem como qual o capit�o
-        params[:team][:users][0].split(",").each do |u_id|
+        params[:team][:users].each do |u_id|
           new_id = u_id.to_i
           leader_id = params[:team][:is_leader].to_i
           puts "==============================="
@@ -221,10 +220,6 @@ class TeamsController < ApplicationController
     end
   end
 
-  # def encode_teams_to_json(teams)
-  #
-  # end
-
 
   private
   # Use callbacks to share common setup or constraints between actions.
@@ -252,50 +247,34 @@ class TeamsController < ApplicationController
     end
   end
 
-
-  # todos os utilizadores que podem ser adicionados à equipa
-  # CREATE: todos os utilizadores que estejam no sistema e nao sejam "básicos"
-  # EDIT: todos os utilizadores que não estejam na equipa e não sejam "básicos"
-  def users_that_can_be_added(action)
-    @users_for_add_select = []
-    if action == "new"
-      users_arr = User.all
-      @users_for_add_select = set_users_for_multiple_select(users_arr, false)
-    elsif action == "edit" || action == "show"
-      members_ids = TeamMember.where(team_id: @team.id).select(:user_id)
-      users_not_in_this_team = User.where.not(id: members_ids).order(first_name: :asc, last_name: :asc)
-      @users_for_add_select = set_users_for_multiple_select(users_not_in_this_team, false)
+  # injecta os utilizadores que estao na equipa na variavel 'gon'
+  # de forma a que no javascript, quando a acção 'edit' é invocada
+  def set_users_in_team
+    arr_to_ret = []
+    members_ids = TeamMember.where(team_id: @team.id).select(:user_id)
+    User.where(id: members_ids).order(first_name: :asc, last_name: :asc).each do |user|
+      arr_to_ret.push(user.id)
     end
-  end
-
-  # os utilizadores que ja se encontrem na equipa
-  # CREATE: nenhum utilizador irá ser retornado
-  # EDIT: todos os utilizadores que estejam na equipa
-  def users_that_can_be_removed(action)
-    @users_for_remove_select = []
-    if action === "new"
-      @users_for_remove_select = set_users_for_multiple_select([], true) #retorna o arr vazio, apenas com as categorias
-
-      puts "CENA DO REMOVE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-      puts @users_for_remove_select.inspect
-    else
-      members_ids = TeamMember.where(team_id: @team.id).select(:user_id)
-      users_in_this_team = User.where(id: members_ids).order(first_name: :asc, last_name: :asc)
-      @users_for_remove_select = set_users_for_multiple_select(users_in_this_team, false)
-    end
+    arr_to_ret
   end
 
   # retorna o array de utilizadores ja ordenados por categoria
-  def set_users_for_multiple_select(users_arr, to_return_empty)
+  def set_users_for_multiple_select(action)
+    users_arr = []
     values_for_select = [["Administrador", []], ["Gestor", []], ["Operacional", []]]
 
-    if !to_return_empty
-      values_for_select = get_users_by_profile(users_arr, values_for_select, 0, User::ADMINISTRADOR)
-      values_for_select = get_users_by_profile(users_arr, values_for_select, 1, User::GESTOR)
-      values_for_select = get_users_by_profile(users_arr, values_for_select, 2, User::OPERACIONAL)
+    if action == "new" || action == "edit"
+      users_arr = User.all
+    elsif action == "show"
+      members_ids = TeamMember.where(team_id: @team.id).select(:user_id)
+      users_arr = User.where.not(id: members_ids).order(first_name: :asc, last_name: :asc)
     end
 
-    return values_for_select
+    values_for_select = get_users_by_profile(users_arr, values_for_select, 0, User::ADMINISTRADOR)
+    values_for_select = get_users_by_profile(users_arr, values_for_select, 1, User::GESTOR)
+    values_for_select = get_users_by_profile(users_arr, values_for_select, 2, User::OPERACIONAL)
+
+    @users_for_select = values_for_select
   end
 
   # para cada perfil, coloca os utilizadores dentro do array para depois apresentar no select multiplo
@@ -306,7 +285,7 @@ class TeamsController < ApplicationController
       elem.push(user.id)
       return_arr[index][1].push(elem)
     end
-    return return_arr
+    return_arr
   end
 
 

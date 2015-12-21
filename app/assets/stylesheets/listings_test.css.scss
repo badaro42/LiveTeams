@@ -313,3 +313,15 @@ label {
   border: none;
   background-color: rgba(0, 0, 0, 0.1);
 }
+
+
+//REGRAS PARA O MULTIPLE SELECT NO FORM DAS EQUIPAS!
+@media only screen and (max-width: 992px) {
+  #select-none-btn {
+    margin-top: 10px;
+  }
+
+  #select-undo-btn {
+    margin-top: 20px;
+  }
+}
