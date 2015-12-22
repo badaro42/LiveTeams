@@ -28,7 +28,7 @@
       <ul class="left navbar-buttons">
         <li>
           <%= link_to 'http://www.prociv.pt/Pages/default.aspx', target: '_blank', id: 'navbar-icon-div',
-                      style: 'font-size: 1.2rem; font-weight: 100; margin-top: 0;',
+                      style: 'font-size: 1.2rem; font-weight: 200; margin-top: 0;',
                       class: 'navbar-padding-top brand-logo left', method: :get do %>
               <!--<i id="navbar-map-btn" class="material-icons left">map</i>Mapa-->
               <%= image_tag 'prociv_logotipo.gif', class: 'circle left',
@@ -102,39 +102,39 @@
             </div>
           </div>
         </li>
-        <li id="list_root_path_entry">
+        <li id="list_root_path_entry" class="sidenav-entry">
           <%= link_to root_path, target: '_blank', style: 'text-transform: none; padding-left: 0;',
                       class: 'btn-flat navbar-button', method: :get do %>
               <i class="material-icons left">map</i>Mapa
           <% end %>
         </li>
-        <li id="list_teams_path_entry">
+        <li id="list_teams_path_entry" class="sidenav-entry">
           <%= link_to teams_path, style: 'text-transform: none; padding-left: 0;',
                       class: 'btn-flat navbar-button', method: :get do %>
               <i class="material-icons left">people</i>Equipas
           <% end %>
         </li>
-        <li id="list_users_path_entry">
+        <li id="list_users_path_entry" class="sidenav-entry">
           <%= link_to users_path, style: 'text-transform: none; padding-left: 0;',
                       class: 'btn-flat navbar-button', method: :get do %>
               <i class="material-icons left">person</i>Membros
           <% end %>
         </li>
         <li class="divider"></li>
-        <li id="list_profile_path_entry">
+        <li id="list_profile_path_entry" class="sidenav-entry">
           <%= link_to current_user, style: 'text-transform: none; padding-left: 0;',
                       class: 'btn-flat navbar-button', method: :get do %>
               <i class="material-icons left">account_box</i>Ver perfil
           <% end %>
         </li>
-        <li id="list_edit_profile_path_entry">
+        <li id="list_edit_profile_path_entry" class="sidenav-entry">
           <%= link_to edit_user_path(current_user), style: 'text-transform: none; padding-left: 0;',
                       class: 'btn-flat navbar-button', method: :get do %>
               <i class="material-icons left">edit</i>Editar perfil
           <% end %>
         </li>
         <li class="divider"></li>
-        <li>
+        <li class="sidenav-entry">
           <%= link_to destroy_user_session_path, style: 'text-transform: none; padding-left: 0;',
                       class: 'btn-flat navbar-button', method: :get do %>
               <i class="material-icons left">power_settings_new</i>Logout

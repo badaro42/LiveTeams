@@ -1,3 +1,9 @@
+body, html {
+  font-weight: 300;
+}
+
+
+
 /* ------------------------------------------ */
 .fixed-position {
   left: auto !important;
@@ -324,4 +330,18 @@ label {
   #select-undo-btn {
     margin-top: 20px;
   }
+}
+
+
+.sidenav-entry {
+  padding: 0 !important;
+}
+
+.sidenav-entry > a {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  padding-right: 15px !important;
+  padding-left: 15px !important;
+  display: inline-block !important;
+  width: 100%;
 }
