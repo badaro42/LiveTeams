@@ -788,78 +788,81 @@ function goToGeoEntity(entity_id) {
   window.location.replace(new_uri);
 }
 
-function addUserToTeam() {
-  var n_elem, parent, parent_label, i_value, i_text;
-  var users_selected = $('#dropdown_all_users :selected'),
-      select_leader = $('#select_team_leader'),
-      select_team_position = $('#select_team_position');
 
-  if (users_selected.length == 0)
-    noty({text: 'Nenhum utilizador selecionado.', timeout: 2000, type: 'alert', layout: 'bottomCenter'});
-  else {
-    $.each(users_selected, function (index, elem) {
-      n_elem = $(elem);
-      parent = n_elem.parent();
-      parent_label = parent[0].label;
-      i_value = n_elem.val();
-      i_text = n_elem.text();
+//function addUserToTeam() {
+//  var n_elem, parent, parent_label, i_value, i_text;
+//  var users_selected = $('#dropdown_all_users :selected'),
+//      select_leader = $('#select_team_leader'),
+//      select_team_position = $('#select_team_position');
+//
+//  if (users_selected.length == 0)
+//    noty({text: 'Nenhum utilizador selecionado.', timeout: 2000, type: 'alert', layout: 'bottomCenter'});
+//  else {
+//    $.each(users_selected, function (index, elem) {
+//      n_elem = $(elem);
+//      parent = n_elem.parent();
+//      parent_label = parent[0].label;
+//      i_value = n_elem.val();
+//      i_text = n_elem.text();
+//
+//      select_leader.append($("<option/>", {
+//        value: i_value,
+//        text: i_text
+//      }));
+//      select_team_position.append($("<option/>", {
+//        value: i_value,
+//        text: i_text
+//      }));
+//
+//      $("#dropdown_users_in_team optgroup[label='" + parent_label + "']")
+//          .append($('<option></option>').val(i_value).text(i_text));
+//      $("#dropdown_all_users option[value='" + i_value + "']").remove();
+//    });
+//  }
+//}
+//
+//
+//function removeUserFromTeam() {
+//  var n_elem, parent, parent_label, i_value, i_text;
+//  var users_selected = $('#dropdown_users_in_team :selected'),
+//      select_leader = $('#select_team_leader'),
+//      select_team_position = $('#select_team_position');
+//
+//  if (users_selected.length == 0)
+//    noty({text: 'Nenhum utilizador selecionado.', timeout: 2000, type: 'alert', layout: 'bottomCenter'});
+//  else {
+//    $.each(users_selected, function (index, elem) {
+//      n_elem = $(elem);
+//      parent = n_elem.parent();
+//      parent_label = parent[0].label;
+//      i_value = n_elem.val();
+//      i_text = n_elem.text();
+//
+//      select_leader.append($("<option/>", {
+//        value: i_value,
+//        text: i_text
+//      }));
+//      select_team_position.append($("<option/>", {
+//        value: i_value,
+//        text: i_text
+//      }));
+//
+//      $("#select_team_leader option[value=" + i_value + "]").remove();
+//      $("#select_team_position option[value=" + i_value + "]").remove();
+//
+//      $("#dropdown_all_users optgroup[label='" + parent_label + "']")
+//          .append($('<option></option>').val(i_value).text(i_text));
+//      $("#dropdown_users_in_team option[value='" + i_value + "']").remove();
+//    });
+//  }
+//}
 
-      select_leader.append($("<option/>", {
-        value: i_value,
-        text: i_text
-      }));
-      select_team_position.append($("<option/>", {
-        value: i_value,
-        text: i_text
-      }));
-
-      $("#dropdown_users_in_team optgroup[label='" + parent_label + "']")
-          .append($('<option></option>').val(i_value).text(i_text));
-      $("#dropdown_all_users option[value='" + i_value + "']").remove();
-    });
-  }
-}
-
-function removeUserFromTeam() {
-  var n_elem, parent, parent_label, i_value, i_text;
-  var users_selected = $('#dropdown_users_in_team :selected'),
-      select_leader = $('#select_team_leader'),
-      select_team_position = $('#select_team_position');
-
-  if (users_selected.length == 0)
-    noty({text: 'Nenhum utilizador selecionado.', timeout: 2000, type: 'alert', layout: 'bottomCenter'});
-  else {
-    $.each(users_selected, function (index, elem) {
-      n_elem = $(elem);
-      parent = n_elem.parent();
-      parent_label = parent[0].label;
-      i_value = n_elem.val();
-      i_text = n_elem.text();
-
-      select_leader.append($("<option/>", {
-        value: i_value,
-        text: i_text
-      }));
-      select_team_position.append($("<option/>", {
-        value: i_value,
-        text: i_text
-      }));
-
-      $("#select_team_leader option[value=" + i_value + "]").remove();
-      $("#select_team_position option[value=" + i_value + "]").remove();
-
-      $("#dropdown_all_users optgroup[label='" + parent_label + "']")
-          .append($('<option></option>').val(i_value).text(i_text));
-      $("#dropdown_users_in_team option[value='" + i_value + "']").remove();
-    });
-  }
-}
-
-//TODO: verificar se todas as entradas têm a classe 'active'
-//TODO: se sim, caso botao seja 'expand_all', nao faz nada. caso seja o outro, colapsa todas as entradas
-//TODO: se nao, caso botao seja 'expand_all', expande todas as entradas. caso seja o outro, nao faz nada
-//TODO: se só alguns têm, caso seja botao 'expand_all', expande todas as que nao tenhas a classe 'active'
-//TODO: se só alguns têm, caso seja botão 'collapse_all', colapsa todas as que têm a classe 'active'
+/**
+ * Função que trata da expansão/colapsamento das entradas da lista de equipas.
+ * O botão para expandir expande todas as que ainda estejam colapsadas
+ * O botão de colapsar faz exactamente o inverso
+ * @param e
+ */
 function toggleEntriesClass(e) {
   // expandir as entradas
   // caso nenhuma esteja expandida, expandimos todas

@@ -23,8 +23,8 @@
 
 <div class="row" style="margin-top: 20px;">
   <%= form_for(@user) do |f| %>
-      <div class="col l10 m10 s12">
-        <div id="basic-info" class="scrollspy col l12 s12 z-depth-1 white">
+      <div class="col l10 m10 s12 z-depth-1 white">
+        <div id="basic-info" class="scrollspy col l12 s12" style="padding: 0;">
           <div class="section">
             <h5 style="margin-left: 10px;">Dados do <%= @user.first_name %></h5>
           </div>
@@ -50,7 +50,7 @@
           </div>
         </div>
 
-        <div id="profile" class="scrollspy col l12 s12 z-depth-1 white" style="margin-top: 20px;">
+        <div id="profile" class="scrollspy col l12 s12" style="margin-top: 20px; padding: 0;">
           <div class="section">
             <h5 style="margin-left: 10px; display: inline;">Alterar perfil do utilizador</h5>
           </div>
@@ -60,7 +60,7 @@
           </div>
         </div>
 
-        <div id="optional" class="scrollspy col l12 s12 z-depth-1 white" style="margin-top: 20px;">
+        <div id="optional" class="scrollspy col l12 s12" style="margin-top: 20px; padding: 0;">
           <div class="section">
             <h5 style="margin-left: 10px; display: inline;">Avatar/palavra-passe </h5>
             <span>(deixe em branco se não quiser alterar)</span>
@@ -87,9 +87,9 @@
           </div>
         </div>
 
-        <div class="col s12 m12 l12 center-align" style="margin-top: 20px;">
+        <div class="col s12 m12 l12 center-align" style="margin-top: 25px; margin-bottom: 15px;">
           <div class="actions">
-            <%= f.submit 'Atualizar', class: "btn waves-effect waves-light" %>
+            <%= f.submit 'Atualizar', class: "btn waves-effect waves-light", style: "width: 100%;" %>
           </div>
         </div>
       </div>

@@ -256,7 +256,7 @@
                     </span>
                   </div>
                   <div class="collapse_header_link">
-                    <%= link_to team, method: :get, target: '_blank', :data => {:position => 'left', :delay => '15',
+                    <%= link_to team, method: :get, target: '_blank', :data => {:position => 'left', :delay => '0',
                                                                                 :tooltip => 'Ver mais detalhes'},
                                 class: 'tooltipped edit-team-btn waves-effect waves-teal btn-flat' do %>
                         <i class="material-icons">more_vert</i>
@@ -306,7 +306,7 @@
           <div class="col l7 m7 s7" style="padding: 0;">
             <p class="center" style="font-weight: 300; margin: 0;">A mostrar os 15 utilizadores mais ativos</p>
           </div>
-          <div class="col l5 m5 s5">
+          <div class="col l5 m5 s5" style="padding: 0;">
             <%= link_to users_url, method: :get, target: '_blank', style: 'width: 100%; padding: 0 10px;',
                         class: 'right waves-effect waves-light btn valign' do %>
                 Ver todos
@@ -314,7 +314,7 @@
           </div>
         </div>
 
-        <ul class="collection" style="margin-bottom: 7.5px;">
+        <ul class="collection z-depth-1" style="margin-bottom: 7.5px;">
           <% @most_active_users.each do |user| %>
               <li class="collection-item avatar">
                 <%= image_tag user.avatar.url(:thumb), class: 'circle responsive-img' %>
@@ -325,7 +325,11 @@
                   <% end %>
                 </span>
 
-                <p><%= user.email %></p>
+                <p style="margin-top: 5px;">
+                  <span style="line-height: 17px;"><%= user.profile %></span>
+                  <br>
+                  <span style="line-height: 17px;">Este utilizador autenticou-se <%= user.sign_in_count %> vezes</span>
+                </p>
               </li>
           <% end %>
         </ul>
