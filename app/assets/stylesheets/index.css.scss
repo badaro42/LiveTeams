@@ -232,10 +232,24 @@ html, body, #container {
   border-left: 1px solid #ccc;
 }
 
-.leaflet-draw-actions.leaflet-draw-actions-bottom,
+// a tooltip do botão mais à esquerda (o do marcador)
+.leaflet-draw-actions.leaflet-draw-actions-bottom {
+  top: 103px !important;
+  left: -65px !important;
+  transform: rotate(0deg);
+}
+
+// a tooltip dos restantes botões
+.leaflet-draw-actions {
+  left: -64px !important;
+  transform: rotate(270deg);
+}
+
+// a tooltip do botão mais à direita (o da linha poligonal)
 .leaflet-draw-actions.leaflet-draw-actions-top {
-  left: -102px;
-  bottom: 1px;
+  top: -2px !important;
+  left: -65px !important;
+  transform: rotate(0deg);
 }
 
 .leaflet-draw-actions.leaflet-draw-actions-bottom li,
@@ -475,7 +489,7 @@ html, body, #container {
 
 #timeline {
   padding: 0;
-  width: 94%;
+  //width: 94%;
   margin-left: 24px;
   margin-top: 10px;
   margin-bottom: 10px;
