@@ -46,11 +46,11 @@ module EncodeToJson
     factory = RGeo::GeoJSON::EntityFactory.instance
     geo_entities_to_json = nil
 
-    puts "************** ENCODE GEO ENTITIES TYPE ***************"
-    puts geo_entities.class
-    puts geo_entities.is_a? GeoEntity
-    puts geo_entities.is_a? Array
-    puts geo_entities.is_a? (ActiveRecord::Relation)
+    # puts "************** ENCODE GEO ENTITIES TYPE ***************"
+    # puts geo_entities.class
+    # puts geo_entities.is_a? GeoEntity
+    # puts geo_entities.is_a? Array
+    # puts geo_entities.is_a? (ActiveRecord::Relation)
 
     size = 0
     # apenas uma entidade, size a 1
@@ -64,7 +64,7 @@ module EncodeToJson
                                  username: User.find(geo_entities.user_id).full_name,
                                  user_id: geo_entities.user_id, description: geo_entities.description,
                                  radius: geo_entities.radius, created_at: geo_entities.created_at,
-                                 entity_type: geo_entities.entity_type
+                                 updated_at: geo_entities.updated_at, entity_type: geo_entities.entity_type
                                 }
       )
       geo_entities_to_json = RGeo::GeoJSON.encode feature
@@ -75,7 +75,7 @@ module EncodeToJson
           |f| factory.feature(f.latlon, nil,
                               {f_id: f.id, name: f.name, username: User.find(f.user_id).full_name,
                                user_id: f.user_id, description: f.description, radius: f.radius,
-                               created_at: f.created_at, entity_type: f.entity_type
+                               updated_at: f.updated_at, created_at: f.created_at, entity_type: f.entity_type
                               }
         )
       }

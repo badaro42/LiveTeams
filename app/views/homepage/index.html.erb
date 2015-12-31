@@ -352,106 +352,15 @@
       </h1>
 
       <div class="list_wrapper" style="padding-right: 10px;">
-        <div class="white z-depth-1" style="width: 100%">
-          <p id="no_history_entries_div" style="display: none; font-style: italic; padding: 20px;" class="center">
-            Ainda não há nenhuma alteração no histórico. Apenas alterações às equipas e às geo-entidades são registadas.
+        <div class="white z-depth-1" style="width: 100%; padding: 15px; margin-top: 10px; margin-bottom: 15px;">
+          <p id="entries_div_info" style="margin: 0;" class="center">
+            Limite de entradas do histórico: <strong><span id="entries_number"></span></strong><br>
+            <span style="font-style: italic;">Este limite pode ser alterado nas definições</span>
           </p>
+          <a id="clear_history_btn" style="margin-top: 10px; width: 100%; padding-left: 5px; padding-right: 5px;"
+             class="waves-effect waves-light btn" onclick="javascript:clearHistoyEntries();">Limpar histórico</a>
         </div>
-        <div id="timeline">
-          <!--<div class="timeline-item">-->
-            <!--<div class="timeline-icon valign-wrapper">-->
-              <!--<i class="timeline-custom-icon material-icons md-24">add</i>-->
-            <!--</div>-->
-            <!--<div class="timeline-content z-depth-1">-->
-              <!--<h6 style="font-size: large;">Equipa atualizada<i class="material-icons right">my_location</i></h6>-->
-
-              <!--<div style="margin-top: 5px;">-->
-                <!--<div>-->
-                  <!--<span style="font-style: italic; font-size: 12px;">Há 15 segundos</span>-->
-                <!--</div>-->
-                <!--<div>-->
-                  <!--<p style="margin: 0;">A equipa número 10 foi atualizada</p>-->
-                <!--</div>-->
-              <!--</div>-->
-            <!--</div>-->
-          <!--</div>-->
-
-          <!--<div class="timeline-item">-->
-            <!--<div class="timeline-icon valign-wrapper">-->
-              <!--<i class="timeline-custom-icon material-icons md-24">edit</i>-->
-            <!--</div>-->
-            <!--<div class="timeline-content z-depth-1">-->
-              <!--<h6 style="font-size: large;">Geo-entidade criada<i class="material-icons right">my_location</i></h6>-->
-
-              <!--<div style="margin-top: 5px;">-->
-                <!--<div>-->
-                  <!--<span style="font-style: italic; font-size: 12px;">Há 2 minutos e 28 segundos</span>-->
-                <!--</div>-->
-                <!--<div>-->
-                  <!--<p style="margin: 0;">A geo-entidade número 5 foi adicionada ao mapa.</p>-->
-                <!--</div>-->
-              <!--</div>-->
-            <!--</div>-->
-          <!--</div>-->
-
-          <!--<div class="timeline-item">-->
-            <!--<div class="timeline-icon valign-wrapper">-->
-              <!--<i class="timeline-custom-icon material-icons md-24">delete</i>-->
-            <!--</div>-->
-            <!--<div class="timeline-content z-depth-1">-->
-              <!--<h6 style="font-size: large;">Equipa removida</h6>-->
-
-              <!--<div style="margin-top: 5px;">-->
-                <!--<div>-->
-                  <!--<span style="font-style: italic; font-size: 12px;">Há 10 minutos e 15 segundos</span>-->
-                <!--</div>-->
-                <!--<div>-->
-                  <!--<p style="margin: 0;">A equipa número 1 foi removida do sistema.</p>-->
-                <!--</div>-->
-              <!--</div>-->
-            <!--</div>-->
-          <!--</div>-->
-        </div>
-
-
-        <!--<div class="card green">-->
-        <!--<div class="card-content card-reduced-padding-top">-->
-        <!--<h5 class="black-text" style="font-weight: 300">Situação regularizada</h5>-->
-        <!--<span><i class="material-icons md-18">schedule</i> 20 Out, 12h - infinito</span>-->
-        <!--<br>-->
-        <!--<span><i class="material-icons md-18">map</i> Todo o território nacional</span>-->
-        <!--</div>-->
-        <!--</div>-->
-        <!--<div class="card yellow">-->
-        <!--<div class="card-content">-->
-        <!--<h5 class="black-text" style="font-weight: 300">Agitação Marítima</h5>-->
-        <!--<span><i class="material-icons md-18">schedule</i> 21 Set, 17h - 25 Set, 12h</span>-->
-        <!--<br>-->
-        <!--<span><i class="material-icons md-18">map</i> Setúbal, Lisboa, Santarém</span>-->
-        <!--<br>-->
-        <!--<span><i class="material-icons md-18">comment</i> São esperadas ondas com cerca de 7 metros de altura.</span>-->
-        <!--</div>-->
-        <!--</div>-->
-        <!--<div class="card red">-->
-        <!--<div class="card-content">-->
-        <!--<h5 class="black-text" style="font-weight: 300">Temperaturas Elevadas</h5>-->
-        <!--<span><i class="material-icons md-18">schedule</i> 25 Set, 12h - 30 Set, 12h</span>-->
-        <!--<br>-->
-        <!--<span><i class="material-icons md-18">map</i> Vila Real, Viseu, Guarda, Portalegre, Beja, Setúbal</span>-->
-        <!--<br>-->
-        <!--<span><i class="material-icons md-18">comment</i> Temperaturas superiores a 40ºC.</span>-->
-        <!--</div>-->
-        <!--</div>-->
-        <!--<div class="card orange">-->
-        <!--<div class="card-content">-->
-        <!--<h5 class="black-text" style="font-weight: 300">Vento Forte</h5>-->
-        <!--<span><i class="material-icons md-18">schedule</i> 30 Set, 12h - 20 Out, 12h</span>-->
-        <!--<br>-->
-        <!--<span><i class="material-icons md-18">map</i> Évora, Faro, Beja</span>-->
-        <!--<br>-->
-        <!--<span><i class="material-icons md-18">comment</i> Vai tar uma ventania dos diabos, é melhor um gajo ter cuidado.</span>-->
-        <!--</div>-->
-        <!--</div>-->
+        <div id="timeline"></div>
       </div>
     </div>
 
@@ -486,8 +395,6 @@
         </div>
         <div>
           <div style="margin-top: 15px;">
-            <!--<input class="positive-integer" type="text" />-->
-            <!--<span style="display: inline-block; color: #9e9e9e;">Nível máximo de zoom</span>-->
             <p class="range-field" style="width: 80%; margin-bottom: 0;">
               <span style="display: inline-block; color: #9e9e9e;">Nível máximo de zoom</span>
               <input type="range" id="range_max_zoom" min="1" max="20" />
@@ -496,6 +403,17 @@
           <blockquote style="margin-top: 5px;">
             Altera o nível máximo de zoom aplicado quando se centra o mapa numa entidade. Varia entre 1 e 20, em que
             1 é o nível mínimo de zoom e 20 o máximo.
+          </blockquote>
+        </div>
+        <div>
+          <div style="margin-top: 15px;">
+            <p class="range-field" style="width: 80%; margin-bottom: 0;">
+              <span style="display: inline-block; color: #9e9e9e;">Limite de entradas no histórico</span>
+              <input type="range" id="range_history_entry_max" min="10" max="50" step="5" />
+            </p>
+          </div>
+          <blockquote style="margin-top: 5px;">
+            Controla o número máximo de entradas que o histórico pode conter num dado momento.
           </blockquote>
         </div>
       </div>
@@ -564,7 +482,7 @@
     <div class="row" style="margin-bottom: 0;">
 
       <div id="select_team_ids_div" class="input-field col s12">
-        <select id="select_team_ids" class="browser-default" multiple>
+        <select id="select_team_ids" class="browser-default" multiple required>
         </select>
         <label style="top: 0;" for="select_team_id">Associar a geo-entidade a uma ou mais equipas</label>
         <div class="row" style="margin-top: 10px; margin-bottom: 0;">
@@ -597,6 +515,6 @@
     <pre id="modal_coords" style="white-space: pre-wrap"></pre>
   </div>
   <div class="modal-footer">
-    <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Dispensar</a>
+    <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Fechar</a>
   </div>
 </div>

@@ -21,12 +21,23 @@ var actions = {
 
 // **************************************
 // objectos
-function HistoryEntry(o_type, o_id, time, event, watch) {
+function GeoEntity() {
+
+}
+
+function Team() {
+
+}
+
+function HistoryEntry(o_type, o_id, title, time, event, watch, user_name, user_id) {
   this.obj_type = o_type; // o tipo do objecto
   this.obj_id = o_id; // o id do objecto
+  this.title = title; // o titulo da entrada: nome da equipa e da geo-entidade
   this.timestamp = time; // a data em que ocorreu a ação
   this.action = event; // o evento que ocorreu
   this.watched = watch; // indica se a entrada atual ja foi vista pelo utilizador
+  this.username = user_name; // o nome do utilizador que realizou a ação
+  this.user_id = user_id; // o id do utilizador que realizou a ação
 }
 // override do metodo 'equals' para comparar os campos que queremos nas entradas do historico
 // ver comentario do metodo 'containsHistoryEntry' para uma melhor explicação
@@ -43,13 +54,14 @@ var map, osmUrl, osmAttrib, osm, sidebar, cluster;
 var drawnItems;
 var e_type, e_radius, e_coords, coords_to_display, e_length, e_area, e_layer, e_num_points;
 
-var is_sse_update = false;
+var add_to_event_history = false;
 
 // cada entrada é da forma {id: feature_id, type: tipo (em portugues),
 // latlon: array com objetos L.latLng), layer: o objeto que esta no mapa}
 var all_geo_entities;
 var all_teams; // cada entrada é da forma {id: feature_id, marker: L.marker(L.latLng(lat, lng))}
 var teams_to_remove = [];
+var geo_ents_to_remove = [];
 var source;
 
 var previous_user_location; // {timestamp: Date(), position: L.latLng(lat, lng)}
@@ -61,7 +73,8 @@ var is_modal_open = false;
 var curr_user_saved_prefs = { // local storage - objeto com as preferencias do utilizador!
   show_navbar: null, // o estado de visibilidade da navbar na pagina inicial
   events_history: [], // array com todas as entradas do historico
-  max_zoom: 16 // valor default: se houver valor no localStorage, substitui este
+  max_zoom: 16, // valor default: se houver valor no localStorage, substitui este
+  history_entries_limit: 25 // controla o numero maximo de entradas no historico
 };
 var last_window_height;
 
@@ -170,9 +183,17 @@ $(document).ready(function () {
     localStorage.setItem('user' + gon.user_id, JSON.stringify(curr_user_saved_prefs));
   });
 
+  // listener para quando o valor do slider nas opções é alterado
+  $('#range_history_entry_max').on('change', function () {
+    console.log("slider history entries max!!!");
+
+    $('#entries_number').text($(this).val());
+    curr_user_saved_prefs.history_entries_limit = $(this).val();
+    localStorage.setItem('user' + gon.user_id, JSON.stringify(curr_user_saved_prefs));
+  });
+
   // apenas ativa a cena do wake lock caso seja um dispositivo movel
-  if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.
-      test(navigator.userAgent)) {
+  if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent)) {
     // Take the user to a different screen here.
 //    alert("Dispositivo Móvel.");
 
@@ -328,16 +349,16 @@ $(document).ready(function () {
   map.zoomControl.setPosition('topleft');
 
   // cria a barra de controlos para a criaçao de entidades
-  L.drawLocal.draw.toolbar.buttons.polygon = 'Desenhar um poligono';
+  L.drawLocal.draw.toolbar.buttons.polygon = 'Desenhar um polígono';
   L.drawLocal.draw.toolbar.buttons.polyline = 'Desenhar uma linha poligonal';
   L.drawLocal.draw.toolbar.buttons.marker = 'Desenhar um marcador';
-  L.drawLocal.draw.toolbar.buttons.rectangle = 'Desenhar um rectangulo';
-  L.drawLocal.draw.toolbar.buttons.circle = 'Desenhar um circulo';
+  L.drawLocal.draw.toolbar.buttons.rectangle = 'Desenhar um rectângulo';
+  L.drawLocal.draw.toolbar.buttons.circle = 'Desenhar um círculo';
   var drawControl = new L.Control.Draw({
     position: 'bottomleft',
     draw: {
       polygon: {
-        title: 'Pol�gono',
+        title: 'Polígono',
         allowIntersection: true,
         drawError: {
           color: '#b00b00',
@@ -349,7 +370,7 @@ $(document).ready(function () {
         showArea: true
       },
       polyline: {
-        metric: false
+        metric: true
       },
       circle: {
         shapeOptions: {
@@ -513,11 +534,15 @@ $(document).ready(function () {
       url: "/teams",
       dataType: "json",
       success: function (res) {
+        // primeiro removemos todas as entradas que la estao
+        $(select).find('option').remove();
+
         // todas as equipas retornadas pelo servidor
         $.each(res, function (index, elem) {
           console.log(elem);
-
           var text = elem.name + " (ID: " + elem.id + ")";
+
+          // append das equipas obtidas do servidor ao select
           select.append($("<option/>", {
             value: elem.id,
             text: text
@@ -783,12 +808,15 @@ function insertGeoEntity() {
       console.log("MARCADOR ADICIONADO COM SUCESSO");
       console.log(data);
 
+      // colocamos a flag a true para adicionar a entrada ao historico
+      add_to_event_history = true;
       if (data.geometry.type === "Point") {
         var latlon = L.latLng(data.geometry.coordinates[1], data.geometry.coordinates[0]);
         geoPointToLayer(data, latlon);
       }
 
       onEachGeoEntity(data, e_layer);
+      add_to_event_history = false;
 
       noty({
         text: 'Entidade geográfica introduzida com sucesso!', timeout: 3500,
@@ -828,20 +856,37 @@ $('.stay-where-you-are').click(function (e) {
 function addGeoEntityToMap(json) {
   console.log("UPDATES server sent event!!!!!!");
 
-  var new_layer;
   var json_arr = JSON.parse(json);
-  var latlon_arr = [];
-  var ent_type;
+  var new_layer; //, ent_type, latlon_arr = [];
+  var new_features_count = 0;
+  var removed_features_count = 0;
+  var process_geojson = false;
 
   console.log(json_arr);
 
   // apenas uma entidade retornada pelo servidor
   if (json_arr.type == "Feature") {
+    var geo_ent_in_map = geoEntityIsInMap(json_arr.properties.f_id);
 
-    // esta feature ainda nao existe no array!!
-    if (geoEntityIsInMap(json_arr.properties.f_id) == -1) {
-      console.log("FEATURE FEATURE - ainda nao existe no array");
+    if (geo_ent_in_map == -1) { //geo-entidade nao esta no mapa
+      if (json_arr.properties.updated_at !== null) { // nova geo-entidade para adicionar ao mapa
+        console.log("apenas uma - GEO-ENTIDADE NAO EXISTE NO ARRAY");
+        new_features_count++;
+        process_geojson = true;
+      }
+    }
+    else { // geo-entidade esta presente no mapa
+      if (json_arr.properties.updated_at === null) { //removemos a geo-entidade do mapa - ja nao existe no servidor
+        console.log("apenas uma - GEO-ENTIDADE É PARA REMOVER");
+        removed_features_count++;
+        geo_ents_to_remove.push(all_geo_entities[geo_ent_in_map]);
+      }
+    }
 
+    // apenas processamos o json recebido pelo servidor se alguma das condições acima se verificar:
+    // ou é uma nova geo-entidade (que não existe no mapa) e não é para remover;
+    // ou é uma geo-entidade que existe no mapa e é para remover.
+    if (process_geojson) {
       new_layer = L.geoJson(json_arr, {
         pointToLayer: geoPointToLayer,
         onEachFeature: onEachGeoEntity
@@ -849,13 +894,9 @@ function addGeoEntityToMap(json) {
 
       cluster.addLayer(new_layer);
       map.addLayer(cluster);
-
-      noty({
-        text: 'Uma entidade geográfica foi atualizada!', timeout: 3500,
-        type: 'success', layout: 'bottomCenter'
-      });
     }
   }
+
   // mais do que uma entidade retornada pelo servidor
   else if (json_arr.type == "FeatureCollection") {
     console.log("MAIS QUE UMA ENTIDADE, VAMOS ENTRAR NO FOR EACH!!!");
@@ -866,42 +907,69 @@ function addGeoEntityToMap(json) {
       "features": []
     };
 
-    var new_features_count = 0;
     $.each(json_arr.features, function (index, elem) {
-      var f_id = elem.properties.f_id;
+      var index_in_map = geoEntityIsInMap(elem.properties.f_id);
+
       console.log(all_geo_entities);
-      console.log(f_id);
+      console.log(elem.properties.f_id);
+      console.log("f_id está contida no array?? " + index_in_map);
 
-      var alreadyInMap = geoEntityIsInMap(f_id);
+      if (index_in_map == -1) { //geo-entidade nao esta no mapa
+        if (elem.properties.updated_at !== null) { // nova geo-entidade para adicionar ao mapa
+          console.log("apenas uma - GEO-ENTIDADE NAO EXISTE NO ARRAY");
 
-      console.log("f_id está contida no array?? " + alreadyInMap);
+          final_json_arr.features.push(elem);
+          new_features_count++;
+          process_geojson = true;
+        }
+      }
+      else { // geo-entidade esta presente no mapa
+        if (elem.properties.updated_at === null) { //removemos a geo-entidade do mapa - ja nao existe no servidor
+          console.log("apenas uma - GEO-ENTIDADE É PARA REMOVER");
 
-      // esta feature ainda nao existe no array!!
-      if (alreadyInMap == -1) {
-        final_json_arr.features.push(elem);
-        new_features_count++;
+          removed_features_count++;
+          geo_ents_to_remove.push(all_geo_entities[index_in_map]);
+        }
       }
     });
 
-    new_layer = L.geoJson(final_json_arr, {
-      pointToLayer: geoPointToLayer,
-      onEachFeature: onEachGeoEntity
-    }).addTo(map);
+    console.log("NOVO JSON DAS ENTIDAADES:");
+    console.log(final_json_arr);
 
-    cluster.addLayer(new_layer);
-    map.addLayer(cluster);
+    if (process_geojson) {
+      new_layer = L.geoJson(final_json_arr, {
+        pointToLayer: geoPointToLayer,
+        onEachFeature: onEachGeoEntity
+      }).addTo(map);
 
-    if (new_features_count == 1)
-      noty({
-        text: 'Uma nova entidade geográfica foi adicionada ao mapa!', timeout: 3500,
-        type: 'success', layout: 'bottomCenter'
-      });
-    else if (new_features_count > 1)
-      noty({
-        text: 'Várias novas entidades geográficas foram adicionadas ao mapa!', timeout: 3500,
-        type: 'success', layout: 'bottomCenter'
-      });
+      cluster.addLayer(new_layer);
+      map.addLayer(cluster);
+    }
   }
+
+  // criação de popup a indicar o numero de novas geo-entidades
+  if (new_features_count == 1)
+    noty({
+      text: 'Uma nova geo-entidade foi adicionada ao mapa!', timeout: 3500,
+      type: 'success', layout: 'bottomCenter'
+    });
+  else if (new_features_count > 1)
+    noty({
+      text: 'Duas ou mais novas geo-entidades foram adicionadas ao mapa!', timeout: 3500,
+      type: 'success', layout: 'bottomCenter'
+    });
+
+  // criação de popup a indicar o numero de geo-entidades removidas
+  if (removed_features_count == 1)
+    noty({
+      text: 'Uma nova geo-entidade foi removida do mapa!', timeout: 3500,
+      type: 'success', layout: 'bottomCenter'
+    });
+  else if (removed_features_count > 1)
+    noty({
+      text: 'Duas ou mais geo-entidades foram removidas do mapa!', timeout: 3500,
+      type: 'success', layout: 'bottomCenter'
+    });
 }
 
 function addTeamToMap(json) {
@@ -945,21 +1013,24 @@ function eventSourceSetup() {
 
   // listener para a receção de updates de entidades geograficas
   source.addEventListener('entity_updates', function (e) {
-    is_sse_update = true;
+    add_to_event_history = true;
     addGeoEntityToMap(e.data);
-    is_sse_update = false;
+    add_to_event_history = false;
+    cleanRemovedGeoEntities();
   }, false);
 
   // listener para a receçao de updates das equipas
   source.addEventListener('team_updates', function (e) {
-    is_sse_update = true;
+    add_to_event_history = true;
     addTeamToMap(e.data);
-    is_sse_update = false;
+    add_to_event_history = false;
     cleanRemovedTeams();
   }, false);
 }
 
-// remove do array de equipas todas as equipas que tenham sido eliminadas através dos updates via SSE
+/**
+ * remove do array de equipas todas as equipas que tenham sido eliminadas através dos updates via SSE
+ */
 function cleanRemovedTeams() {
   console.log("equipas para remover:");
   console.log(teams_to_remove);
@@ -978,6 +1049,30 @@ function cleanRemovedTeams() {
 
     teams_to_remove = [];
     console.log("acabei de limpar as equipas que ja tinham sido removidas!");
+  }
+}
+
+/**
+ * remove do array de geo-entidade todas as que tenham sido eliminadas através dos updates via SSE
+ */
+function cleanRemovedGeoEntities() {
+  console.log("geo-entidades para remover:");
+  console.log(geo_ents_to_remove);
+
+  if (geo_ents_to_remove.length > 0) {
+    var temp_arr = [];
+    $.each(geo_ents_to_remove, function (index, elem) {
+      cluster.removeLayer(elem.layer);
+      map.removeLayer(elem.layer);
+      temp_arr.push(elem.id);
+    });
+
+    all_geo_entities = $.grep(all_geo_entities, function (elem, index) {
+      return $.inArray(elem.id, temp_arr) == -1;
+    });
+
+    geo_ents_to_remove = [];
+    console.log("acabei de limpar as geo-entidades que ja tinham sido removidas!");
   }
 }
 
@@ -1123,7 +1218,7 @@ function cleanRemovedTeams() {
 //}
 
 
-/*
+/**
  * Verifica se a equipa ja existe ou nao no mapa
  * Retorna -1 caso a equipa nao esteja no mapa
  * Retorna o indice caso a equipa ja exista no mapa
@@ -1137,10 +1232,12 @@ function teamIsInMap(param_id) {
   return -1;
 }
 
-/*
+/**
  * Verifica se a entidade geografica ja existe ou nao no mapa
  * Retorna -1 caso nao esteja no mapa
  * Retorna o indice caso ja exista no mapa
+ *
+ * @param param_id é o id que a entidade possui na base de dados, e não o indice da mesma no array de entidades
  */
 function geoEntityIsInMap(param_id) {
   var i;
@@ -1151,7 +1248,7 @@ function geoEntityIsInMap(param_id) {
   return -1;
 }
 
-/*
+/**
  * apresenta as coordenadas da entidade selecionada num modal no fundo da pagina
  * recebe o id que a entidade tem na base de dados, que dps é transformado para a entrada no vector de entidades no mapa
  */
@@ -1186,7 +1283,11 @@ function showEntityCoordinates(entity_index) {
     });
 }
 
-// função chamada quando o utilizador quer remover uma geo-entidade
+/**
+ * função chamada quando o utilizador quer remover uma geo-entidade
+ *
+ * @param entity_index
+ */
 function removeGeoEntity(entity_index) {
   if (confirm("De certeza que pretende remover esta geo-entidade?\nEsta ação é irreversível!")) {
     var index_in_array = geoEntityIsInMap(entity_index);
@@ -1196,16 +1297,11 @@ function removeGeoEntity(entity_index) {
         type: "DELETE",
         url: "/geo_entities/" + entity_index,
         dataType: "json",
-        success: function (res) {
-          // a entidade foi removida com sucesso da base de dados: vamos remove-la do mapa e do vector de entidades
-          var layer_to_remove = all_geo_entities[index_in_array].layer;
-          cluster.removeLayer(layer_to_remove);
-          map.removeLayer(layer_to_remove);
-
-          // removemos a entidade do array de entidades presentes no mapa
-          all_geo_entities = $.grep(all_geo_entities, function (elem, index) {
-            return elem.id != entity_index;
-          });
+        success: function () {
+          // colocamos a entidade que o utilizador pretende remover neste array
+          // por fim, chamamos o metodo que trata sua remoção do mapa e do array de entidades no mapa
+          geo_ents_to_remove.push(all_geo_entities[index_in_array]);
+          cleanRemovedGeoEntities();
 
           noty({
             text: 'Geo-entidade removida com sucesso.', timeout: 3500,
@@ -1302,10 +1398,10 @@ function teamPointToLayer(feature, latlng) {
 
   // updates periodicos enviados pelo servidor
   // apenas precisamos de guardar historico para updates do servidor ou ações do utilizador criadas durante a sessao
-  if (is_sse_update) {
-    createNewHistoryEntry(object_type.team, feature.properties.f_id, new Date(), curr_action);
+  if (add_to_event_history) {
+    createNewHistoryEntry(object_type.team, feature.properties.f_id, feature.properties.name, new Date(),
+        curr_action, false, -1, -1);
   }
-
 
   return new_marker;
 }
@@ -1320,8 +1416,13 @@ function geoPointToLayer(feature, latlng) {
 
 // função executada pelo onEachFeature do metodo geoJSON das entidades geograficas
 function onEachGeoEntity(feature, layer) {
-  var ent_type, temp_latlon, radius = 0;
+  var new_entry, ent_type, temp_latlon, curr_action, radius = 0;
   var popup = L.popup({maxWidth: 250});
+
+  if (layer.hasOwnProperty('_latlng')) // só tem um par de coordenadas
+    temp_latlon = [layer.getLatLng()];
+  else if (layer.hasOwnProperty('_latlngs')) // tem mais do que um par de coordenadas
+    temp_latlon = layer.getLatLngs();
 
   // no caso de ser circulo, introduzimos o raio na popup
   if (feature.properties.radius > 0) {
@@ -1337,26 +1438,38 @@ function onEachGeoEntity(feature, layer) {
       ent_type = entity_types.point;
   }
 
-  var popupContent = '<span>Entidade geográfica nº <b>' + feature.properties.f_id +
-      '</b>, adicionada pelo utilizador <a data-method="get" href="/users/' + feature.properties.user_id + '">' +
-      feature.properties.username + '</a>.</span><p><b>Tipo: </b>' + ent_type + '<br>' +
-      (radius > 0 ? '<b>Raio: </b>' + radius + ' metros<br>' : '') + '<b>Nome: </b>' + feature.properties.name + '<br>' +
-      '<b>Descrição: </b>' + feature.properties.description + '</p><div style="display: inline-block">' +
-      '<a href="javascript:showEntityCoordinates(' + feature.properties.f_id + ');" ' +
-      'class="geo-popup-btn waves-effect waves-light btn white-text">Ver coordenadas</a></div>' +
-      '<div style="display: inline-block" class="right"><a href="javascript:removeGeoEntity(' +
-      feature.properties.f_id + ');" class="geo-popup-btn red waves-effect waves-light btn white-text">' +
-      '<i class="material-icons">delete</i></a></div>';
+  new_entry = {id: feature.properties.f_id, latlon: temp_latlon, type: ent_type, layer: layer};
+  all_geo_entities.push(new_entry);
 
-  popup.setContent(popupContent);
-  layer.bindPopup(popup);
+  // esta entidade é para remover, nao precisamos de afectar a popup
+  if (feature.properties.updated_at === null) {
+    geo_ents_to_remove.push(new_entry);
+    curr_action = actions.remove;
+  }
+  else {
+    curr_action = actions.create;
 
-  if (layer.hasOwnProperty('_latlng')) // só tem um par de coordenadas
-    temp_latlon = [layer.getLatLng()];
-  else if (layer.hasOwnProperty('_latlngs')) // tem mais do que um par de coordenadas
-    temp_latlon = layer.getLatLngs();
+    var popupContent = '<span>Entidade geográfica nº <b>' + feature.properties.f_id +
+        '</b>, adicionada pelo utilizador <a data-method="get" href="/users/' + feature.properties.user_id + '">' +
+        feature.properties.username + '</a>.</span><p><b>Tipo: </b>' + ent_type + '<br>' +
+        (radius > 0 ? '<b>Raio: </b>' + radius + ' metros<br>' : '') + '<b>Nome: </b>' + feature.properties.name + '<br>' +
+        '<b>Descrição: </b>' + feature.properties.description + '</p><div style="display: inline-block">' +
+        '<a href="javascript:showEntityCoordinates(' + feature.properties.f_id + ');" ' +
+        'class="geo-popup-btn waves-effect waves-light btn white-text">Ver coordenadas</a></div>' +
+        '<div style="display: inline-block" class="right"><a href="javascript:removeGeoEntity(' +
+        feature.properties.f_id + ');" class="geo-popup-btn red waves-effect waves-light btn white-text">' +
+        '<i class="material-icons">delete</i></a></div>';
 
-  all_geo_entities.push({id: feature.properties.f_id, latlon: temp_latlon, type: ent_type, layer: layer});
+    popup.setContent(popupContent);
+    layer.bindPopup(popup);
+  }
+
+  // updates periodicos enviados pelo servidor
+  // apenas precisamos de guardar historico para updates do servidor ou ações do utilizador criadas durante a sessao
+  if (add_to_event_history) {
+    createNewHistoryEntry(object_type.geo_entity, feature.properties.f_id, feature.properties.name,
+        new Date(), curr_action, false, feature.properties.username, feature.properties.user_id);
+  }
 }
 
 
@@ -1414,6 +1527,11 @@ function checkUserPreferences() {
     // altera o nivel de zoom máximo para aquele que o utilizador definiu previamente
     $("#range_max_zoom").val(local_storage_user_prefs.max_zoom);
     curr_user_saved_prefs.max_zoom = local_storage_user_prefs.max_zoom;
+
+    // altera o limite de entradas para o que o utilizador definiu anteriormente
+    $('#entries_number').text(local_storage_user_prefs.history_entries_limit);
+    $("#range_history_entry_max").val(local_storage_user_prefs.history_entries_limit);
+    curr_user_saved_prefs.history_entries_limit = local_storage_user_prefs.history_entries_limit;
 
     // apresenta ou esconde a navbar consoante as preferencias do utilizador
     if (!local_storage_user_prefs.show_navbar) {
@@ -1483,8 +1601,9 @@ function populateEventHistory(loaded_events) {
   var arr = [], i, entry;
 
   for (i = 0; i < loaded_events.length; i++) {
-    entry = new HistoryEntry(loaded_events[i].obj_type, loaded_events[i].obj_id, loaded_events[i].timestamp,
-        loaded_events[i].action, loaded_events[i].watched);
+    entry = new HistoryEntry(loaded_events[i].obj_type, loaded_events[i].obj_id, loaded_events[i].title,
+        loaded_events[i].timestamp, loaded_events[i].action, loaded_events[i].watched,
+        loaded_events[i].username, loaded_events[i].user_id);
     prependHistoryDivEntry(entry);
     arr.push(entry);
   }
@@ -1538,8 +1657,8 @@ function onWindowResize(event) {
 }
 
 // recebe os parametros do novo evento, adiciona-o ao localStorage do utilizador atual
-function createNewHistoryEntry(o_type, o_id, time, event, watch) {
-  var h_entry = new HistoryEntry(o_type, o_id, time, event, watch);
+function createNewHistoryEntry(o_type, o_id, title, time, event, watch, u_name, u_id) {
+  var h_entry = new HistoryEntry(o_type, o_id, title, time, event, watch, u_name, u_id);
 
   if (!containsHistoryEntry(h_entry)) {
     curr_user_saved_prefs.events_history.push(h_entry);
@@ -1556,13 +1675,21 @@ function createNewHistoryEntry(o_type, o_id, time, event, watch) {
 function prependHistoryDivEntry(entry) {
   console.log("PREPEND DA CENA DO HISTORICO!!!");
   var icon, new_element, info_text, time_span_to_string;
+  var who_did = ""; // apenas aplicavel às geo-entidades
   var icon_to_center = "";
   var when_was_updated = "";
 
   console.log(entry.watched);
 
+  // no caso de ser entidade geografica, colocamos o utilizador que a adicionou/removeu
+  if (entry.obj_type === object_type.geo_entity) {
+    if (entry.user_id === gon.user_id) // foi o proprio utilizador a realizar a ação
+      who_did = " por si";
+    else
+      who_did = " pelo utilizador " + entry.username;
+  }
+
   if (entry.action === actions.create || entry.action === actions.update) {
-    //icon_to_center = '<i class="material-icons right">my_location</i>';
     icon_to_center = '<a class="waves-effect waves-light btn-flat right" ' +
         'onclick="javascript:centerMapOnGeoEntity(' + entry.obj_id + ')"' +
         'style="padding: 8px; line-height: normal; top: -10px; height: 38px;">' +
@@ -1570,19 +1697,19 @@ function prependHistoryDivEntry(entry) {
 
     if (entry.action === actions.create) {
       icon = 'add';
-      info_text = 'adicionada ao mapa.';
+      info_text = 'adicionada ao mapa';
     }
     else if (entry.action === actions.update) {
       icon = 'edit';
-      info_text = 'atualizada.';
+      info_text = 'atualizada';
     }
   }
   else if (entry.action === actions.remove) {
     icon = 'delete';
-    info_text = 'removida do sistema.';
+    info_text = 'removida do sistema';
   }
 
-  if(is_sse_update)
+  if (add_to_event_history)
     when_was_updated = "Agora mesmo";
   else {
     // a diferença entre duas datas é retornada em milisegundos
@@ -1599,9 +1726,11 @@ function prependHistoryDivEntry(entry) {
       '<h6 class="' + (entry.watched ? "" : "new-entry-header") + '" style="font-size: large;"><span>' +
       entry.obj_type + ' ' + entry.action + '</span>' + icon_to_center + '</h6><div style="margin-top: 5px;"><div>' +
       '<span class="timeline-timestamp" style="font-style: italic; font-size: 12px;">' + when_was_updated +
-      '</span></div><div><p style="margin: 0;">A ' + entry.obj_type.toLowerCase() + ' número ' +
-      '<a data-method="get" target="_blank" href="/teams/' + entry.obj_id + '">' + entry.obj_id +
-      '</a> foi ' + info_text + '</p></div></div></div></div>';
+      '</span></div><div><p style="margin: 0;">A ' + entry.obj_type.toLowerCase() + ' ' +
+      (entry.obj_type === object_type.team ? ('<b><a data-method="get" target="_blank" href="/teams/' +
+      entry.obj_id + '">' + entry.title + '</a></b>') : 'com título <b>' + entry.title + '</b>') +
+      ' foi ' + info_text + '<a data-method="get" target="_blank" href="/users/' + entry.user_id + '">' +
+      who_did + '</a>.</p></div></div></div></div>';
 
   $('#timeline').prepend(new_element);
 
@@ -1681,4 +1810,17 @@ function updateTimestamps() {
   });
 
   setTimeout(updateTimestamps, 30000);
+}
+
+/**
+ * Limpa as entradas que estão atualmente no histórico da barra lateral
+ * Remove ainda as mesmas entradas do localStorage
+ */
+function clearHistoyEntries() {
+  if (confirm('Tem a certeza que pretende remover as entradas do histórico?\nEsta ação também remove todas as' +
+          ' entradas que estão em cache.')) {
+    $('.timeline-item').remove();
+    curr_user_saved_prefs.events_history = [];
+    localStorage.setItem('user' + gon.user_id, JSON.stringify(curr_user_saved_prefs));
+  }
 }
