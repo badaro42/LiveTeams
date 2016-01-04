@@ -84,7 +84,8 @@
               <% if arr_is_empty %>
                   [Sem localização definida]
               <% else %>
-                  [<%= arr_coords[1] %>; <%= arr_coords[0] %>]
+                  <!--[<%#= arr_coords[1] %>; <%= arr_coords[0] %>]-->
+                  <%= team.address %>
               <% end %>
             </div>
             <div class="collapsible-body">

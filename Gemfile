@@ -53,6 +53,7 @@ gem 'rgeo-geojson'
 
 gem 'ffi'
 
+gem 'geocoder'
 
 gem 'puma'
 gem 'rack-timeout'

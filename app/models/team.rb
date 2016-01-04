@@ -13,7 +13,37 @@ class Team < ActiveRecord::Base
 
   validates :name, presence: true
 
+  # REVERSE-GEOCODING: agarra nas coordenadas da equipa e devolve a morada
+  reverse_geocoded_by :latitude, :longitude
+
+  # apenas invoca o reverse geocoder caso as coordenadas se
+  after_validation :reverse_geocode, if: ->(obj){ obj.latlon.present? and obj.latlon_changed? }
+
+  attr_reader :latitude, :longitude
+
   def users=(users)
     users.reject(&:blank?)
   end
+
+  # devolve a latitude das coordenadas da equipa
+  def latitude
+    self.latlon.lat if self.latlon
+  end
+
+  # devolve a longitude das coordenadas da equipa
+  def longitude
+    self.latlon.lon if self.latlon
+  end
+
+  # # devolve a latitude das coordenadas da equipa
+  # def latitude
+  #   self.latlon.lat if self.latlon
+  # end
+  #
+  # # devolve a longitude das coordenadas da equipa
+  # def longitude
+  #   self.latlon.lon if self.latlon
+  # end
+
+
 end

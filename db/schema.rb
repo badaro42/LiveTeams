@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151203143935) do
+ActiveRecord::Schema.define(version: 20160104155632) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -49,6 +49,7 @@ ActiveRecord::Schema.define(version: 20151203143935) do
     t.datetime  "updated_at",                                                                null: false
     t.integer   "location_user_id"
     t.geography "latlon",           limit: {:srid=>4326, :type=>"point", :geographic=>true}
+    t.string    "address"
   end
 
   add_index "teams", ["location_user_id"], name: "index_teams_on_location_user_id", using: :btree
