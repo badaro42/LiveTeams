@@ -35,15 +35,4 @@ class Team < ActiveRecord::Base
     self.latlon.lon if self.latlon
   end
 
-  # # devolve a latitude das coordenadas da equipa
-  # def latitude
-  #   self.latlon.lat if self.latlon
-  # end
-  #
-  # # devolve a longitude das coordenadas da equipa
-  # def longitude
-  #   self.latlon.lon if self.latlon
-  # end
-
-
 end

@@ -11,6 +11,15 @@ class TeamsController < ApplicationController
     render json: teams_to_json
   end
 
+  # recebe um par de coordenadas e devolve a morada dessas mesmas coordenadas
+  def reverse_geocode_coords
+    require 'geocoder'
+
+    address = Geocoder.address(params[:latitude] + ", " + params[:longitude])
+    render json: address.to_json
+  end
+
+
   # GET /teams
   # GET /teams.json
   def index

@@ -23,8 +23,32 @@ var team_highlight_icon = L.icon({
   popupAnchor: [-1, -30] // point from which the popup should open relative to the iconAnchor
 });
 
+var spin_options = {
+  lines: 15, // The number of lines to draw
+  length: 0, // The length of each line
+  width: 11, // The line thickness
+  radius: 40, // The radius of the inner circle
+  scale: 0.5, // Scales overall size of the spinner
+  corners: 1, // Corner roundness (0..1)
+  color: '#000', // #rgb or #rrggbb or array of colors
+  opacity: 0, // Opacity of the lines
+  rotate: 0, // The rotation offset
+  direction: 1, // 1: clockwise, -1: counterclockwise
+  speed: 1.2, // Rounds per second
+  trail: 60, // Afterglow percentage
+  fps: 30, // Frames per second when using setTimeout() as a fallback for CSS
+  zIndex: 2e9, // The z-index (defaults to 2000000000)
+  className: 'spinner', // The CSS class to assign to the spinner
+  top: '50%', // Top position relative to parent
+  left: '50%', // Left position relative to parent
+  shadow: false, // Whether to render a shadow
+  hwaccel: true, // Whether to use hardware acceleration
+  position: 'absolute' // Element positioning
+}
+
 
 $(document).ready(function () {
+
   // inicialização da dropdown da barra de navegação
   $('.dropdown-button').dropdown({
         inDuration: 300,
@@ -494,16 +518,39 @@ function onMapClick(e) {
 
   console.log(e);
 
-  var popupContent = "<span>Destaque alterado para as coordenadas:</span>" +
-      "<p>Latitude: <b>" + e.latlng.lat + "</b>,<br> Longitude: <b>" + e.latlng.lng + "</b>.</p>";
+  team_map.spin(true, spin_options);
 
-  curr_marker = L.marker([e.latlng.lat, e.latlng.lng], {icon: team_highlight_icon}).addTo(team_map);
-  curr_marker.bindPopup(popupContent).openPopup();
+  $.ajax({
+    type: "GET",
+    url: "/teams/reverse_geocode_coords",
+    data: {
+      latitude: e.latlng.lat,
+      longitude: e.latlng.lng
+    },
+    success: function (result) {
+      console.log(result);
+      team_map.spin(false);
 
-  var new_val = "POINT (" + e.latlng.lng + " " + e.latlng.lat + ")";
-  $("#team_latlon_highlight").attr("value", new_val);
+      curr_marker = L.marker([e.latlng.lat, e.latlng.lng], {icon: team_highlight_icon}).addTo(team_map);
 
-  remove_btn.enable();
+      var popup = L.popup({maxWidth: 250});
+      var popupContent = "<p>Novas coordenadas de destaque para a equipa! Só serão alteradas quando gravar as alterações.</p>" +
+          "<p> Nova morada: <b>" + result + "</b></p><p>Coordenadas:<br><span>Latitude: <b>" + e.latlng.lat + "</b>," +
+          "<br> Longitude: <b>" + e.latlng.lng + "</b>.</span></p>";
+
+      popup.setContent(popupContent);
+      curr_marker.bindPopup(popup).openPopup();
+
+      var new_val = "POINT (" + e.latlng.lng + " " + e.latlng.lat + ")";
+      $("#team_latlon_highlight").attr("value", new_val);
+
+      remove_btn.enable();
+    },
+    error: function (err) {
+      console.log(err);
+      team_map.spin(false);
+    }
+  });
 }
 
 // o parametro "coords" � da forma -> "POINT(33.333 11.111)"
