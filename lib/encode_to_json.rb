@@ -46,12 +46,6 @@ module EncodeToJson
     factory = RGeo::GeoJSON::EntityFactory.instance
     geo_entities_to_json = nil
 
-    # puts "************** ENCODE GEO ENTITIES TYPE ***************"
-    # puts geo_entities.class
-    # puts geo_entities.is_a? GeoEntity
-    # puts geo_entities.is_a? Array
-    # puts geo_entities.is_a? (ActiveRecord::Relation)
-
     size = 0
     # apenas uma entidade, size a 1
     if geo_entities.is_a? GeoEntity

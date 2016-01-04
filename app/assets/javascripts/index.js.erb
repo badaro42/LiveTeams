@@ -1,7 +1,7 @@
 // **************************************
 // constantes
 var SMARTHPHONE_MAX_WIDTH = 600;
-var entity_types = {
+var geo_entity_types = {
   circle: "Círculo",
   rectangle: "Rectângulo",
   point: "Ponto",
@@ -21,14 +21,34 @@ var actions = {
 
 // **************************************
 // objectos
-function GeoEntity() {
 
+// este objeto representa uma geo-entidade
+function GeoEntity(id, name, description, user_name, user_id, radius, updated_at, type, layer) {
+  this.f_id = id; // o id da geo-entidade na base de dados
+  this.f_name = name; // o nome da geo-entidade
+  this.description = description; // a descrição da geo-entidade
+  this.user_name = user_name; // o nome do utilizador que criou a geo-entidade
+  this.user_id = user_id; // o id do utilizador que criou a geo-entidade
+  this.radius = radius; // o raio da geo-entidade (> 1 se círculo, 0 caso contrario)
+  this.updated_at = updated_at; // a data de atualização da geo-entidade
+  this.ent_type = type; // o tipo da geo-entidade. ver 'geo_entity_types'
+  this.layer = layer; // o objeto que representa esta geo-entidade no mapa
 }
 
-function Team() {
-
+// este objeto representa uma equipa
+function Team(id, name, loc_user_id, loc_user_name, updated_at, leader_name, leader_id, highlight_coords, marker) {
+  this.t_id = id; // o id da equipa na base de dados
+  this.t_name = name; // o nome da equipa
+  this.location_user_id = loc_user_id; // o id do utilizador responsavel pela localização da equipa
+  this.location_user_name = loc_user_name; // o nome do utilizador responsavel pela localização da equipa
+  this.updated_at = updated_at; // a data de atualização da equipa
+  this.leader_name = leader_name; // o nome do lider da equipa
+  this.leader_id = leader_id; // o id do lider da equipa
+  this.highlight_coords = highlight_coords; // as coordenadas de destaque da equipa
+  this.marker = marker; // o objeto que representa o marcador da equipa no mapa
 }
 
+// este objeto representa uma entrada do histórico apresentado na barra lateral
 function HistoryEntry(o_type, o_id, title, time, event, watch, user_name, user_id) {
   this.obj_type = o_type; // o tipo do objecto
   this.obj_id = o_id; // o id do objecto
@@ -63,6 +83,10 @@ var all_teams; // cada entrada é da forma {id: feature_id, marker: L.marker(L.l
 var teams_to_remove = [];
 var geo_ents_to_remove = [];
 var source;
+
+var new_teams_count = 0;
+var updated_teams_count = 0;
+var removed_teams_count = 0;
 
 var previous_user_location; // {timestamp: Date(), position: L.latLng(lat, lng)}
 var no_sleep_enabled = false;
@@ -504,6 +528,10 @@ $(document).ready(function () {
       geo_data_loaded = 0;
     }
 
+    new_teams_count = 0;
+    updated_teams_count = 0;
+    removed_teams_count = 0;
+
     noty({text: 'Equipas carregadas com sucesso!', timeout: 3500, type: 'success', layout: 'bottomCenter'});
   });
 
@@ -878,6 +906,7 @@ function addGeoEntityToMap(json) {
     else { // geo-entidade esta presente no mapa
       if (json_arr.properties.updated_at === null) { //removemos a geo-entidade do mapa - ja nao existe no servidor
         console.log("apenas uma - GEO-ENTIDADE É PARA REMOVER");
+
         removed_features_count++;
         geo_ents_to_remove.push(all_geo_entities[geo_ent_in_map]);
       }
@@ -951,27 +980,32 @@ function addGeoEntityToMap(json) {
   if (new_features_count == 1)
     noty({
       text: 'Uma nova geo-entidade foi adicionada ao mapa!', timeout: 3500,
-      type: 'success', layout: 'bottomCenter'
+      type: 'information', layout: 'bottomCenter'
     });
   else if (new_features_count > 1)
     noty({
       text: 'Duas ou mais novas geo-entidades foram adicionadas ao mapa!', timeout: 3500,
-      type: 'success', layout: 'bottomCenter'
+      type: 'information', layout: 'bottomCenter'
     });
 
   // criação de popup a indicar o numero de geo-entidades removidas
   if (removed_features_count == 1)
     noty({
-      text: 'Uma nova geo-entidade foi removida do mapa!', timeout: 3500,
-      type: 'success', layout: 'bottomCenter'
+      text: 'Uma geo-entidade foi removida do mapa!', timeout: 3500,
+      type: 'information', layout: 'bottomCenter'
     });
   else if (removed_features_count > 1)
     noty({
       text: 'Duas ou mais geo-entidades foram removidas do mapa!', timeout: 3500,
-      type: 'success', layout: 'bottomCenter'
+      type: 'information', layout: 'bottomCenter'
     });
 }
 
+/**
+ * Metodo executado quando recebemos atualizações das equipa do servidor (SSE)
+ *
+ * @param json
+ */
 function addTeamToMap(json) {
   console.log("RECEBEMOS NOVA EQUIPA!!!!");
 
@@ -984,16 +1018,42 @@ function addTeamToMap(json) {
     onEachFeature: onEachTeam
   });
 
-  if (json_arr.type === "Feature")
+  if (new_teams_count == 1)
+    noty({
+      text: 'Uma nova equipa foi adicionada ao mapa!', timeout: 3500,
+      type: 'information', layout: 'bottomCenter'
+    });
+  else if (new_teams_count > 1)
+    noty({
+      text: 'Duas ou mais novas equipas foram adicionadas ao mapa!', timeout: 3500,
+      type: 'information', layout: 'bottomCenter'
+    });
+
+  if (updated_teams_count == 1)
     noty({
       text: 'Uma equipa foi atualizada!', timeout: 3500,
-      type: 'success', layout: 'bottomCenter'
+      type: 'information', layout: 'bottomCenter'
     });
-  else
+  else if (updated_teams_count > 1)
     noty({
-      text: 'Várias equipas foram atualizadas!', timeout: 3500,
-      type: 'success', layout: 'bottomCenter'
+      text: 'Duas ou mais equipas foram atualizadas!', timeout: 3500,
+      type: 'information', layout: 'bottomCenter'
     });
+
+  if (removed_teams_count == 1)
+    noty({
+      text: 'Uma equipa foi removida do mapa!', timeout: 3500,
+      type: 'information', layout: 'bottomCenter'
+    });
+  else if (removed_teams_count > 1)
+    noty({
+      text: 'Duas ou mais equipas foram removidas do mapa!', timeout: 3500,
+      type: 'information', layout: 'bottomCenter'
+    });
+
+  new_teams_count = 0;
+  updated_teams_count = 0;
+  removed_teams_count = 0;
 
   cluster.addLayer(new_layer);
   map.addLayer(cluster);
@@ -1040,11 +1100,11 @@ function cleanRemovedTeams() {
     $.each(teams_to_remove, function (index, elem) {
       cluster.removeLayer(elem.marker);
       map.removeLayer(elem.marker);
-      temp_arr.push(elem.id);
+      temp_arr.push(elem.t_id);
     });
 
     all_teams = $.grep(all_teams, function (elem, index) {
-      return $.inArray(elem.id, temp_arr) == -1;
+      return $.inArray(elem.t_id, temp_arr) == -1;
     });
 
     teams_to_remove = [];
@@ -1060,15 +1120,25 @@ function cleanRemovedGeoEntities() {
   console.log(geo_ents_to_remove);
 
   if (geo_ents_to_remove.length > 0) {
-    var temp_arr = [];
+    var entry, temp_arr = [];
     $.each(geo_ents_to_remove, function (index, elem) {
+
+      createNewHistoryEntry(object_type.geo_entity, elem.f_id, elem.f_name, new Date(), actions.remove,
+          false, -1, -1);
+
+
+//      entry = new HistoryEntry(object_type.geo_entity, elem.f_id, elem.f_name, new Date(), actions.remove,
+//          false, -1, -1);
+//
+//      prependHistoryDivEntry(entry);
+
       cluster.removeLayer(elem.layer);
       map.removeLayer(elem.layer);
-      temp_arr.push(elem.id);
+      temp_arr.push(elem.f_id);
     });
 
     all_geo_entities = $.grep(all_geo_entities, function (elem, index) {
-      return $.inArray(elem.id, temp_arr) == -1;
+      return $.inArray(elem.f_id, temp_arr) == -1;
     });
 
     geo_ents_to_remove = [];
@@ -1226,7 +1296,7 @@ function cleanRemovedGeoEntities() {
 function teamIsInMap(param_id) {
   var i;
   for (i = 0; i < all_teams.length; i++) {
-    if (all_teams[i].id === param_id) // a equipa existe
+    if (all_teams[i].t_id === param_id) // a equipa existe
       return i;
   }
   return -1;
@@ -1242,7 +1312,7 @@ function teamIsInMap(param_id) {
 function geoEntityIsInMap(param_id) {
   var i;
   for (i = 0; i < all_geo_entities.length; i++) {
-    if (all_geo_entities[i].id === param_id) // a entidade geografica existe
+    if (all_geo_entities[i].f_id === param_id) // a entidade geografica existe
       return i;
   }
   return -1;
@@ -1373,27 +1443,35 @@ function teamPointToLayer(feature, latlng) {
   var old_marker, team_to_push;
   var curr_action;
 
+  team_to_push = new Team(feature.properties.f_id, feature.properties.name, feature.properties.location_user_id,
+      feature.properties.location_user_name, feature.properties.updated_at, feature.properties.leader_name,
+      feature.properties.leader_id, feature.properties.highlight_coords, new_marker);
+
   if (index == -1) {//equipa nao existe no mapa
-    team_to_push = {id: feature.properties.f_id, marker: new_marker};
     all_teams.push(team_to_push);
+
     curr_action = actions.create;
+    new_teams_count++;
 
     console.log("NOVA EQUIPA RECEBIDA!!!");
   }
   else {
+    // guardamos o antigo marcador da equipa para removermos e colocarmos o novo no mapa
     old_marker = all_teams[index].marker;
-    all_teams[index].marker = new_marker;
-    team_to_push = all_teams[index];
+    all_teams[index] = team_to_push;
 
     cluster.removeLayer(old_marker);
     map.removeLayer(old_marker);
 
     curr_action = actions.update;
+    updated_teams_count++;
   }
 
   if (feature.properties.updated_at === null) {
     teams_to_remove.push(team_to_push);
+
     curr_action = actions.remove;
+    removed_teams_count++;
   }
 
   // updates periodicos enviados pelo servidor
@@ -1426,19 +1504,24 @@ function onEachGeoEntity(feature, layer) {
 
   // no caso de ser circulo, introduzimos o raio na popup
   if (feature.properties.radius > 0) {
-    ent_type = entity_types.circle;
+    ent_type = geo_entity_types.circle;
     radius = feature.properties.radius;
   }
   else {
     if (feature.geometry.type === "LineString")
-      ent_type = entity_types.linestring;
+      ent_type = geo_entity_types.linestring;
     else if (feature.geometry.type === "Polygon")
-      ent_type = entity_types.polygon;
+      ent_type = geo_entity_types.polygon;
     else if (feature.geometry.type === "Point")
-      ent_type = entity_types.point;
+      ent_type = geo_entity_types.point;
   }
 
-  new_entry = {id: feature.properties.f_id, latlon: temp_latlon, type: ent_type, layer: layer};
+//  new_entry = {id: feature.properties.f_id, latlon: temp_latlon, type: ent_type, layer: layer};
+
+  new_entry = new GeoEntity(feature.properties.f_id, feature.properties.name, feature.properties.description,
+      feature.properties.username, feature.properties.user_id, feature.properties.radius, feature.properties.updated_at,
+      feature.properties.entity_type, layer);
+
   all_geo_entities.push(new_entry);
 
   // esta entidade é para remover, nao precisamos de afectar a popup
@@ -1685,7 +1768,7 @@ function prependHistoryDivEntry(entry) {
   if (entry.obj_type === object_type.geo_entity) {
     if (entry.user_id === gon.user_id) // foi o proprio utilizador a realizar a ação
       who_did = " por si";
-    else
+    else if (entry.user_id > 0)
       who_did = " pelo utilizador " + entry.username;
   }
 
