@@ -22,8 +22,20 @@ class TeamsController < ApplicationController
 
   # GET /teams
   # GET /teams.json
+  # no caso de o pedido ser ajax para popular a dropdown de equipas, vamos verificar as equipas
+  # a que o utilizador pertence
   def index
-    @teams = Team.all.order(id: :asc)
+    # dropdown das equipas no mapa
+    if params[:origin] === "dropdown_teams"
+      if current_user.profile === User::ADMINISTRADOR || current_user.profile === User::GESTOR
+        @teams = Team.all.order(id: :asc)
+      elsif current_user.profile === User::OPERACIONAL
+        tm = TeamMember.where(user_id: current_user.id).map(&:team_id).flatten
+        @teams = Team.find(tm)
+      end
+    else
+      @teams = Team.all.order(id: :asc)
+    end
   end
 
   # GET /teams/1
@@ -302,4 +314,5 @@ class TeamsController < ApplicationController
   def team_params
     params.require(:team).permit(:name, :latlon_highlight, :location_user_id, :is_leader, users: [:id])
   end
+
 end

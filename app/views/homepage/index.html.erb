@@ -57,7 +57,7 @@
         </li>
         <li class="divider"></li>
         <li>
-          <%= link_to destroy_user_session_path, target: '_blank', method: :delete do %>
+          <%= link_to destroy_user_session_path, method: :delete do %>
               Logout
           <% end %>
         </li>
@@ -393,34 +393,55 @@
       <div class="list_wrapper" style="padding-right: 10px;">
         <div>
           <div style="margin-top: 15px;">
+            <input type="checkbox" class="filled-in" id="toggle-user-circle" checked="checked"
+            onchange="$(this).prop('checked') ? map.addLayer(user_centered_circle) :
+                map.removeLayer(user_centered_circle);"/>
+            <label for="toggle-user-circle">Mostrar círculo centrado na sua posição atual</label>
+          </div>
+          <blockquote style="margin-top: 5px; font-size: 13px;">
+            Apresenta ou esconde um círculo com raio de 500 metros centrado na posição atual do utilizador.
+            Apenas as geo-entidades que se encontrem dentro deste círculo estarão visíveis.
+          </blockquote>
+        </div>
+
+        <div class="divider" style="margin-left: 10%; width: 80%;"></div>
+
+        <div>
+          <div style="margin-top: 15px;">
             <input type="checkbox" class="filled-in" id="homepage-toggle-navbar" checked="checked"/>
             <label for="homepage-toggle-navbar">Mostrar barra de navegação</label>
           </div>
-          <blockquote style="margin-top: 5px;">
+          <blockquote style="margin-top: 5px; font-size: 13px;">
             Controla a visibilidade da barra de navegação que se encontra no topo da página.
             Esta alteração apenas se aplica a esta página.
           </blockquote>
         </div>
+
+        <div class="divider" style="margin-left: 10%; width: 80%;"></div>
+
         <div>
           <div style="margin-top: 15px;">
             <p class="range-field" style="width: 80%; margin-bottom: 0;">
               <span style="display: inline-block; color: #9e9e9e;">Nível máximo de zoom</span>
-              <input type="range" id="range_max_zoom" min="1" max="20" />
+              <input type="range" id="range_max_zoom" min="1" max="20"/>
             </p>
           </div>
-          <blockquote style="margin-top: 5px;">
+          <blockquote style="margin-top: 5px; font-size: 13px;">
             Altera o nível máximo de zoom aplicado quando se centra o mapa numa entidade. Varia entre 1 e 20, em que
             1 é o nível mínimo de zoom e 20 o máximo.
           </blockquote>
         </div>
+
+        <div class="divider" style="margin-left: 10%; width: 80%;"></div>
+
         <div>
           <div style="margin-top: 15px;">
             <p class="range-field" style="width: 80%; margin-bottom: 0;">
               <span style="display: inline-block; color: #9e9e9e;">Limite de entradas no histórico</span>
-              <input type="range" id="range_history_entry_max" min="10" max="50" step="5" />
+              <input type="range" id="range_history_entry_max" min="10" max="50" step="5"/>
             </p>
           </div>
-          <blockquote style="margin-top: 5px;">
+          <blockquote style="margin-top: 5px; font-size: 13px;">
             Controla o número máximo de entradas que o histórico pode conter num dado momento.
           </blockquote>
         </div>
@@ -509,7 +530,7 @@
   </div>
   <div class="modal-footer">
     <a id="submit_new_geo_entity" href="javascript:insertGeoEntity();"
-       class="modal-action modal-close waves-effect waves-green btn-flat">Confirmar</a>
+       class="waves-effect waves-green btn-flat">Confirmar</a>
     <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Cancelar</a>
   </div>
 </div>

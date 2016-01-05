@@ -15,7 +15,11 @@ class HomepageController < ApplicationController
     @most_active_users = User.all.order(sign_in_count: :desc).limit(15)
     @recently_changed_teams = Team.all.order(updated_at: :desc).limit(15)
 
-    gon.user_id = current_user.id
+    gon.push({
+        user_id: current_user.id,
+        current_lat: current_user.latlon.lat,
+        current_lon: current_user.latlon.lon
+    })
   end
 
   def entity_updates

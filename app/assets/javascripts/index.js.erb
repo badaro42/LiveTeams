@@ -71,6 +71,7 @@ HistoryEntry.prototype.equals = function (o) {
 // **************************************
 // variaveis da mais variada especie :)
 var map, osmUrl, osmAttrib, osm, sidebar, cluster;
+var user_centered_circle;
 var drawnItems;
 var e_type, e_radius, e_coords, coords_to_display, e_length, e_area, e_layer, e_num_points;
 
@@ -251,12 +252,21 @@ $(document).ready(function () {
 
   /* mapa principal */
   map = L.map("map", {
-    zoom: 12,
-    center: [38.627881, -9.161007],
+    zoom: 16,
+//    center: [38.627881, -9.161007],
+    center: L.latLng(gon.current_lat, gon.current_lon),
     layers: [osm],
     zoomControl: true,
     attributionControl: false
   });
+
+  user_centered_circle = L.circle(L.latLng(gon.current_lat, gon.current_lon), 500, {
+    color: 'blue',
+    fillOpacity: 0.2,
+    weight: 0,
+    clickable: false
+  }).addTo(map);
+  map.fitBounds(user_centered_circle);
 
   // ativa a geolocalização apenas se o browser a suportar
   if ("geolocation" in navigator) { /* geolocation is available */
@@ -561,21 +571,35 @@ $(document).ready(function () {
       type: "GET",
       url: "/teams",
       dataType: "json",
+      data: {
+        origin: "dropdown_teams"
+      },
       success: function (res) {
+        console.log(res.length);
+
         // primeiro removemos todas as entradas que la estao
         $(select).find('option').remove();
 
-        // todas as equipas retornadas pelo servidor
-        $.each(res, function (index, elem) {
-          console.log(elem);
-          var text = elem.name + " (ID: " + elem.id + ")";
+        if (res.length > 0) {
+          // todas as equipas retornadas pelo servidor
+          $.each(res, function (index, elem) {
+            console.log(elem);
+            var text = elem.name + " (ID: " + elem.id + ")";
 
-          // append das equipas obtidas do servidor ao select
+            // append das equipas obtidas do servidor ao select
+            select.append($("<option/>", {
+              value: elem.id,
+              text: text
+            }));
+          });
+        }
+        else {
           select.append($("<option/>", {
-            value: elem.id,
-            text: text
+            value: "",
+            text: "Não pertence a nenhuma equipa.",
+            disabled: true
           }));
-        });
+        }
 
         $('#select_team_ids_div label').addClass('active');
         console.log("final do each.");
@@ -808,70 +832,87 @@ function insertGeoEntity() {
     sel_team_ids.push(parseInt($(this).val()));
   });
 
-  console.log("***** PROPRIEDADES DA ENTIDADE *****");
-  console.log("nome: " + name);
-  console.log("tipo: " + e_type);
-  console.log("raio: " + e_radius);
-  console.log("descriçao: " + description);
-  console.log("coordenadas: " + e_coords);
-  console.log("id da equipa a associar: " + sel_team_ids);
-  console.log("************************************");
+  var errors = "";
+  if (name.length === 0 || description.length === 0 || sel_team_ids.length === 0) {
+    errors += (name.length === 0 ? "- Nome da entidade vazio;<br>" : "") +
+        (description.length === 0 ? "- Descrição vazia;<br>" : "") +
+        (sel_team_ids.length === 0 ? "- Nenhuma equipa selecionada;" : "");
 
-  $.ajax({
-    type: "POST",
-    url: "/geo_entities",
-    dataType: "json",
-    data: {
-      geo_entity: {
-        name: name,
-        entity_type: e_type,
-        radius: e_radius,
-        description: description,
-        latlon: e_coords,
-        team_ids: sel_team_ids
+    noty({
+      text: 'Erro a criar a geo-entidade. Ocorreram os seguintes erros:<br><br>' + errors, timeout: 6000,
+      type: 'error', layout: 'center', closeWith: ['button', 'click'], modal: true
+    });
+  }
+  else {
+    console.log("***** PROPRIEDADES DA ENTIDADE *****");
+    console.log("nome: " + name);
+    console.log("tipo: " + e_type);
+    console.log("raio: " + e_radius);
+    console.log("descriçao: " + description);
+    console.log("coordenadas: " + e_coords);
+    console.log("id da equipa a associar: " + sel_team_ids);
+    console.log("************************************");
+
+    $.ajax({
+      type: "POST",
+      url: "/geo_entities",
+      dataType: "json",
+      data: {
+        geo_entity: {
+          name: name,
+          entity_type: e_type,
+          radius: e_radius,
+          description: description,
+          latlon: e_coords,
+          team_ids: sel_team_ids
+        }
+      },
+      // adicionamos o id à lista de ids e criamos uma popup para essa entidade
+      success: function (data) {
+        console.log("MARCADOR ADICIONADO COM SUCESSO");
+        console.log(data);
+
+        // colocamos a flag a true para adicionar a entrada ao historico
+        add_to_event_history = true;
+        if (data.geometry.type === "Point") {
+          var latlon = L.latLng(data.geometry.coordinates[1], data.geometry.coordinates[0]);
+          geoPointToLayer(data, latlon);
+        }
+
+        onEachGeoEntity(data, e_layer);
+        add_to_event_history = false;
+
+        noty({
+          text: 'Entidade geográfica introduzida com sucesso!', timeout: 3500,
+          type: 'success', layout: 'bottomCenter'
+        });
+
+        drawnItems.addLayer(e_layer);
+        map.addLayer(drawnItems);
+
+        e_layer = null;
+
+        // remove os valores do nome e descriçao que estavam no modal
+        $('#e_name').val("");
+        $('#e_description').val("");
+        $("#select_team_ids option").prop("selected", false);
+
+        $('#confirm_entity_creation').closeModal();
+      },
+      error: function (err) {
+        noty({
+          text: 'Erro a introduzir a geo-entidade. Tente novamente mais tarde.', timeout: 4000,
+          type: 'error', layout: 'bottomCenter'
+        });
+
+        console.log("erro a adicionar o marcador");
+        console.log(err);
+        e_layer = null;
+
+        $('#confirm_entity_creation').closeModal();
       }
-    },
-    // adicionamos o id à lista de ids e criamos uma popup para essa entidade
-    success: function (data) {
-      console.log("MARCADOR ADICIONADO COM SUCESSO");
-      console.log(data);
-
-      // colocamos a flag a true para adicionar a entrada ao historico
-      add_to_event_history = true;
-      if (data.geometry.type === "Point") {
-        var latlon = L.latLng(data.geometry.coordinates[1], data.geometry.coordinates[0]);
-        geoPointToLayer(data, latlon);
-      }
-
-      onEachGeoEntity(data, e_layer);
-      add_to_event_history = false;
-
-      noty({
-        text: 'Entidade geográfica introduzida com sucesso!', timeout: 3500,
-        type: 'success', layout: 'bottomCenter'
-      });
-
-      drawnItems.addLayer(e_layer);
-      map.addLayer(drawnItems);
-
-      e_layer = null;
-
-      // remove os valores do nome e descriçao que estavam no modal
-      $('#e_name').val("");
-      $('#e_description').val("");
-      $("#select_team_ids option").prop("selected", false);
-    },
-    error: function (err) {
-      noty({
-        text: 'Erro a introduzir a entidades geográfica!', timeout: 3500,
-        type: 'error', layout: 'bottomCenter'
-      });
-
-      console.log("erro a adicionar o marcador");
-      console.log(err);
-      e_layer = null;
-    }
-  });
+    });
+  }
 }
 
 $('.stay-where-you-are').click(function (e) {
