@@ -706,37 +706,37 @@ $(document).keyup(function (e) {
 
   // apenas queremos apanhar estas teclas quando a modal esta fechada, caso contrario
   // sempre que se introduzisse texto nas caixas de texto as abas laterais eram ativadas
-  if (!is_modal_open) {
-    // teclas que ativam a sidebar lateral
-    if (keyCode == 69 || keyCode == 80 || keyCode == 85 || keyCode == 87 || keyCode == 83) {
-      if (keyCode == 69) { // tecla 'E'
-        elem = $('#teams-tab-icon');
-        tab_name = 'teams';
-      }
-      else if (keyCode == 80) { // tecla 'P'
-        elem = $('#profile-tab-icon');
-        tab_name = 'profile';
-      }
-      else if (keyCode == 85) { // tecla 'U'
-        elem = $('#users-tab-icon');
-        tab_name = 'users';
-      }
-      else if (keyCode == 87) { // tecla 'W'
-        elem = $('#warnings-tab-icon');
-        tab_name = 'warnings';
-      }
-      else if (keyCode == 83) { // tecla 'S'
-        elem = $('#search-tab-icon');
-        tab_name = 'search';
-      }
-
-      parent = elem.parent();
-      if (parent.hasClass('active'))
-        sidebar.close(tab_name);
-      else
-        sidebar.open(tab_name);
-    }
-  }
+//  if (!is_modal_open) {
+//    // teclas que ativam a sidebar lateral
+//    if (keyCode == 69 || keyCode == 80 || keyCode == 85 || keyCode == 87 || keyCode == 83) {
+//      if (keyCode == 69) { // tecla 'E'
+//        elem = $('#teams-tab-icon');
+//        tab_name = 'teams';
+//      }
+//      else if (keyCode == 80) { // tecla 'P'
+//        elem = $('#profile-tab-icon');
+//        tab_name = 'profile';
+//      }
+//      else if (keyCode == 85) { // tecla 'U'
+//        elem = $('#users-tab-icon');
+//        tab_name = 'users';
+//      }
+//      else if (keyCode == 87) { // tecla 'W'
+//        elem = $('#warnings-tab-icon');
+//        tab_name = 'warnings';
+//      }
+//      else if (keyCode == 83) { // tecla 'S'
+//        elem = $('#search-tab-icon');
+//        tab_name = 'search';
+//      }
+//
+//      parent = elem.parent();
+//      if (parent.hasClass('active'))
+//        sidebar.close(tab_name);
+//      else
+//        sidebar.open(tab_name);
+//    }
+//  }
 });
 
 
