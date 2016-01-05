@@ -7,6 +7,7 @@ Rails.application.routes.draw do
   get '/teams/teams_to_json', to: 'teams#teams_to_json'
   get '/geo_entities/geo_entities_to_json', to: 'geo_entities#geo_entities_to_json'
   get '/teams/reverse_geocode_coords', to: 'teams#reverse_geocode_coords'
+  get '/geocode_location', to: 'homepage#geocode_location'
 
   # altera as rotas predefinidas do devise
   devise_for :users, :controllers => { registrations: 'registrations' },

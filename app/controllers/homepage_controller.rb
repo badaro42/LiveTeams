@@ -4,6 +4,13 @@ class HomepageController < ApplicationController
 
   require 'encode_to_json'
 
+  def geocode_location
+    require 'geocoder'
+
+    result = Geocoder.search(params[:location])
+    render json: result.to_json
+  end
+
   def index
     @most_active_users = User.all.order(sign_in_count: :desc).limit(15)
     @recently_changed_teams = Team.all.order(updated_at: :desc).limit(15)

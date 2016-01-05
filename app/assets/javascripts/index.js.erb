@@ -1907,3 +1907,58 @@ function clearHistoyEntries() {
     localStorage.setItem('user' + gon.user_id, JSON.stringify(curr_user_saved_prefs));
   }
 }
+
+/**
+ * Metodo que dada uma localização faz um pedido de geocode ao servidor
+ * Recebe uma localização e devolve as coordenadas desse local
+ * Por fim, centra o mapa nessas coordenadas
+ */
+function geocodeLocation() {
+  var loc = $('#geocode_location').val();
+
+  if (loc.length > 0) {
+    $.ajax({
+      type: "GET",
+      url: "/geocode_location",
+      data: {
+        location: loc
+      },
+      success: function (result) {
+        console.log(result);
+
+        if (result.length > 0) {
+          var coords = result[0].data.geometry.location;
+          console.log(coords);
+          map.setView(new L.LatLng(coords.lat, coords.lng), 16);
+
+          noty({
+            text: 'Geocoding efetuado com sucesso, mapa centrado em <b>' + result[0].data.formatted_address + '</b>.',
+            timeout: 3500, type: 'success', layout: 'bottomCenter'
+          });
+        }
+        else
+          noty({
+            text: 'Erro a efetuar o geocoding, tente pesquisar outro local.', timeout: 3500,
+            type: 'error', layout: 'bottomCenter'
+          });
+      },
+      error: function (err) {
+        console.log(err);
+
+        noty({
+          text: 'Erro a efetuar o geocoding, tente pesquisar outro local.', timeout: 3500,
+          type: 'error', layout: 'bottomCenter'
+        });
+      }
+    });
+  }
+}
+
+/**
+ *
+ */
+//function toggleUserCenteredCircle() {
+//  var checked = $('#toggle-user-circle').prop('checked');
+//
+//  if()
+//}
