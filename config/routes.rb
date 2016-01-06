@@ -50,6 +50,13 @@ Rails.application.routes.draw do
   end
 
 
+  # esta rota deve ser a ultima!!!!
+  # isto porque o rails avalia as rotas por ordem, de cima para baixo.
+  # se nenhuma das rotas de cima foi apanhada, é porque não existe e redireciona para a raiz do projeto
+  get '*path' => redirect('/')
+
+
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

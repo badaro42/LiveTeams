@@ -2,8 +2,9 @@ class TeamsController < ApplicationController
   before_action :set_team, only: [:show, :edit, :update, :destroy]
   before_action :set_team_geo_entities, only: [:show, :destroy]
   before_filter :authenticate_user!
-  require 'encode_to_json'
+  # load_and_authorize_resource
 
+  require 'encode_to_json'
   layout "listings"
 
   def teams_to_json
@@ -29,7 +30,9 @@ class TeamsController < ApplicationController
     if params[:origin] === "dropdown_teams"
       if current_user.profile === User::ADMINISTRADOR || current_user.profile === User::GESTOR
         @teams = Team.all.order(id: :asc)
-      elsif current_user.profile === User::OPERACIONAL
+      # elsif current_user.profile === User::OPERACIONAL
+      # TODO: APENAS PARA TESTES!!!! remover a condição abaixo e colocar a que esta comentada
+      elsif current_user.profile === User::OPERACIONAL || current_user.profile === User::BASICO
         tm = TeamMember.where(user_id: current_user.id).map(&:team_id).flatten
         @teams = Team.find(tm)
       end

@@ -382,46 +382,47 @@ $(document).ready(function () {
   /* controlo do zoom do mapa  */
   map.zoomControl.setPosition('topleft');
 
+//  TODO: ADICIONAR O IF, ESTA COMENTADO APENAS PARA EFEITOS DE TESTE!
   // apenas cria os controlos para adicionar geo-entidades se não o perfil NÃO for 'Básico'
-  if (gon.user_profile !== "Basico") {
-    // cria a barra de controlos para a criaçao de entidades
-    L.drawLocal.draw.toolbar.buttons.polygon = 'Desenhar um polígono';
-    L.drawLocal.draw.toolbar.buttons.polyline = 'Desenhar uma linha poligonal';
-    L.drawLocal.draw.toolbar.buttons.marker = 'Desenhar um marcador';
-    L.drawLocal.draw.toolbar.buttons.rectangle = 'Desenhar um rectângulo';
-    L.drawLocal.draw.toolbar.buttons.circle = 'Desenhar um círculo';
-    var drawControl = new L.Control.Draw({
-      position: 'bottomleft',
-      draw: {
-        polygon: {
-          title: 'Polígono',
-          allowIntersection: true,
-          drawError: {
-            color: '#b00b00',
-            timeout: 1000
-          },
-          shapeOptions: {
-            color: '#bada55'
-          },
-          showArea: true
+//  if (gon.user_profile !== "Basico") {
+  // cria a barra de controlos para a criaçao de entidades
+  L.drawLocal.draw.toolbar.buttons.polygon = 'Desenhar um polígono';
+  L.drawLocal.draw.toolbar.buttons.polyline = 'Desenhar uma linha poligonal';
+  L.drawLocal.draw.toolbar.buttons.marker = 'Desenhar um marcador';
+  L.drawLocal.draw.toolbar.buttons.rectangle = 'Desenhar um rectângulo';
+  L.drawLocal.draw.toolbar.buttons.circle = 'Desenhar um círculo';
+  var drawControl = new L.Control.Draw({
+    position: 'bottomleft',
+    draw: {
+      polygon: {
+        title: 'Polígono',
+        allowIntersection: true,
+        drawError: {
+          color: '#b00b00',
+          timeout: 1000
         },
-        polyline: {
-          metric: true
+        shapeOptions: {
+          color: '#bada55'
         },
-        circle: {
-          shapeOptions: {
-            color: '#662d91'
-          }
-        },
-        //rectangle: false //� assim que se desativam op��es
-      }
+        showArea: true
+      },
+      polyline: {
+        metric: true
+      },
+      circle: {
+        shapeOptions: {
+          color: '#662d91'
+        }
+      },
+      //rectangle: false //� assim que se desativam op��es
+    }
 //    },
 //    edit: {
 //      featureGroup: drawnItems
 //    }
-    });
-    map.addControl(drawControl);
-  }
+  });
+  map.addControl(drawControl);
+//  }
 
   // cria uma imagem com a inicial do nome do utilizador autenticado
   $('.profile_name').initial({
@@ -903,10 +904,16 @@ function insertGeoEntity() {
         $('#confirm_entity_creation').closeModal();
       },
       error: function (err) {
-        noty({
-          text: 'Erro a introduzir a geo-entidade. Tente novamente mais tarde.', timeout: 4000,
-          type: 'error', layout: 'bottomCenter'
-        });
+        if (err.status == 403) // o utilizador nao tem permissoes para remover geo-entidades
+          noty({
+            text: 'Não tem permissões para adicionar geo-entidades.', timeout: 4000,
+            type: 'error', layout: 'bottomCenter'
+          });
+        else
+          noty({
+            text: 'Erro a introduzir a geo-entidade. Tente novamente mais tarde.', timeout: 4000,
+            type: 'error', layout: 'bottomCenter'
+          });
 
         console.log("erro a adicionar o marcador");
         console.log(err);
@@ -1423,17 +1430,23 @@ function removeGeoEntity(entity_index) {
           });
         },
         error: function (res) {
-          noty({
-            text: 'Ocorreu um erro a remover a entidade.\nTente novamente mais tarde.', timeout: 4000,
-            type: 'alert', layout: 'bottomCenter'
-          });
+          if (res.status == 403) // o utilizador nao tem permissoes para remover geo-entidades
+            noty({
+              text: 'Não tem permissões para remover geo-entidades.', timeout: 4000,
+              type: 'error', layout: 'bottomCenter'
+            });
+          else
+            noty({
+              text: 'Ocorreu um erro a remover a entidade.\nTente novamente mais tarde.', timeout: 4000,
+              type: 'error', layout: 'bottomCenter'
+            });
         }
       });
     }
     else {
       noty({
         text: 'Ocorreu um erro a remover a entidade.\nExperimente recarregar a página.', timeout: 4000,
-        type: 'alert', layout: 'bottomCenter'
+        type: 'error', layout: 'bottomCenter'
       });
     }
   }

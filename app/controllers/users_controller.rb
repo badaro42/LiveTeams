@@ -2,6 +2,8 @@ class UsersController < ApplicationController
   # before_action :set_user, only: [:show]
   before_action :set_user, only: [:show, :edit, :update]
   before_filter :authenticate_user!
+  # load_and_authorize_resource
+
   layout "listings"
 
   def update_location
@@ -40,6 +42,10 @@ class UsersController < ApplicationController
     puts gon.teams_user_update_position.inspect
 
     render :nothing => true, :status => 200, :content_type => 'text/html'
+  end
+
+  def new
+    redirect_to root_path
   end
 
   def index

@@ -1,5 +1,6 @@
 class TeamMembersController < ApplicationController
   before_action :set_team_member, only: [:show, :edit, :update, :destroy]
+  load_and_authorize_resource
 
   # GET /team_members
   # GET /team_members.json
@@ -25,7 +26,6 @@ class TeamMembersController < ApplicationController
   # POST /team_members.json
   def create
     @team_member = TeamMember.new(team_member_params)
-
     respond_to do |format|
       if @team_member.save
         format.html { redirect_to @team_member, notice: 'Team member was successfully created.' }
@@ -62,13 +62,13 @@ class TeamMembersController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_team_member
-      @team_member = TeamMember.find(params[:id])
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_team_member
+    @team_member = TeamMember.find(params[:id])
+  end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def team_member_params
-      params.require(:team_member).permit(:team_id, :user_id, :is_leader)
-    end
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def team_member_params
+    params.require(:team_member).permit(:team_id, :user_id, :is_leader)
+  end
 end
