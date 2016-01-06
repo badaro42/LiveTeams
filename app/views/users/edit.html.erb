@@ -50,15 +50,18 @@
           </div>
         </div>
 
-        <div id="profile" class="scrollspy col l12 s12" style="margin-top: 20px; padding: 0;">
-          <div class="section">
-            <h5 style="margin-left: 10px; display: inline;">Alterar perfil do utilizador</h5>
-          </div>
+        <!-- apenas os admins e os gestores podem alterar o seu proprio perfil -->
+        <% if current_user.profile == User::ADMINISTRADOR || current_user.profile == User::GESTOR %>
+            <div id="profile" class="scrollspy col l12 s12" style="margin-top: 20px; padding: 0;">
+              <div class="section">
+                <h5 style="margin-left: 10px; display: inline;">Alterar perfil do utilizador</h5>
+              </div>
 
-          <div class="input-field col s12 m12 l12">
-            <%= select_tag "user[profile]", options_for_select(User::PROFILES, :selected => @user.profile) %>
-          </div>
-        </div>
+              <div class="input-field col s12 m12 l12">
+                <%= select_tag "user[profile]", options_for_select(User::PROFILES, :selected => @user.profile) %>
+              </div>
+            </div>
+        <% end %>
 
         <div id="optional" class="scrollspy col l12 s12" style="margin-top: 20px; padding: 0;">
           <div class="section">
@@ -89,7 +92,8 @@
 
         <div class="col s12 m12 l12 center-align" style="margin-top: 25px; margin-bottom: 15px;">
           <div class="actions">
-            <%= f.submit 'Atualizar', class: "btn waves-effect waves-light", style: "width: 100%;" %>
+            <%= f.submit 'Atualizar', id: 'update_user_profile', class: "btn waves-effect waves-light",
+                         style: "width: 100%;" %>
           </div>
         </div>
       </div>
@@ -98,7 +102,9 @@
         <div class="pushpin">
           <ul id="user-edit-pushpin" class="table-of-contents">
             <li><a href="#basic-info">Dados básicos</a></li>
-            <li><a href="#profile">Alterar papel</a></li>
+            <% if current_user.profile == User::ADMINISTRADOR || current_user.profile == User::GESTOR %>
+                <li><a href="#profile">Alterar papel</a></li>
+            <% end %>
             <li><a href="#optional">Foto de perfil</a></li>
           </ul>
         </div>
