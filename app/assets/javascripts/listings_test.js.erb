@@ -914,14 +914,14 @@ function toggleEntriesClass(e) {
   // expandir as entradas
   // caso nenhuma esteja expandida, expandimos todas
   // caso contrario, expandimos apenas as que estão colapsadas
-  if (e.toElement.id === "expand_all") {
+  if (e.target.id === "expand_all") {
     var active_entries = $(".collapsible-header.active").toArray();
     if (active_entries.length > 0)
       $(".collapsible-header").not(".active").trigger('click');
     else
       $('.collapsible-header').trigger('click');
   }
-  else if (e.toElement.id === "collapse_all") {
+  else if (e.target.id === "collapse_all") {
     var inactive_entries = $(".collapsible-header").not(".active").toArray();
     if (inactive_entries.length > 0)
       $(".collapsible-header.active").trigger('click');

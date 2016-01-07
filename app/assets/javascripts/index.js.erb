@@ -254,7 +254,7 @@ $(document).ready(function () {
   map = L.map("map", {
     zoom: 16,
 //    center: [38.627881, -9.161007],
-    center: L.latLng(gon.current_lat, gon.current_lon),
+//    center: L.latLng(gon.current_lat, gon.current_lon),
     layers: [osm],
     zoomControl: true,
     attributionControl: false
@@ -1549,10 +1549,10 @@ function onEachGeoEntity(feature, layer) {
   var new_entry, ent_type, temp_latlon, curr_action, radius = 0;
   var popup = L.popup({maxWidth: 250});
 
-  if (layer.hasOwnProperty('_latlng')) // só tem um par de coordenadas
-    temp_latlon = [layer.getLatLng()];
-  else if (layer.hasOwnProperty('_latlngs')) // tem mais do que um par de coordenadas
-    temp_latlon = layer.getLatLngs();
+//  if (layer.hasOwnProperty('_latlng')) // só tem um par de coordenadas
+//    temp_latlon = [layer.getLatLng()];
+//  else if (layer.hasOwnProperty('_latlngs')) // tem mais do que um par de coordenadas
+//    temp_latlon = layer.getLatLngs();
 
   // no caso de ser circulo, introduzimos o raio na popup
   if (feature.properties.radius > 0) {
@@ -1615,7 +1615,9 @@ function centerMapOnGeoEntity(entity_id) {
 
   if (indexOnArray > -1) { // a entidade existe, centramos
     var entity = all_geo_entities[indexOnArray];
-    map.fitBounds(entity.latlon, {maxZoom: parseInt(curr_user_saved_prefs.max_zoom)});
+    var coords = (entity.layer.hasOwnProperty('_latlng') ? [entity.layer.getLatLng()] : entity.layer.getLatLngs());
+
+    map.fitBounds(coords, {maxZoom: parseInt(curr_user_saved_prefs.max_zoom)});
     entity.layer.openPopup();
 
     noty({
