@@ -14,7 +14,7 @@ hr {
 }
 
 .main-card {
-    padding-bottom: 10px;
+    padding-bottom: 0;
     margin-top: 30px;
 }
 
@@ -24,7 +24,8 @@ hr {
 }
 
 .nice-trick {
-    margin: 0px;
-    border-bottom-width: 0px;
-    border-top-width: 0px;
+    margin: 0;
+    border-bottom-width: 0;
+    border-top-width: 0;
+    display: inline-block;
 }
