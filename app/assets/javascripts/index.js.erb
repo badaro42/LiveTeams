@@ -121,7 +121,10 @@ var user_pos_icon = L.icon({
   popupAnchor: [-1, -30] // point from which the popup should open relative to the iconAnchor
 });
 
-
+/**
+ * Função executada quando o DOM está pronto a ser manipulado pelo javascript
+ * Dentro desta função estão todas as inicializações e listeners
+ */
 $(document).ready(function () {
   // inicialização da dropdown da barra de navegação
   $('.dropdown-button').dropdown({
@@ -714,12 +717,12 @@ $(document).ready(function () {
   });
 
   /* listener invocado quando se edita uma feature */
-//map.on('draw:edited', function (e) {
-//    var layers = e.layers;
-//    layers.eachLayer(function (layer) {
-//        //do whatever you want, most likely save back to db
-//    });
-//});
+  map.on('draw:edited', function (e) {
+    noty({
+      text: 'Funcionalidade não implementada.', timeout: 3500,
+      type: 'information', layout: 'bottomCenter'
+    });
+  });
 });
 
 // listeners para quando se carrega numa tecla predefinida.
@@ -762,9 +765,12 @@ $(document).keyup(function (e) {
 //  }
 });
 
-
-//// o parametro "coords" � da forma -> "POINT(33.333 11.111)"
-//// retorna um vector com 2 posi�oes, uma para cada coordenada
+/**
+ * Transforma uma string com coordenadas num array
+ *
+ * @param coords a string com as coordenadas
+ * @returns {Array} com 2 posições: 0 - lat; 1 - lon
+ */
 function parsePointCoordinates(coords) {
   var split_res = coords.split("(");
   var new_split_res = split_res[1].split(" ");
@@ -776,7 +782,13 @@ function parsePointCoordinates(coords) {
   return res;
 }
 
-
+/**
+ * Função usada no mapa para apresentar as coordenadas de uma geo-entidade
+ * através de uma modal no fundo da pagina
+ *
+ * @param coords
+ * @returns {Array}
+ */
 function parseCoordinates(coords) {
   var i;
   var str_aux = "";
@@ -797,7 +809,8 @@ function parseCoordinates(coords) {
     str_aux = str_aux[0].split(", ");
 
     var t_coord;
-    for (i = 0; i < str_aux.length; i++) {
+    var length = str_aux.length;
+    for (i = 0; i < length; i++) {
       t_coord = str_aux[i].split(" ");
       temp_latlon = L.latLng(t_coord[1], t_coord[0]);
       result.push(temp_latlon);
@@ -809,7 +822,8 @@ function parseCoordinates(coords) {
     str_aux = str_aux[0].split(", ");
 
     var t_coord;
-    for (i = 0; i < str_aux.length; i++) {
+    var length = str_aux.length;
+    for (i = 0; i < length; i++) {
       t_coord = str_aux[i].split(" ");
       temp_latlon = L.latLng(t_coord[1], t_coord[0]);
       result.push(temp_latlon);
@@ -819,7 +833,10 @@ function parseCoordinates(coords) {
   return result;
 }
 
-// envia a entidade criada para a Base de Dados
+/**
+ * Função executada quando o utilizador encerra a modal e envia os dados da geoentidade
+ * para o servidor. Faz um pedido ajax com a info e mostra uma notificação a informa o utilizador do resultado
+ */
 function insertGeoEntity() {
   console.log("inserir nova entidaade");
 
@@ -1172,12 +1189,6 @@ function cleanRemovedGeoEntities() {
       createNewHistoryEntry(object_type.geo_entity, elem.f_id, elem.f_name, new Date(), actions.remove,
           false, -1, -1);
 
-
-//      entry = new HistoryEntry(object_type.geo_entity, elem.f_id, elem.f_name, new Date(), actions.remove,
-//          false, -1, -1);
-//
-//      prependHistoryDivEntry(entry);
-
       cluster.removeLayer(elem.layer);
       map.removeLayer(elem.layer);
       temp_arr.push(elem.f_id);
@@ -1192,148 +1203,6 @@ function cleanRemovedGeoEntities() {
   }
 }
 
-
-// ****************** TESTE GEOLOCALIZAÇÃO ************************
-//function getUserPositionGPS() {
-//  map.findAccuratePosition({
-//    maxWait: 12500, // defaults to 10000
-//    desiredAccuracy: 20 // defaults to 20
-//  });
-//
-//  setTimeout(getUserPositionGPS, 15000);
-//}
-//
-//function onAccuratePositionProgress(e) {
-//  console.log("A OBTER A POSIÇÃO!!");
-//  console.log(e);
-//}
-//
-//function onAccuratePositionFound(e) {
-//  console.log("POSIÇÃO OBTIDA!!");
-//  console.log(e);
-////  map.setView(e.latlng, 16);
-//  L.marker(e.latlng).addTo(map);
-//
-//  var d = new Date();
-//  var time = d.toLocaleTimeString();
-//
-//  var li = $('<li/>').addClass('collection-item');
-//  var span1 = $('<span/>').text("Coordenadas: [" + e.latlng.lat + "; " + e.latlng.lng + "]");
-//  var span2 = $('<span/>').text("Precisão da medição: " + e.accuracy + " metros");
-//  var span3 = $('<span/>').text("Data do sistema: " + time);
-//
-//  li.append(span1).append('<br>').append(span2).append('<br>').append(span3);
-//  $('#current_position_list').prepend(li);
-//}
-//
-//function onAccuratePositionError(e) {
-//  console.log("ERRO A OBTER A POSIÇÃO!!");
-//  console.log(e)
-//}
-
-
-//function teste() {
-//  navigator.wakeLock.request("display").then(
-//      function successFunction() {
-//        // success
-//        console.log("foda-se sucesso1");
-//      },
-//      function errorFunction() {
-//        // error
-//        console.log("foda-se erro1");
-//      }
-//  );
-////here system indicates CPU, GPU, radio, wifi etc.
-//  navigator.wakeLock.request("system").then(
-//      function successFunction() {
-//        // success
-//        console.log("foda-se sucesso1");
-//      },
-//      function errorFunction() {
-//        // error
-//        console.log("foda-se erro1");
-//      }
-//  );
-//}
-
-
-//function cenaGPS() {
-//  var options = {
-//    enableHighAccuracy: true,
-//    timeout: 85000,
-//    maximumAge: 10000
-//  };
-//
-//  function onsuccess(pos) {
-//    console.log(pos);
-//    var c_latlng = L.latLng(pos.coords.latitude, pos.coords.longitude);
-////    var c_text = "POINT(" + c_latlng.lng + " " + c_latlng.lat + ")";
-//
-//    console.log("POSIÇÃO OBTIDA!!");
-//    console.log(c_latlng);
-//
-//    var positionDate = new Date(pos.timestamp);
-//    var currentDate = new Date();
-//    console.log(positionDate.toLocaleString(), currentDate.toLocaleString());
-//
-//    var distance = -1;
-//    if (typeof current_user_location !== 'undefined')
-//      distance = current_user_location.distanceTo(c_latlng);
-//
-//    console.log("DISTANCIA PARA MEDIÇÃO ANTERIOR: " + distance);
-//
-//    // envia a nova posição para o servidor caso seja a primeira vez ou
-//    // a distancia para a posição anterior seja superior a 10 metros
-//    if (distance == -1 || distance > 10) {
-//      console.log("POSIÇÃO ATUAL A MAIS DE 10M DA ANTERIOR!");
-//
-//      $.ajax({
-//        type: "POST",
-//        url: "/update_location",
-//        data: {
-//          latitude: pos.coords.latitude,
-//          longitude: pos.coords.longitude,
-//          user_id: gon.user_id
-//        },
-//        success: function (result) {
-//          console.log(result);
-//
-//          var new_marker = L.marker(c_latlng, {icon: user_pos_icon});
-//          cluster.addLayer(new_marker);
-//          map.addLayer(cluster);
-//
-//          var d = new Date();
-//          var time = d.toLocaleTimeString();
-//
-//          var li = $('<li/>').addClass('collection-item');
-//          var span1 = $('<span/>').text("Coordenadas: [" + pos.coords.latitude + "; " + pos.coords.longitude + "]");
-//          var span2 = $('<span/>').text("Precisão da medição: " + pos.coords.accuracy + " metros");
-//          var span3 = $('<span/>').text("Data do sistema: " + time);
-//
-//          li.append(span1).append('<br>').append(span2).append('<br>').append(span3);
-//          $('#current_position_list').prepend(li);
-//        },
-//        error: function (err) {
-//          console.log(err);
-//        }
-//      });
-////      map.setView(c_latlng, 16);
-//    }
-//    current_user_location = c_latlng;
-//  }
-//
-//  // PERMISSION_DENIED = 1;
-//  // POSITION_UNAVAILABLE = 2;
-//  // TIMEOUT = 3;
-//  function onerror(err) {
-//    console.warn('ERROR(' + err.code + '): ' + err.message);
-//  }
-//
-//  navigator.geolocation.getCurrentPosition(onsuccess, onerror, options);
-//  setTimeout(cenaGPS, 10000);
-//}
-
-
 /**
  * Verifica se a equipa ja existe ou nao no mapa
  * Retorna -1 caso a equipa nao esteja no mapa
@@ -1341,7 +1210,8 @@ function cleanRemovedGeoEntities() {
  */
 function teamIsInMap(param_id) {
   var i;
-  for (i = 0; i < all_teams.length; i++) {
+  var length = all_teams.length;
+  for (i = 0; i < length; i++) {
     if (all_teams[i].t_id === param_id) // a equipa existe
       return i;
   }
@@ -1357,7 +1227,8 @@ function teamIsInMap(param_id) {
  */
 function geoEntityIsInMap(param_id) {
   var i;
-  for (i = 0; i < all_geo_entities.length; i++) {
+  var length = all_geo_entities.length
+  for (i = 0; i < length; i++) {
     if (all_geo_entities[i].f_id === param_id) // a entidade geografica existe
       return i;
   }
@@ -1446,7 +1317,6 @@ function removeGeoEntity(entity_index) {
     }
   }
 }
-
 
 // função executada pelo onEachFeature do metodo geoJSON das equipas
 function onEachTeam(feature, layer) {
@@ -1608,8 +1478,10 @@ function onEachGeoEntity(feature, layer) {
 }
 
 
-// caso o URL contenha o campo 'entity_id', vamos verificar se a entidade existe no mapa
-// se sim, centramos o mapa nessa entidade.
+/**
+ * caso o URL contenha o campo 'entity_id', vamos verificar se a entidade existe no mapa
+ * se sim, centramos o mapa nessa entidade.
+ */
 function centerMapOnGeoEntity(entity_id) {
   var indexOnArray = geoEntityIsInMap(entity_id);
 
@@ -1637,8 +1509,9 @@ function centerMapOnGeoEntity(entity_id) {
 function getURLParameter(param) {
   var search_params = window.location.search.substring(1);
   var search_vars = search_params.split('&');
+  var length = search_vars.length;
 
-  for (var i = 0; i < search_vars.length; i++) {
+  for (var i = 0; i < length; i++) {
     var param_name = search_vars[i].split('=');
 
     if (param_name[0] == param)
@@ -1736,8 +1609,9 @@ function toggleNavBar(to_show) {
 function populateEventHistory(loaded_events) {
   console.log("vamos popular o historico do user");
   var arr = [], i, entry;
+  var length = loaded_events.length;
 
-  for (i = 0; i < loaded_events.length; i++) {
+  for (i = 0; i < length; i++) {
     entry = new HistoryEntry(loaded_events[i].obj_type, loaded_events[i].obj_id, loaded_events[i].title,
         loaded_events[i].timestamp, loaded_events[i].action, loaded_events[i].watched,
         loaded_events[i].username, loaded_events[i].user_id);
@@ -1747,7 +1621,6 @@ function populateEventHistory(loaded_events) {
 
   curr_user_saved_prefs.events_history = arr;
 }
-
 
 // ajusta o tamanho do mapa, navbar e sidebar quando a janela é redimensionada
 function onWindowResize(event) {
@@ -1894,7 +1767,9 @@ function prependHistoryDivEntry(entry) {
  */
 function containsHistoryEntry(obj) {
   var i;
-  for (i = 0; i < curr_user_saved_prefs.events_history.length; i++) {
+  var length = curr_user_saved_prefs.events_history.length;
+
+  for (i = 0; i < length; i++) {
     if (curr_user_saved_prefs.events_history[i].equals(obj))
       return true;
   }
@@ -2007,12 +1882,3 @@ function geocodeLocation() {
     });
   }
 }
-
-/**
- *
- */
-//function toggleUserCenteredCircle() {
-//  var checked = $('#toggle-user-circle').prop('checked');
-//
-//  if()
-//}

@@ -44,7 +44,7 @@ var spin_options = {
   shadow: false, // Whether to render a shadow
   hwaccel: true, // Whether to use hardware acceleration
   position: 'absolute' // Element positioning
-}
+};
 
 
 $(document).ready(function () {
@@ -436,74 +436,27 @@ $(document).ready(function () {
   }
 
   // Toggle search
-  $('a#toggle-search').click(function () {
-    var search = $('div#search');
-    if (search.is(":visible")) {
-      search.slideUp({queue: false});
-      $('#page-content').animate({duration: 'slow', 'margin-top': '0', queue: false});
-    }
-    else {
-      search.slideDown({queue: false}, function () {
-        search.find('input').focus();
-      });
-      $('#page-content').animate({duration: 'slow', 'margin-top': '71px', queue: false});
-    }
-    return false;
-  });
-
-  // Listeners para quando se carrega nas setas para passar os utilizadores
-  // dum select para o outro :)
-//  $('#add_users_to_team').on('click', addUserToTeam);
-//  $('#remove_users_from_team').on('click', removeUserFromTeam);
-
-//  /**
-//   * Listener para quando uma checkbox é marcada ou desmarcada
-//   */
-//  $('input:checkbox').change(
-//      function () {
-//        // select para escolher o lider
-//        var select_leader = $('#select_team_leader');
-//        // select para escolher o user responsavel pela posição da equipa
-//        var select_team_position = $('#select_team_position');
-//        var i_value, i_text;
-//
-//        var len = $("input[name='team[users][]']:checked").length;
-//        console.log(len);
-//
-//        if (len > 0)
-//          $('#team-submit-form').removeClass("disabled");
-//        else if (len == 0)
-//          $('#team-submit-form').addClass("disabled");
-//
-//        if ($(this).is(':checked')) {
-//          i_value = $(this).prop('value');
-//          i_text = $(this).next("label").text();
-//
-//          console.log("++++++ CHECKED ++++++");
-//          console.log(i_value);
-//          console.log(i_text);
-//
-//          select_leader.append($("<option/>", {
-//            value: i_value,
-//            text: i_text
-//          }));
-//          select_team_position.append($("<option/>", {
-//            value: i_value,
-//            text: i_text
-//          }));
-//        }
-//        else if (!($(this).is(':checked'))) {
-//          i_value = $(this).prop('value');
-//          console.log("------ UNCHECKED ------");
-//          $("#select_team_leader option[value=" + i_value + "]").remove();
-//          $("#select_team_position option[value=" + i_value + "]").remove();
-//        }
-//      }
-//  );
+  $('a#toggle-search').click(toggleSearchBar);
 
   // inicializa a select box para escolher o lider
   $('select').material_select();
 });
+
+
+function toggleSearchBar() {
+  var search = $('div#search');
+  if (search.is(":visible")) {
+    search.slideUp({queue: false});
+    $('#page-content').animate({duration: 'slow', 'margin-top': '0', queue: false});
+  }
+  else {
+    search.slideDown({queue: false}, function () {
+      search.find('input').focus();
+    });
+    $('#page-content').animate({duration: 'slow', 'margin-top': '71px', queue: false});
+  }
+  return false;
+}
 
 /**
  * Este método � executado quando o utilizador carrega no mapa no formulario das equipas
@@ -679,26 +632,6 @@ function addSingleUserToTeam(e) {
       text: 'Não selecionou nenhum utilizador.',
       timeout: 3500, type: 'alert', layout: 'bottomCenter'
     });
-//    noty({
-//      text: 'Do you want to continue?',
-//      layout: 'center',
-//      buttons: [
-//        {addClass: 'btn btn-primary', text: 'Ok', onClick: function($noty) {
-//
-//          // this = button element
-//          // $noty = $noty element
-//
-//          $noty.close();
-//          noty({text: 'You clicked "Ok" button', type: 'success'});
-//        }
-//        },
-//        {addClass: 'btn btn-danger', text: 'Cancel', onClick: function($noty) {
-//          $noty.close();
-//          noty({text: 'You clicked "Cancel" button', type: 'error'});
-//        }
-//        }
-//      ]
-//    });
   else {
     var selected_user_id = parseInt(selected_item[0].value);
     console.log(selected_item);
@@ -834,75 +767,6 @@ function goToGeoEntity(entity_id) {
   console.log(new_uri);
   window.location.replace(new_uri);
 }
-
-
-//function addUserToTeam() {
-//  var n_elem, parent, parent_label, i_value, i_text;
-//  var users_selected = $('#dropdown_all_users :selected'),
-//      select_leader = $('#select_team_leader'),
-//      select_team_position = $('#select_team_position');
-//
-//  if (users_selected.length == 0)
-//    noty({text: 'Nenhum utilizador selecionado.', timeout: 2000, type: 'alert', layout: 'bottomCenter'});
-//  else {
-//    $.each(users_selected, function (index, elem) {
-//      n_elem = $(elem);
-//      parent = n_elem.parent();
-//      parent_label = parent[0].label;
-//      i_value = n_elem.val();
-//      i_text = n_elem.text();
-//
-//      select_leader.append($("<option/>", {
-//        value: i_value,
-//        text: i_text
-//      }));
-//      select_team_position.append($("<option/>", {
-//        value: i_value,
-//        text: i_text
-//      }));
-//
-//      $("#dropdown_users_in_team optgroup[label='" + parent_label + "']")
-//          .append($('<option></option>').val(i_value).text(i_text));
-//      $("#dropdown_all_users option[value='" + i_value + "']").remove();
-//    });
-//  }
-//}
-//
-//
-//function removeUserFromTeam() {
-//  var n_elem, parent, parent_label, i_value, i_text;
-//  var users_selected = $('#dropdown_users_in_team :selected'),
-//      select_leader = $('#select_team_leader'),
-//      select_team_position = $('#select_team_position');
-//
-//  if (users_selected.length == 0)
-//    noty({text: 'Nenhum utilizador selecionado.', timeout: 2000, type: 'alert', layout: 'bottomCenter'});
-//  else {
-//    $.each(users_selected, function (index, elem) {
-//      n_elem = $(elem);
-//      parent = n_elem.parent();
-//      parent_label = parent[0].label;
-//      i_value = n_elem.val();
-//      i_text = n_elem.text();
-//
-//      select_leader.append($("<option/>", {
-//        value: i_value,
-//        text: i_text
-//      }));
-//      select_team_position.append($("<option/>", {
-//        value: i_value,
-//        text: i_text
-//      }));
-//
-//      $("#select_team_leader option[value=" + i_value + "]").remove();
-//      $("#select_team_position option[value=" + i_value + "]").remove();
-//
-//      $("#dropdown_all_users optgroup[label='" + parent_label + "']")
-//          .append($('<option></option>').val(i_value).text(i_text));
-//      $("#dropdown_users_in_team option[value='" + i_value + "']").remove();
-//    });
-//  }
-//}
 
 /**
  * Função que trata da expansão/colapsamento das entradas da lista de equipas.
