@@ -53,25 +53,20 @@ class UsersController < ApplicationController
   end
 
   def show
-    # variavel para fornecer o id no jquery
-    gon.user_id = @user.id
-    gon.current_user_id = current_user.id
+    if @user.nil?
+      flash[:error] = "O utilizador que procura nao existe!"
+      redirect_to users_url
+    else
+      # variaveis que podem ser acedidas no javascript
+      gon.user_id = @user.id
+      gon.current_user_id = current_user.id
 
-    gon.curr_user_pos = @user.latlon
+      gon.curr_user_pos = @user.latlon
 
-    @user_teams = @user.teams
-    @user_team_members = @user.team_members
-
-    @user_entities = @user.geo_entities
-
-    puts @user_teams.count
-    puts @user_teams.inspect
-    puts "-----------------"
-    puts @user_team_members.count
-    puts @user_team_members.inspect
-    puts "-----------------"
-    puts @user_entities.count
-    puts @user_entities.inspect
+      @user_teams = @user.teams
+      @user_team_members = @user.team_members
+      @user_entities = @user.geo_entities
+    end
   end
 
   def edit
@@ -107,7 +102,9 @@ class UsersController < ApplicationController
   private
   # Use callbacks to share common setup or constraints between actions.
   def set_user
-    @user = User.find(params[:id])
+    if User.exists?(params[:id].to_i)
+      @user = User.find(params[:id])
+    end
   end
 
   def account_update_params

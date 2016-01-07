@@ -16,11 +16,11 @@ class HomepageController < ApplicationController
     @recently_changed_teams = Team.all.order(updated_at: :desc).limit(15)
 
     gon.push({
-        user_id: current_user.id,
-        current_lat: current_user.latlon.lat,
-        current_lon: current_user.latlon.lon,
-        user_profile: current_user.profile
-    })
+                 user_id: current_user.id,
+                 current_lat: current_user.latlon.lat,
+                 current_lon: current_user.latlon.lon,
+                 user_profile: current_user.profile
+             })
   end
 
   def entity_updates

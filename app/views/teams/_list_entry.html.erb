@@ -12,22 +12,24 @@
     <span>Membro desde <%= user.created_at.to_datetime.to_formatted_s(:short) %></span>
   </p>
 
-  <% if is_leader %>
-      <%= link_to "javascript:void(0)", :data => {:position => 'left', :delay => '15',
-                                                  :tooltip => 'Não é possível remover o líder da equipa'},
-                  style: "cursor: default", class: 'tooltipped secondary-content' do %>
-          <i class="material-icons">info_outline</i>
-      <% end %>
-  <% elsif in_charge_of_location %>
-      <%= link_to "javascript:void(0)", :data => {:position => 'left', :delay => '15',
-                                                  :tooltip => 'Não é possível remover o responsável pela localização da equipa'},
-                  style: "cursor: default", class: 'tooltipped secondary-content' do %>
-          <i class="material-icons">info_outline</i>
-      <% end %>
-  <% else %>
-      <%= link_to "javascript:void(0)", :data => {:position => 'left', :delay => '15', :tooltip => 'Remover da equipa'},
-                  class: 'remove-user-from-team tooltipped secondary-content' do %>
-          <i class="material-icons">delete</i>
+  <% if can? :destroy, TeamMember %>
+      <% if is_leader %>
+          <%= link_to "javascript:void(0)", :data => {:position => 'left', :delay => '15',
+                                                      :tooltip => 'Não é possível remover o líder da equipa'},
+                      style: "cursor: default", class: 'tooltipped secondary-content' do %>
+              <i class="material-icons">info_outline</i>
+          <% end %>
+      <% elsif in_charge_of_location %>
+          <%= link_to "javascript:void(0)", :data => {:position => 'left', :delay => '15',
+                                                      :tooltip => 'Não é possível remover o responsável pela localização da equipa'},
+                      style: "cursor: default", class: 'tooltipped secondary-content' do %>
+              <i class="material-icons">info_outline</i>
+          <% end %>
+      <% else %>
+          <%= link_to "javascript:void(0)", :data => {:position => 'left', :delay => '15', :tooltip => 'Remover da equipa'},
+                      class: 'remove-user-from-team tooltipped secondary-content' do %>
+              <i class="material-icons">delete</i>
+          <% end %>
       <% end %>
   <% end %>
 </li>

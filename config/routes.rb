@@ -15,6 +15,7 @@ Rails.application.routes.draw do
                                                   :password => 'password', :confirmation => 'confirmation' }
 
 
+  delete '/team_members' => 'team_members#destroy'
   resources :geo_entities
   resources :team_members
   resources :teams

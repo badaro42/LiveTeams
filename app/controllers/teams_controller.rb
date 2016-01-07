@@ -30,8 +30,8 @@ class TeamsController < ApplicationController
     if params[:origin] === "dropdown_teams"
       if current_user.profile === User::ADMINISTRADOR || current_user.profile === User::GESTOR
         @teams = Team.all.order(id: :asc)
-      # elsif current_user.profile === User::OPERACIONAL
-      # TODO: APENAS PARA TESTES!!!! remover a condição abaixo e colocar a que esta comentada
+        # elsif current_user.profile === User::OPERACIONAL
+        # TODO: APENAS PARA TESTES!!!! remover a condição abaixo e colocar a que esta comentada
       elsif current_user.profile === User::OPERACIONAL || current_user.profile === User::BASICO
         tm = TeamMember.where(user_id: current_user.id).map(&:team_id).flatten
         @teams = Team.find(tm)
@@ -51,10 +51,12 @@ class TeamsController < ApplicationController
     else
       set_users_for_multiple_select("show")
 
-      gon.highlight_latlon = @team.latlon_highlight
-      gon.current_latlon = @team.latlon
-      gon.current_team_id = @team.id
-      gon.team_versions = []
+      gon.push({
+                   highlight_latlon: @team.latlon_highlight,
+                   current_latlon: @team.latlon,
+                   current_team_id: @team.id,
+                   team_versions: []
+               })
 
       @team.versions.each do |version|
         gon.team_versions.push(version.reify)
@@ -84,15 +86,12 @@ class TeamsController < ApplicationController
       redirect_to teams_url
     else
       @team_leader = TeamMember.find_by(team_id: @team.id, is_leader: true)
-
       if @team_leader.user_id == current_user.id || current_user.profile == User::ADMINISTRADOR
         gon.current_team_id = @team.id
         gon.users_in_team = set_users_in_team
 
         @users_in_team = @team.users # para as dropdowns de escolha de lider/responsavel localização
         set_users_for_multiple_select("new")
-
-        puts "PODE EDITAR"
       else
         flash[:error] = "Não tem permissões para realizar essa ação!"
         redirect_to teams_url
@@ -111,21 +110,10 @@ class TeamsController < ApplicationController
 
     respond_to do |format|
       if @team.save
-
-        # adicionar os v�rios membros da equipa, colocar aqui um FOR!
+        # adicionar os vários membros da equipa, colocar aqui um FOR!
         # todos os elementos sao adicionados como nao sendo lider
         params[:team][:users].each do |u_id|
           if u_id.to_i > 0
-            puts "LOOOOOOOOOOOOOOOL"
-            puts u_id
-            puts params[:team][:id]
-
-            puts "LEADER LEADER LEADER LEADER"
-            puts params[:team][:is_leader]
-
-            puts "RESPONSAVEL LOCALIZAÇÃO"
-            puts params[:team][:location_user_id]
-
             # é o lider, adiciona-se com o parametro a true
             if u_id == params[:team][:is_leader]
               team_member = TeamMember.new(:user_id => u_id.to_i, :team_id => @team.id, :is_leader => true)
@@ -149,7 +137,6 @@ class TeamsController < ApplicationController
   # PATCH/PUT /teams/1.json
   def update
     respond_to do |format|
-
       # verificamos se o utilizador responsavel pela posição foi alterado
       # se sim, atualizamos a posição atual da equipa
       if @team.location_user_id != params[:team][:location_user_id].to_i
@@ -159,23 +146,14 @@ class TeamsController < ApplicationController
       end
 
       @team.updated_at = Time.now
-
       if @team.update(team_params)
         # começamos por remover todas as entradas da tabela para esta equipa
         TeamMember.delete_all(["team_id = ?", @team.id.to_i])
 
-        # por fim, adicionamos novamente os membros da equipa, bem como qual o capit�o
+        # por fim, adicionamos novamente os membros da equipa, bem como qual o capitão
         params[:team][:users].each do |u_id|
           new_id = u_id.to_i
           leader_id = params[:team][:is_leader].to_i
-          puts "==============================="
-          puts "new_id: "
-          puts new_id
-          puts "leader id: "
-          puts leader_id
-          puts "é a mesma merda?:"
-          puts (new_id === leader_id)
-          puts "==============================="
           if new_id === leader_id
             team_member = TeamMember.new(:user_id => new_id, :team_id => @team.id, :is_leader => true)
           else
@@ -197,9 +175,8 @@ class TeamsController < ApplicationController
   # DELETE /teams/1.json
   def destroy
     team_id = @team.id.to_s
+    @team.destroy # elimina a equipa. se o delete for bem sucedido, removemos os ids da equipa das geo-entidades
 
-    # elimina a equipa. se o delete for bem sucedido, removemos os ids da equipa das geo-entidades
-    @team.destroy
     if @team.destroyed?
       @team_geo_entities.each do |geo_entity|
         geo_entity.team_ids.delete(team_id)
@@ -212,53 +189,12 @@ class TeamsController < ApplicationController
     end
   end
 
-  def add_user_to_team
-    puts "**********************************************"
-    puts "ADD_USER_TO_TEAM HEHEHEHEHEHEHE"
-    puts "**********************************************"
-
-    t_member = TeamMember.new(:user_id => params[:user_id].to_i, :team_id => params[:team_id].to_i, :is_leader => false)
-    if t_member.save
-      @recently_added_user = User.where(id: params[:user_id]).first
-
-      puts @recently_added_user.inspect
-
-      # o utilizador que acabamos de introduzir nao é nem o lider nem o responsavel pela posição
-      render partial: 'list_entry', locals: {user: @recently_added_user, is_leader: false, in_charge_of_location: false}
-    else # em caso de erro enviar codigo de erro para o jquery
-      puts t_member.errors.inspect
-      render :nothing => true, :status => 500, :content_type => 'text/html'
-    end
-  end
-
-  def remove_user_from_team
-    puts "**********************************************"
-    puts "REMOVE_USER_FROM_TEAM HEHEHEHEHEHEHE"
-    puts "**********************************************"
-
-    t_member = TeamMember.where(:user_id => params[:user_id], :team_id => params[:team_id]).first
-    if TeamMember.destroy(t_member.id)
-      render :nothing => true, :status => 200, :content_type => 'text/html'
-    else # em caso de erro enviar codigo de erro para o jquery
-      render :nothing => true, :status => 500, :content_type => 'text/html'
-    end
-  end
-
 
   private
   # Use callbacks to share common setup or constraints between actions.
   def set_team
-    if params[:name]
-      puts "INTRODUZIDO NOME PARA A EQUIPA!!!!"
-      @team = Team.where(name: params[:name]).first
-    else
-      puts "DESTA VEZ RECEBI UM IDENTIFICADOR!!!!"
-      # count = Team.count
-      exists = Team.exists?(params[:id].to_i)
-      puts exists
-      if exists
-        @team = Team.find(params[:id])
-      end
+    if Team.exists?(params[:id].to_i)
+      @team = Team.find(params[:id])
     end
   end
 
@@ -311,7 +247,6 @@ class TeamsController < ApplicationController
     end
     return_arr
   end
-
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def team_params

@@ -1,70 +1,91 @@
 class TeamMembersController < ApplicationController
   before_action :set_team_member, only: [:show, :edit, :update, :destroy]
-  load_and_authorize_resource
+  # load_and_authorize_resource
 
   # GET /team_members
   # GET /team_members.json
   def index
-    @team_members = TeamMember.all
+    # @team_members = TeamMember.al
+    redirect_to root_path
   end
 
   # GET /team_members/1
   # GET /team_members/1.json
   def show
+    redirect_to root_path
   end
 
   # GET /team_members/new
   def new
-    @team_member = TeamMember.new
+    # @team_member = TeamMember.new
+    redirect_to root_path
   end
 
   # GET /team_members/1/edit
   def edit
+    redirect_to root_path
   end
 
   # POST /team_members
   # POST /team_members.json
   def create
+    authorize! :create, TeamMember
+
     @team_member = TeamMember.new(team_member_params)
-    respond_to do |format|
-      if @team_member.save
-        format.html { redirect_to @team_member, notice: 'Team member was successfully created.' }
-        format.json { render :show, status: :created, location: @team_member }
-      else
-        format.html { render :new }
-        format.json { render json: @team_member.errors, status: :unprocessable_entity }
-      end
+    if @team_member.save
+      @recently_added_user = User.find(params[:team_member][:user_id].to_i)
+
+      puts @recently_added_user.inspect
+
+      # o utilizador que acabamos de introduzir nao é nem o lider nem o responsavel pela posição
+      render partial: 'teams/list_entry', locals: {user: @recently_added_user, is_leader: false,
+                                                   in_charge_of_location: false}
+    else # em caso de erro enviar codigo de erro para o jquery
+      render :nothing => true, :status => 500, :content_type => 'text/html'
     end
+
+  rescue CanCan::AccessDenied
+    redirect_to root_path, status: 403
   end
 
   # PATCH/PUT /team_members/1
   # PATCH/PUT /team_members/1.json
   def update
-    respond_to do |format|
-      if @team_member.update(team_member_params)
-        format.html { redirect_to @team_member, notice: 'Team member was successfully updated.' }
-        format.json { render :show, status: :ok, location: @team_member }
-      else
-        format.html { render :edit }
-        format.json { render json: @team_member.errors, status: :unprocessable_entity }
-      end
-    end
+    redirect_to teams_path
+
+    # authorize! :update, TeamMember
+    # respond_to do |format|
+    #   if @team_member.update(team_member_params)
+    #     format.html { redirect_to @team_member, notice: 'Team member was successfully updated.' }
+    #     format.json { render :show, status: :ok, location: @team_member }
+    #   else
+    #     format.html { render :edit }
+    #     format.json { render json: @team_member.errors, status: :unprocessable_entity }
+    #   end
+    # end
   end
 
   # DELETE /team_members/1
   # DELETE /team_members/1.json
   def destroy
-    @team_member.destroy
-    respond_to do |format|
-      format.html { redirect_to team_members_url, notice: 'Team member was successfully destroyed.' }
-      format.json { head :no_content }
+    authorize! :destroy, TeamMember
+
+    puts @team_member.inspect
+
+    if @team_member.destroy
+      render :nothing => true, :status => 200, :content_type => 'text/html'
+    else # em caso de erro enviar codigo de erro para o jquery
+      render :nothing => true, :status => 500, :content_type => 'text/html'
     end
+
+  rescue CanCan::AccessDenied
+    redirect_to root_path, status: 403
   end
 
   private
   # Use callbacks to share common setup or constraints between actions.
   def set_team_member
-    @team_member = TeamMember.find(params[:id])
+    @team_member = TeamMember.where(:user_id => params[:user_id], :team_id => params[:team_id]).first
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.

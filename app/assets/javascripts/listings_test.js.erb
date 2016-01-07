@@ -639,10 +639,13 @@ function addSingleUserToTeam(e) {
 
     $.ajax({
       type: "POST",
-      url: "/add_user_to_team",
+      url: "/team_members",
       data: {
-        user_id: selected_user_id,
-        team_id: gon.current_team_id
+        team_member: {
+          user_id: selected_user_id,
+          team_id: gon.current_team_id,
+          is_leader: false
+        }
       },
       success: function (result) {
         console.log(result);
@@ -674,11 +677,18 @@ function addSingleUserToTeam(e) {
         $('.collection li:last-child > a').on('click', openConfirmRemovalModal);
       },
       error: function (err) {
-        console.log("erro add_user_to_team");
-        noty({
-          text: 'Ocorreu um erro ao adicionar o utilizador à equipa!',
-          timeout: 3500, type: 'error', layout: 'bottomCenter'
-        });
+        if (err.status == 403) {
+          noty({
+            text: 'Não tem permissões para adicionar utilizadores à equipa.',
+            timeout: 3500, type: 'error', layout: 'bottomCenter'
+          });
+        }
+        else {
+          noty({
+            text: 'Ocorreu um erro ao adicionar o utilizador à equipa!',
+            timeout: 3500, type: 'error', layout: 'bottomCenter'
+          });
+        }
       }
     });
   }
@@ -692,8 +702,8 @@ function removeSingleUserFromTeam(entry_id_to_remove, user_id) {
   console.log(entry_id_to_remove);
 
   $.ajax({
-    type: "POST",
-    url: "/remove_user_from_team",
+    type: "DELETE",
+    url: "/team_members",
     data: {
       user_id: user_id,
       team_id: gon.current_team_id
@@ -724,11 +734,18 @@ function removeSingleUserFromTeam(entry_id_to_remove, user_id) {
       });
     },
     error: function (err) {
-      console.log("erro a remover o membro da equipa");
-      noty({
-        text: 'Ocorreu um erro ao remover o membro da equipa!',
-        timeout: 3500, type: 'error', layout: 'bottomCenter'
-      });
+      if (err.status == 403) {
+        noty({
+          text: 'Não tem permissões para remover membros da equipa.',
+          timeout: 3500, type: 'error', layout: 'bottomCenter'
+        });
+      }
+      else {
+        noty({
+          text: 'Ocorreu um erro ao remover o membro da equipa!',
+          timeout: 3500, type: 'error', layout: 'bottomCenter'
+        });
+      }
     }
   });
 }
