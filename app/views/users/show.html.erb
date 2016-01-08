@@ -1,7 +1,7 @@
 <%# encoding: utf-8 %>
 
 <% @show_search_stuff = false %>
-<% content_for :title, "Utilizador " + @user.id.to_s + " :: PROCIV Portugal" %>
+<% content_for :title, @user.full_name + " :: PROCIV Portugal" %>
 
 <% content_for :model_actions do %>
     <% if current_user.id == @user.id %>
@@ -39,15 +39,6 @@
           Membros
       <% end %>
     </li>
-<% end %>
-
-
-<% if flash[:notice] %>
-    <% if flash[:notice].to_s.eql? "edit_success" %>
-        <%= javascript_tag "displayFlashMessage('edit_success', 'user')" %>
-    <% elsif flash[:notice].to_s.eql? "edit_error" %>
-        <%= javascript_tag "displayFlashMessage('edit_error', 'user')" %>
-    <% end %>
 <% end %>
 
 

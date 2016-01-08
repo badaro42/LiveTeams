@@ -41,11 +41,11 @@ class TeamMembersController < ApplicationController
       render partial: 'teams/list_entry', locals: {user: @recently_added_user, is_leader: false,
                                                    in_charge_of_location: false}
     else # em caso de erro enviar codigo de erro para o jquery
-      render :nothing => true, :status => 500, :content_type => 'text/html'
+      render nothing: true, status: :internal_server_error, content_type: 'text/html'
     end
 
   rescue CanCan::AccessDenied
-    redirect_to root_path, status: 403
+    render nothing: true, status: :forbidden
   end
 
   # PATCH/PUT /team_members/1
@@ -70,16 +70,14 @@ class TeamMembersController < ApplicationController
   def destroy
     authorize! :destroy, TeamMember
 
-    puts @team_member.inspect
-
     if @team_member.destroy
-      render :nothing => true, :status => 200, :content_type => 'text/html'
+      render nothing: true, status: :ok, content_type: 'text/html'
     else # em caso de erro enviar codigo de erro para o jquery
-      render :nothing => true, :status => 500, :content_type => 'text/html'
+      render nothing: true, status: :internal_server_error, content_type: 'text/html'
     end
 
   rescue CanCan::AccessDenied
-    redirect_to root_path, status: 403
+    render nothing: true, status: :forbidden
   end
 
   private

@@ -88,11 +88,11 @@ class UsersController < ApplicationController
 
     respond_to do |format|
       if @user.update(account_update_params)
-        format.html { redirect_to @user, notice: 'edit_success' }
+        format.html { redirect_to @user, success: "O utilizador '" + @user.full_name + "' foi atualizado com sucesso!" }
         format.json { render :show, status: :ok, location: @user }
       else
         puts @user.errors.inspect
-        format.html { render :edit, notice: 'edit_error' }
+        format.html { render :edit, error: "Ocorreu um erro ao atualizar o utilizador!" }
         format.json { render json: @user.errors, status: :unprocessable_entity }
       end
     end

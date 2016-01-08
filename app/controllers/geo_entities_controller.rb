@@ -82,7 +82,7 @@ class GeoEntitiesController < ApplicationController
     end
 
   rescue CanCan::AccessDenied
-    redirect_to root_path, status: 403
+    render nothing: true, status: :forbidden
   end
 
   # PATCH/PUT /geo_entities/1
@@ -113,7 +113,7 @@ class GeoEntitiesController < ApplicationController
     end
 
   rescue CanCan::AccessDenied
-    redirect_to root_path, status: 403
+    render nothing: true, status: :forbidden
   end
 
 

@@ -47,7 +47,6 @@ class HomepageController < ApplicationController
     recently_deleted_geo_entity_versions = PaperTrail::Version.where('event = ? and created_at > ? and item_type = ?',
                                                                      'destroy', 21.seconds.ago, 'GeoEntity')
 
-
     # pomos a data de atualização a nil para no javascript sabermos que é para remover
     recently_deleted_team_versions.each do |team|
       temp = team.reify
@@ -64,10 +63,8 @@ class HomepageController < ApplicationController
     teams_to_parse = teams_to_parse | recently_deleted_team_array
     geo_entities_to_parse = geo_entities_to_parse | recently_deleted_geo_entity_array
 
-
     geo_entities_to_json = EncodeToJson::encode_geo_entities_to_json(geo_entities_to_parse)
     teams_to_json = EncodeToJson::encode_teams_to_json(teams_to_parse)
-
 
     begin
       if geo_entities_to_parse.size > 0 && teams_to_parse.size > 0

@@ -20,7 +20,6 @@ class TeamsController < ApplicationController
     render json: address.to_json
   end
 
-
   # GET /teams
   # GET /teams.json
   # no caso de o pedido ser ajax para popular a dropdown de equipas, vamos verificar as equipas
@@ -73,14 +72,22 @@ class TeamsController < ApplicationController
 
   # GET /teams/new
   def new
+    authorize! :create, Team
+
     @team = Team.new
     @users_in_team = @team.users
 
     set_users_for_multiple_select("new")
+
+  rescue CanCan::AccessDenied
+    flash[:error] = "Não tem permissão para criar equipas."
+    redirect_to teams_path
   end
 
   # GET /teams/1/edit
   def edit
+    authorize! :update, Team
+
     if @team.nil?
       flash[:error] = "A equipa que procura não existe!"
       redirect_to teams_url
@@ -93,15 +100,21 @@ class TeamsController < ApplicationController
         @users_in_team = @team.users # para as dropdowns de escolha de lider/responsavel localização
         set_users_for_multiple_select("new")
       else
-        flash[:error] = "Não tem permissões para realizar essa ação!"
-        redirect_to teams_url
+        flash[:error] = "Não tem permissão para editar equipas."
+        redirect_to @team
       end
     end
+
+  rescue CanCan::AccessDenied
+    flash[:error] = "Não tem permissão para editar equipas."
+    redirect_to @team
   end
 
   # POST /teams
   # POST /teams.json
   def create
+    authorize! :create, Team
+
     @team = Team.new(team_params)
 
     # utilizador responsavel pela localização
@@ -124,18 +137,24 @@ class TeamsController < ApplicationController
           end
         end
 
-        format.html { redirect_to @team, notice: 'create_success' }
+        format.html { redirect_to @team, success: "A equipa '" + @team.name + "' foi criada com sucesso!" }
         format.json { render :show, status: :created, location: @team }
       else
-        format.html { render :new }
+        format.html { render :new, error: "Ocorreu um erro ao criar uma nova equipa!" }
         format.json { render json: @team.errors, status: :unprocessable_entity }
       end
     end
+
+  rescue CanCan::AccessDenied
+    flash[:error] = "Não tem permissão para criar equipas."
+    redirect_to teams_path
   end
 
   # PATCH/PUT /teams/1
   # PATCH/PUT /teams/1.json
   def update
+    authorize! :update, Team
+
     respond_to do |format|
       # verificamos se o utilizador responsavel pela posição foi alterado
       # se sim, atualizamos a posição atual da equipa
@@ -162,18 +181,25 @@ class TeamsController < ApplicationController
           team_member.save
         end
 
-        format.html { redirect_to @team, notice: 'edit_success' }
+        format.html { redirect_to @team, success: "A equipa '" + @team.name + "' foi atualizada com sucesso!" }
         format.json { render :show, status: :ok, location: @team }
       else
-        format.html { render :edit }
+        format.html { render :edit, error: "Ocorreu um erro ao atualizar a equipa!" }
         format.json { render json: @team.errors, status: :unprocessable_entity }
       end
     end
+
+  rescue CanCan::AccessDenied
+    flash[:error] = "Não tem permissão para editar equipas."
+    redirect_to @team
   end
 
   # DELETE /teams/1
   # DELETE /teams/1.json
   def destroy
+    authorize! :destroy, Team
+
+    team_name = @team.name
     team_id = @team.id.to_s
     @team.destroy # elimina a equipa. se o delete for bem sucedido, removemos os ids da equipa das geo-entidades
 
@@ -181,12 +207,21 @@ class TeamsController < ApplicationController
       @team_geo_entities.each do |geo_entity|
         geo_entity.team_ids.delete(team_id)
       end
+
+      respond_to do |format|
+        format.html { redirect_to teams_url, success: "A equipa '" + team_name + "' foi removida com sucesso!" }
+        format.json { head :no_content }
+      end
+    else
+      respond_to do |format|
+        format.html { redirect_to teams_url, success: "Ocorreu um erro a remover a equipa!" }
+        format.json { head :no_content }
+      end
     end
 
-    respond_to do |format|
-      format.html { redirect_to teams_url, notice: 'Team was successfully destroyed.' }
-      format.json { head :no_content }
-    end
+  rescue CanCan::AccessDenied
+    flash[:error] = "Não tem permissão para eliminar equipas."
+    redirect_to @team
   end
 
 
