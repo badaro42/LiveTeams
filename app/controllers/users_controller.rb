@@ -70,6 +70,10 @@ class UsersController < ApplicationController
   end
 
   def edit
+    authorize! :update, User
+
+    #
+
     if params[:id] == nil
       @user = User.find(current_user.id)
     else
@@ -78,6 +82,10 @@ class UsersController < ApplicationController
 
       @user = User.find(params[:id])
     end
+
+  rescue CanCan::AccessDenied
+    flash[:error] = "Não tem permissão para editar utilizadores."
+    redirect_to @user
   end
 
   def update
