@@ -121,7 +121,7 @@ $(document).ready(function () {
       create_team_page = false;
 
       console.log("PÁGINA PARA EDITAR EQUIPA!!!");
-      $('#dropdown_all_users').on('change', multipleDropdownListener);
+      $('#dropdown_all_users').on('change', multipleDropdownOnChange);
       $('#select-none-btn').on('click', selectNoUsers);
       $('#select-all-btn').on('click', selectAllUsers);
       $('#select-undo-btn').on('click', setDefaultSelectedEntries);
@@ -187,7 +187,7 @@ $(document).ready(function () {
       // TODO: MAPA VAZIO
       console.log("PÁGINA PARA CRIAR NOVA EQUIPA!!!");
 
-      $('#dropdown_all_users').on('change', multipleDropdownListener);
+      $('#dropdown_all_users').on('change', multipleDropdownOnChange);
       $('#select-none-btn').on('click', selectNoUsers);
       $('#select-all-btn').on('click', selectAllUsers);
       $('#select-undo-btn').on('click', setDefaultSelectedEntries);
@@ -226,8 +226,8 @@ $(document).ready(function () {
       checkUsersWithoutTeam();
 
       // envia um pedido ao servidor para remover a equipa
-      $('#btn_remove_team').on('click', function(e) {
-        if(confirm("Tem a certeza que pretende remover a equipa?\nEsta ação é irreversível!"))
+      $('#btn_remove_team').on('click', function (e) {
+        if (confirm("Tem a certeza que pretende remover a equipa?\nEsta ação é irreversível!"))
           $('#btn_hidden_remove_team').click();
       });
 
@@ -807,14 +807,7 @@ function setDefaultSelectedEntries() {
   });
 
   // repoe tambem as entradas das dropdowns
-  multipleDropdownListener();
-
-  // repoe tambem as entradas seleccionadas nas dropdowns mas apenas na pagina de edição,
-  // uma vez que na pagina de criação nao há lider nem responsavel
-  if (curr_team_leader_id !== "" && curr_team_location_id !== "") {
-    $("#select_team_leader option[value=" + curr_team_leader_id + "]").prop('selected', 'true');
-    $("#select_team_position option[value=" + curr_team_location_id + "]").prop('selected', 'true');
-  }
+  multipleDropdownOnChange();
 }
 
 /**
@@ -824,7 +817,7 @@ function setDefaultSelectedEntries() {
  * Quando o utilizador escolhe reverter para o inicio, este metodo é tambem chamado
  * para manter a consistencia das dropdowns
  */
-function multipleDropdownListener() {
+function multipleDropdownOnChange() {
   var n_elem, parent, parent_label, i_value, i_text;
   var users_selected = $('#dropdown_all_users :selected'),
       select_leader = $('#select_team_leader'),
@@ -859,6 +852,13 @@ function multipleDropdownListener() {
       text: i_text
     }));
   });
+
+  // repoe tambem as entradas seleccionadas nas dropdowns mas apenas na pagina de edição,
+  // uma vez que na pagina de criação nao há lider nem responsavel
+  if (curr_team_leader_id !== "" && curr_team_location_id !== "") {
+    $("#select_team_leader option[value=" + curr_team_leader_id + "]").prop('selected', 'true');
+    $("#select_team_position option[value=" + curr_team_location_id + "]").prop('selected', 'true');
+  }
 }
 
 /**
@@ -867,7 +867,7 @@ function multipleDropdownListener() {
  */
 function selectAllUsers() {
   $('#dropdown_all_users option').prop('selected', true);
-  multipleDropdownListener();
+  multipleDropdownOnChange();
 }
 
 /**
@@ -876,5 +876,5 @@ function selectAllUsers() {
  */
 function selectNoUsers() {
   $('#dropdown_all_users option').prop('selected', false);
-  multipleDropdownListener();
+  multipleDropdownOnChange();
 }
