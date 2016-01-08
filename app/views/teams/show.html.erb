@@ -12,10 +12,17 @@
           <ul>
             <% if can? :destroy, Team %>
                 <li>
-                  <%= link_to @team, :data => {:position => 'left', :delay => '0', :tooltip => 'Eliminar equipa'},
-                              class: 'btn-floating green tooltipped', method: :delete do %>
+                  <!-- hack para remover a equipa. este botao esta escondido, quando o user carrega no botao
+                   visivel e na janela de confirmação carrega no OK, é despoletado um evento que clica neste
+                   botão, que envia o pedido para remover entao a equipa. -->
+                  <%= link_to @team, id: 'btn_hidden_remove_team', style: 'display: none', method: :delete do %>
                       <i class="material-icons">delete</i>
                   <% end %>
+
+                  <a id="btn_remove_team" data-position="left" data-delay="0" data-tooltip="Eliminar equipa"
+                     class="btn-floating green tooltipped">
+                    <i class="material-icons">delete</i>
+                  </a>
                 </li>
             <% end %>
             <% if can? :update, Team %>

@@ -529,26 +529,6 @@ function secondsTimeSpanToHMS(s) {
   return d + ":" + h + ":" + m + ":" + s;
 }
 
-// função para mostrar as notificações quando um utilizador ou equipa é atualizado
-function displayFlashMessage(param, resource) {
-  if (param === 'edit_success') {
-    if (resource === 'user')
-      noty({text: 'O utilizador foi atualizado com sucesso!', timeout: 3500, type: 'success', layout: 'bottomCenter'});
-    else if (resource === 'team')
-      noty({text: 'A equipa foi atualizada com sucesso!', timeout: 3500, type: 'success', layout: 'bottomCenter'});
-  }
-  else if (param === 'create_success') {
-    if (resource === 'team')
-      noty({text: 'A equipa foi criada com sucesso!', timeout: 3500, type: 'success', layout: 'bottomCenter'});
-  }
-  else if (param === 'edit_error') {
-    if (resource === 'user')
-      noty({text: 'Erro a atualizar o utilizador!', timeout: 3500, type: 'error', layout: 'bottomCenter'});
-    else if (resource === 'team')
-      noty({text: 'Erro a atualizar a equipa!', timeout: 3500, type: 'error', layout: 'bottomCenter'});
-  }
-}
-
 // inicializa as variaveis para o motor de pesquisa dos users ou teams
 function initSearchEngine(param) {
   noResultsDiv = $('.no-results');
