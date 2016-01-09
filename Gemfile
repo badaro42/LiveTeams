@@ -63,8 +63,9 @@ gem 'pry-rails'
 gem 'paper_trail', '~> 4.0.0'
 gem 'gon'
 
+# permissões, autorização, papeis e assim
 gem 'cancancan', '~> 1.10'
-
+gem 'rolify'
 
 # ----------------------------------------------
 

@@ -93,12 +93,15 @@
       </div>
 
       <!-- TODO: (TESTE) MUDAR ISTO PARA OUTRO SITIO!!! -->
-      <div class="divider divider-margin"></div>
-      <div style="font-weight: 300; margin-top: 3px;">
-        <%= link_to test_destroy_user_path(current_user), class: 'waves-effect waves-light btn red', method: :delete do %>
-            Eliminar conta
-        <% end %>
-      </div>
+      <% if can? :destroy, @user %>
+          <div class="divider divider-margin"></div>
+          <div style="font-weight: 300; margin-top: 3px;">
+            <%= link_to test_destroy_user_path(current_user), class: 'waves-effect waves-light btn red',
+                        method: :delete do %>
+                Eliminar conta
+            <% end %>
+          </div>
+      <% end %>
     </div>
   </div>
 

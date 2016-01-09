@@ -19,7 +19,7 @@ class Ability
       can :manage, Team
       can [:create, :read, :destroy], [GeoEntity, TeamMember]
       can [:read, :update, :destroy], User
-      # can [:read, :update, :destroy], User
+
     elsif user.is? User::GESTOR
       # pode alterar as equipas, os membros das mesmas e as geo-entidades
       # só nao pode remover utilizadores, apenas atualizar o perfil
@@ -30,7 +30,8 @@ class Ability
 
       can :manage, Team
       can [:create, :read, :destroy], [GeoEntity, TeamMember]
-      can [:read, :update], User
+      can :read, User
+      can [:update, :destroy], User, :id => user.id # apenas pode editar e remover o seu perfil
 
 
     elsif user.is? User::OPERACIONAL
@@ -39,12 +40,15 @@ class Ability
       # apenas pode aceder às equipas e aos seus membros, não pode alterar nada
       can :read, [Team, TeamMember]
       can [:create, :read], GeoEntity
-      can [:read, :update], User
+      can :read, User
+      can [:update, :destroy], User, :id => user.id
+
     elsif user.is? User::BASICO
       # o basico apenas pode ver a info, sem mudar nada
       # excepção feita para o seu perfil, que pode editar (apenas info básica e avatar)
       can :read, [Team, GeoEntity, TeamMember]
-      can [:read, :update], User
+      can :read, User
+      can [:update, :destroy], User, :id => user.id
     end
   end
 

@@ -69,11 +69,9 @@ class UsersController < ApplicationController
     end
   end
 
+  # obtemos primeiro o user pois há 2 endereços que são servidos por este metodo:
+  # /account/edit e /users/:id/edit
   def edit
-    authorize! :update, User
-
-    #
-
     if params[:id] == nil
       @user = User.find(current_user.id)
     else
@@ -83,8 +81,10 @@ class UsersController < ApplicationController
       @user = User.find(params[:id])
     end
 
+    authorize! :update, @user
+
   rescue CanCan::AccessDenied
-    flash[:error] = "Não tem permissão para editar utilizadores."
+    flash[:error] = "Não tem permissão para editar o perfil deste utilizador."
     redirect_to @user
   end
 
@@ -99,7 +99,6 @@ class UsersController < ApplicationController
         format.html { redirect_to @user, success: "O utilizador '" + @user.full_name + "' foi atualizado com sucesso!" }
         format.json { render :show, status: :ok, location: @user }
       else
-        puts @user.errors.inspect
         format.html { render :edit, error: "Ocorreu um erro ao atualizar o utilizador!" }
         format.json { render json: @user.errors, status: :unprocessable_entity }
       end
@@ -107,9 +106,25 @@ class UsersController < ApplicationController
   end
 
   def destroy
+    authorize! :destroy, @user
+
     if @user.destroy
       redirect_to root_path
     end
+
+    respond_to do |format|
+      if @user.destroy
+        format.html { redirect_to root_path, success: "A sua conta foi removida com sucesso. Até sempre :'(" }
+      else
+        format.html { render nothing: true, error: "Ocorreu um erro ao remover o utilizador!" }
+      end
+    end
+
+
+
+  rescue CanCan::AccessDenied
+    flash[:error] = "Não tem permissão para remover este utilizador."
+    redirect_to @user
   end
 
 
