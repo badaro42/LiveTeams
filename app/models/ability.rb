@@ -18,7 +18,7 @@ class Ability
       # excepto atualizar geo-entidades e membros e destruir utilizadores
       can :manage, Team
       can [:create, :read, :destroy], [GeoEntity, TeamMember]
-      can [:read, :update], User
+      can [:read, :update, :destroy], User
       # can [:read, :update, :destroy], User
     elsif user.is? User::GESTOR
       # pode alterar as equipas, os membros das mesmas e as geo-entidades

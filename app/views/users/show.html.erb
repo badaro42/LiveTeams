@@ -91,6 +91,14 @@
         <i class="material-icons tiny">phone</i>
         <span style="padding-left: 10px"><%= @user.phone_number %></span>
       </div>
+
+      <!-- TODO: (TESTE) MUDAR ISTO PARA OUTRO SITIO!!! -->
+      <div class="divider divider-margin"></div>
+      <div style="font-weight: 300; margin-top: 3px;">
+        <%= link_to test_destroy_user_path(current_user), class: 'waves-effect waves-light btn red', method: :delete do %>
+            Eliminar conta
+        <% end %>
+      </div>
     </div>
   </div>
 

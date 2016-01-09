@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
   # before_action :set_user, only: [:show]
-  before_action :set_user, only: [:show, :edit, :update]
+  before_action :set_user, only: [:show, :edit, :update, :destroy]
   before_filter :authenticate_user!
   # load_and_authorize_resource
 
@@ -103,6 +103,12 @@ class UsersController < ApplicationController
         format.html { render :edit, error: "Ocorreu um erro ao atualizar o utilizador!" }
         format.json { render json: @user.errors, status: :unprocessable_entity }
       end
+    end
+  end
+
+  def destroy
+    if @user.destroy
+      redirect_to root_path
     end
   end
 
