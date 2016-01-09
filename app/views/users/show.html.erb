@@ -115,7 +115,7 @@
 <div class="row z-depth-1 white">
   <div class="profile-tabs col s12 m12 l12 z-depth-1 white" style="margin-top: 0;">
     <div>
-      <ul id="profile-tabs-list" class="tabs" style="overflow-x: auto;">
+      <ul id="profile-tabs-list" class="tabs" style="overflow-x: hidden;">
         <li class="tab col s6">
           <a class="stay-where-you-are active" href="#user-teams">
             Equipas (<%= @user_teams.count %>)
@@ -190,7 +190,7 @@
                     </div>
                     <div class="col l1 m1 s1 center-align">
                       <a data-position="left" onclick="goToGeoEntity(<%= entity.id %>)" data-delay="15"
-                         data-tooltip="Centrar mapa" class="tooltipped secondary-content" style="cursor: pointer;" >
+                         data-tooltip="Centrar mapa" class="tooltipped secondary-content" style="cursor: pointer;">
                         <i class="material-icons">my_location</i>
                       </a>
                     </div>

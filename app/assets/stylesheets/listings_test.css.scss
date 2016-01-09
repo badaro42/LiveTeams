@@ -191,6 +191,13 @@ label {
 
 /* ECRA GRANDE */
 @media only screen and (min-width: 993px) {
+
+  // override da largura do container nos ecras maiores!
+  .container {
+    width: 80% !important;
+  }
+
+
   #teams_info_div,
   #profile-user-info {
     margin-right: 3.3%;
