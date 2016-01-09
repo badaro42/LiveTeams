@@ -17,10 +17,7 @@
 </head>
 <body>
 
-
-<!-- TODO: COLOCAR ESTA NOTIFICAÇÃO NUMA TOSTA!!!!! -->
-<!--<p id="notice"><%#= notice %></p>-->
-
+<%= render 'shared/flash_messages' if !flash.empty? %>
 
 <%= yield %>
 

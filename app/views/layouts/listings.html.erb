@@ -21,31 +21,7 @@
 </head>
 <body class="grey lighten-3">
 
-<% if flash[:error] %>
-    <script>
-      noty({
-        text: '<%= flash[:error].to_s %>',
-        timeout: 3500,
-        type: 'error',
-        layout: 'bottomCenter'
-      });
-    </script>
-
-    <% flash.discard(:error) %>
-<% end %>
-
-<% if flash[:success] %>
-    <script>
-      noty({
-        text: '<%= flash[:success].to_s %>',
-        timeout: 3500,
-        type: 'success',
-        layout: 'bottomCenter'
-      });
-    </script>
-
-    <% flash.discard(:success) %>
-<% end %>
+<%= render 'shared/flash_messages' if !flash.empty? %>
 
 <div class="navbar-fixed">
   <nav class="indigo darken-4" role="navigation" style="box-shadow: none;">
