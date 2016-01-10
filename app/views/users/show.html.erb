@@ -97,6 +97,7 @@
           <div class="divider divider-margin"></div>
           <div style="font-weight: 300; margin-top: 3px;">
             <%= link_to test_destroy_user_path(current_user), class: 'waves-effect waves-light btn red',
+                        data: {confirm: "Tem a certeza que prentende eliminar a conta?\nEsta ação é irreversível!"},
                         method: :delete do %>
                 Eliminar conta
             <% end %>

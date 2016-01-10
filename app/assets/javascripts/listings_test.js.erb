@@ -225,12 +225,6 @@ $(document).ready(function () {
       console.log("PÁGINA PARA APRESENTAR INFO DA EQUIPA!!!");
       checkUsersWithoutTeam();
 
-      // envia um pedido ao servidor para remover a equipa
-      $('#btn_remove_team').on('click', function (e) {
-        if (confirm("Tem a certeza que pretende remover a equipa?\nEsta ação é irreversível!"))
-          $('#btn_hidden_remove_team').click();
-      });
-
       // LISTENER PARA QUANDO O ADMIN ADICIONA UM USER À EQUIPA
       $('#confirm_add_user').on('click', addSingleUserToTeam);
 
@@ -370,14 +364,11 @@ $(document).ready(function () {
 
       // anima a div qque contem as opções avançadas de filtragem
       $('#toggle_options_panel').on('click', function () {
-        if (advanced_options_open) {// painel esta aberto -> vamos fechar
-          //$('#advanced_options').animate({height: '71px', duration: 'slow', queue: false});
+        if (advanced_options_open) // painel esta aberto -> vamos fechar
           $('#options_div').slideUp();
-        }
-        else {
-//          $('#advanced_options').animate({height: '107px', duration: 'slow', queue: false});
+        else
           $('#options_div').slideDown();
-        }
+
         advanced_options_open = !advanced_options_open;
       });
     }
