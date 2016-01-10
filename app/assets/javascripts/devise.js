@@ -19,7 +19,8 @@ $(document).ready(function () {
     console.log(new_account_page);
 
     // 2 paginas de registo: /account/new ou /register
-    if (register_page || new_account_page) {
+    // no caso de haver algum erro no registo, o utilizador é redirecionado para "/account"
+    if (register_page || new_account_page || href === "/account") {
         console.log("PAGINA DE REGISTO DO UTILIZADOR!!!!");
 
         if (navigator.geolocation) {
