@@ -14,6 +14,22 @@ class RegistrationsController < Devise::RegistrationsController
 
   def create
     super
+    puts "*************************************************"
+    puts "*************************************************"
+    puts "*************************************************"
+    puts "******* TESTE CRIAÇÃO DE UTILIZADOR *************"
+    puts "******* TESTE CRIAÇÃO DE UTILIZADOR *************"
+    puts "******* TESTE CRIAÇÃO DE UTILIZADOR *************"
+    puts "******* TESTE CRIAÇÃO DE UTILIZADOR *************"
+    puts "*************************************************"
+    puts "*************************************************"
+    puts "*************************************************"
+
+    puts current_user.inspect
+
+    # atribuimos o primeiro papel ao utilizador recem-criado
+    UserRole.create(user_id: current_user.id, role_id: Role.where(name: current_user.profile).first.id,
+                    expiration_date: 10.years.since)
   end
 
   def update

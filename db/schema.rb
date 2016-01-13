@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160104155632) do
+ActiveRecord::Schema.define(version: 20160113120115) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -30,6 +30,29 @@ ActiveRecord::Schema.define(version: 20160104155632) do
   end
 
   add_index "geo_entities", ["user_id"], name: "index_geo_entities_on_user_id", using: :btree
+
+  create_table "permissions", force: :cascade do |t|
+    t.string   "subject_class"
+    t.string   "subject_action"
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
+  end
+
+  create_table "role_permissions", force: :cascade do |t|
+    t.integer  "role_id"
+    t.integer  "permission_id"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+  end
+
+  add_index "role_permissions", ["permission_id"], name: "index_role_permissions_on_permission_id", using: :btree
+  add_index "role_permissions", ["role_id"], name: "index_role_permissions_on_role_id", using: :btree
+
+  create_table "roles", force: :cascade do |t|
+    t.string   "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "team_members", force: :cascade do |t|
     t.integer  "team_id"
@@ -53,6 +76,17 @@ ActiveRecord::Schema.define(version: 20160104155632) do
   end
 
   add_index "teams", ["location_user_id"], name: "index_teams_on_location_user_id", using: :btree
+
+  create_table "user_roles", force: :cascade do |t|
+    t.integer  "user_id"
+    t.integer  "role_id"
+    t.datetime "expiration_date"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+  end
+
+  add_index "user_roles", ["role_id"], name: "index_user_roles_on_role_id", using: :btree
+  add_index "user_roles", ["user_id"], name: "index_user_roles_on_user_id", using: :btree
 
   create_table "users", force: :cascade do |t|
     t.string    "email",                                                                           default: "", null: false
@@ -93,7 +127,11 @@ ActiveRecord::Schema.define(version: 20160104155632) do
   add_index "versions", ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id", using: :btree
 
   add_foreign_key "geo_entities", "users"
+  add_foreign_key "role_permissions", "permissions"
+  add_foreign_key "role_permissions", "roles"
   add_foreign_key "team_members", "teams"
   add_foreign_key "team_members", "users"
   add_foreign_key "teams", "users", column: "location_user_id"
+  add_foreign_key "user_roles", "roles"
+  add_foreign_key "user_roles", "users"
 end

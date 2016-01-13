@@ -94,6 +94,11 @@ class UsersController < ApplicationController
       params[:user].delete(:password_confirmation)
     end
 
+    # apenas alteramos o perfil do user na BD caso o utilizador o tenha alterado!
+    if params[:user][:profile] != @user.profile
+      update_user_role(params[:user][:profile])
+    end
+
     respond_to do |format|
       if @user.update(account_update_params)
         format.html { redirect_to @user, success: "O utilizador '" + @user.full_name + "' foi atualizado com sucesso!" }
@@ -108,10 +113,6 @@ class UsersController < ApplicationController
   def destroy
     authorize! :destroy, @user
 
-    if @user.destroy
-      redirect_to root_path
-    end
-
     respond_to do |format|
       if @user.destroy
         format.html { redirect_to root_path, success: "A sua conta foi removida com sucesso. Até sempre :'(" }
@@ -119,8 +120,6 @@ class UsersController < ApplicationController
         format.html { render nothing: true, error: "Ocorreu um erro ao remover o utilizador!" }
       end
     end
-
-
 
   rescue CanCan::AccessDenied
     flash[:error] = "Não tem permissão para remover este utilizador."
@@ -134,6 +133,14 @@ class UsersController < ApplicationController
     if User.exists?(params[:id].to_i)
       @user = User.find(params[:id])
     end
+  end
+
+  # recebe como parametro o novo perfil do utilizador
+  # faz uma query à BD para obter o papel atual do utilizador, altera-o e volta a gravar o tuplo
+  def update_user_role(new_role)
+    curr_profile = UserRole.where(user_id: @user.id, role_id: Role.where(name: @user.profile).first.id).first
+    curr_profile.role_id = Role.where(name: new_role).first.id
+    curr_profile.save
   end
 
   def account_update_params

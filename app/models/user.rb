@@ -1,5 +1,5 @@
 class User < ActiveRecord::Base
-  BASICO = "Basico"
+  BASICO = "Básico"
   OPERACIONAL = "Operacional"
   GESTOR = "Gestor"
   ADMINISTRADOR = "Administrador"
@@ -33,6 +33,13 @@ class User < ActiveRecord::Base
   has_many :geo_entities
   has_many :team_members
   has_many :teams, through: :team_members
+
+  # verifica a data limite aquando da chamada 'user.roles'
+  # ou seja, apenas apresenta os papéis do utilizador que ainda nao tenham expirado
+  has_many :user_roles, -> { where "expiration_date > ?", Time.current }
+  has_many :roles, through: :user_roles
+  has_many :permissions, through: :roles
+
 
   # concatena o primeiro com o ultimo para as labels e afins
   def full_name
