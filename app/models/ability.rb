@@ -13,14 +13,14 @@ class Ability
     # :manange - todas as ações disponíveis sobre o objeto
 
     # Define User abilities
-    if user.is? User::ADMINISTRADOR
+    if user.is? Role::ADMINISTRADOR
       # este gajo faz tudo
       # excepto atualizar geo-entidades e membros e destruir utilizadores
       can :manage, Team
       can [:create, :read, :destroy], [GeoEntity, TeamMember]
       can [:read, :update, :destroy], User
 
-    elsif user.is? User::GESTOR
+    elsif user.is? Role::GESTOR
       # pode alterar as equipas, os membros das mesmas e as geo-entidades
       # só nao pode remover utilizadores, apenas atualizar o perfil
       # can :manage, Team
@@ -34,7 +34,7 @@ class Ability
       can [:update, :destroy], User, :id => user.id # apenas pode editar e remover o seu perfil
 
 
-    elsif user.is? User::OPERACIONAL
+    elsif user.is? Role::OPERACIONAL
       # pode criar novas geo-entidades, mas não as pode remover
       # pode atualizar o seu perfil, excepto alterar o nivel na hierarquia
       # apenas pode aceder às equipas e aos seus membros, não pode alterar nada
@@ -43,7 +43,7 @@ class Ability
       can :read, User
       can [:update, :destroy], User, :id => user.id
 
-    elsif user.is? User::BASICO
+    elsif user.is? Role::BASICO
       # o basico apenas pode ver a info, sem mudar nada
       # excepção feita para o seu perfil, que pode editar (apenas info básica e avatar)
       can :read, [Team, GeoEntity, TeamMember]

@@ -1,10 +1,5 @@
 class User < ActiveRecord::Base
-  BASICO = "Básico"
-  OPERACIONAL = "Operacional"
-  GESTOR = "Gestor"
-  ADMINISTRADOR = "Administrador"
-
-  PROFILES = [BASICO, OPERACIONAL, GESTOR, ADMINISTRADOR]
+  BASIC_PROFILES = [Role::BASICO, Role::OPERACIONAL, Role::GESTOR, Role::ADMINISTRADOR]
 
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
@@ -28,7 +23,7 @@ class User < ActiveRecord::Base
   validates :profile, presence: true
   validates :email, presence: true, uniqueness: true
 
-  validates_inclusion_of :profile, :in => PROFILES
+  validates_inclusion_of :profile, :in => BASIC_PROFILES
 
   has_many :geo_entities
   has_many :team_members
@@ -38,6 +33,7 @@ class User < ActiveRecord::Base
   # ou seja, apenas apresenta os papéis do utilizador que ainda nao tenham expirado
   has_many :user_roles, -> { where "expiration_date > ?", Time.current }
   has_many :roles, through: :user_roles
+
   has_many :permissions, through: :roles
 
 

@@ -51,7 +51,7 @@
         </div>
 
         <!-- apenas os admins e os gestores podem alterar o seu proprio perfil -->
-        <% if current_user.profile == User::ADMINISTRADOR || current_user.profile == User::GESTOR %>
+        <% if current_user.profile == Role::ADMINISTRADOR || current_user.profile == Role::GESTOR %>
             <div id="profile" class="scrollspy col l12 s12" style="margin-top: 20px; padding: 0;">
               <div class="section">
                 <h5 style="margin-left: 10px; display: inline;">Alterar perfil do utilizador</h5>
@@ -102,7 +102,7 @@
         <div class="pushpin">
           <ul id="user-edit-pushpin" class="table-of-contents">
             <li><a href="#basic-info">Dados básicos</a></li>
-            <% if current_user.profile == User::ADMINISTRADOR || current_user.profile == User::GESTOR %>
+            <% if current_user.profile == Role::ADMINISTRADOR || current_user.profile == Role::GESTOR %>
                 <li><a href="#profile">Alterar papel</a></li>
             <% end %>
             <li><a href="#optional">Foto de perfil</a></li>

@@ -9,111 +9,108 @@
 team_names = ['PSP Feijo', 'Proteccao Civil Almada', 'Bombeiros Cacilhas', 'Grupo de populares', 'PSP Laranjeiro',
               'Fuzileiros', 'Marinha', 'Forca Aerea', 'Administradores', 'Policia Maritima']
 
-subject_classes = ["user", "team", "team_member", "geo_entity"]
-subject_actions = ["create", "read", "update", "destroy"]
-
 # USER first_name:string last_name:string email:string password:string avatar:imagem
 puts 'Adding 20 Users'
 
 # id 1
 User.create(first_name: 'Admin', last_name: 'Sistema', email: 'admin@mail.com', password: 'adminadmin',
             avatar: File.open(Rails.root + "app/assets/images/profile_pic_male_1.jpg"), password_confirmation: 'adminadmin',
-            profile: User::ADMINISTRADOR, phone_number: '212111111',
+            profile: Role::ADMINISTRADOR, phone_number: '212111111',
             latlon: 'POINT(-9.160860925912857 38.62768769514654)') # Vale de Milha�os
 # id 2
 User.create(first_name: 'José', last_name: 'Sócrates', email: 'jose_socrates@mail.com', password: 'qweqweqwe',
             avatar: File.open(Rails.root + "app/assets/images/profile_pic_male_2.jpg"), password_confirmation: 'qweqweqwe',
-            profile: User::GESTOR, phone_number: '212111112',
+            profile: Role::GESTOR, phone_number: '212111112',
             latlon: 'POINT(-9.203015863895416 38.661109791229485)') # FCT-UNL DI
 # id 3
 User.create(first_name: 'Joana', last_name: 'Marques', email: 'joana_marques@mail.com', password: 'qweqweqwe',
             avatar: File.open(Rails.root + "app/assets/images/profile_pic_female_1.jpg"), password_confirmation: 'qweqweqwe',
-            profile: User::GESTOR, phone_number: '212111113',
+            profile: Role::GESTOR, phone_number: '212111113',
             latlon: 'POINT(-9.147389531135559 38.6874694378102)') # Metro Cacilhas
 # id 4
 User.create(first_name: 'Renato', last_name: 'Alexandre', email: 'renato_alexandre@mail.com', password: 'qweqweqwe',
             avatar: File.open(Rails.root + "app/assets/images/profile_pic_male_1.jpg"), password_confirmation: 'qweqweqwe',
-            profile: User::OPERACIONAL, phone_number: '212111114',
+            profile: Role::OPERACIONAL, phone_number: '212111114',
             latlon: 'POINT(-9.160088449716568 38.65548397079349)') # Campos T�nis Feij�
 # id 5
 User.create(first_name: 'Filipa', last_name: 'Dias', email: 'filipa_dias@mail.com', password: 'qweqweqwe',
             avatar: File.open(Rails.root + "app/assets/images/profile_pic_female_4.jpg"), password_confirmation: 'qweqweqwe',
-            profile: User::OPERACIONAL, phone_number: '212111115',
+            profile: Role::OPERACIONAL, phone_number: '212111115',
             latlon: 'POINT(-9.23403024673462 38.64389162826271)') # Costa da Caparica
 # id 6
 User.create(first_name: 'Miguel', last_name: 'Alberto', email: 'miguel_alberto@mail.com', password: 'qweqweqwe',
             avatar: File.open(Rails.root + "app/assets/images/profile_pic_male_4.jpg"), password_confirmation: 'qweqweqwe',
-            profile: User::OPERACIONAL, phone_number: '212111116',
+            profile: Role::OPERACIONAL, phone_number: '212111116',
             latlon: 'POINT(-9.171277284622192 38.678508079563805)') # Cristo Rei
 # id 7
 User.create(first_name: 'Bruno', last_name: 'Aleixo', email: 'bruno_aleixo@mail.com', password: 'qweqweqwe',
             avatar: File.open(Rails.root + "app/assets/images/profile_pic_male_5.jpg"), password_confirmation: 'qweqweqwe',
-            profile: User::OPERACIONAL, phone_number: '212111117',
+            profile: Role::OPERACIONAL, phone_number: '212111117',
             latlon: 'POINT(-9.136432707309723 38.70748187656837)') # Pra�a do Com�rcio
 # id 8
 User.create(first_name: 'Antónia', last_name: 'Coelho', email: 'antonia_coelho@mail.com', password: 'qweqweqwe',
             avatar: File.open(Rails.root + "app/assets/images/profile_pic_female_2.jpg"), password_confirmation: 'qweqweqwe',
-            profile: User::GESTOR, phone_number: '212111118',
+            profile: Role::GESTOR, phone_number: '212111118',
             latlon: 'POINT(-9.094029664993286 38.76843921624117)') # Pavilh�o Atl�ntico
 # id 9
 User.create(first_name: 'Rafael', last_name: 'Bizarra', email: 'rafael_bizarra@mail.com', password: 'qweqweqwe',
             avatar: File.open(Rails.root + "app/assets/images/profile_pic_male_2.jpg"), password_confirmation: 'qweqweqwe',
-            profile: User::ADMINISTRADOR, phone_number: '212111119',
+            profile: Role::ADMINISTRADOR, phone_number: '212111119',
             latlon: 'POINT(-9.213436245918274 38.42022552818708)') # Cabo Espichel
 # id 10
 User.create(first_name: 'Roberta', last_name: 'Frangueira', email: 'roberta_frangueira@mail.com', password: 'qweqweqwe',
             avatar: File.open(Rails.root + "app/assets/images/profile_pic_female_3.jpg"), password_confirmation: 'qweqweqwe',
-            profile: User::OPERACIONAL, phone_number: '212111120',
+            profile: Role::OPERACIONAL, phone_number: '212111120',
             latlon: 'POINT(-8.903088569641113 38.49027879470561)') # Pen�nsula de Tr�ia
 # id 11
 User.create(first_name: 'Maria', last_name: 'Alves', email: 'maria_alves@mail.com', password: 'qweqweqwe',
             avatar: File.open(Rails.root + "app/assets/images/profile_pic_female_5.jpg"), password_confirmation: 'qweqweqwe',
-            profile: User::GESTOR, phone_number: '212111121',
+            profile: Role::GESTOR, phone_number: '212111121',
             latlon: 'POINT(-9.22276496887207 38.6275996886131)')
 # id 12
 User.create(first_name: 'Álvaro', last_name: 'Branco', email: 'alvaro_branco@mail.com', password: 'qweqweqwe',
             avatar: File.open(Rails.root + "app/assets/images/profile_pic_male_3.jpg"), password_confirmation: 'qweqweqwe',
-            profile: User::GESTOR, phone_number: '212111122',
+            profile: Role::GESTOR, phone_number: '212111122',
             latlon: 'POINT(-9.081315994262695 38.626258623311166)')
 # id 13
 User.create(first_name: 'Patrícia', last_name: 'Silva', email: 'patricia_silva@mail.com', password: 'qweqweqwe',
             avatar: File.open(Rails.root + "app/assets/images/profile_pic_female_3.jpg"), password_confirmation: 'qweqweqwe',
-            profile: User::GESTOR, phone_number: '212111123',
+            profile: Role::GESTOR, phone_number: '212111123',
             latlon: 'POINT(-9.095392227172852 38.5937971957727)')
 # id 14
 User.create(first_name: 'Valter', last_name: 'Costa', email: 'valter_costa@mail.com', password: 'qweqweqwe',
             avatar: File.open(Rails.root + "app/assets/images/profile_pic_male_5.jpg"), password_confirmation: 'qweqweqwe',
-            profile: User::BASICO, phone_number: '212111124',
+            profile: Role::BASICO, phone_number: '212111124',
             latlon: 'POINT(-9.323358535766602 38.680417696714684)')
 # id 15
 User.create(first_name: 'Diogo', last_name: 'Fonseca', email: 'diogo_fonseca@mail.com', password: 'qweqweqwe',
             avatar: File.open(Rails.root + "app/assets/images/profile_pic_male_1.jpg"), password_confirmation: 'qweqweqwe',
-            profile: User::ADMINISTRADOR, phone_number: '212111125',
+            profile: Role::ADMINISTRADOR, phone_number: '212111125',
             latlon: 'POINT(-9.20628547668457 38.69756846453178)')
 # id 16
 User.create(first_name: 'Rita', last_name: 'Nobre', email: 'rita_nobre@mail.com', password: 'qweqweqwe',
             avatar: File.open(Rails.root + "app/assets/images/profile_pic_female_1.jpg"), password_confirmation: 'qweqweqwe',
-            profile: User::BASICO, phone_number: '212111126',
+            profile: Role::BASICO, phone_number: '212111126',
             latlon: 'POINT(-9.420175552368164 38.69408504756833)')
 # id 17
 User.create(first_name: 'António', last_name: 'Esteves', email: 'antonio_esteves@mail.com', password: 'qweqweqwe',
             avatar: File.open(Rails.root + "app/assets/images/profile_pic_male_4.jpg"), password_confirmation: 'qweqweqwe',
-            profile: User::GESTOR, phone_number: '212111127',
+            profile: Role::GESTOR, phone_number: '212111127',
             latlon: 'POINT(-9.381723403930664 38.69676461413586)')
 # id 18
 User.create(first_name: 'Filipe', last_name: 'Jesus', email: 'filipe_jesus@mail.com', password: 'qweqweqwe',
             avatar: File.open(Rails.root + "app/assets/images/profile_pic_male_2.jpg"), password_confirmation: 'qweqweqwe',
-            profile: User::OPERACIONAL, phone_number: '212111128',
+            profile: Role::OPERACIONAL, phone_number: '212111128',
             latlon: 'POINT(-9.298982620239258 38.659777730712534)')
 # id 19
 User.create(first_name: 'Ana', last_name: 'Henrique', email: 'ana_henrique@mail.com', password: 'qweqweqwe',
             avatar: File.open(Rails.root + "app/assets/images/profile_pic_female_4.jpg"), password_confirmation: 'qweqweqwe',
-            profile: User::GESTOR, phone_number: '212111129',
+            profile: Role::GESTOR, phone_number: '212111129',
             latlon: 'POINT(-9.257440567016602 38.662458581979436)')
 # id 20
 User.create(first_name: 'Inês', last_name: 'Rodrigues', email: 'ines_rodrigues@mail.com', password: 'qweqweqwe',
             avatar: File.open(Rails.root + "app/assets/images/profile_pic_female_2.jpg"), password_confirmation: 'qweqweqwe',
-            profile: User::OPERACIONAL, phone_number: '212111130',
+            profile: Role::OPERACIONAL, phone_number: '212111130',
             latlon: 'POINT(-9.105348587036133 38.666747735267805)')
 
 
@@ -188,33 +185,33 @@ GeoEntity.create(name: "Base Naval de Lisboa - Arsenal do Alfeite", user_id: 3, 
 
 # PERMISSION subject_class:string subject_action:string
 puts 'Adding Permissions'
-Permission.create(subject_class: subject_classes[0], subject_action: subject_actions[0]) #1: user create
-Permission.create(subject_class: subject_classes[0], subject_action: subject_actions[1]) #2: user read
-Permission.create(subject_class: subject_classes[0], subject_action: subject_actions[2]) #3: user update
-Permission.create(subject_class: subject_classes[0], subject_action: subject_actions[3]) #4: user delete
+Permission.create(subject_class: Permission::CLASS_USER, subject_action: Permission::ACTION_CREATE) #1: user create
+Permission.create(subject_class: Permission::CLASS_USER, subject_action: Permission::ACTION_READ) #2: user read
+Permission.create(subject_class: Permission::CLASS_USER, subject_action: Permission::ACTION_UPDATE) #3: user update
+Permission.create(subject_class: Permission::CLASS_USER, subject_action: Permission::ACTION_DESTROY) #4: user delete
 
-Permission.create(subject_class: subject_classes[1], subject_action: subject_actions[0]) #5: team create
-Permission.create(subject_class: subject_classes[1], subject_action: subject_actions[1]) #6: team read
-Permission.create(subject_class: subject_classes[1], subject_action: subject_actions[2]) #7: team update
-Permission.create(subject_class: subject_classes[1], subject_action: subject_actions[3]) #8: team destroy
+Permission.create(subject_class: Permission::CLASS_TEAM, subject_action: Permission::ACTION_CREATE) #5: team create
+Permission.create(subject_class: Permission::CLASS_TEAM, subject_action: Permission::ACTION_READ) #6: team read
+Permission.create(subject_class: Permission::CLASS_TEAM, subject_action: Permission::ACTION_UPDATE) #7: team update
+Permission.create(subject_class: Permission::CLASS_TEAM, subject_action: Permission::ACTION_DESTROY) #8: team destroy
 
-Permission.create(subject_class: subject_classes[2], subject_action: subject_actions[0]) #9: team_member create
-Permission.create(subject_class: subject_classes[2], subject_action: subject_actions[1]) #10: team_member read
-Permission.create(subject_class: subject_classes[2], subject_action: subject_actions[2]) #11: team_member update
-Permission.create(subject_class: subject_classes[2], subject_action: subject_actions[3]) #12: team_member destroy
+Permission.create(subject_class: Permission::CLASS_TEAM_MEMBER, subject_action: Permission::ACTION_CREATE) #9: team_member create
+Permission.create(subject_class: Permission::CLASS_TEAM_MEMBER, subject_action: Permission::ACTION_READ) #10: team_member read
+Permission.create(subject_class: Permission::CLASS_TEAM_MEMBER, subject_action: Permission::ACTION_UPDATE) #11: team_member update
+Permission.create(subject_class: Permission::CLASS_TEAM_MEMBER, subject_action: Permission::ACTION_DESTROY) #12: team_member destroy
 
-Permission.create(subject_class: subject_classes[3], subject_action: subject_actions[0]) #13: geo_entity create
-Permission.create(subject_class: subject_classes[3], subject_action: subject_actions[1]) #14: geo_entity read
-Permission.create(subject_class: subject_classes[3], subject_action: subject_actions[2]) #15: geo_entity update
-Permission.create(subject_class: subject_classes[3], subject_action: subject_actions[3]) #16: geo_entity destroy
+Permission.create(subject_class: Permission::CLASS_GEO_ENTITY, subject_action: Permission::ACTION_CREATE) #13: geo_entity create
+Permission.create(subject_class: Permission::CLASS_GEO_ENTITY, subject_action: Permission::ACTION_READ) #14: geo_entity read
+Permission.create(subject_class: Permission::CLASS_GEO_ENTITY, subject_action: Permission::ACTION_UPDATE) #15: geo_entity update
+Permission.create(subject_class: Permission::CLASS_GEO_ENTITY, subject_action: Permission::ACTION_DESTROY) #16: geo_entity destroy
 
 # ROLE name:string permission_ids:array de strings
 puts 'Adding Roles'
 # TODO: PASSAR ESTES PAPEIS PARA O MODELO 'ROLE', TAL COMO ESTÃO OS OUTROS PAPEIS
-Role.create(name: User::ADMINISTRADOR)
-Role.create(name: User::GESTOR)
-Role.create(name: User::OPERACIONAL)
-Role.create(name: User::BASICO)
+Role.create(name: Role::ADMINISTRADOR)
+Role.create(name: Role::GESTOR)
+Role.create(name: Role::OPERACIONAL)
+Role.create(name: Role::BASICO)
 
 Role.create(name: Role::REMOVE_GEO_ENTITIES)
 Role.create(name: Role::REMOVE_USERS)

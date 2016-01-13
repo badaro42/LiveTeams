@@ -27,11 +27,11 @@ class TeamsController < ApplicationController
   def index
     # dropdown das equipas no mapa
     if params[:origin] === "dropdown_teams"
-      if current_user.profile === User::ADMINISTRADOR || current_user.profile === User::GESTOR
+      if current_user.profile === Role::ADMINISTRADOR || current_user.profile === Role::GESTOR
         @teams = Team.all.order(id: :asc)
         # elsif current_user.profile === User::OPERACIONAL
         # TODO: APENAS PARA TESTES!!!! remover a condição abaixo e colocar a que esta comentada
-      elsif current_user.profile === User::OPERACIONAL || current_user.profile === User::BASICO
+      elsif current_user.profile === Role::OPERACIONAL || current_user.profile === Role::BASICO
         tm = TeamMember.where(user_id: current_user.id).map(&:team_id).flatten
         @teams = Team.find(tm)
       end
@@ -93,7 +93,7 @@ class TeamsController < ApplicationController
       redirect_to teams_url
     else
       @team_leader = TeamMember.find_by(team_id: @team.id, is_leader: true)
-      if @team_leader.user_id == current_user.id || current_user.profile == User::ADMINISTRADOR
+      if @team_leader.user_id == current_user.id || current_user.profile == Role::ADMINISTRADOR
         gon.current_team_id = @team.id
         gon.users_in_team = set_users_in_team
 
@@ -265,9 +265,9 @@ class TeamsController < ApplicationController
       users_arr = User.where.not(id: members_ids).order(first_name: :asc, last_name: :asc)
     end
 
-    values_for_select = get_users_by_profile(users_arr, values_for_select, 0, User::ADMINISTRADOR)
-    values_for_select = get_users_by_profile(users_arr, values_for_select, 1, User::GESTOR)
-    values_for_select = get_users_by_profile(users_arr, values_for_select, 2, User::OPERACIONAL)
+    values_for_select = get_users_by_profile(users_arr, values_for_select, 0, Role::ADMINISTRADOR)
+    values_for_select = get_users_by_profile(users_arr, values_for_select, 1, Role::GESTOR)
+    values_for_select = get_users_by_profile(users_arr, values_for_select, 2, Role::OPERACIONAL)
 
     @users_for_select = values_for_select
   end

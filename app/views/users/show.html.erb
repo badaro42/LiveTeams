@@ -12,7 +12,7 @@
               <i class="large material-icons">mode_edit</i>
           <% end %>
         </div>
-    <% elsif current_user.profile == User::ADMINISTRADOR %>
+    <% elsif current_user.profile == Role::ADMINISTRADOR %>
         <div class="fixed-action-btn" style="bottom: 25px; right: 25px;">
           <%= link_to edit_user_path(@user), :data => {:position => 'left', :delay => '0',
                                                        :tooltip => 'Editar utilizador'},

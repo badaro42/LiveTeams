@@ -9,7 +9,7 @@ class GeoEntitiesController < ApplicationController
     geo_entities_to_json = ""
 
     # caso o utilizador atual seja admin ou gestor, apresenta todas as entidades
-    if current_user.profile === User::ADMINISTRADOR || current_user.profile === User::GESTOR
+    if current_user.profile === Role::ADMINISTRADOR || current_user.profile === Role::GESTOR
       geo_entities_to_json = EncodeToJson::encode_geo_entities_to_json(GeoEntity.all)
     else
       # para os restantes perfis, apenas mostra as entidades dentro do raio de 500m,
