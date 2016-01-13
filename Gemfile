@@ -65,7 +65,7 @@ gem 'gon'
 
 # permissões, autorização, papeis e assim
 gem 'cancancan', '~> 1.10'
-gem 'rolify'
+# gem 'rolify'
 
 # ----------------------------------------------
 
