@@ -1,6 +1,5 @@
 class TeamMembersController < ApplicationController
   before_action :set_team_member, only: [:show, :edit, :update, :destroy]
-  # load_and_authorize_resource
 
   # GET /team_members
   # GET /team_members.json
@@ -29,7 +28,7 @@ class TeamMembersController < ApplicationController
   # POST /team_members
   # POST /team_members.json
   def create
-    authorize! :create, TeamMember
+    custom_authorize!(Permission::CLASS_TEAM_MEMBER, Permission::ACTION_CREATE)
 
     @team_member = TeamMember.new(team_member_params)
     if @team_member.save
@@ -44,7 +43,7 @@ class TeamMembersController < ApplicationController
       render nothing: true, status: :internal_server_error, content_type: 'text/html'
     end
 
-  rescue CanCan::AccessDenied
+  rescue AccessDenied
     render nothing: true, status: :forbidden
   end
 
@@ -68,7 +67,7 @@ class TeamMembersController < ApplicationController
   # DELETE /team_members/1
   # DELETE /team_members/1.json
   def destroy
-    authorize! :destroy, TeamMember
+    custom_authorize!(Permission::CLASS_TEAM_MEMBER, Permission::ACTION_DESTROY)
 
     if @team_member.destroy
       render nothing: true, status: :ok, content_type: 'text/html'
@@ -76,7 +75,7 @@ class TeamMembersController < ApplicationController
       render nothing: true, status: :internal_server_error, content_type: 'text/html'
     end
 
-  rescue CanCan::AccessDenied
+  rescue AccessDenied
     render nothing: true, status: :forbidden
   end
 

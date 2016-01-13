@@ -2,8 +2,6 @@ class UsersController < ApplicationController
   # before_action :set_user, only: [:show]
   before_action :set_user, only: [:show, :edit, :update, :destroy]
   before_filter :authenticate_user!
-  # load_and_authorize_resource
-
   layout "listings"
 
   def update_location
@@ -49,10 +47,18 @@ class UsersController < ApplicationController
   end
 
   def index
+    custom_authorize!(Permission::CLASS_USER, Permission::ACTION_READ)
+
     @users = User.all.order(first_name: :asc, last_name: :asc)
+
+  rescue AccessDenied
+    flash[:error] = "Não tem permissão para visualizar utilizadores."
+    redirect_to root_path
   end
 
   def show
+    custom_authorize!(Permission::CLASS_USER, Permission::ACTION_READ)
+
     if @user.nil?
       flash[:error] = "O utilizador que procura nao existe!"
       redirect_to users_url
@@ -67,6 +73,10 @@ class UsersController < ApplicationController
       @user_team_members = @user.team_members
       @user_entities = @user.geo_entities
     end
+
+  rescue AccessDenied
+    flash[:error] = "Não tem permissão para visualizar utilizadores."
+    redirect_to root_path
   end
 
   # obtemos primeiro o user pois há 2 endereços que são servidos por este metodo:
@@ -81,14 +91,17 @@ class UsersController < ApplicationController
       @user = User.find(params[:id])
     end
 
-    authorize! :update, @user
+    # authorize! :update, @user
+    custom_authorize!(Permission::CLASS_USER, Permission::ACTION_UPDATE)
 
-  rescue CanCan::AccessDenied
+  rescue AccessDenied
     flash[:error] = "Não tem permissão para editar o perfil deste utilizador."
     redirect_to @user
   end
 
   def update
+    custom_authorize!(Permission::CLASS_USER, Permission::ACTION_UPDATE)
+
     if params[:user][:password].blank? && params[:user][:password_confirmation].blank?
       params[:user].delete(:password)
       params[:user].delete(:password_confirmation)
@@ -108,10 +121,15 @@ class UsersController < ApplicationController
         format.json { render json: @user.errors, status: :unprocessable_entity }
       end
     end
+
+  rescue AccessDenied
+    flash[:error] = "Não tem permissão para editar o perfil deste utilizador."
+    redirect_to @user
   end
 
   def destroy
-    authorize! :destroy, @user
+    # authorize! :destroy, @user
+    custom_authorize!(Permission::CLASS_USER, Permission::ACTION_DESTROY)
 
     respond_to do |format|
       if @user.destroy
@@ -121,7 +139,7 @@ class UsersController < ApplicationController
       end
     end
 
-  rescue CanCan::AccessDenied
+  rescue AccessDenied
     flash[:error] = "Não tem permissão para remover este utilizador."
     redirect_to @user
   end

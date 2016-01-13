@@ -1,7 +1,6 @@
 class HomepageController < ApplicationController
   include ActionController::Live
   before_filter :authenticate_user!
-
   require 'encode_to_json'
 
   def geocode_location

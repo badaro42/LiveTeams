@@ -2,8 +2,6 @@ class TeamsController < ApplicationController
   before_action :set_team, only: [:show, :edit, :update, :destroy]
   before_action :set_team_geo_entities, only: [:show, :destroy]
   before_filter :authenticate_user!
-  # load_and_authorize_resource
-
   require 'encode_to_json'
   layout "listings"
 
@@ -25,6 +23,8 @@ class TeamsController < ApplicationController
   # no caso de o pedido ser ajax para popular a dropdown de equipas, vamos verificar as equipas
   # a que o utilizador pertence
   def index
+    custom_authorize!(Permission::CLASS_TEAM, Permission::ACTION_READ)
+
     # dropdown das equipas no mapa
     if params[:origin] === "dropdown_teams"
       if current_user.profile === Role::ADMINISTRADOR || current_user.profile === Role::GESTOR
@@ -38,11 +38,17 @@ class TeamsController < ApplicationController
     else
       @teams = Team.all.order(id: :asc)
     end
+
+  rescue AccessDenied
+    flash[:error] = "Não tem permissão para visualizar equipas."
+    redirect_to root_path
   end
 
   # GET /teams/1
   # GET /teams/1.json
   def show
+    custom_authorize!(Permission::CLASS_TEAM, Permission::ACTION_READ)
+
     if @team.nil?
       puts "equipa nao existe !!!!!!!!!!!!!!!!!!!!!!!!"
       flash[:error] = "A equipa que procura nao existe!"
@@ -68,6 +74,10 @@ class TeamsController < ApplicationController
       # utilizador responsavel por atualizar a posição da equipa
       @location_user = User.find(@team.location_user_id)
     end
+
+  rescue AccessDenied
+    flash[:error] = "Não tem permissão para visualizar equipas."
+    redirect_to root_path
   end
 
   # GET /teams/new
@@ -105,7 +115,7 @@ class TeamsController < ApplicationController
       end
     end
 
-  rescue CanCan::AccessDenied
+  rescue AccessDenied
     flash[:error] = "Não tem permissão para editar equipas."
     redirect_to @team
   end
@@ -145,7 +155,7 @@ class TeamsController < ApplicationController
       end
     end
 
-  rescue CanCan::AccessDenied
+  rescue AccessDenied
     flash[:error] = "Não tem permissão para criar equipas."
     redirect_to teams_path
   end
@@ -189,7 +199,7 @@ class TeamsController < ApplicationController
       end
     end
 
-  rescue CanCan::AccessDenied
+  rescue AccessDenied
     flash[:error] = "Não tem permissão para editar equipas."
     redirect_to @team
   end
@@ -219,7 +229,7 @@ class TeamsController < ApplicationController
       end
     end
 
-  rescue CanCan::AccessDenied
+  rescue AccessDenied
     flash[:error] = "Não tem permissão para eliminar equipas."
     redirect_to @team
   end

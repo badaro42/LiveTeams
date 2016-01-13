@@ -1,8 +1,6 @@
 class GeoEntitiesController < ApplicationController
   before_action :set_geo_entity, only: [:show, :edit, :update, :destroy]
   before_action :authenticate_user!
-  # load_and_authorize_resource
-
   require 'encode_to_json'
 
   def geo_entities_to_json
@@ -63,7 +61,7 @@ class GeoEntitiesController < ApplicationController
   # POST /geo_entities
   # POST /geo_entities.json
   def create
-    authorize! :create, GeoEntity
+    custom_authorize!(Permission::CLASS_GEO_ENTITY, Permission::ACTION_CREATE)
 
     @geo_entity = GeoEntity.new(geo_entity_params)
     @geo_entity.user_id = current_user.id
@@ -81,7 +79,7 @@ class GeoEntitiesController < ApplicationController
       end
     end
 
-  rescue CanCan::AccessDenied
+  rescue AccessDenied
     render nothing: true, status: :forbidden
   end
 
@@ -104,7 +102,7 @@ class GeoEntitiesController < ApplicationController
   # DELETE /geo_entities/1
   # DELETE /geo_entities/1.json
   def destroy
-    authorize! :destroy, GeoEntity
+    custom_authorize!(Permission::CLASS_GEO_ENTITY, Permission::ACTION_DESTROY)
 
     @geo_entity.destroy
     respond_to do |format|
@@ -112,7 +110,7 @@ class GeoEntitiesController < ApplicationController
       format.json { head :no_content }
     end
 
-  rescue CanCan::AccessDenied
+  rescue AccessDenied
     render nothing: true, status: :forbidden
   end
 
