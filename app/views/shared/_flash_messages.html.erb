@@ -2,26 +2,25 @@
     <script>
       noty({text: '<%= flash[:alert].to_s %>', timeout: 5000, type: 'error', layout: 'bottomCenter'});
     </script>
-    <% flash.discard(:alert) %>
 <% end %>
 
 <% if flash[:notice] %>
     <script>
       noty({text: '<%= flash[:notice].to_s %>', timeout: 5000, type: 'success', layout: 'bottomCenter'});
     </script>
-    <% flash.discard(:notice) %>
 <% end %>
 
 <% if flash[:error] %>
     <script>
       noty({text: '<%= flash[:error].to_s %>', timeout: 5000, type: 'error', layout: 'bottomCenter'});
     </script>
-    <% flash.discard(:error) %>
 <% end %>
 
 <% if flash[:success] %>
     <script>
       noty({text: '<%= flash[:success].to_s %>', timeout: 5000, type: 'success', layout: 'bottomCenter'});
     </script>
-    <% flash.discard(:success) %>
 <% end %>
+
+<!-- fora daqui flash!!!! kkkk -->
+<% flash.discard %>
