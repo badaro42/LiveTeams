@@ -72,21 +72,21 @@ class TeamsController < ApplicationController
 
   # GET /teams/new
   def new
-    authorize! :create, Team
+    custom_authorize!(Permission::CLASS_TEAM, Permission::ACTION_CREATE)
 
     @team = Team.new
     @users_in_team = @team.users
 
     set_users_for_multiple_select("new")
 
-  rescue CanCan::AccessDenied
+  rescue AccessDenied
     flash[:error] = "Não tem permissão para criar equipas."
     redirect_to teams_path
   end
 
   # GET /teams/1/edit
   def edit
-    authorize! :update, Team
+    custom_authorize!(Permission::CLASS_TEAM, Permission::ACTION_UPDATE)
 
     if @team.nil?
       flash[:error] = "A equipa que procura não existe!"
@@ -113,7 +113,7 @@ class TeamsController < ApplicationController
   # POST /teams
   # POST /teams.json
   def create
-    authorize! :create, Team
+    custom_authorize!(Permission::CLASS_TEAM, Permission::ACTION_CREATE)
 
     @team = Team.new(team_params)
 
@@ -153,7 +153,7 @@ class TeamsController < ApplicationController
   # PATCH/PUT /teams/1
   # PATCH/PUT /teams/1.json
   def update
-    authorize! :update, Team
+    custom_authorize!(Permission::CLASS_TEAM, Permission::ACTION_UPDATE)
 
     respond_to do |format|
       # verificamos se o utilizador responsavel pela posição foi alterado
@@ -197,7 +197,7 @@ class TeamsController < ApplicationController
   # DELETE /teams/1
   # DELETE /teams/1.json
   def destroy
-    authorize! :destroy, Team
+    custom_authorize!(Permission::CLASS_TEAM, Permission::ACTION_DESTROY)
 
     team_name = @team.name
     team_id = @team.id.to_s
