@@ -23,7 +23,7 @@ class TeamsController < ApplicationController
   # no caso de o pedido ser ajax para popular a dropdown de equipas, vamos verificar as equipas
   # a que o utilizador pertence
   def index
-    custom_authorize!(Permission::CLASS_TEAM, Permission::ACTION_READ)
+    custom_authorize! :read, Team
 
     # dropdown das equipas no mapa
     if params[:origin] === "dropdown_teams"
@@ -47,13 +47,13 @@ class TeamsController < ApplicationController
   # GET /teams/1
   # GET /teams/1.json
   def show
-    custom_authorize!(Permission::CLASS_TEAM, Permission::ACTION_READ)
-
     if @team.nil?
       puts "equipa nao existe !!!!!!!!!!!!!!!!!!!!!!!!"
       flash[:error] = "A equipa que procura nao existe!"
       redirect_to teams_url
     else
+      custom_authorize! :read, @team
+
       set_users_for_multiple_select("show")
 
       gon.push({
@@ -68,8 +68,7 @@ class TeamsController < ApplicationController
       end
 
       # obtem o utilizador que é lider da equipa
-      team_leader_entry = @team.team_members.where(is_leader: true).first
-      @team_leader = @team.users.where(id: team_leader_entry.user_id).first
+      @team_leader = User.find(@team.leader_id)
 
       # utilizador responsavel por atualizar a posição da equipa
       @location_user = User.find(@team.location_user_id)
@@ -82,7 +81,7 @@ class TeamsController < ApplicationController
 
   # GET /teams/new
   def new
-    custom_authorize!(Permission::CLASS_TEAM, Permission::ACTION_CREATE)
+    custom_authorize! :create, Team
 
     @team = Team.new
     @users_in_team = @team.users
@@ -96,14 +95,13 @@ class TeamsController < ApplicationController
 
   # GET /teams/1/edit
   def edit
-    custom_authorize!(Permission::CLASS_TEAM, Permission::ACTION_UPDATE)
-
     if @team.nil?
       flash[:error] = "A equipa que procura não existe!"
       redirect_to teams_url
     else
-      @team_leader = TeamMember.find_by(team_id: @team.id, is_leader: true)
-      if @team_leader.user_id == current_user.id || current_user.profile == Role::ADMINISTRADOR
+      custom_authorize! :update, @team
+
+      if @team.leader_id == current_user.id || current_user.profile == Role::ADMINISTRADOR
         gon.current_team_id = @team.id
         gon.users_in_team = set_users_in_team
 
@@ -123,27 +121,21 @@ class TeamsController < ApplicationController
   # POST /teams
   # POST /teams.json
   def create
-    custom_authorize!(Permission::CLASS_TEAM, Permission::ACTION_CREATE)
+    custom_authorize! :create, Team
 
     @team = Team.new(team_params)
 
     # utilizador responsavel pela localização
     # vamos buscar a localização para esse utilizador e introduzimos na equipa
     @team.latlon = User.find(params[:team][:location_user_id]).latlon
+    @team.leader_id = params[:team][:is_leader].to_i
 
     respond_to do |format|
       if @team.save
-        # adicionar os vários membros da equipa, colocar aqui um FOR!
-        # todos os elementos sao adicionados como nao sendo lider
         params[:team][:users].each do |u_id|
-          if u_id.to_i > 0
-            # é o lider, adiciona-se com o parametro a true
-            if u_id == params[:team][:is_leader]
-              team_member = TeamMember.new(:user_id => u_id.to_i, :team_id => @team.id, :is_leader => true)
-            else
-              team_member = TeamMember.new(:user_id => u_id.to_i, :team_id => @team.id, :is_leader => false)
-            end
-            team_member.save
+          user_id = u_id.to_i
+          if user_id > 0
+            TeamMember.create(user_id: user_id, team_id: @team.id)
           end
         end
 
@@ -163,7 +155,7 @@ class TeamsController < ApplicationController
   # PATCH/PUT /teams/1
   # PATCH/PUT /teams/1.json
   def update
-    custom_authorize!(Permission::CLASS_TEAM, Permission::ACTION_UPDATE)
+    custom_authorize! :update, @team
 
     respond_to do |format|
       # verificamos se o utilizador responsavel pela posição foi alterado
@@ -207,7 +199,7 @@ class TeamsController < ApplicationController
   # DELETE /teams/1
   # DELETE /teams/1.json
   def destroy
-    custom_authorize!(Permission::CLASS_TEAM, Permission::ACTION_DESTROY)
+    custom_authorize! :destroy, @team
 
     team_name = @team.name
     team_id = @team.id.to_s

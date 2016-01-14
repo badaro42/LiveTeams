@@ -58,7 +58,7 @@
               </div>
 
               <div class="input-field col s12 m12 l12">
-                <%= select_tag "user[profile]", options_for_select(User::PROFILES, :selected => @user.profile) %>
+                <%= select_tag "user[profile]", options_for_select(User::BASIC_PROFILES, :selected => @user.profile) %>
               </div>
             </div>
         <% end %>

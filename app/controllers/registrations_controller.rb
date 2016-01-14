@@ -38,6 +38,12 @@ class RegistrationsController < Devise::RegistrationsController
       params[:user].delete(:password_confirmation)
     end
 
+    # apenas alteramos o perfil do user na BD caso o utilizador o tenha alterado!
+    if params[:user][:profile] != @user.profile
+      puts '\nalterar o perfil do user na base de dados!!!!!!!!!!\n'
+      update_user_role(params[:user][:profile])
+    end
+
     self.resource = resource_class.to_adapter.get!(send(:"current_#{resource_name}").to_key)
     prev_unconfirmed_email = resource.unconfirmed_email if resource.respond_to?(:unconfirmed_email)
 
@@ -80,6 +86,14 @@ class RegistrationsController < Devise::RegistrationsController
   # redireciona para a pagina do utilizador apos editar a informação
   def after_update_path_for(resource)
     user_path(resource)
+  end
+
+  # recebe como parametro o novo perfil do utilizador
+  # faz uma query à BD para obter o papel atual do utilizador, altera-o e volta a gravar o tuplo
+  def update_user_role(new_role)
+    curr_profile = UserRole.where(user_id: @user.id, role_id: Role.where(name: @user.profile).first.id).first
+    curr_profile.role_id = Role.where(name: new_role).first.id
+    curr_profile.save
   end
 
 

@@ -12,10 +12,7 @@ module EncodeToJson
                              {name: ent.name, f_id: ent.id, location_user_id: ent.location_user_id,
                               created_at: ent.created_at, updated_at: ent.updated_at,
                               location_user_name: User.find(ent.location_user_id).full_name,
-                              leader_name: ((TeamMember.where(team_id: ent.id, is_leader: true) == []) ? "" :
-                                  User.find(TeamMember.where(team_id: ent.id, is_leader: true).first.user_id).full_name),
-                              leader_id: ((TeamMember.where(team_id: ent.id, is_leader: true) == []) ? 0 :
-                                  User.find(TeamMember.where(team_id: ent.id, is_leader: true).first.user_id).id),
+                              leader_id: ent.leader_id, leader_name: User.find(ent.leader_id).full_name,
                               highlight_coords: ent.latlon_highlight
                              }
       )
@@ -26,10 +23,7 @@ module EncodeToJson
                               {name: f.name, f_id: f.id, location_user_id: f.location_user_id,
                                created_at: f.created_at, updated_at: f.updated_at,
                                location_user_name: User.find(f.location_user_id).full_name,
-                               leader_name: ((TeamMember.where(team_id: f.id, is_leader: true) == []) ? "" :
-                                   User.find(TeamMember.where(team_id: f.id, is_leader: true).first.user_id).full_name),
-                               leader_id: ((TeamMember.where(team_id: f.id, is_leader: true) == []) ? 0 :
-                                   User.find(TeamMember.where(team_id: f.id, is_leader: true).first.user_id).id),
+                               leader_id: f.leader_id, leader_name: User.find(f.leader_id).full_name,
                                highlight_coords: f.latlon_highlight
                               }
         )

@@ -28,7 +28,7 @@ class TeamMembersController < ApplicationController
   # POST /team_members
   # POST /team_members.json
   def create
-    custom_authorize!(Permission::CLASS_TEAM_MEMBER, Permission::ACTION_CREATE)
+    custom_authorize! :create, TeamMember
 
     @team_member = TeamMember.new(team_member_params)
     if @team_member.save
@@ -67,7 +67,7 @@ class TeamMembersController < ApplicationController
   # DELETE /team_members/1
   # DELETE /team_members/1.json
   def destroy
-    custom_authorize!(Permission::CLASS_TEAM_MEMBER, Permission::ACTION_DESTROY)
+    custom_authorize! :destroy, TeamMember
 
     if @team_member.destroy
       render nothing: true, status: :ok, content_type: 'text/html'

@@ -47,7 +47,7 @@ class UsersController < ApplicationController
   end
 
   def index
-    custom_authorize!(Permission::CLASS_USER, Permission::ACTION_READ)
+    custom_authorize! :read, User
 
     @users = User.all.order(first_name: :asc, last_name: :asc)
 
@@ -57,7 +57,9 @@ class UsersController < ApplicationController
   end
 
   def show
-    custom_authorize!(Permission::CLASS_USER, Permission::ACTION_READ)
+    custom_authorize! :read, User
+
+    puts "ESTOU NO SHOW E PASSEI A CENA DA PERMISSAO!"
 
     if @user.nil?
       flash[:error] = "O utilizador que procura nao existe!"
@@ -70,7 +72,6 @@ class UsersController < ApplicationController
       gon.curr_user_pos = @user.latlon
 
       @user_teams = @user.teams
-      @user_team_members = @user.team_members
       @user_entities = @user.geo_entities
     end
 
@@ -91,8 +92,7 @@ class UsersController < ApplicationController
       @user = User.find(params[:id])
     end
 
-    # authorize! :update, @user
-    custom_authorize!(Permission::CLASS_USER, Permission::ACTION_UPDATE)
+    custom_authorize! :update, @user
 
   rescue AccessDenied
     flash[:error] = "Não tem permissão para editar o perfil deste utilizador."
@@ -100,7 +100,7 @@ class UsersController < ApplicationController
   end
 
   def update
-    custom_authorize!(Permission::CLASS_USER, Permission::ACTION_UPDATE)
+    custom_authorize! :update, @user
 
     if params[:user][:password].blank? && params[:user][:password_confirmation].blank?
       params[:user].delete(:password)
@@ -109,6 +109,7 @@ class UsersController < ApplicationController
 
     # apenas alteramos o perfil do user na BD caso o utilizador o tenha alterado!
     if params[:user][:profile] != @user.profile
+      puts '\nalterar o perfil do user na base de dados!!!!!!!!!!\n'
       update_user_role(params[:user][:profile])
     end
 
@@ -128,8 +129,7 @@ class UsersController < ApplicationController
   end
 
   def destroy
-    # authorize! :destroy, @user
-    custom_authorize!(Permission::CLASS_USER, Permission::ACTION_DESTROY)
+    custom_authorize! :destroy, @user
 
     respond_to do |format|
       if @user.destroy

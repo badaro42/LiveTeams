@@ -61,7 +61,7 @@ class GeoEntitiesController < ApplicationController
   # POST /geo_entities
   # POST /geo_entities.json
   def create
-    custom_authorize!(Permission::CLASS_GEO_ENTITY, Permission::ACTION_CREATE)
+    custom_authorize! :create, GeoEntity
 
     @geo_entity = GeoEntity.new(geo_entity_params)
     @geo_entity.user_id = current_user.id
@@ -102,7 +102,7 @@ class GeoEntitiesController < ApplicationController
   # DELETE /geo_entities/1
   # DELETE /geo_entities/1.json
   def destroy
-    custom_authorize!(Permission::CLASS_GEO_ENTITY, Permission::ACTION_DESTROY)
+    custom_authorize! :destroy, @geo_entity
 
     @geo_entity.destroy
     respond_to do |format|
