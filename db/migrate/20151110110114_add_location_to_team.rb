@@ -1,7 +1,5 @@
 class AddLocationToTeam < ActiveRecord::Migration
   def change
-    # add_column :teams, :location_user_id, :integer
-
     add_reference :teams, :location_user, index: true
     add_foreign_key :teams, :users, column: :location_user_id
 

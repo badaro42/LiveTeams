@@ -57,7 +57,6 @@ ActiveRecord::Schema.define(version: 20160113120115) do
   create_table "team_members", force: :cascade do |t|
     t.integer  "team_id"
     t.integer  "user_id"
-    t.boolean  "is_leader"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -70,11 +69,13 @@ ActiveRecord::Schema.define(version: 20160113120115) do
     t.geography "latlon_highlight", limit: {:srid=>4326, :type=>"point", :geographic=>true}
     t.datetime  "created_at",                                                                null: false
     t.datetime  "updated_at",                                                                null: false
+    t.integer   "leader_id"
     t.integer   "location_user_id"
     t.geography "latlon",           limit: {:srid=>4326, :type=>"point", :geographic=>true}
     t.string    "address"
   end
 
+  add_index "teams", ["leader_id"], name: "index_teams_on_leader_id", using: :btree
   add_index "teams", ["location_user_id"], name: "index_teams_on_location_user_id", using: :btree
 
   create_table "user_roles", force: :cascade do |t|
@@ -131,6 +132,7 @@ ActiveRecord::Schema.define(version: 20160113120115) do
   add_foreign_key "role_permissions", "roles"
   add_foreign_key "team_members", "teams"
   add_foreign_key "team_members", "users"
+  add_foreign_key "teams", "users", column: "leader_id"
   add_foreign_key "teams", "users", column: "location_user_id"
   add_foreign_key "user_roles", "roles"
   add_foreign_key "user_roles", "users"
