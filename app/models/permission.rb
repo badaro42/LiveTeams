@@ -6,15 +6,17 @@ class Permission < ActiveRecord::Base
 
   # as classes disponiveis na aplicação
   # adicionar aqui as constantes caso sejam adicionadas mais classes
-  CLASS_USER = "user"
-  CLASS_GEO_ENTITY = "geo_entity"
-  CLASS_TEAM = "team"
-  CLASS_TEAM_MEMBER = "team_member"
+  CLASS_USER = "User"
+  CLASS_GEO_ENTITY = "GeoEntity"
+  CLASS_TEAM = "Team"
+  CLASS_TEAM_MEMBER = "TeamMember"
 
   # as diferentes ações que podem ser executadas sobre os objetos
   # dificilmente serão adicionadas mais constantes, uma vez que estão são as ações CRUD
   ACTION_CREATE = "create"
   ACTION_READ = "read"
-  ACTION_UPDATE = "update"
-  ACTION_DESTROY = "destroy"
+  ACTION_UPDATE_OWN = "update_own"
+  ACTION_UPDATE_ALL = "update_all"
+  ACTION_DESTROY_OWN = "destroy_own"
+  ACTION_DESTROY_ALL = "destroy_all"
 end
