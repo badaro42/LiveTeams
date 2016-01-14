@@ -213,11 +213,11 @@ Role.create(name: Role::GESTOR)
 Role.create(name: Role::OPERACIONAL)
 Role.create(name: Role::BASICO)
 
-Role.create(name: Role::REMOVE_GEO_ENTITIES)
-Role.create(name: Role::REMOVE_USERS)
-Role.create(name: Role::MANAGE_TEAMS)
-Role.create(name: Role::MANAGE_TEAM_MEMBERS)
-Role.create(name: Role::MANAGE_TEAM_AND_TEAM_MEMBERS)
+Role.create(name: Role::REMOVER_GEO_ENTIDADES)
+Role.create(name: Role::REMOVER_UTILIZADORES)
+Role.create(name: Role::GERIR_EQUIPAS)
+Role.create(name: Role::GERIR_MEMBROS_EQUIPA)
+Role.create(name: Role::GERIR_EQUIPAS_E_MEMBROS_EQUIPA)
 
 # ROLE_PERMISSION role_id:integer permission_id
 puts 'Associating permissions to roles'
