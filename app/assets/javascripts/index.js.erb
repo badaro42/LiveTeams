@@ -1246,17 +1246,21 @@ function showEntityCoordinates(entity_index) {
     var geo_entity = all_geo_entities[index_in_array];
     var text_coords = "";
 
-    $.each(geo_entity.latlon, function (index, elem) {
+    // se tiver a propriedade
+    var coords_arr = geo_entity.layer.hasOwnProperty("_latlng") ? [geo_entity.layer.getLatLng()] :
+        geo_entity.layer.getLatLngs();
+
+    $.each(coords_arr, function (index, elem) {
       text_coords += "(" + elem.lat + ", " + elem.lng + ")";
-      if (index < geo_entity.latlon.length - 1)
+      if (index < coords_arr.length - 1)
         text_coords += ";    ";
     });
 
     var num_points = "";
-    if (geo_entity.latlon.length == 1)
+    if (coords_arr.length == 1)
       num_points = "1 ponto";
     else
-      num_points = geo_entity.latlon.length + " pontos";
+      num_points = coords_arr.length + " pontos";
 
     $("#modal_entity_type").text(geo_entity.type);
     $("#modal_num_points").text(num_points);
