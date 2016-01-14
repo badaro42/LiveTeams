@@ -263,21 +263,20 @@
 
                 <div class="collapsible-body">
                   <ul class="collection">
-                    <% TeamMember.where(team_id: team.id).order(is_leader: :desc).each do |t_member| %>
-                        <% @t_user = User.find_by(id: t_member.user_id) %>
+                    <% team.users.each do |member| %>
 
                         <li class="collection-item avatar team-list-item">
-                          <% if (t_member.is_leader) %>
+                          <% if member.id == team.leader_id %>
                               <!-- RIBBON PARA INDICAR O CHEFE DE EQUIPA -->
                               <div class="corner-ribbon top-right red shadow">Líder</div>
                           <% end %>
 
-                          <%= image_tag @t_user.avatar.url, class: 'circle' %>
+                          <%= image_tag member.avatar.url, class: 'circle' %>
                           <span class="title" style="font-weight: 300">
-                              <%= @t_user.full_name %>
+                              <%= member.full_name %>
                           </span>
 
-                          <p><%= @t_user.profile %></p>
+                          <p><%= member.profile %></p>
                         </li>
                     <% end %>
                   </ul>

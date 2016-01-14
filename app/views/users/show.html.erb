@@ -143,15 +143,12 @@
             </li>
         <% else %>
             <% @user_teams.each do |team| %>
-                <% team_entry = @user_team_members.where(team_id: team.id).first %>
-                <%= puts "USERS SHOW USERS SHOW" %>
-                <%= puts team_entry.inspect %>
                 <li class="collection-item">
                   <div>
                     <strong>
                       <span style="font-size: 15px;"><%= team.name %></span>
                       <span> | </span>
-                      <% if team_entry.is_leader? %>
+                      <% if team.leader_id == current_user.id %>
                           <span style="font-size: 12px;">Líder da equipa</span>
                       <% else %>
                           <span style="font-size: 12px;">Membro</span>

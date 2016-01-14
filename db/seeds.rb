@@ -131,34 +131,58 @@ Team.create(name: team_names[9])
 
 # TEAM_MEMBER team_id:integer user_id:integer is_leader:boolean
 puts 'Adding Team Members'
-TeamMember.create(team_id: 1, user_id: 1, is_leader: true)
-TeamMember.create(team_id: 1, user_id: 2, is_leader: false)
-TeamMember.create(team_id: 2, user_id: 3, is_leader: true)
-TeamMember.create(team_id: 3, user_id: 4, is_leader: false)
-TeamMember.create(team_id: 3, user_id: 6, is_leader: true)
-TeamMember.create(team_id: 4, user_id: 7, is_leader: true)
-TeamMember.create(team_id: 5, user_id: 8, is_leader: true)
-TeamMember.create(team_id: 6, user_id: 9, is_leader: true)
-TeamMember.create(team_id: 6, user_id: 10, is_leader: false)
-TeamMember.create(team_id: 6, user_id: 11, is_leader: false)
-TeamMember.create(team_id: 7, user_id: 15, is_leader: true)
-TeamMember.create(team_id: 7, user_id: 17, is_leader: false)
-TeamMember.create(team_id: 8, user_id: 18, is_leader: true)
-TeamMember.create(team_id: 9, user_id: 19, is_leader: true)
-TeamMember.create(team_id: 10, user_id: 20, is_leader: true)
+TeamMember.create(team_id: 1, user_id: 1)
+TeamMember.create(team_id: 1, user_id: 2)
+
+TeamMember.create(team_id: 2, user_id: 2)
+TeamMember.create(team_id: 2, user_id: 3)
+TeamMember.create(team_id: 2, user_id: 12)
+
+TeamMember.create(team_id: 3, user_id: 1)
+TeamMember.create(team_id: 3, user_id: 4)
+TeamMember.create(team_id: 3, user_id: 6)
+TeamMember.create(team_id: 3, user_id: 13)
+TeamMember.create(team_id: 3, user_id: 19)
+
+TeamMember.create(team_id: 4, user_id: 7)
+TeamMember.create(team_id: 4, user_id: 13)
+TeamMember.create(team_id: 4, user_id: 20)
+
+TeamMember.create(team_id: 5, user_id: 8)
+TeamMember.create(team_id: 5, user_id: 17)
+
+TeamMember.create(team_id: 6, user_id: 5)
+TeamMember.create(team_id: 6, user_id: 9)
+TeamMember.create(team_id: 6, user_id: 10)
+TeamMember.create(team_id: 6, user_id: 11)
+
+TeamMember.create(team_id: 7, user_id: 15)
+TeamMember.create(team_id: 7, user_id: 17)
+
+TeamMember.create(team_id: 8, user_id: 1)
+TeamMember.create(team_id: 8, user_id: 9)
+TeamMember.create(team_id: 8, user_id: 18)
+
+TeamMember.create(team_id: 9, user_id: 2)
+TeamMember.create(team_id: 9, user_id: 8)
+TeamMember.create(team_id: 9, user_id: 19)
+
+TeamMember.create(team_id: 10, user_id: 11)
+TeamMember.create(team_id: 10, user_id: 18)
+TeamMember.create(team_id: 10, user_id: 20)
 
 
-puts 'Updating teams with location'
-Team.update(1, location_user_id: 1, latlon: User.find(1).latlon)
-Team.update(2, location_user_id: 3, latlon: User.find(3).latlon)
-Team.update(3, location_user_id: 6, latlon: User.find(6).latlon)
-Team.update(4, location_user_id: 7, latlon: User.find(7).latlon)
-Team.update(5, location_user_id: 8, latlon: User.find(8).latlon)
-Team.update(6, location_user_id: 11, latlon: User.find(11).latlon)
-Team.update(7, location_user_id: 15, latlon: User.find(15).latlon)
-Team.update(8, location_user_id: 18, latlon: User.find(18).latlon)
-Team.update(9, location_user_id: 19, latlon: User.find(19).latlon)
-Team.update(10, location_user_id: 20, latlon: User.find(20).latlon)
+puts 'Updating teams with location and leader'
+Team.update(1, leader_id: 1, location_user_id: 1, latlon: User.find(1).latlon)
+Team.update(2, leader_id: 3, location_user_id: 3, latlon: User.find(3).latlon)
+Team.update(3, leader_id: 19, location_user_id: 6, latlon: User.find(6).latlon)
+Team.update(4, leader_id: 13, location_user_id: 7, latlon: User.find(7).latlon)
+Team.update(5, leader_id: 8, location_user_id: 8, latlon: User.find(8).latlon)
+Team.update(6, leader_id: 11, location_user_id: 11, latlon: User.find(11).latlon)
+Team.update(7, leader_id: 15, location_user_id: 15, latlon: User.find(15).latlon)
+Team.update(8, leader_id: 18, location_user_id: 18, latlon: User.find(18).latlon)
+Team.update(9, leader_id: 2, location_user_id: 19, latlon: User.find(19).latlon)
+Team.update(10, leader_id: 11, location_user_id: 20, latlon: User.find(20).latlon)
 
 
 # TEAM_MEMBER team_id:integer user_id:integer is_leader:boolean
@@ -187,96 +211,132 @@ GeoEntity.create(name: "Base Naval de Lisboa - Arsenal do Alfeite", user_id: 3, 
 puts 'Adding Permissions'
 Permission.create(subject_class: Permission::CLASS_USER, subject_action: Permission::ACTION_CREATE) #1: user create
 Permission.create(subject_class: Permission::CLASS_USER, subject_action: Permission::ACTION_READ) #2: user read
-Permission.create(subject_class: Permission::CLASS_USER, subject_action: Permission::ACTION_UPDATE) #3: user update
-Permission.create(subject_class: Permission::CLASS_USER, subject_action: Permission::ACTION_DESTROY) #4: user delete
+Permission.create(subject_class: Permission::CLASS_USER, subject_action: Permission::ACTION_UPDATE_OWN) #3: user update own profile
+Permission.create(subject_class: Permission::CLASS_USER, subject_action: Permission::ACTION_UPDATE_ALL) #4: user update all profiles
+Permission.create(subject_class: Permission::CLASS_USER, subject_action: Permission::ACTION_DESTROY_OWN) #5: user destroy own account
+Permission.create(subject_class: Permission::CLASS_USER, subject_action: Permission::ACTION_DESTROY_ALL) #6: user destroy all accounts
 
-Permission.create(subject_class: Permission::CLASS_TEAM, subject_action: Permission::ACTION_CREATE) #5: team create
-Permission.create(subject_class: Permission::CLASS_TEAM, subject_action: Permission::ACTION_READ) #6: team read
-Permission.create(subject_class: Permission::CLASS_TEAM, subject_action: Permission::ACTION_UPDATE) #7: team update
-Permission.create(subject_class: Permission::CLASS_TEAM, subject_action: Permission::ACTION_DESTROY) #8: team destroy
+Permission.create(subject_class: Permission::CLASS_TEAM, subject_action: Permission::ACTION_CREATE) #7: team create
+Permission.create(subject_class: Permission::CLASS_TEAM, subject_action: Permission::ACTION_READ) #8: team read
+Permission.create(subject_class: Permission::CLASS_TEAM, subject_action: Permission::ACTION_UPDATE_OWN) #9: team update own teams
+Permission.create(subject_class: Permission::CLASS_TEAM, subject_action: Permission::ACTION_UPDATE_ALL) #10: team update all teams
+Permission.create(subject_class: Permission::CLASS_TEAM, subject_action: Permission::ACTION_DESTROY_OWN) #11: team destroy own teams
+Permission.create(subject_class: Permission::CLASS_TEAM, subject_action: Permission::ACTION_DESTROY_ALL) #12: team destroy all teams
 
-Permission.create(subject_class: Permission::CLASS_TEAM_MEMBER, subject_action: Permission::ACTION_CREATE) #9: team_member create
-Permission.create(subject_class: Permission::CLASS_TEAM_MEMBER, subject_action: Permission::ACTION_READ) #10: team_member read
-Permission.create(subject_class: Permission::CLASS_TEAM_MEMBER, subject_action: Permission::ACTION_UPDATE) #11: team_member update
-Permission.create(subject_class: Permission::CLASS_TEAM_MEMBER, subject_action: Permission::ACTION_DESTROY) #12: team_member destroy
+Permission.create(subject_class: Permission::CLASS_TEAM_MEMBER, subject_action: Permission::ACTION_CREATE) #13: team_member create
+Permission.create(subject_class: Permission::CLASS_TEAM_MEMBER, subject_action: Permission::ACTION_READ) #14: team_member read
+Permission.create(subject_class: Permission::CLASS_TEAM_MEMBER, subject_action: Permission::ACTION_UPDATE_ALL) #15: team_member update
+Permission.create(subject_class: Permission::CLASS_TEAM_MEMBER, subject_action: Permission::ACTION_DESTROY_ALL) #16: team_member destroy
 
-Permission.create(subject_class: Permission::CLASS_GEO_ENTITY, subject_action: Permission::ACTION_CREATE) #13: geo_entity create
-Permission.create(subject_class: Permission::CLASS_GEO_ENTITY, subject_action: Permission::ACTION_READ) #14: geo_entity read
-Permission.create(subject_class: Permission::CLASS_GEO_ENTITY, subject_action: Permission::ACTION_UPDATE) #15: geo_entity update
-Permission.create(subject_class: Permission::CLASS_GEO_ENTITY, subject_action: Permission::ACTION_DESTROY) #16: geo_entity destroy
+Permission.create(subject_class: Permission::CLASS_GEO_ENTITY, subject_action: Permission::ACTION_CREATE) #17: geo_entity create
+Permission.create(subject_class: Permission::CLASS_GEO_ENTITY, subject_action: Permission::ACTION_READ) #18: geo_entity read
+Permission.create(subject_class: Permission::CLASS_GEO_ENTITY, subject_action: Permission::ACTION_UPDATE_ALL) #19: geo_entity update
+Permission.create(subject_class: Permission::CLASS_GEO_ENTITY, subject_action: Permission::ACTION_DESTROY_OWN) #20: geo_entity destroy own geo_entities
+Permission.create(subject_class: Permission::CLASS_GEO_ENTITY, subject_action: Permission::ACTION_DESTROY_ALL) #21: geo_entity destroy all geo_entities
 
 # ROLE name:string permission_ids:array de strings
 puts 'Adding Roles'
-# TODO: PASSAR ESTES PAPEIS PARA O MODELO 'ROLE', TAL COMO ESTÃO OS OUTROS PAPEIS
 Role.create(name: Role::ADMINISTRADOR)
 Role.create(name: Role::GESTOR)
 Role.create(name: Role::OPERACIONAL)
 Role.create(name: Role::BASICO)
-
 Role.create(name: Role::REMOVER_GEO_ENTIDADES)
 Role.create(name: Role::REMOVER_UTILIZADORES)
-Role.create(name: Role::GERIR_EQUIPAS)
+Role.create(name: Role::GERIR_EQUIPAS_BASIC)
+Role.create(name: Role::GERIR_EQUIPAS_GOD_MODE)
 Role.create(name: Role::GERIR_MEMBROS_EQUIPA)
 Role.create(name: Role::GERIR_EQUIPAS_E_MEMBROS_EQUIPA)
+Role.create(name: Role::EDITAR_TODAS_EQUIPAS)
+Role.create(name: Role::EDITAR_TODOS_UTILIZADORES)
 
 # ROLE_PERMISSION role_id:integer permission_id
 puts 'Associating permissions to roles'
 RolePermission.create(role_id: 1, permission_id: 2) # ADMINISTRADOR
-RolePermission.create(role_id: 1, permission_id: 3)
 RolePermission.create(role_id: 1, permission_id: 4)
-RolePermission.create(role_id: 1, permission_id: 5)
 RolePermission.create(role_id: 1, permission_id: 6)
+
 RolePermission.create(role_id: 1, permission_id: 7)
 RolePermission.create(role_id: 1, permission_id: 8)
-RolePermission.create(role_id: 1, permission_id: 9)
 RolePermission.create(role_id: 1, permission_id: 10)
 RolePermission.create(role_id: 1, permission_id: 12)
+
 RolePermission.create(role_id: 1, permission_id: 13)
 RolePermission.create(role_id: 1, permission_id: 14)
 RolePermission.create(role_id: 1, permission_id: 16)
 
+RolePermission.create(role_id: 1, permission_id: 17)
+RolePermission.create(role_id: 1, permission_id: 18)
+RolePermission.create(role_id: 1, permission_id: 21)
+
+
 RolePermission.create(role_id: 2, permission_id: 2) # GESTOR
 RolePermission.create(role_id: 2, permission_id: 3)
 RolePermission.create(role_id: 2, permission_id: 5)
-RolePermission.create(role_id: 2, permission_id: 6)
+
 RolePermission.create(role_id: 2, permission_id: 7)
 RolePermission.create(role_id: 2, permission_id: 8)
 RolePermission.create(role_id: 2, permission_id: 9)
-RolePermission.create(role_id: 2, permission_id: 10)
-RolePermission.create(role_id: 2, permission_id: 12)
+RolePermission.create(role_id: 2, permission_id: 11)
+
 RolePermission.create(role_id: 2, permission_id: 13)
 RolePermission.create(role_id: 2, permission_id: 14)
 RolePermission.create(role_id: 2, permission_id: 16)
 
+RolePermission.create(role_id: 2, permission_id: 17)
+RolePermission.create(role_id: 2, permission_id: 18)
+RolePermission.create(role_id: 2, permission_id: 21)
+
+
 RolePermission.create(role_id: 3, permission_id: 2) # OPERACIONAL
 RolePermission.create(role_id: 3, permission_id: 3)
-RolePermission.create(role_id: 3, permission_id: 6)
-RolePermission.create(role_id: 3, permission_id: 10)
-RolePermission.create(role_id: 3, permission_id: 13)
+RolePermission.create(role_id: 3, permission_id: 5)
+
+RolePermission.create(role_id: 3, permission_id: 8)
+
 RolePermission.create(role_id: 3, permission_id: 14)
+
+RolePermission.create(role_id: 3, permission_id: 17)
+RolePermission.create(role_id: 3, permission_id: 18)
+RolePermission.create(role_id: 3, permission_id: 20)
+
 
 RolePermission.create(role_id: 4, permission_id: 2) # BASICO
 RolePermission.create(role_id: 4, permission_id: 3)
-RolePermission.create(role_id: 4, permission_id: 6)
-RolePermission.create(role_id: 4, permission_id: 10)
+RolePermission.create(role_id: 4, permission_id: 5)
+
+RolePermission.create(role_id: 4, permission_id: 8)
+
 RolePermission.create(role_id: 4, permission_id: 14)
 
-RolePermission.create(role_id: 5, permission_id: 16) # REMOVER GEO-ENTIDADES
+RolePermission.create(role_id: 4, permission_id: 18)
 
-RolePermission.create(role_id: 6, permission_id: 4) # REMOVER UTILIZADORES
 
-RolePermission.create(role_id: 7, permission_id: 5) # GERIR EQUIPAS
-RolePermission.create(role_id: 7, permission_id: 7)
-RolePermission.create(role_id: 7, permission_id: 8)
-
-RolePermission.create(role_id: 8, permission_id: 9) # GERIR MEMBROS DE EQUIPAS
-RolePermission.create(role_id: 8, permission_id: 12)
-
-RolePermission.create(role_id: 9, permission_id: 5) # GERIR EQUIPAS E MEMBROS DE EQUIPAS
-RolePermission.create(role_id: 9, permission_id: 7)
-RolePermission.create(role_id: 9, permission_id: 8)
-RolePermission.create(role_id: 9, permission_id: 9)
-RolePermission.create(role_id: 9, permission_id: 12)
+# RolePermission.create(role_id: 5, permission_id: 21) # REMOVER TODAS AS GEO-ENTIDADES
+#
+#
+# RolePermission.create(role_id: 6, permission_id: 6) # REMOVER TODOS OS UTILIZADORES
+#
+#
+# RolePermission.create(role_id: 7, permission_id: 5) # GERIR EQUIPAS - APENAS PERMITE EDITAR E REMOVER AS CRIADAS
+# RolePermission.create(role_id: 7, permission_id: 7)
+# RolePermission.create(role_id: 7, permission_id: 8)
+#
+#
+# RolePermission.create(role_id: 8, permission_id: 9) # GERIR MEMBROS DE EQUIPAS
+# RolePermission.create(role_id: 8, permission_id: 12)
+#
+#
+# RolePermission.create(role_id: 9, permission_id: 5) # GERIR EQUIPAS E MEMBROS DE EQUIPAS
+# RolePermission.create(role_id: 9, permission_id: 7)
+# RolePermission.create(role_id: 9, permission_id: 8)
+# RolePermission.create(role_id: 9, permission_id: 9)
+# RolePermission.create(role_id: 9, permission_id: 12)
+#
+#
+# RolePermission.create(role_id: 10, permission_id: 12)
+#
+#
+# RolePermission.create(role_id: 11, permission_id: 12)
 
 # USER_ROLE user_id:integer role_id:integer expiration_date:date
 puts 'Associating roles to users'
