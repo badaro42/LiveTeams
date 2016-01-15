@@ -17,6 +17,10 @@ class ApplicationController < ActionController::Base
   class PermissionTypo < StandardError
   end
 
+  # ocorreu um erro a atualizar
+  class UpdateFailed < StandardError
+  end
+
   # ***********************************************************************************
   # ****************************** MÉTODOS DE AUTORIZAÇÃO *****************************
   # ********************** (baseados na biblioteca 'cancancan') ***********************

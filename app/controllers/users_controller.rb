@@ -128,6 +128,11 @@ class UsersController < ApplicationController
       end
     end
 
+  rescue UpdateFailed
+    flash[:error] = "Não pode alterar o seu papel para '" + params[:user][:profile] +
+        "' pois é líder de pelo menos uma equipa!"
+    redirect_to @user
+
   rescue AccessDenied
     flash[:error] = "Não tem permissão para editar o perfil deste utilizador."
     redirect_to @user
@@ -160,7 +165,20 @@ class UsersController < ApplicationController
 
   # recebe como parametro o novo perfil do utilizador
   # faz uma query à BD para obter o papel atual do utilizador, altera-o e volta a gravar o tuplo
+  # NOTA: só permite atualizar o perfil de ADMIN ou GESTOR para OPERACIONAL ou BASICO caso o user nao seja lider
+  # de nenhum equipa
   def update_user_role(new_role)
+
+    # verificamos se é lider de alguma equipa
+    if (@user.profile == Role::ADMINISTRADOR || @user.profile == Role::GESTOR) &&
+        (new_role == Role::OPERACIONAL || new_role == Role::BASICO)
+
+      teams_leading = Team.where(leader_id: @user.id)
+      if teams_leading.length > 0
+        raise UpdateFailed
+      end
+    end
+
     curr_profile = UserRole.where(user_id: @user.id, role_id: Role.where(name: @user.profile).first.id).first
     curr_profile.role_id = Role.where(name: new_role).first.id
     curr_profile.save
