@@ -86,18 +86,21 @@ class ApplicationController < ActionController::Base
         class_to_check = s_object.class.to_s
       end
     else
-      action_to_check = s_action.to_s
+      action_to_check = s_action.to_s + "%"
       class_to_check = s_object.to_s
     end
-
-    puts "******************** permission_helper *************************"
-    puts action_to_check
-    puts class_to_check
-    puts "****************************************************************"
 
     # verifica nas permissoes atuais do utilizador se aquela que pretendemos está presente
     permission_to_check = current_user.permissions.where("subject_class = ? and subject_action LIKE ?",
                                                          class_to_check, action_to_check)
+
+    puts "******************** permission_helper *************************"
+    puts action_to_check
+    puts class_to_check
+    puts permission_to_check
+    puts "****************************************************************"
+
+    permission_to_check
   end
 
 

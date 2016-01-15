@@ -12,7 +12,7 @@
     <span>Membro desde <%= user.created_at.to_datetime.to_formatted_s(:short) %></span>
   </p>
 
-  <% if can_perform_action? :destroy, TeamMember %>
+  <%# if can_perform_action? :destroy, TeamMember %>
       <% if is_leader %>
           <%= link_to "javascript:void(0)", :data => {:position => 'left', :delay => '15',
                                                       :tooltip => 'Não é possível remover o líder da equipa'},
@@ -31,5 +31,5 @@
               <i class="material-icons">delete</i>
           <% end %>
       <% end %>
-  <% end %>
+  <%# end %>
 </li>

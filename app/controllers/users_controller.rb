@@ -108,8 +108,7 @@ class UsersController < ApplicationController
     end
 
     # apenas alteramos o perfil do user na BD caso o utilizador o tenha alterado!
-    if params[:user][:profile] != @user.profile
-      puts '\nalterar o perfil do user na base de dados!!!!!!!!!!\n'
+    if params[:user][:profile] != @user.profile && !params[:user][:profile].nil?
       update_user_role(params[:user][:profile])
     end
 

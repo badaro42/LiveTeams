@@ -620,8 +620,7 @@ function addSingleUserToTeam(e) {
       data: {
         team_member: {
           user_id: selected_user_id,
-          team_id: gon.current_team_id,
-          is_leader: false
+          team_id: gon.current_team_id
         }
       },
       success: function (result) {
