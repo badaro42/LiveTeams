@@ -9,6 +9,9 @@ Rails.application.routes.draw do
   get '/teams/reverse_geocode_coords', to: 'teams#reverse_geocode_coords'
   get '/geocode_location', to: 'homepage#geocode_location'
 
+  # rota para obter o perfil do utilizador
+  get 'users/get_user_profile', to: 'users#get_user_profile'
+
   # altera as rotas predefinidas do devise
   devise_for :users, :controllers => { registrations: 'registrations' },
              :path => 'account', :path_names => { :sign_in => 'login', :sign_up => 'new', :sign_out => 'logout',

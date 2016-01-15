@@ -13,6 +13,7 @@ var create_team_page;
 // variaveis com o lider e o responsavel pela posição da equipa
 var curr_team_leader_id;
 var curr_team_location_id;
+var curr_leader_profile;
 
 var advanced_options_open = false;
 
@@ -126,6 +127,9 @@ $(document).ready(function () {
       $('#select-all-btn').on('click', selectAllUsers);
       $('#select-undo-btn').on('click', setDefaultSelectedEntries);
 
+      $('#select_team_leader').on('change', leaderDropdownOnChange);
+      $('#edit_team_'+gon.current_team_id).submit(onTeamFormSubmit);
+
       curr_team_leader_id = $('#choose_leader_dropdown').find(':selected').val();
       curr_team_location_id = $('#select_team_position').find(':selected').val();
 
@@ -191,6 +195,9 @@ $(document).ready(function () {
       $('#select-none-btn').on('click', selectNoUsers);
       $('#select-all-btn').on('click', selectAllUsers);
       $('#select-undo-btn').on('click', setDefaultSelectedEntries);
+
+      $('#select_team_leader').on('change', leaderDropdownOnChange);
+      $('#new_team').submit(onTeamFormSubmit);
 
       curr_team_leader_id = $('#choose_leader_dropdown').find(':selected').val();
       curr_team_location_id = $('#select_team_position').find(':selected').val();
@@ -785,6 +792,8 @@ function toggleEntriesClass(e) {
 
 function setDefaultSelectedEntries() {
   var all_options = $('#dropdown_all_users')[0].options;
+
+  curr_leader_profile = undefined;
   $.each(all_options, function (index, elem) {
     if ($.inArray(parseInt(elem.value), gon.users_in_team) !== -1)
       $(this).prop('selected', true);
@@ -853,6 +862,8 @@ function multipleDropdownOnChange() {
  */
 function selectAllUsers() {
   $('#dropdown_all_users option').prop('selected', true);
+
+  curr_leader_profile = undefined;
   multipleDropdownOnChange();
 }
 
@@ -862,5 +873,50 @@ function selectAllUsers() {
  */
 function selectNoUsers() {
   $('#dropdown_all_users option').prop('selected', false);
+
+  curr_leader_profile = undefined;
   multipleDropdownOnChange();
+}
+
+
+function leaderDropdownOnChange(e) {
+  console.log("CREATE - DROPDOWN DO LIDER FOI ALTERADA!!!!!");
+
+  var user_id = $(this).find(':selected').val();
+  console.log(user_id);
+
+  $.ajax({
+    type: "GET",
+    url: "/users/get_user_profile",
+    data: {
+      user_id: user_id
+    },
+    success: function (result) {
+      console.log("SUCESSO NA CENA DO PERFIL!!!!!!");
+      console.log(result);
+
+      curr_leader_profile = result.toString();
+    },
+    error: function (err) {
+      console.log("ERRO NA CENA DO PERFIL!!!!!");
+    }
+  });
+}
+
+
+function onTeamFormSubmit() {
+  if(curr_leader_profile === "Operacional") {
+    var string_to_show = "ATENÇÃO!!\n\nO utilizador selecionado como líder tem o perfil 'Operacional'.\n\nUma vez " +
+        "que utilizadores com este perfil não podem liderar equipas, ao confirmar a ação, carregando no 'OK', " +
+        "o perfil deste utilizador será alterado para 'Gestor'.\nCarregue 'Cancelar' para escolher outro membro.";
+
+    if (confirm(string_to_show)) {
+      console.log("alterar o perfil deste sócio");
+      return true;
+    }
+    else {
+      console.log("caga nisso, vou escolher outro sóce");
+      return false; // return false to cancel form action
+    }
+  }
 }

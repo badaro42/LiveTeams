@@ -128,7 +128,10 @@ class TeamsController < ApplicationController
     # utilizador responsavel pela localização
     # vamos buscar a localização para esse utilizador e introduzimos na equipa
     @team.latlon = User.find(params[:team][:location_user_id]).latlon
-    @team.leader_id = params[:team][:is_leader].to_i
+    @team.leader_id = params[:team][:leader_id].to_i
+
+    # atualiza o papel do lider da equipa no caso deste ser 'Operacional'
+    update_leader_profile
 
     respond_to do |format|
       if @team.save
@@ -166,6 +169,10 @@ class TeamsController < ApplicationController
         params[:team].delete(:location_user_id)
       end
 
+      # atualiza o papel do lider da equipa no caso deste ser 'Operacional'
+      update_leader_profile
+
+      @team.leader_id = params[:team][:leader_id]
       @team.updated_at = Time.now
       if @team.update(team_params)
         # começamos por remover todas as entradas da tabela para esta equipa
@@ -176,9 +183,9 @@ class TeamsController < ApplicationController
           new_id = u_id.to_i
           leader_id = params[:team][:is_leader].to_i
           if new_id === leader_id
-            team_member = TeamMember.new(:user_id => new_id, :team_id => @team.id, :is_leader => true)
+            team_member = TeamMember.new(:user_id => new_id, :team_id => @team.id)
           else
-            team_member = TeamMember.new(:user_id => new_id, :team_id => @team.id, :is_leader => false)
+            team_member = TeamMember.new(:user_id => new_id, :team_id => @team.id)
           end
           team_member.save
         end
@@ -235,6 +242,24 @@ class TeamsController < ApplicationController
     end
   end
 
+  def update_leader_profile
+    leader = User.find(@team.leader_id) # o utilizador que vai ser lider da equipa
+
+    # caso o perfil seja 'operacional', atualizamos para gestor e atribuimos-lhe as novas permissoes
+    if leader.profile == Role::OPERACIONAL
+
+      puts "**********************************************"
+      puts "ALTERAR O PERFIL DO LIDER DESTA NOVA EQUIPA!!!"
+      puts "**********************************************"
+
+      leader.update(profile: Role::GESTOR)
+
+      curr_profile = UserRole.where(user_id: leader.id, role_id: Role.where(name: Role::OPERACIONAL).first.id).first
+      curr_profile.role_id = Role.where(name: Role::GESTOR).first.id
+      curr_profile.save
+    end
+  end
+
   # agrega todas as entidades que estejam associadas a esta equipa
   # este metodo só executa o codigo caso a equipa nao seja nula!
   def set_team_geo_entities
@@ -287,7 +312,7 @@ class TeamsController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def team_params
-    params.require(:team).permit(:name, :latlon_highlight, :location_user_id, :is_leader, users: [:id])
+    params.require(:team).permit(:name, :latlon_highlight, :location_user_id, :leader_id, users: [:id])
   end
 
 end

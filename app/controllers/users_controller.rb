@@ -42,6 +42,12 @@ class UsersController < ApplicationController
     render :nothing => true, :status => 200, :content_type => 'text/html'
   end
 
+  def get_user_profile
+    user_profile = User.find(params[:user_id].to_s).profile
+    render json: user_profile.to_json
+  end
+
+
   def new
     redirect_to root_path
   end

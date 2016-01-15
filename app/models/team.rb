@@ -7,7 +7,7 @@ class Team < ActiveRecord::Base
 
   belongs_to :user
 
-  attr_accessor :is_leader
+  # attr_accessor :leader_profile
   accepts_nested_attributes_for :team_members
   accepts_nested_attributes_for :users
 

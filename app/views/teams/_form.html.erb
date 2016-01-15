@@ -105,14 +105,14 @@
       <div id="choose_leader_dropdown" class="input-field col s12 m12 l6"
            style="margin-bottom: 20px; padding-top: 40px; margin-top: 0px;">
         <!-- A equipa não tem lider. P.e: quando estamos a criar uma nova equipa hehe -->
-        <% if @team_leader.nil? %>
-            <%= select_tag 'team[is_leader]', options_from_collection_for_select(@users_in_team, :id, :full_name),
-                           {prompt: 'Escolha um utilizador', class: 'browser-default', id: "select_team_leader",
+        <% if @team.leader_id.nil? %>
+            <%= select_tag 'team[leader_id]', options_from_collection_for_select(@users_in_team, :id, :full_name),
+                           {prompt: 'Escolha um utilizador...', class: 'browser-default', id: "select_team_leader",
                             required: true} %>
         <% else %>
-            <%= select_tag 'team[is_leader]', options_from_collection_for_select(
-                @users_in_team, :id, :full_name, @team_leader.user_id),
-                           {prompt: 'Escolha um utilizador', class: 'browser-default', id: "select_team_leader",
+            <%= select_tag 'team[leader_id]', options_from_collection_for_select(
+                @users_in_team, :id, :full_name, @team.leader_id),
+                           {prompt: 'Escolha um utilizador...', class: 'browser-default', id: "select_team_leader",
                             required: true} %>
         <% end %>
 
@@ -123,12 +123,12 @@
         <!-- A equipa não tem lider. P.e: quando estamos a criar uma nova equipa hehe -->
         <% if @team.location_user_id.nil? %>
             <%= select_tag 'team[location_user_id]', options_from_collection_for_select(@users_in_team, :id, :full_name),
-                           {prompt: 'Escolha um utilizador', class: 'browser-default', id: "select_team_position",
+                           {prompt: 'Escolha um utilizador...', class: 'browser-default', id: "select_team_position",
                             required: true} %>
         <% else %>
             <%= select_tag 'team[location_user_id]', options_from_collection_for_select(
                 @users_in_team, :id, :full_name, @team.location_user_id),
-                           {prompt: 'Escolha um utilizador', class: 'browser-default', id: "select_team_position",
+                           {prompt: 'Escolha um utilizador...', class: 'browser-default', id: "select_team_position",
                             required: true} %>
         <% end %>
 

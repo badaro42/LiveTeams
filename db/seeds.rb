@@ -240,6 +240,7 @@ Role.create(name: Role::ADMINISTRADOR)
 Role.create(name: Role::GESTOR)
 Role.create(name: Role::OPERACIONAL)
 Role.create(name: Role::BASICO)
+
 Role.create(name: Role::REMOVER_GEO_ENTIDADES)
 Role.create(name: Role::REMOVER_UTILIZADORES)
 Role.create(name: Role::GERIR_EQUIPAS_BASIC)
