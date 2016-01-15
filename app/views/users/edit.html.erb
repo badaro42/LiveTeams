@@ -63,50 +63,40 @@
             </div>
         <% end %>
 
-        <div id="optional" class="scrollspy col l12 s12" style="margin-top: 20px; padding: 0;">
-          <div class="section">
-            <h5 style="margin-left: 10px; display: inline;">Avatar/palavra-passe </h5>
-            <span>(deixe em branco se não quiser alterar)</span>
-          </div>
+        <% if @user.id == current_user.id %>
+            <div id="optional" class="scrollspy col l12 s12" style="margin-top: 20px; padding: 0;">
+              <div class="section">
+                <h5 style="margin-left: 10px; display: inline;">Avatar/palavra-passe </h5>
+                <span>(deixe em branco se não quiser alterar)</span>
+              </div>
 
-          <div class="input-field col s12 m12 l6">
-            <%= f.label "Nova palavra-passe (opcional)", class: "fixed-position" %>
-            <%= f.password_field :password, autocomplete: "off" %>
-          </div>
+              <div class="input-field col s12 m12 l6">
+                <%= f.label "Nova palavra-passe (opcional)", class: "fixed-position" %>
+                <%= f.password_field :password, autocomplete: "off" %>
+              </div>
 
-          <div class="input-field col s12 m12 l6">
-            <%= f.label "Confirme a palavra-passe", class: "fixed-position" %>
-            <%= f.password_field :password_confirmation, autocomplete: "off" %>
-          </div>
+              <div class="input-field col s12 m12 l6">
+                <%= f.label "Confirme a palavra-passe", class: "fixed-position" %>
+                <%= f.password_field :password_confirmation, autocomplete: "off" %>
+              </div>
 
-          <div class="file-field input-field col s12 m12 l12">
-            <div class="btn">
-              <span>Ficheiro</span>
-              <%= f.file_field :avatar, class: 'file' %>
+              <div class="file-field input-field col s12 m12 l12">
+                <div class="btn">
+                  <span>Ficheiro</span>
+                  <%= f.file_field :avatar, class: 'file' %>
+                </div>
+                <div class="file-path-wrapper">
+                  <input class="file-path validate" type="text" placeholder="Imagem de perfil">
+                </div>
+              </div>
             </div>
-            <div class="file-path-wrapper">
-              <input class="file-path validate" type="text" placeholder="Imagem de perfil">
-            </div>
-          </div>
-        </div>
+        <% end %>
 
         <div class="col s12 m12 l12 center-align" style="margin-top: 25px; margin-bottom: 15px;">
           <div class="actions">
             <%= f.submit 'Atualizar', id: 'update_user_profile', class: "btn waves-effect waves-light",
                          style: "width: 100%;" %>
           </div>
-        </div>
-      </div>
-
-      <div id="scroll" class="col l2 m2 hide-on-small-only right-align">
-        <div class="pushpin">
-          <ul id="user-edit-pushpin" class="table-of-contents">
-            <li><a href="#basic-info">Dados básicos</a></li>
-            <% if current_user.profile == Role::ADMINISTRADOR || current_user.profile == Role::GESTOR %>
-                <li><a href="#profile">Alterar papel</a></li>
-            <% end %>
-            <li><a href="#optional">Foto de perfil</a></li>
-          </ul>
         </div>
       </div>
   <% end %>
