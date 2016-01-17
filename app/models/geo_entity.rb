@@ -13,6 +13,9 @@ class GeoEntity < ActiveRecord::Base
   belongs_to :user
   belongs_to :team
 
+  has_many :team_geo_entities, dependent: :delete_all
+  has_many :teams, through: :team_geo_entities
+
   validates :user_id, presence: true
   validates :name, presence: true
   validates :latlon, presence: true

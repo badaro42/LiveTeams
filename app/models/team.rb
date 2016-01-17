@@ -1,9 +1,11 @@
 class Team < ActiveRecord::Base
   has_paper_trail
 
-  has_many :team_members, :dependent => :delete_all
+  has_many :team_members, dependent: :delete_all
   has_many :users, through: :team_members
-  has_many :geo_entities
+
+  has_many :team_geo_entities, dependent: :delete_all
+  has_many :geo_entities, through: :team_geo_entities
 
   belongs_to :user
 
