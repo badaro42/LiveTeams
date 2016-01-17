@@ -11,22 +11,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160113120115) do
+ActiveRecord::Schema.define(version: 20160117122237) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "postgis"
 
   create_table "geo_entities", force: :cascade do |t|
-    t.string    "name",                                                                                 null: false
-    t.geography "latlon",      limit: {:srid=>4326, :type=>"geometry", :geographic=>true},              null: false
-    t.integer   "user_id",                                                                              null: false
+    t.string    "name",                                                                    null: false
+    t.geography "latlon",      limit: {:srid=>4326, :type=>"geometry", :geographic=>true}, null: false
+    t.integer   "user_id",                                                                 null: false
     t.text      "description"
-    t.datetime  "created_at",                                                                           null: false
-    t.datetime  "updated_at",                                                                           null: false
-    t.string    "entity_type",                                                                          null: false
-    t.integer   "radius",                                                                               null: false
-    t.text      "team_ids",                                                                default: [],              array: true
+    t.datetime  "created_at",                                                              null: false
+    t.datetime  "updated_at",                                                              null: false
+    t.string    "entity_type",                                                             null: false
+    t.integer   "radius",                                                                  null: false
   end
 
   add_index "geo_entities", ["user_id"], name: "index_geo_entities_on_user_id", using: :btree
@@ -53,6 +52,16 @@ ActiveRecord::Schema.define(version: 20160113120115) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
+
+  create_table "team_geo_entities", force: :cascade do |t|
+    t.integer  "team_id"
+    t.integer  "geo_entity_id"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+  end
+
+  add_index "team_geo_entities", ["geo_entity_id"], name: "index_team_geo_entities_on_geo_entity_id", using: :btree
+  add_index "team_geo_entities", ["team_id"], name: "index_team_geo_entities_on_team_id", using: :btree
 
   create_table "team_members", force: :cascade do |t|
     t.integer  "team_id"
@@ -130,6 +139,8 @@ ActiveRecord::Schema.define(version: 20160113120115) do
   add_foreign_key "geo_entities", "users"
   add_foreign_key "role_permissions", "permissions"
   add_foreign_key "role_permissions", "roles"
+  add_foreign_key "team_geo_entities", "geo_entities"
+  add_foreign_key "team_geo_entities", "teams"
   add_foreign_key "team_members", "teams"
   add_foreign_key "team_members", "users"
   add_foreign_key "teams", "users", column: "leader_id"
