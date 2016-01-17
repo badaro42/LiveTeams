@@ -105,7 +105,7 @@ class RegistrationsController < Devise::RegistrationsController
     # verificamos se é lider de alguma equipa
     if (@user.profile == Role::ADMINISTRADOR || @user.profile == Role::GESTOR) &&
         (new_role == Role::OPERACIONAL || new_role == Role::BASICO)
-      
+
       teams_leading = Team.where(leader_id: @user.id)
       if teams_leading.length > 0
         raise UpdateFailed

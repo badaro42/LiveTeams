@@ -148,7 +148,7 @@
                     <strong>
                       <span style="font-size: 15px;"><%= team.name %></span>
                       <span> | </span>
-                      <% if team.leader_id == current_user.id %>
+                      <% if team.leader_id == @user.id %>
                           <span style="font-size: 12px;">Líder da equipa</span>
                       <% else %>
                           <span style="font-size: 12px;">Membro</span>

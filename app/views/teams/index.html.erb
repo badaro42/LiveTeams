@@ -42,25 +42,32 @@
     </li>
 <% end %>
 
-<div class="row" style="margin-top: 10px;">
+<div class="row" style="margin-top: 15px;">
   <div class="col l12 m12 s12 white z-depth-1" id="advanced_options" style="padding-bottom: 11px;">
     <div class="section" style="padding-bottom: 0;">
       <div id="toggle_options_panel" style="cursor: pointer;">
-        <!--<i id="arrow_down" class="material-icons left md-36" style="display: none;">keyboard_arrow_down</i>-->
         <i id="arrow_up" class="material-icons left md-36">keyboard_arrow_down</i>
       </div>
 
       <h5 style="margin-top: 4px;">Opções avançadas</h5>
     </div>
 
-    <div id="options_div" style="margin-top: 30px; display: none;">
-      <a class="waves-effect waves-light btn" id="expand_all" style="margin-bottom: 10px;">
-        Expandir todas as entradas
-      </a>
-      <br>
-      <a class="waves-effect waves-light btn" id="collapse_all">
-        Colapsar todas as entradas
-      </a>
+    <div id="options_div" style="margin-top: 25px; margin-left: 9px; display: none;">
+      <div class="row" style="margin-bottom: 10px;">
+        <div class="col l12 m12 s12">
+          <a class="waves-effect waves-light btn" id="expand_all">
+            Expandir todas as entradas
+          </a>
+        </div>
+      </div>
+
+      <div class="row" style="margin-bottom: 0;">
+        <div class="col l12 m12 s12">
+          <a class="waves-effect waves-light btn" id="collapse_all">
+            Colapsar todas as entradas
+          </a>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -72,7 +79,6 @@
           <li class="team-entry">
             <% arr_is_empty = true %>
             <% if !team.latlon.nil? %>
-                <% arr_coords = team.latlon.to_s.split('(')[1].split(')')[0].split(' ') %>
                 <% arr_is_empty = false %>
             <% end %>
             <div class="collapsible-header truncate">
@@ -84,7 +90,6 @@
               <% if arr_is_empty %>
                   [Sem localização definida]
               <% else %>
-                  <!--[<%#= arr_coords[1] %>; <%= arr_coords[0] %>]-->
                   <%= team.address %>
               <% end %>
             </div>
@@ -94,7 +99,8 @@
                 <% team_users.each do |user| %>
                     <%= link_to user, method: :get do %>
                         <%= user.full_name %>,
-                    <% end %> <%= user.profile %>
+                    <% end %>
+                    <%= user.profile %>
                     <br>
                 <% end %>
               </blockquote>
@@ -105,8 +111,10 @@
   </div>
 
   <div class="no-results col l6 m8 s10 push-l3 push-m2 push-s1 center-align" style="margin-top: 30px;">
-    <i><span>Nenhuma equipa corresponde à pesquisa efetuada...</span>
+    <i>
+      <span>Nenhuma equipa corresponde à pesquisa efetuada...</span>
       <br>
-      <span>Tente refinar a pesquisa para obter resultados.</span></i>
+      <span>Tente refinar a pesquisa para obter resultados.</span>
+    </i>
   </div>
 </div>

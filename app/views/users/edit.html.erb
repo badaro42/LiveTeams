@@ -24,9 +24,18 @@
 <div class="row" style="margin-top: 20px;">
   <%= form_for(@user) do |f| %>
       <div class="col l12 m12 s12 z-depth-1 white">
-        <div id="basic-info" class="scrollspy col l12 s12" style="padding: 0;">
+
+        <h3 style="padding-left: 8px; margin-top: 0; padding-top: 25px; margin-bottom: 25px; font-weight: 200;">
+          <% if @user.id == current_user.id %>
+              Editar <span style="font-weight: 300;">o seu próprio perfil</span>
+          <% else %>
+              Editar o perfil de <span style="font-weight: 300;"><%= @user.full_name %></span>
+          <% end %>
+        </h3>
+
+        <div class="col l12 s12" style="padding: 0;">
           <div class="section">
-            <h5 style="margin-left: 10px;">Dados do <%= @user.first_name %></h5>
+            <h5 style="margin-left: 10px;">Dados básicos</h5>
           </div>
 
           <div class="input-field col s12 m6 l6">
@@ -52,7 +61,7 @@
 
         <!-- apenas os admins e os gestores podem alterar o seu proprio perfil -->
         <% if current_user.profile == Role::ADMINISTRADOR || current_user.profile == Role::GESTOR %>
-            <div id="profile" class="scrollspy col l12 s12" style="margin-top: 20px; padding: 0;">
+            <div class="col l12 s12" style="margin-top: 20px; padding: 0;">
               <div class="section">
                 <h5 style="margin-left: 10px; display: inline;">Alterar perfil do utilizador</h5>
               </div>
@@ -64,9 +73,9 @@
         <% end %>
 
         <% if @user.id == current_user.id %>
-            <div id="optional" class="scrollspy col l12 s12" style="margin-top: 20px; padding: 0;">
+            <div class="col l12 s12" style="margin-top: 20px; padding: 0;">
               <div class="section">
-                <h5 style="margin-left: 10px; display: inline;">Avatar/palavra-passe </h5>
+                <h5 style="margin-left: 10px; display: inline;">Palavra-passe </h5>
                 <span>(deixe em branco se não quiser alterar)</span>
               </div>
 
@@ -79,18 +88,24 @@
                 <%= f.label "Confirme a palavra-passe", class: "fixed-position" %>
                 <%= f.password_field :password_confirmation, autocomplete: "off" %>
               </div>
-
-              <div class="file-field input-field col s12 m12 l12">
-                <div class="btn">
-                  <span>Ficheiro</span>
-                  <%= f.file_field :avatar, class: 'file' %>
-                </div>
-                <div class="file-path-wrapper">
-                  <input class="file-path validate" type="text" placeholder="Imagem de perfil">
-                </div>
-              </div>
             </div>
         <% end %>
+
+        <div class="col l12 s12" style="margin-top: 20px; padding: 0;">
+          <div class="section">
+            <h5 style="margin-left: 10px; display: inline;">Foto de perfil</h5>
+          </div>
+
+          <div class="file-field input-field col s12 m12 l12">
+            <div class="btn">
+              <span>Ficheiro</span>
+              <%= f.file_field :avatar, class: 'file' %>
+            </div>
+            <div class="file-path-wrapper">
+              <input class="file-path validate" type="text" placeholder="Imagem de perfil">
+            </div>
+          </div>
+        </div>
 
         <div class="col s12 m12 l12 center-align" style="margin-top: 25px; margin-bottom: 15px;">
           <div class="actions">

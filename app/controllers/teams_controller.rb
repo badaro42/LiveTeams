@@ -1,6 +1,5 @@
 class TeamsController < ApplicationController
   before_action :set_team, only: [:show, :edit, :update, :destroy]
-  before_action :set_team_geo_entities, only: [:show, :destroy]
   before_filter :authenticate_user!
   require 'encode_to_json'
   layout "listings"
@@ -199,7 +198,7 @@ class TeamsController < ApplicationController
     end
 
   rescue AccessDenied
-    flash[:error] = "Não tem permissão para editar equipas."
+    flash[:error] = "Não tem permissão para editar esta equipa."
     redirect_to @team
   end
 
@@ -209,14 +208,7 @@ class TeamsController < ApplicationController
     custom_authorize! :destroy, @team
 
     team_name = @team.name
-    team_id = @team.id.to_s
-    @team.destroy # elimina a equipa. se o delete for bem sucedido, removemos os ids da equipa das geo-entidades
-
-    if @team.destroyed?
-      @team_geo_entities.each do |geo_entity|
-        geo_entity.team_ids.delete(team_id)
-      end
-
+    if @team.destroy
       respond_to do |format|
         format.html { redirect_to teams_url, success: "A equipa '" + team_name + "' foi removida com sucesso!" }
         format.json { head :no_content }
@@ -257,15 +249,6 @@ class TeamsController < ApplicationController
       curr_profile = UserRole.where(user_id: leader.id, role_id: Role.where(name: Role::OPERACIONAL).first.id).first
       curr_profile.role_id = Role.where(name: Role::GESTOR).first.id
       curr_profile.save
-    end
-  end
-
-  # agrega todas as entidades que estejam associadas a esta equipa
-  # este metodo só executa o codigo caso a equipa nao seja nula!
-  def set_team_geo_entities
-    unless @team.nil?
-      @team_geo_entities = GeoEntity.find_by_sql("select * from geo_entities where '" +
-                                                     @team.id.to_s + "' = ANY(team_ids);")
     end
   end
 

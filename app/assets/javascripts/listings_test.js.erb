@@ -128,7 +128,7 @@ $(document).ready(function () {
       $('#select-undo-btn').on('click', setDefaultSelectedEntries);
 
       $('#select_team_leader').on('change', leaderDropdownOnChange);
-      $('#edit_team_'+gon.current_team_id).submit(onTeamFormSubmit);
+      $('#edit_team_' + gon.current_team_id).submit(onTeamFormSubmit);
 
       curr_team_leader_id = $('#choose_leader_dropdown').find(':selected').val();
       curr_team_location_id = $('#select_team_position').find(':selected').val();
@@ -354,30 +354,7 @@ $(document).ready(function () {
       console.log("PÁGINA COM TODOS AS EQUIPAS!!!");
       initSearchEngine('team');
 
-      $('#expand_all').on('click', toggleEntriesClass);
-      $('#collapse_all').on('click', toggleEntriesClass);
-
-      // anima a rotação do botao para expandir/colapsar a div
-      $("#arrow_up").rotate({
-        bind: {
-          click: function () {
-            if (advanced_options_open)
-              $(this).rotate({angle: 0, animateTo: -180});
-            else
-              $(this).rotate({angle: -180, animateTo: 0});
-          }
-        }
-      });
-
-      // anima a div qque contem as opções avançadas de filtragem
-      $('#toggle_options_panel').on('click', function () {
-        if (advanced_options_open) // painel esta aberto -> vamos fechar
-          $('#options_div').slideUp();
-        else
-          $('#options_div').slideDown();
-
-        advanced_options_open = !advanced_options_open;
-      });
+      initAdvancedOptions('team');
     }
   }
   // estamos na pagina para apresentar utilizador - p.e. /users/12
@@ -432,6 +409,8 @@ $(document).ready(function () {
 
       console.log("PÁGINA COM TODOS OS UTILIZADORES!!!");
       initSearchEngine('user');
+
+      initAdvancedOptions('user');
     }
   }
 
@@ -905,7 +884,7 @@ function leaderDropdownOnChange(e) {
 
 
 function onTeamFormSubmit() {
-  if(curr_leader_profile === "Operacional") {
+  if (curr_leader_profile === "Operacional") {
     var string_to_show = "ATENÇÃO!!\n\nO utilizador selecionado como líder tem o perfil 'Operacional'.\n\nUma vez " +
         "que utilizadores com este perfil não podem liderar equipas, ao confirmar a ação, carregando no 'OK', " +
         "o perfil deste utilizador será alterado para 'Gestor'.\nCarregue 'Cancelar' para escolher outro membro.";
@@ -919,4 +898,37 @@ function onTeamFormSubmit() {
       return false; // return false to cancel form action
     }
   }
+}
+
+function initAdvancedOptions(param) {
+
+  if (param === 'user') {
+
+  }
+  else if(param === 'team') {
+    $('#expand_all').on('click', toggleEntriesClass);
+    $('#collapse_all').on('click', toggleEntriesClass);
+  }
+
+  // anima a rotação do botao para expandir/colapsar a div
+  $("#arrow_up").rotate({
+    bind: {
+      click: function () {
+        if (advanced_options_open)
+          $(this).rotate({angle: -180, animateTo: 0});
+        else
+          $(this).rotate({angle: 0, animateTo: 180});
+      }
+    }
+  });
+
+  // anima a div qque contem as opções avançadas de filtragem
+  $('#toggle_options_panel').on('click', function () {
+    if (advanced_options_open) // painel esta aberto -> vamos fechar
+      $('#options_div').slideUp();
+    else
+      $('#options_div').slideDown();
+
+    advanced_options_open = !advanced_options_open;
+  });
 }
