@@ -127,8 +127,9 @@ label {
     margin-top: 15px;
   }
 
-  nav img {
-    margin-top: 3px;
+  #navbar-icon-div img {
+    margin-top: 7px;
+    margin-right: 10px;
   }
 
   /*botao que ativa a caixa de pesquisa. regra aplicada apenas em ecras pequenos*/
@@ -166,8 +167,9 @@ label {
     margin-top: 20px;
   }
 
-  nav img {
-    margin-top: 7px;
+  #navbar-icon-div img {
+    margin-top: 11px;
+    margin-right: 10px;
   }
 
   .hero {
@@ -193,6 +195,15 @@ label {
   // override da largura do container nos ecras maiores!
   .container {
     width: 80% !important;
+  }
+
+  #navbar-icon-div {
+    padding: 0 15px 0 15px;
+  }
+
+  #navbar-icon-div img {
+    margin-top: 11px;
+    margin-right: 10px;
   }
 
   #teams_info_div,
@@ -221,9 +232,9 @@ label {
     padding: 0px;
   }
 
-  nav img {
-    margin-top: 15%;
-  }
+  //nav img {
+  //  margin-top: 15%;
+  //}
 
   .hero {
     height: 400px;

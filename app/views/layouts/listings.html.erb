@@ -28,11 +28,9 @@
       <ul class="left navbar-buttons">
         <li>
           <%= link_to 'http://www.prociv.pt/Pages/default.aspx', target: '_blank', id: 'navbar-icon-div',
-                      style: 'font-size: 1.2rem; font-weight: 200; margin-top: 0;',
+                      style: 'font-size: 1.2rem; font-weight: 100; margin-top: 0;',
                       class: 'navbar-padding-top brand-logo left', method: :get do %>
-              <!--<i id="navbar-map-btn" class="material-icons left">map</i>Mapa-->
-              <%= image_tag 'prociv_logotipo.gif', class: 'circle left',
-                            style: 'margin-top: 8px; margin-right: 10px;', height: '48', width: '48' %>
+              <%= image_tag 'prociv_logotipo.gif', class: 'circle left', height: '42', width: '42' %>
               <span>PROCIV</span>
           <% end %>
           </a>
@@ -51,23 +49,7 @@
               <%= current_user.first_name %><i class="material-icons right">arrow_drop_down</i>
           <% end %>
         </li>
-        <% if @show_search_stuff %>
-            <li>
-              <a href="#!" class="navbar-button" id="toggle-search">
-                <i class="material-icons">search</i>
-              </a>
-            </li>
-        <% end %>
       </ul>
-      <% if @show_search_stuff %>
-          <ul class="right hide-on-large-only">
-            <li id="navbar-search-btn">
-              <a href="#!" class="navbar-button" id="toggle-search">
-                <i class="material-icons">search</i>
-              </a>
-            </li>
-          </ul>
-      <% end %>
 
       <ul id="dropdown-profile" class="dropdown-content">
         <li>
@@ -144,8 +126,6 @@
     </div>
   </nav>
 </div>
-
-<%= yield(:search_stuff) %>
 
 <div class="container" id="page-content">
   <%= yield(:model_actions) %>

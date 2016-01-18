@@ -15,7 +15,7 @@
             <%= image_tag user.avatar.url(:thumb), height: 40, width: 40, class: "circle" %>
           </td>
           <td>
-            <%= link_to user.full_name, user %>
+            <%= link_to user.full_name, user, method: :get %>
           </td>
           <td>
             <%= user.profile %>

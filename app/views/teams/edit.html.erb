@@ -1,12 +1,9 @@
 <%# encoding: utf-8 %>
 
-<% @create_new_team = false %>
-<% @show_search_stuff = false %>
-<% @show_new_team_btn = false %>
 <% content_for :title, "Editar equipa :: PROCIV Portugal" %>
-
 <% content_for :back_page do %>
-    <%= link_to @team, :data => {:position => 'right', :delay => '0', :tooltip => 'Voltar para a equipa '+@team.id.to_s},
+    <%= link_to @team, :data => {:position => 'right', :delay => '0',
+                                 :tooltip => 'Voltar para a equipa '+@team.id.to_s},
                 class: 'tooltipped navbar-button', method: :get do %>
         <i class="material-icons md-36 white-text">arrow_back</i>
     <% end %>
