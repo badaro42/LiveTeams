@@ -24,19 +24,42 @@ class TeamsController < ApplicationController
   def index
     custom_authorize! :read, Team
 
-    # dropdown das equipas no mapa
-    if params[:origin] === "dropdown_teams"
-      if current_user.profile === Role::ADMINISTRADOR || current_user.profile === Role::GESTOR
-        @teams = Team.all.order(id: :asc)
-        # elsif current_user.profile === User::OPERACIONAL
-        # TODO: APENAS PARA TESTES!!!! remover a condição abaixo e colocar a que esta comentada
-      elsif current_user.profile === Role::OPERACIONAL || current_user.profile === Role::BASICO
-        tm = TeamMember.where(user_id: current_user.id).map(&:team_id).flatten
-        @teams = Team.find(tm)
-      end
-    else
-      @teams = Team.all.order(id: :asc)
+    # # dropdown das equipas no mapa
+    # if params[:origin] === "dropdown_teams"
+    #   if current_user.profile === Role::ADMINISTRADOR || current_user.profile === Role::GESTOR
+    #     @teams = Team.all.order(id: :asc)
+    #     # elsif current_user.profile === User::OPERACIONAL
+    #     # TODO: APENAS PARA TESTES!!!! remover a condição abaixo e colocar a que esta comentada
+    #   elsif current_user.profile === Role::OPERACIONAL || current_user.profile === Role::BASICO
+    #     tm = TeamMember.where(user_id: current_user.id).map(&:team_id).flatten
+    #     @teams = Team.find(tm)
+    #   end
+    # else
+    #   @teams = Team.all.order(id: :asc)
+    # end
+
+
+    @filterrific = initialize_filterrific(
+        Team,
+        params[:filterrific],
+        select_options: {
+            sorted_by: Team.options_for_sorted_by
+            # with_role_name: Role.options_for_select
+        }
+    ) or return
+
+    @teams = @filterrific.find.page(params[:page])
+
+    respond_to do |format|
+      format.html
+      format.js
     end
+
+
+  rescue ActiveRecord::RecordNotFound => e
+    # There is an issue with the persisted param_set. Reset it.
+    puts "Had to reset filterrific params: #{ e.message }"
+    redirect_to(reset_filterrific_url(format: :html)) and return
 
   rescue AccessDenied
     flash[:error] = "Não tem permissão para visualizar equipas."

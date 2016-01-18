@@ -83,8 +83,8 @@ class User < ActiveRecord::Base
         order("users.created_at #{ direction }")
       when /^name_/
         order("LOWER(users.first_name) #{ direction }, LOWER(users.last_name) #{ direction }")
-      when /^country_name_/
-        order("LOWER(countries.name) #{ direction }").includes(:country)
+      # when /^country_name_/
+      #   order("LOWER(countries.name) #{ direction }").includes(:country)
       else
         raise(ArgumentError, "Invalid sort option: #{ sort_option.inspect }")
     end

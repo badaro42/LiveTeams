@@ -6,8 +6,16 @@ pt:
         one: utilizador
         few: utilizadores
         other: utilizadores
+      team:
+        zero: equipas
+        one: equipa
+        few: equipas
+        other: equipas
       entry:
-        zero: resultado
+        zero: resultados
+        one: resultado
+        few: resultados
+        other: resultados
     next_label: próximo →
     page_entries_info:
       multi_page: Mostrando %{from} - %{to} %{model} de um total de %{count}

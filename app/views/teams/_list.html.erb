@@ -1,0 +1,49 @@
+<div class="white z-depth-1">
+  <p style="padding: 20px 0 20px 0; margin-bottom: 0; margin-left: 2%; margin-right: 2%;">
+    <%= page_entries_info teams %>
+    <%= render_filterrific_spinner %>
+  </p>
+
+  <div class="divider" style="width: 96%; margin-left: 2%; margin-bottom: 15px;"></div>
+
+  <ul class="collapsible" data-collapsible="expandable" style="margin-left: 2%; margin-right: 2%; width: 96%;">
+    <% teams.each do |team| %>
+        <li class="team-entry">
+          <% arr_is_empty = true %>
+          <% if !team.latlon.nil? %>
+              <% arr_is_empty = false %>
+          <% end %>
+          <div class="collapsible-header truncate">
+            <strong>
+              <%= link_to team, method: :get do %>
+                  <span class="team-title"><%= team.name %></span>
+              <% end %> |
+            </strong>
+            <% if arr_is_empty %>
+                [Sem localização definida]
+            <% else %>
+                <%= team.address %>
+            <% end %>
+          </div>
+          <div class="collapsible-body">
+            <blockquote style="margin-left: 15px; margin-top: 10px; margin-bottom: 10px;">
+              <% team_users = team.users %>
+              <% team_users.each do |user| %>
+                  <%= link_to user, method: :get do %>
+                      <%= user.full_name %>,
+                  <% end %>
+                  <%= user.profile %>
+                  <br>
+              <% end %>
+            </blockquote>
+          </div>
+        </li>
+    <% end %>
+  </ul>
+
+  <div class="divider center" style="width: 96%; margin-left: 2%; margin-top: 15px;"></div>
+
+  <div class="center">
+    <%= will_paginate teams %>
+  </div>
+</div>

@@ -1,0 +1,8 @@
+<% js = escape_javascript(render partial: 'list', locals: { teams: @teams }) %>
+
+$("#results").html("<%= js %>");
+
+// é necessário reinicializar as entradas, senão não expandem
+$('.collapsible').collapsible({
+  accordion : false
+});
