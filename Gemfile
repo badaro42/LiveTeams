@@ -67,6 +67,10 @@ gem 'gon'
 # gem 'cancancan', '~> 1.10'
 # gem 'rolify'
 
+gem 'filterrific'
+gem 'will_paginate', '~> 3.0.6'
+gem 'will_paginate-materialize'
+
 # ----------------------------------------------
 
 

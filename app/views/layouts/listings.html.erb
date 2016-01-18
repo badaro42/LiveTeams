@@ -9,12 +9,11 @@
 
   <%= Gon::Base.render_data({}) %>
 
+  <%#= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track' => true %>
   <%= stylesheet_link_tag 'application', media: 'all' %>
   <%= stylesheet_link_tag 'listings_test' %>
 
-  <!-- ativar esta linha no final do trabalho para permitir cache -->
-  <%#= javascript_include_tag 'application', 'listings_test', :cache => 'cached/all' %>
-
+  <%#= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
   <%= javascript_include_tag 'application' %>
   <%= javascript_include_tag 'listings_test' %>
   <%= csrf_meta_tags %>

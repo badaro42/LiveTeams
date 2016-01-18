@@ -55,7 +55,29 @@ class UsersController < ApplicationController
   def index
     custom_authorize! :read, User
 
-    @users = User.all.order(first_name: :asc, last_name: :asc)
+    @filterrific = initialize_filterrific(
+        User,
+        params[:filterrific],
+        select_options: {
+            sorted_by: User.options_for_sorted_by,
+            with_role_name: Role.options_for_select
+        }
+    ) or return
+
+    @users = @filterrific.find.page(params[:page])
+
+    respond_to do |format|
+      format.html
+      format.js
+    end
+
+
+      # @users = User.all.order(first_name: :asc, last_name: :asc)
+
+  rescue ActiveRecord::RecordNotFound => e
+    # There is an issue with the persisted param_set. Reset it.
+    puts "Had to reset filterrific params: #{ e.message }"
+    redirect_to(reset_filterrific_url(format: :html)) and return
 
   rescue AccessDenied
     flash[:error] = "Não tem permissão para visualizar utilizadores."
@@ -86,8 +108,8 @@ class UsersController < ApplicationController
     redirect_to root_path
   end
 
-  # obtemos primeiro o user pois há 2 endereços que são servidos por este metodo:
-  # /account/edit e /users/:id/edit
+# obtemos primeiro o user pois há 2 endereços que são servidos por este metodo:
+# /account/edit e /users/:id/edit
   def edit
     if params[:id] == nil
       @user = User.find(current_user.id)
@@ -156,17 +178,17 @@ class UsersController < ApplicationController
 
 
   private
-  # Use callbacks to share common setup or constraints between actions.
+# Use callbacks to share common setup or constraints between actions.
   def set_user
     if User.exists?(params[:id].to_i)
       @user = User.find(params[:id])
     end
   end
 
-  # recebe como parametro o novo perfil do utilizador
-  # faz uma query à BD para obter o papel atual do utilizador, altera-o e volta a gravar o tuplo
-  # NOTA: só permite atualizar o perfil de ADMIN ou GESTOR para OPERACIONAL ou BASICO caso o user nao seja lider
-  # de nenhum equipa
+# recebe como parametro o novo perfil do utilizador
+# faz uma query à BD para obter o papel atual do utilizador, altera-o e volta a gravar o tuplo
+# NOTA: só permite atualizar o perfil de ADMIN ou GESTOR para OPERACIONAL ou BASICO caso o user nao seja lider
+# de nenhum equipa
   def update_user_role(new_role)
 
     # verificamos se é lider de alguma equipa
@@ -188,4 +210,5 @@ class UsersController < ApplicationController
     params.require(:user).permit(:first_name, :last_name, :email, :password, :password_confirmation, :avatar,
                                  :profile, :phone_number)
   end
+
 end

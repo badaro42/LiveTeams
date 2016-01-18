@@ -31,3 +31,4 @@
 //= require leaflet.spin
 //= require jquery.noty.packaged.min
 //= require jqueryRotate.min
+//= require filterrific/filterrific-jquery

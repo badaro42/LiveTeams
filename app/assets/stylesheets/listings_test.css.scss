@@ -2,8 +2,6 @@ body, html {
   font-weight: 300;
 }
 
-
-
 /* ------------------------------------------ */
 .fixed-position {
   left: auto !important;
@@ -197,7 +195,6 @@ label {
     width: 80% !important;
   }
 
-
   #teams_info_div,
   #profile-user-info {
     margin-right: 3.3%;
@@ -287,9 +284,9 @@ label {
 }
 
 /* cena da pesquisa */
-.highlight {
-  background-color: #fffd77;
-}
+//.highlight {
+//  background-color: #fffd77;
+//}
 
 .is-hidden {
   display: none;
@@ -311,9 +308,6 @@ label {
   margin-top: 0;
 }
 
-
-
-
 #profile-sidenav {
   background-image: image-url("google_back_black_red.jpg");
   background-repeat: no-repeat;
@@ -321,12 +315,10 @@ label {
   background-size: cover;
 }
 
-
 .navbar-buttons a.active {
   border: none;
   background-color: rgba(0, 0, 0, 0.1);
 }
-
 
 //REGRAS PARA O MULTIPLE SELECT NO FORM DAS EQUIPAS!
 @media only screen and (max-width: 992px) {
@@ -338,7 +330,6 @@ label {
     margin-top: 20px;
   }
 }
-
 
 .sidenav-entry {
   padding: 0 !important;
@@ -353,8 +344,17 @@ label {
   width: 100%;
 }
 
-
 // regras para a pagina de edição do utilizador
 #update_user_profile {
   width: 100%;
+}
+
+
+
+
+.nice-trick {
+  margin: 0;
+  border-bottom-width: 0;
+  border-top-width: 0;
+  display: inline-block;
 }

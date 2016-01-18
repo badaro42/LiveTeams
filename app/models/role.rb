@@ -22,4 +22,12 @@ class Role < ActiveRecord::Base
   GERIR_EQUIPAS_E_MEMBROS_EQUIPA = "Gerir equipas e membros de equipas"
   EDITAR_TODOS_UTILIZADORES = "Editar todos os utilizadores"
   EDITAR_TODAS_EQUIPAS = "Editar todas as equipas"
+
+  # todos os papeis que existam na base de dados
+  # a primeira linha apenas apresenta os 4 papeis principais
+  # a segunda linha apenas todos os papeis que estejam na BD
+  def self.options_for_select
+    order('id').where('id <= ?', 4).map { |e| [e.name, e.name] }
+    # order('id').map { |e| [e.name, e.id] }
+  end
 end

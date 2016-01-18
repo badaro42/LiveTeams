@@ -1,0 +1,41 @@
+<div class="white z-depth-1">
+  <p style="padding: 20px 0 20px 0; margin-bottom: 0; margin-left: 2%; margin-right: 2%;">
+    <%= page_entries_info @users %>
+    <%= render_filterrific_spinner %>
+  </p>
+
+  <div class="divider" style="width: 96%; margin-left: 2%; margin-bottom: 15px;"></div>
+
+  <table class="highlight centered responsive-table" style="margin-left: 2%; margin-right: 2%; width: 96%;">
+    <tbody>
+
+    <% users.each do |user| %>
+        <tr>
+          <td style="padding-top: 8px; padding-bottom: 5px;">
+            <%= image_tag user.avatar.url(:thumb), height: 40, width: 40, class: "circle" %>
+          </td>
+          <td>
+            <%= link_to user.full_name, user %>
+          </td>
+          <td>
+            <%= user.profile %>
+          </td>
+          <td>
+            <%= user.email %>
+          </td>
+          <td>
+            <%= user.phone_number %>
+          </td>
+        </tr>
+    <% end %>
+
+    </tbody>
+  </table>
+
+  <div class="divider center" style="width: 96%; margin-left: 2%; margin-top: 15px;"></div>
+
+  <div class="center">
+    <%= will_paginate @users %>
+  </div>
+</div>
+
