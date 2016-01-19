@@ -1,0 +1,32 @@
+<%# encoding: utf-8 %>
+
+<% content_for :title, "Permissões :: PROCIV Portugal" %>
+<% content_for :navbar_buttons do %>
+    <li>
+      <%= link_to root_path, class: 'navbar-button', method: :get do %>
+          Mapa
+      <% end %>
+    </li>
+    <li>
+      <%= link_to permissions_path, class: 'active navbar-button', method: :get do %>
+          Permissões
+      <% end %>
+    </li>
+    <li>
+      <%= link_to teams_path, class: 'navbar-button', method: :get do %>
+          Equipas
+      <% end %>
+    </li>
+    <li>
+      <%= link_to users_path, class: 'navbar-button', method: :get do %>
+          Membros
+      <% end %>
+    </li>
+<% end %>
+
+<div class="row" style="margin: 10px 0 0 0;">
+  <div class="" style="padding: 15px; margin-bottom: 15px;">
+    <h3 style="font-weight: 200; margin: 0;">Permissões</h3>
+    <div class="divider" style="margin-top: 5px;"></div>
+  </div>
+</div>
