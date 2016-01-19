@@ -13,6 +13,7 @@ Rails.application.routes.draw do
   get '/geo_entities/geo_entities_to_json', to: 'geo_entities#geo_entities_to_json'
   get '/teams/reverse_geocode_coords', to: 'teams#reverse_geocode_coords'
   get '/geocode_location', to: 'homepage#geocode_location'
+  get '/teams/get_teams_by_profile', to: 'teams#get_teams_by_profile'
 
   # rota para obter o perfil do utilizador
   get 'users/get_user_profile', to: 'users#get_user_profile'

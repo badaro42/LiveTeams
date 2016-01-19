@@ -5,7 +5,8 @@ class Team < ActiveRecord::Base
   filterrific default_filter_params: {sorted_by: 'name_asc'},
               available_filters: %w[
                   sorted_by
-                  search_query
+                  search_team_query
+                  search_team_member_query
                   with_role_name
               ]
 
@@ -36,9 +37,8 @@ class Team < ActiveRecord::Base
   attr_reader :latitude, :longitude
 
 
-
   # o escopo para quando o utilizador insere uma pesquisa
-  scope :search_query, lambda { |query|
+  scope :search_team_query, lambda { |query|
     return nil if query.blank?
     # condition query, parse into individual keywords
     terms = query.downcase.split(/\s+/)
@@ -60,6 +60,33 @@ class Team < ActiveRecord::Base
         }.join(' AND '),
         *terms.map { |e| [e] * num_or_conditions }.flatten
     )
+  }
+
+  # o escopo para quando o utilizador insere uma pesquisa
+  scope :search_team_member_query, lambda { |query|
+    return nil if query.blank?
+    # condition query, parse into individual keywords
+    terms = query.downcase.split(/\s+/)
+    # replace "*" with "%" for wildcard searches,
+    # append '%', remove duplicate '%'s
+    terms = terms.map { |e|
+      (e.gsub('*', '%') + '%').gsub(/%+/, '%')
+    }
+    # configure number of OR conditions for provision
+    # of interpolation arguments. Adjust this if you
+    # change the number of OR conditions.
+    num_or_conditions = 2
+
+    where(
+        terms.map {
+          or_clauses = [
+              "LOWER(users.first_name) LIKE ?",
+              "LOWER(users.last_name) LIKE ?"
+          ].join(' OR ')
+          "(#{ or_clauses })"
+        }.join(' AND '),
+        *terms.map { |e| [e] * num_or_conditions }.flatten
+    ).joins(:team_members).joins(:users).group("teams.id")
   }
 
   scope :sorted_by, lambda { |sort_option|
@@ -88,7 +115,6 @@ class Team < ActiveRecord::Base
     # ['Perfil (a-z)', 'country_name_asc']
     ]
   end
-
 
 
   def users=(users)

@@ -571,11 +571,8 @@ $(document).ready(function () {
     // assim garante-se que as equipas para selecionar estão sempre de acordo com a base de dados!
     $.ajax({
       type: "GET",
-      url: "/teams",
+      url: "/teams/get_teams_by_profile",
       dataType: "json",
-      data: {
-        origin: "dropdown_teams"
-      },
       success: function (res) {
         console.log(res.length);
 

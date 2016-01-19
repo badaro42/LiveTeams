@@ -1,12 +1,24 @@
 <div class="white z-depth-1">
-  <p style="padding: 20px 0 20px 0; margin-bottom: 0; margin-left: 2%; margin-right: 2%;">
-    <%= page_entries_info teams %>
-    <%= render_filterrific_spinner %>
-  </p>
+  <div style="padding: 20px 0 20px 0; margin-bottom: 0; margin-left: 2%; margin-right: 2%;">
+    <div>
+      <div style="display: inline-block;">
+        <%= page_entries_info teams %>
+        <%= render_filterrific_spinner %>
+      </div>
+      <div class="right" style="display: inline-block; margin-top: -7px;">
+        <%= link_to(
+                'Repor filtros',
+                reset_filterrific_url,
+                method: :get,
+                class: "right btn waves-effect"
+            ) %>
+      </div>
+    </div>
+  </div>
 
   <div class="divider" style="width: 96%; margin-left: 2%; margin-bottom: 15px;"></div>
 
-  <ul class="collapsible" data-collapsible="expandable" style="margin-left: 2%; margin-right: 2%; width: 96%;">
+  <ul class="collapsible " data-collapsible="expandable" style="margin-left: 2%; margin-right: 2%; width: 96%;">
     <% teams.each do |team| %>
         <li class="team-entry">
           <% arr_is_empty = true %>
@@ -43,7 +55,7 @@
 
   <div class="divider center" style="width: 96%; margin-left: 2%; margin-top: 15px;"></div>
 
-  <div class="center">
+  <div id="pagination_stuff" class="center">
     <%= will_paginate teams %>
   </div>
 </div>

@@ -29,4 +29,31 @@
     <h3 style="font-weight: 200; margin: 0;">Permissões</h3>
     <div class="divider" style="margin-top: 5px;"></div>
   </div>
+
+  <!--<div class="white z-depth-1" style="padding: 15px 10px 0 10px;">-->
+    <!--<%= form_for_filterrific @filterrific do |f| %>-->
+
+        <!--<div class="col l4 m12 s12 input-field">-->
+          <!--Pesquisar-->
+          <%= f.text_field(
+#                   :search_query,
+#                   class: 'filterrific-periodically-observed'
+              ) %>
+        <!--</div>-->
+
+        <!--<div class="col l4 m6 s12 input-field">-->
+          <!--Filtrar por perfil-->
+          <%= f.select :with_role_name,
+#                        @filterrific.select_options[:with_role_name],
+                       {:include_blank => '- Qualquer perfil -'} %>
+        <!--</div>-->
+
+        <!--<div class="col l4 m6 s12 input-field">-->
+          <!--Ordenar por-->
+          <!--<%= f.select(:sorted_by, @filterrific.select_options[:sorted_by]) %>-->
+        <!--</div>-->
+
+        <!--<hr class="nice-trick">-->
+    <!--<% end %>-->
+  <!--</div>-->
 </div>
