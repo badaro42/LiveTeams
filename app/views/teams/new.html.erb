@@ -3,23 +3,30 @@
 <% content_for :title, "Nova equipa :: PROCIV Portugal" %>
 <% content_for :navbar_buttons do %>
     <li>
-      <%= link_to root_path, class: 'navbar-button', target: '_blank', method: :get do %>
+      <%= link_to root_path, class: 'navbar-button', method: :get do %>
           Mapa
       <% end %>
     </li>
+    <% if current_user.profile == Role::ADMINISTRADOR %>
+        <li>
+          <%= link_to permissions_path, class: 'navbar-button', method: :get do %>
+              Permissões
+          <% end %>
+        </li>
+    <% end %>
     <li>
-      <%= link_to teams_path, class: 'navbar-button active', target: '_blank', method: :get do %>
+      <%= link_to teams_path, class: 'navbar-button active', method: :get do %>
           Equipas
       <% end %>
     </li>
     <li>
-      <%= link_to users_path, class: 'navbar-button', target: '_blank', method: :get do %>
+      <%= link_to users_path, class: 'navbar-button', method: :get do %>
           Membros
       <% end %>
     </li>
 <% end %>
 
-<div class="white z-depth-2">
+<div class="white z-depth-1">
   <div class="row" style="margin: 20px; padding-bottom: 15px;">
     <h3 style="margin-top: 0; padding-top: 25px; margin-bottom: 25px; font-weight: 200;">
       Adicionar nova equipa

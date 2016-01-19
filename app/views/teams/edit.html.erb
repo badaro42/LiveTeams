@@ -1,33 +1,33 @@
 <%# encoding: utf-8 %>
 
 <% content_for :title, "Editar equipa :: PROCIV Portugal" %>
-<% content_for :back_page do %>
-    <%= link_to @team, :data => {:position => 'right', :delay => '0',
-                                 :tooltip => 'Voltar para a equipa '+@team.id.to_s},
-                class: 'tooltipped navbar-button', method: :get do %>
-        <i class="material-icons md-36 white-text">arrow_back</i>
-    <% end %>
-<% end %>
 
 <% content_for :navbar_buttons do %>
     <li>
-      <%= link_to root_path, class: 'navbar-button', target: '_blank', method: :get do %>
+      <%= link_to root_path, class: 'navbar-button', method: :get do %>
           Mapa
       <% end %>
     </li>
+    <% if current_user.profile == Role::ADMINISTRADOR %>
+        <li>
+          <%= link_to permissions_path, class: 'navbar-button', method: :get do %>
+              Permissões
+          <% end %>
+        </li>
+    <% end %>
     <li>
-      <%= link_to teams_path, class: 'navbar-button active', target: '_blank', method: :get do %>
+      <%= link_to teams_path, class: 'navbar-button active', method: :get do %>
           Equipas
       <% end %>
     </li>
     <li>
-      <%= link_to users_path, class: 'navbar-button', target: '_blank', method: :get do %>
+      <%= link_to users_path, class: 'navbar-button', method: :get do %>
           Membros
       <% end %>
     </li>
 <% end %>
 
-<div class="white z-depth-2">
+<div class="white z-depth-1">
   <div class="row" style="margin: 20px; padding-bottom: 15px;">
     <h3 style="margin-top: 0; padding-top: 25px; margin-bottom: 25px; font-weight: 200;">
       Editar <span style="font-weight: 300;"><%= @team.name %></span>

@@ -14,23 +14,30 @@
 
 <% content_for :navbar_buttons do %>
     <li>
-      <%= link_to root_path, class: 'navbar-button', target: '_blank', method: :get do %>
+      <%= link_to root_path, class: 'navbar-button', method: :get do %>
           Mapa
       <% end %>
     </li>
+    <% if current_user.profile == Role::ADMINISTRADOR %>
+        <li>
+          <%= link_to permissions_path, class: 'navbar-button', method: :get do %>
+              Permissões
+          <% end %>
+        </li>
+    <% end %>
     <li>
-      <%= link_to teams_path, class: 'navbar-button active', target: '_blank', method: :get do %>
+      <%= link_to teams_path, class: 'navbar-button active', method: :get do %>
           Equipas
       <% end %>
     </li>
     <li>
-      <%= link_to users_path, class: 'navbar-button', target: '_blank', method: :get do %>
+      <%= link_to users_path, class: 'navbar-button', method: :get do %>
           Membros
       <% end %>
     </li>
 <% end %>
 
-<div class="row" style="margin-top: 15px;">
+<div class="row" style="margin: 10px 0 0 0;">
   <!--<div class="col l12 m12 s12 white z-depth-1" id="advanced_options" style="padding-bottom: 11px;">-->
   <!--<div class="section" style="padding-bottom: 0;">-->
   <!--<div id="toggle_options_panel" style="cursor: pointer;">-->
@@ -59,10 +66,10 @@
   <!--</div>-->
   <!--</div>-->
 
-  <div class="white z-depth-1">
-    <h3 style="font-weight: 200; padding: 15px; margin-top: 15px; margin-bottom: 15px;">Equipas</h3>
+  <div class="" style="padding: 15px; margin-bottom: 15px;">
+    <h3 style="font-weight: 200; margin: 0;">Equipas</h3>
+    <div class="divider" style="margin-top: 5px;"></div>
   </div>
-
 
   <div class="white z-depth-1" style="padding: 15px 10px 0 10px;">
     <%= form_for_filterrific @filterrific do |f| %>
@@ -87,12 +94,10 @@
           </a>
         </div>
 
-        <div class="row" style="margin-bottom: 0;">
-          <div class="col l6 m6 s12">
-            <a class="waves-effect waves-light btn" id="collapse_all">
-              Colapsar todas as entradas
-            </a>
-          </div>
+        <div class="col l6 m6 s12">
+          <a class="waves-effect waves-light btn" id="collapse_all">
+            Colapsar todas as entradas
+          </a>
         </div>
 
         <hr class="nice-trick">

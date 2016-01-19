@@ -13,7 +13,7 @@
                 <li>
                   <%= link_to @team, id: 'btn_hidden_remove_team', class: 'btn-floating green tooltipped', data: {
                       confirm: "Tem a certeza de que pretende remover esta equipa?\nEsta ação é irreversível!",
-                      position: 'left', delay: '0', tooltip: 'Eliminar equipa'}, method: :delete do %>
+                      position: 'left', delay: '0', tooltip: 'Eliminar esta equipa'}, method: :delete do %>
                       <i class="material-icons">delete</i>
                   <% end %>
                 </li>
@@ -21,9 +21,17 @@
             <% if can_perform_action? :update, @team %>
                 <li>
                   <%= link_to edit_team_path(@team), :data => {:position => 'left', :delay => '0',
-                                                               :tooltip => 'Editar equipa'},
+                                                               :tooltip => 'Editar esta equipa'},
                               class: 'btn-floating blue tooltipped', method: :get do %>
                       <i class="material-icons">edit</i>
+                  <% end %>
+                </li>
+            <% end %>
+            <% if can_perform_action? :create, Team %>
+                <li>
+                  <%= link_to new_team_path, :data => {:position => 'left', :delay => '0', :tooltip => 'Criar nova equipa'},
+                              class: 'btn-floating orange tooltipped', method: :get do %>
+                      <i class="large material-icons">add</i>
                   <% end %>
                 </li>
             <% end %>
@@ -34,24 +42,31 @@
 
 <% content_for :navbar_buttons do %>
     <li>
-      <%= link_to root_path, class: 'navbar-button', target: '_blank', method: :get do %>
+      <%= link_to root_path, class: 'navbar-button', method: :get do %>
           Mapa
       <% end %>
     </li>
+    <% if current_user.profile == Role::ADMINISTRADOR %>
+        <li>
+          <%= link_to permissions_path, class: 'navbar-button', method: :get do %>
+              Permissões
+          <% end %>
+        </li>
+    <% end %>
     <li>
-      <%= link_to teams_path, class: 'navbar-button active', target: '_blank', method: :get do %>
+      <%= link_to teams_path, class: 'navbar-button active', method: :get do %>
           Equipas
       <% end %>
     </li>
     <li>
-      <%= link_to users_path, class: 'navbar-button', target: '_blank', method: :get do %>
+      <%= link_to users_path, class: 'navbar-button', method: :get do %>
           Membros
       <% end %>
     </li>
 <% end %>
 
 
-<div class="row" style="margin-top: 20px;">
+<div class="row" style="margin: 20px 0 20px 0;">
   <div id="teams_info_div" class="col l4 m12 s12 center-align z-depth-1 white"
        style="padding-left: 20px; padding-top: 0px; padding-bottom: 20px; padding-right: 20px;">
     <h5 style="font-weight: 300;">Detalhes</h5>
@@ -134,7 +149,7 @@
 
 <% if can_perform_action? :create, TeamMember %>
     <div class="row z-depth-1 white"
-         style="padding-left: 20px; padding-top: 1px; padding-bottom: 20px; padding-right: 20px;">
+         style="padding: 1px 20px 20px 20px; margin: 0 0 20px 0;">
       <div class="section">
         <h4 style="font-weight: 200; margin-top: 15px; margin-bottom: 5px;">Adicionar membro a esta equipa</h4>
         <span><i>Nota: utilizadores com perfil <b>básico</b> não podem pertencer a equipas.</i></span>
@@ -158,7 +173,7 @@
     </div>
 <% end %>
 
-<div class="row z-depth-1 white">
+<div class="row z-depth-1 white" style="margin: 0 0 20px 0;">
   <div class="s12 l12 m12">
     <div class="col s12">
       <ul id="teams-tabs-list" class="tabs" style="overflow-x: hidden;">

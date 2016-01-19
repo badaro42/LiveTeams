@@ -19,7 +19,7 @@
     </li>
 <% end %>
 
-<div class="row" style="margin-top: 20px;">
+<div class="row" style="margin: 20px 0 20px 0;">
   <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: {method: :put}) do |f| %>
       <%= devise_error_messages! %>
 
@@ -72,7 +72,7 @@
         <% end %>
 
         <% if @user.id == current_user.id %>
-            <div class="col l12 s12" style="padding: 0; margin-top: 20px; margin-bottom: 25px;">
+            <div class="col l12 s12" style="padding: 0; margin-top: 20px; margin-bottom: 20px;">
               <div class="section">
                 <h5 style="margin-left: 10px; display: inline;">Palavra-passe </h5>
                 <span>(deixe em branco se não quiser alterar)</span>
@@ -90,7 +90,7 @@
             </div>
         <% end %>
 
-        <div class="col l12 s12" style="padding: 0; margin-top: 20px; margin-bottom: 25px;">
+        <div class="col l12 s12" style="padding: 0; margin-top: 0; margin-bottom: 20px;">
           <div class="section">
             <h5 style="margin-left: 10px; display: inline;">Foto de perfil</h5>
           </div>
@@ -106,7 +106,7 @@
           </div>
         </div>
 
-        <div class="col s12 m12 l12 center-align" style="margin-bottom: 15px;">
+        <div class="col s12 m12 l12 center-align" style="margin-bottom: 15px; margin-top: 10px;">
           <div class="actions">
             <%= f.submit 'Atualizar', id: 'update_user_profile', class: "btn waves-effect waves-light",
                          style: 'width: 100%;' %>

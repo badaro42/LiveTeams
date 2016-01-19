@@ -23,24 +23,30 @@
 
 <% content_for :navbar_buttons do %>
     <li>
-      <%= link_to root_path, class: 'navbar-button', target: '_blank', method: :get do %>
+      <%= link_to root_path, class: 'navbar-button', method: :get do %>
           Mapa
       <% end %>
     </li>
+    <% if current_user.profile == Role::ADMINISTRADOR %>
+        <li>
+          <%= link_to permissions_path, class: 'navbar-button', method: :get do %>
+              Permissões
+          <% end %>
+        </li>
+    <% end %>
     <li>
-      <%= link_to teams_path, class: 'navbar-button', target: '_blank', method: :get do %>
+      <%= link_to teams_path, class: 'navbar-button', method: :get do %>
           Equipas
       <% end %>
     </li>
     <li>
-      <%= link_to users_path, class: 'navbar-button active', target: '_blank', method: :get do %>
+      <%= link_to users_path, class: 'navbar-button active', method: :get do %>
           Membros
       <% end %>
     </li>
 <% end %>
 
-
-<div class="row" style="margin-top: 20px;">
+<div class="row" style="margin: 15px 0 0 0;">
   <div id="profile-user-info" class="col l4 m12 s12 center-align z-depth-1 profile-div white"
        style="margin-left: 0px;">
     <div class="col l12 m6 s12">
@@ -98,7 +104,7 @@
   </div>
 </div>
 
-<div class="row z-depth-1 white">
+<div class="row z-depth-1 white" style="margin: 20px 0 20px 0;">
   <div class="profile-tabs col s12 m12 l12 z-depth-1 white" style="margin-top: 0;">
     <div>
       <ul id="profile-tabs-list" class="tabs" style="overflow-x: hidden;">

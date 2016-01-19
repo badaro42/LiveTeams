@@ -3,25 +3,33 @@
 <% content_for :title, "Utilizadores :: PROCIV Portugal" %>
 <% content_for :navbar_buttons do %>
     <li>
-      <%= link_to root_path, class: 'navbar-button', target: '_blank', method: :get do %>
+      <%= link_to root_path, class: 'navbar-button', method: :get do %>
           Mapa
       <% end %>
     </li>
+    <% if current_user.profile == Role::ADMINISTRADOR %>
+        <li>
+          <%= link_to permissions_path, class: 'navbar-button', method: :get do %>
+              Permissões
+          <% end %>
+        </li>
+    <% end %>
     <li>
-      <%= link_to teams_path, class: 'navbar-button', target: '_blank', method: :get do %>
+      <%= link_to teams_path, class: 'navbar-button', method: :get do %>
           Equipas
       <% end %>
     </li>
     <li>
-      <%= link_to users_path, class: 'navbar-button active', target: '_blank', method: :get do %>
+      <%= link_to users_path, class: 'navbar-button active', method: :get do %>
           Membros
       <% end %>
     </li>
 <% end %>
 
-<div class="row" style="margin-top: 15px;">
-  <div class="white z-depth-1">
-    <h3 style="font-weight: 200; padding: 15px; margin-top: 15px; margin-bottom: 15px;">Utilizadores</h3>
+<div class="row" style="margin: 10px 0 0 0;">
+  <div class="" style="padding: 15px; margin-bottom: 15px;">
+    <h3 style="font-weight: 200; margin: 0;">Utilizadores</h3>
+    <div class="divider" style="margin-top: 5px;"></div>
   </div>
 
   <div class="white z-depth-1" style="padding: 15px 10px 0 10px;">
@@ -39,7 +47,7 @@
           Filtrar por perfil
           <%= f.select :with_role_name,
                        @filterrific.select_options[:with_role_name],
-                       { :include_blank => '- Qualquer perfil -' } %>
+                       {:include_blank => '- Qualquer perfil -'} %>
         </div>
 
         <div class="col l4 m6 s12 input-field">

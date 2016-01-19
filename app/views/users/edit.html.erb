@@ -3,23 +3,30 @@
 <% content_for :title, "Editar utilizador :: PROCIV Portugal" %>
 <% content_for :navbar_buttons do %>
     <li>
-      <%= link_to root_path, class: 'navbar-button', target: '_blank', method: :get do %>
+      <%= link_to root_path, class: 'navbar-button', method: :get do %>
           Mapa
       <% end %>
     </li>
+    <% if current_user.profile == Role::ADMINISTRADOR %>
+        <li>
+          <%= link_to permissions_path, class: 'navbar-button', method: :get do %>
+              Permissões
+          <% end %>
+        </li>
+    <% end %>
     <li>
-      <%= link_to teams_path, class: 'navbar-button', target: '_blank', method: :get do %>
+      <%= link_to teams_path, class: 'navbar-button', method: :get do %>
           Equipas
       <% end %>
     </li>
     <li>
-      <%= link_to users_path, class: 'navbar-button active', target: '_blank', method: :get do %>
+      <%= link_to users_path, class: 'navbar-button active', method: :get do %>
           Membros
       <% end %>
     </li>
 <% end %>
 
-<div class="row" style="margin-top: 20px;">
+<div class="row" style="margin: 20px 0 20px 0;">
   <%= form_for(@user) do |f| %>
       <div class="col l12 m12 s12 z-depth-1 white">
 
@@ -33,7 +40,7 @@
 
         <div class="col l12 s12" style="padding: 0;">
           <div class="section">
-            <h5 style="margin-left: 10px;">Dados básicos</h5>
+            <h5 style="margin-left: 10px;">Dados do <%= resource.first_name %></h5>
           </div>
 
           <div class="input-field col s12 m6 l6">
@@ -71,7 +78,7 @@
         <% end %>
 
         <% if @user.id == current_user.id %>
-            <div class="col l12 s12" style="margin-top: 20px; padding: 0;">
+            <div class="col l12 s12" style="margin-top: 20px; margin-bottom: 20px; padding: 0;">
               <div class="section">
                 <h5 style="margin-left: 10px; display: inline;">Palavra-passe </h5>
                 <span>(deixe em branco se não quiser alterar)</span>
@@ -89,7 +96,7 @@
             </div>
         <% end %>
 
-        <div class="col l12 s12" style="margin-top: 20px; padding: 0;">
+        <div class="col l12 s12" style="margin-top: 0; padding: 0; margin-bottom: 20px;">
           <div class="section">
             <h5 style="margin-left: 10px; display: inline;">Foto de perfil</h5>
           </div>
@@ -105,7 +112,7 @@
           </div>
         </div>
 
-        <div class="col s12 m12 l12 center-align" style="margin-top: 25px; margin-bottom: 15px;">
+        <div class="col s12 m12 l12 center-align" style="margin-top: 10px; margin-bottom: 15px;">
           <div class="actions">
             <%= f.submit 'Atualizar', id: 'update_user_profile', class: "btn waves-effect waves-light",
                          style: "width: 100%;" %>

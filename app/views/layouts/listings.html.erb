@@ -102,6 +102,17 @@
               <i class="material-icons left">person</i>Membros
           <% end %>
         </li>
+        <% if current_user.profile == Role::ADMINISTRADOR %>
+            <li class="divider"></li>
+
+            <li id="list_permisions_path_entry" class="sidenav-entry">
+              <%= link_to permissions_path, style: 'text-transform: none; padding-left: 0;',
+                          class: 'btn-flat navbar-button', method: :get do %>
+                  <i class="material-icons left">lock_outliner</i>Permissões
+              <% end %>
+            </li>
+        <% end %>
+
         <li class="divider"></li>
         <li id="list_profile_path_entry" class="sidenav-entry">
           <%= link_to current_user, style: 'text-transform: none; padding-left: 0;',
