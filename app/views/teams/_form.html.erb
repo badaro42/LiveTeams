@@ -41,13 +41,13 @@
 
     <div class="row">
       <div id="select-all-btn" class="col l4 m12 s12" title="Selecionar todos os utilizadores">
-        <a id="select_all" class="waves-effect waves-light btn right"
+        <a id="select_all" class="waves-effect waves-light btn right white-btn"
            style="padding-left: 10px; padding-right: 10px; width: 100%;">
           <i class="material-icons md-24 left">done_all</i>Todos
         </a>
       </div>
       <div id="select-none-btn" class="col l4 m12 s12 center" title="Limpar utilizadores selecionados">
-        <a id="select_none" class="waves-effect waves-light btn"
+        <a id="select_none" class="waves-effect waves-light btn white-btn"
            style="padding-left: 10px; padding-right: 10px; width: 100%;">
           <i class="material-icons md-24 left">delete</i>Nenhum
         </a>
@@ -99,10 +99,10 @@
     <div class="actions col m12 l12 s12" style="padding: 0;">
       <% if current_page?(action: 'new') %>
           <%= f.button 'Criar equipa', style: "width: 100%;",
-                       class: "btn waves-effect waves-light", id: "team-submit-form" %>
+                       class: "btn waves-effect waves-light green", id: "team-submit-form" %>
       <% else %>
           <%= f.button 'Atualizar', style: "width: 100%;",
-                       class: "btn waves-effect waves-light", id: "team-submit-form" %>
+                       class: "btn waves-effect waves-light green", id: "team-submit-form" %>
       <% end %>
     </div>
 <% end %>

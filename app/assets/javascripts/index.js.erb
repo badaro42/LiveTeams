@@ -184,6 +184,14 @@ $(document).ready(function () {
       toggleNavBar(false);
   });
 
+  // listener para os botoes da sidebar que faz scroll para o inicio da lista
+  $(".scrollTop").on('click', function (e) {
+    var elem = e.toElement;
+    $(elem).closest(".list_wrapper").animate({
+      scrollTop: 0
+    });
+  });
+
   // seleciona todas as equipas no modal para criar entidade
   $('#select_all_teams').on('click', function () {
     console.log("select_all_teams clique");

@@ -592,3 +592,12 @@ html, body, #container {
 #timeline > div:last-child {
   margin-bottom: 0 !important;
 }
+
+
+// altera o estilo do botão
+// fundo branco, borda 1px cinzenta e cor cinzenta
+.white-btn {
+  background-color: #FFFFFF !important;
+  border: 1px solid lightgrey;
+  color: grey;
+}

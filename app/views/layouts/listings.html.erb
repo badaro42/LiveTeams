@@ -23,7 +23,7 @@
 <%= render 'shared/flash_messages' if !flash.empty? %>
 
 <div class="navbar-fixed">
-  <nav class="indigo darken-4" role="navigation" style="box-shadow: none;">
+  <nav class="blue darken-2" role="navigation" style="box-shadow: none;">
     <div class="nav-wrapper container">
       <ul class="left navbar-buttons">
         <li>
@@ -102,6 +102,7 @@
               <i class="material-icons left">person</i>Membros
           <% end %>
         </li>
+
         <% if current_user.profile == Role::ADMINISTRADOR %>
             <li class="divider"></li>
 

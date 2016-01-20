@@ -1,7 +1,7 @@
 <%# encoding: utf-8 %>
 
 <div id="frontpage-navbar" class="navbar-fixed">
-  <nav class="indigo darken-4" role="navigation" style="box-shadow: none;">
+  <nav class="blue darken-2" role="navigation" style="box-shadow: none;">
     <div class="nav-wrapper">
       <ul class="left navbar-buttons">
         <li>
@@ -23,6 +23,13 @@
               Mapa
           <% end %>
         </li>
+        <% if current_user.profile == Role::ADMINISTRADOR %>
+            <li>
+              <%= link_to permissions_path, class: 'navbar-button', method: :get do %>
+                  Permissões
+              <% end %>
+            </li>
+        <% end %>
         <li>
           <%= link_to teams_path, class: 'navbar-button', target: '_blank', method: :get do %>
               Equipas
@@ -107,6 +114,18 @@
               <i class="material-icons left">edit</i>Editar perfil
           <% end %>
         </li>
+
+        <% if current_user.profile == Role::ADMINISTRADOR %>
+            <li class="divider"></li>
+
+            <li id="list_permisions_path_entry" class="sidenav-entry">
+              <%= link_to permissions_path, style: 'text-transform: none; padding-left: 0;',
+                          class: 'btn-flat navbar-button', method: :get do %>
+                  <i class="material-icons left">lock_outliner</i>Permissões
+              <% end %>
+            </li>
+        <% end %>
+
         <li class="divider"></li>
         <li>
           <%= link_to destroy_user_session_path, style: 'text-transform: none; padding-left: 0;',
@@ -198,7 +217,7 @@
                     <i class="material-icons">power_settings_new</i>
                 <% end %>
                 <%= link_to edit_user_path(current_user), method: :get, target: '_blank',
-                            class: 'waves-effect waves-light btn', title: 'Editar o seu perfil',
+                            class: 'waves-effect waves-light btn white-btn', title: 'Editar o seu perfil',
                             style: 'margin-left: 2px; padding-left: 10px; padding-right: 10px;' do %>
                     <i class="material-icons">edit</i>
                 <% end %>
@@ -211,7 +230,7 @@
           <h5>As minhas equipas</h5>
           <div class="divider"></div>
           <div class="center" style="margin-bottom: 10px;">
-            <%= link_to "#!", id: 'remove-navbar', class: 'waves-effect waves-light btn' do %>
+            <%= link_to "#!", id: 'remove-navbar', class: 'waves-effect waves-light btn white-btn' do %>
                 Remover barra
             <% end %>
           </div>
@@ -235,7 +254,7 @@
           </div>
           <div class="col l5 m5 s5" style="padding: 0;">
             <%= link_to teams_url, method: :get, target: '_blank', style: 'width: 100%; padding: 0 10px;',
-                        class: 'right waves-effect waves-light btn valign' do %>
+                        class: 'right waves-effect waves-light btn valign white-btn' do %>
                 Ver todas
             <% end %>
           </div>
@@ -283,10 +302,9 @@
               </li>
           <% end %>
         </ul>
+
         <div class="center" style="margin-bottom: 10px;">
-          <%= link_to teams_url, method: :get, target: '_blank', class: 'waves-effect waves-light btn' do %>
-              Ver todas
-          <% end %>
+          <a href="#!" class="scrollTop waves-effect waves-light btn white-btn">Voltar ao topo</a>
         </div>
       </div>
     </div>
@@ -303,13 +321,13 @@
           </div>
           <div class="col l5 m5 s5" style="padding: 0;">
             <%= link_to users_url, method: :get, target: '_blank', style: 'width: 100%; padding: 0 10px;',
-                        class: 'right waves-effect waves-light btn valign' do %>
+                        class: 'right waves-effect waves-light btn valign white-btn' do %>
                 Ver todos
             <% end %>
           </div>
         </div>
 
-        <ul class="collection z-depth-1" style="margin-bottom: 7.5px;">
+        <ul class="collection z-depth-1" style="">
           <% @most_active_users.each do |user| %>
               <li class="collection-item avatar">
                 <%= image_tag user.avatar.url(:thumb), class: 'circle responsive-img' %>
@@ -330,9 +348,7 @@
         </ul>
 
         <div class="center" style="margin-bottom: 10px;">
-          <%= link_to users_url, method: :get, target: '_blank', class: 'waves-effect waves-light btn' do %>
-              Ver todos
-          <% end %>
+          <a href="#!" class="scrollTop waves-effect waves-light btn white-btn">Voltar ao topo</a>
         </div>
       </div>
     </div>
@@ -353,7 +369,8 @@
             <span style="font-style: italic;">Este limite pode ser alterado nas definições</span>
           </p>
           <a id="clear_history_btn" style="margin-top: 10px; width: 100%; padding-left: 5px; padding-right: 5px;"
-             class="waves-effect waves-light btn" onclick="javascript:clearHistoyEntries();">Limpar histórico</a>
+             class="waves-effect waves-light btn white-btn"
+             onclick="javascript:clearHistoyEntries();">Limpar histórico</a>
         </div>
         <div id="timeline"></div>
       </div>
@@ -361,7 +378,9 @@
 
     <div class="sidebar-pane" id="search">
       <h1 class="sidebar-header">Opções de pesquisa
-        <div class="sidebar-close"><i class="fa fa-caret-right"></i></div>
+        <div class="sidebar-close">
+          <i class="fa fa-caret-right"></i>
+        </div>
       </h1>
 
       <div class="list_wrapper" style="padding-right: 10px;">
@@ -375,7 +394,7 @@
             </div>
             <div class="col l3 m3 s4" style="padding-right: 0;">
               <a id="btn_submit_geocode" style="padding-left: 10px; padding-right: 10px; width: 100%; height: 100%;
-                  line-height: 46px;" class="waves-effect waves-light btn"
+                  line-height: 46px;" class="waves-effect waves-light btn green"
                  onclick="javascript:geocodeLocation();">Enviar</a>
             </div>
           </div>

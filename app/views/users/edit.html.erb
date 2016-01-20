@@ -40,7 +40,7 @@
 
         <div class="col l12 s12" style="padding: 0;">
           <div class="section">
-            <h5 style="margin-left: 10px;">Dados do <%= resource.first_name %></h5>
+            <h5 style="margin-left: 10px;">Dados do <%= @user.first_name %></h5>
           </div>
 
           <div class="input-field col s12 m6 l6">
@@ -102,7 +102,7 @@
           </div>
 
           <div class="file-field input-field col s12 m12 l12">
-            <div class="btn">
+            <div class="btn white-btn">
               <span>Ficheiro</span>
               <%= f.file_field :avatar, class: 'file' %>
             </div>
@@ -114,7 +114,7 @@
 
         <div class="col s12 m12 l12 center-align" style="margin-top: 10px; margin-bottom: 15px;">
           <div class="actions">
-            <%= f.submit 'Atualizar', id: 'update_user_profile', class: "btn waves-effect waves-light",
+            <%= f.submit 'Atualizar', id: 'update_user_profile', class: "btn waves-effect waves-light green",
                          style: "width: 100%;" %>
           </div>
         </div>
