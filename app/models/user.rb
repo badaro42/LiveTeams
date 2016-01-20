@@ -5,13 +5,30 @@ class User < ActiveRecord::Base
                   sorted_by
                   search_query
                   with_role_name
+                  with_team
               ]
 
   # will_paginate - numero de elementos por pagina
   self.per_page = 10
 
 
-  BASIC_PROFILES = [Role::BASICO, Role::OPERACIONAL, Role::GESTOR, Role::ADMINISTRADOR]
+  BASIC_PROFILES = [
+      Role::BASICO,
+      Role::OPERACIONAL,
+      Role::GESTOR,
+      Role::ADMINISTRADOR
+  ]
+
+  REMAINING_ROLES = [
+      Role::REMOVER_GEO_ENTIDADES ,
+      Role::REMOVER_UTILIZADORES ,
+      Role::GERIR_EQUIPAS_BASIC ,
+      Role::GERIR_EQUIPAS_GOD_MODE ,
+      Role::GERIR_MEMBROS_EQUIPA ,
+      Role::GERIR_EQUIPAS_E_MEMBROS_EQUIPA ,
+      Role::EDITAR_TODOS_UTILIZADORES ,
+      Role::EDITAR_TODAS_EQUIPAS
+  ]
 
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
@@ -92,6 +109,10 @@ class User < ActiveRecord::Base
 
   scope :with_role_name, lambda { |role_names|
     where(profile: [*role_names])
+  }
+
+  scope :with_team, lambda { |team_ids|
+    where("team_members.team_id = ?", [*team_ids]).joins(:team_members)
   }
 
 

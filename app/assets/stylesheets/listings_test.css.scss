@@ -373,3 +373,48 @@ label {
 #pagination_stuff > .row {
   margin: 0;
 }
+
+
+// altera o estilo do botão
+// fundo branco, borda 1px cinzenta e cor cinzenta
+.white-btn {
+  background-color: #FFFFFF !important;
+  border: 1px solid lightgrey;
+  color: grey;
+}
+
+
+@media only screen and (min-width: 993px) {
+  #users_filtered_table thead,
+  #users_filtered_table tbody,
+  #users_filtered_table tr,
+  #users_filtered_table td,
+  #users_filtered_table th {
+    display: block;
+  }
+
+  #users_filtered_table tr:after {
+    content: ' ';
+    display: block;
+    visibility: hidden;
+    clear: both;
+  }
+
+  #users_filtered_table_body {
+    height: 250px;
+    overflow-y: auto;
+  }
+
+
+  #users_filtered_table_body td:first-child,
+  #users_filtered_table_header th:first-child {
+    width: 16%;
+    float: left;
+  }
+
+  #users_filtered_table_body td,
+  #users_filtered_table_header th {
+    width: 28%;
+    float: left;
+  }
+}

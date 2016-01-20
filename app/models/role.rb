@@ -30,4 +30,20 @@ class Role < ActiveRecord::Base
     order('id').where('id <= ?', 4).map { |e| [e.name, e.name] }
     # order('id').map { |e| [e.name, e.id] }
   end
+
+  def self.remaining_roles_for_select
+    order('id').where('id >= ?', 5).map { |e| [e.name, e.id] }
+  end
+
+  def self.time_values_for_select
+    [
+        ["30 minutos", 0.5],
+        ["1 hora", 1],
+        ["2 horas", 2],
+        ["4 horas", 4],
+        ["8 horas", 8],
+        ["12 horas", 12],
+        ["1 dia", 24]
+    ]
+  end
 end

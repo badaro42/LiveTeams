@@ -62,6 +62,7 @@ class UsersController < ApplicationController
             sorted_by: User.options_for_sorted_by,
             with_role_name: Role.options_for_select
         }
+        # persistence_id: false
     ) or return
 
     @users = @filterrific.find.page(params[:page])
@@ -70,9 +71,6 @@ class UsersController < ApplicationController
       format.html
       format.js
     end
-
-
-      # @users = User.all.order(first_name: :asc, last_name: :asc)
 
   rescue ActiveRecord::RecordNotFound => e
     # There is an issue with the persisted param_set. Reset it.

@@ -112,8 +112,12 @@ class Team < ActiveRecord::Base
         ['Nome (z-a)', 'name_desc'],
         ['Data de criação (mais recente primeiro)', 'created_at_desc'],
         ['Data de criação (mais antigo primeiro)', 'created_at_asc']
-    # ['Perfil (a-z)', 'country_name_asc']
     ]
+  end
+
+  # mapeia as equipas num array para as apresentar numa dropdown
+  def self.options_for_filter_by_team
+    order('id').map { |e| [e.name, e.id] }
   end
 
 
