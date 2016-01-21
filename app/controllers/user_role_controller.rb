@@ -9,7 +9,7 @@ class UserRoleController < ApplicationController
             with_role_name: Role.options_for_select,
             with_team: Team.options_for_filter_by_team
         }
-        # persistence_id: false
+    # persistence_id: false
     ) or return
 
     @users = User.filterrific_find(@users_filter)
@@ -26,6 +26,35 @@ class UserRoleController < ApplicationController
   end
 
   def create
+    puts "************************"
+    puts " USER_ROLE CREATE ROLES"
+    puts "************************"
+
+    records_to_save = []
+    expiration_date = params[:user_role][:expiration_date].to_f
+    params[:user_role][:role_ids].each do |role_id|
+      params[:user_role][:user_ids].each do |user_id|
+        puts "+++++++++++++++++++++++++++++++++++++++++++++++++++"
+        puts "role_id: " + role_id.to_s
+        puts "user_id: " + user_id.to_s
+        puts "expiration_date: " + expiration_date.to_s
+        puts "+++++++++++++++++++++++++++++++++++++++++++++++++++"
+
+        user_role = UserRole.find_or_initialize_by(role_id: role_id.to_i, user_id: user_id.to_i)
+        user_role.expiration_date = expiration_date.to_f.hours.since
+        records_to_save.push(user_role)
+      end
+    end
+
+    UserRole.transaction do
+      records_to_save.each(&:save)
+    end
+
+    render nothing: true, status: :ok
+
+  rescue Exception
+    render nothing: true, status: :internal_server_error
+
   end
 
   def destroy

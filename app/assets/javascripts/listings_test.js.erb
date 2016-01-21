@@ -17,6 +17,11 @@ var curr_leader_profile;
 
 var advanced_options_open = false;
 
+// as variaveis que controlam se o utilizador ja pode submeter o formulario das permissoes
+var users_selected_valid = false;
+var roles_selected_valid = false;
+var time_selected_valid = false;
+
 var team_highlight_icon = L.icon({
   iconUrl: '/assets/bullseye-64.png',
   iconSize: [38, 38], // size of the icon
@@ -99,6 +104,7 @@ $(document).ready(function () {
   var href = uri.pathname;
   var users_pages = href.indexOf("users") > -1;
   var teams_pages = href.indexOf("teams") > -1;
+  var permissions_pages = href.indexOf("permissions") > -1;
   var account_pages = href.indexOf("account") > -1;
   var edit_page = href.indexOf("edit") > -1;
   var new_page = href.indexOf("new") > -1;
@@ -413,12 +419,52 @@ $(document).ready(function () {
       initAdvancedOptions('user');
     }
   }
+  // estamos na pagina para definir permissões para os utilizadores
+  else if (permissions_pages) {
+    console.log("PÁGINA DAS PERMISSÕES!!!!");
+
+    initPermissionListeners();
+
+    $("#select_time").on('change', function () {
+      console.log("ALTERAMOS O VALOR DO TEMPO PARA EXPIRAR.");
+      console.log($(this).find(":selected")[0].value);
+
+      if ($(this).find(":selected")[0].value !== "")
+        time_selected_valid = true;
+      else
+        time_selected_valid = false;
+    });
+
+    $("#select_roles_to_add").on('change', function () {
+      console.log("ALTERAMOS OS PAPEIS A ATRIBUIR");
+      console.log($(this).find(":selected").length);
+
+      var roles_arr = $(this).find(":selected");
+      if (roles_arr.length == 1) {
+        if (roles_arr[0].value !== "")
+          roles_selected_valid = true;
+        else
+          roles_selected_valid = false;
+      }
+      else if (roles_arr.length > 1) {
+        roles_selected_valid = true;
+      }
+      else
+        roles_selected_valid = false;
+    });
+  }
 
   // Toggle search
   $('a#toggle-search').click(toggleSearchBar);
 
   // inicializa a select box para escolher o lider
   $('select').material_select();
+});
+
+$(document).ajaxComplete(function () {
+  console.log("TERMINOU AGR UM PEDIDO AJAX");
+
+  initPermissionListeners();
 });
 
 
@@ -905,7 +951,7 @@ function initAdvancedOptions(param) {
   if (param === 'user') {
 
   }
-  else if(param === 'team') {
+  else if (param === 'team') {
     $('#expand_all').on('click', toggleEntriesClass);
     $('#collapse_all').on('click', toggleEntriesClass);
   }
@@ -931,4 +977,78 @@ function initAdvancedOptions(param) {
 
     advanced_options_open = !advanced_options_open;
   });
+}
+
+function initPermissionListeners() {
+  users_selected_valid = false;
+
+  // listener para quando uma checkbox é alterada
+  var chkbox_list = "input:checkbox[name=users_with_filter]";
+  $(chkbox_list).on('click', function () {
+    var length = $(chkbox_list + ":checked").length;
+
+    $('#selected_count').text(length);
+    if (length > 0)
+      users_selected_valid = true;
+    else
+      users_selected_valid = false;
+  });
+}
+
+function submitPermissionsToDB() {
+  // se uma destas condições nao for verdade dá erro!
+  if (!users_selected_valid || !roles_selected_valid || !time_selected_valid) {
+    noty({
+      text: 'Existem erros em pelo menos um formulário.\n' +
+      'Verifique que selecionou as opções corretamente e tente novamente.',
+      timeout: 4000, type: 'error', layout: 'bottomCenter'
+    });
+  }
+  else {
+    var t_arr = [];
+    $.makeArray($("input:checkbox[name=users_with_filter]:checked"), t_arr);
+    var arr_user_ids = t_arr.map(function (x) {
+      return parseInt(x.id);
+    });
+    console.log("ARRAY COM OS IDS DOS USERS SELECIONADOS:");
+    console.log(arr_user_ids);
+
+    t_arr = [];
+    $.makeArray($("#select_roles_to_add").find(":selected"), t_arr);
+    var arr_role_ids = $.map(t_arr, function (x) {
+      return (x.value !== "" ? parseInt(x.value) : null);
+    });
+    console.log("ARRAY COM OS IDS DOS PAPEIS SELECIONADOS:");
+    console.log(arr_role_ids);
+
+    var parsed_exp_date = parseFloat($("#select_time").find(":selected")[0].value);
+    console.log("VALOR (EM HORAS) DA DATA DE FIM SELECIONADA:");
+    console.log(parsed_exp_date);
+
+//    arr_role_ids.push(20);
+
+    $.ajax({
+      type: "POST",
+      url: "/permissions",
+      data: {
+        user_role: {
+          role_ids: arr_role_ids,
+          user_ids: arr_user_ids,
+          expiration_date: parsed_exp_date
+        }
+      },
+      success: function (result) {
+        noty({
+          text: 'As permissões foram atribuídas aos utilizadores selecionados com sucesso!',
+          timeout: 4000, type: 'success', layout: 'bottomCenter'
+        });
+      },
+      error: function (err) {
+        noty({
+          text: 'Ocorreu um erro ao atribuir as permissões aos utilizadores selecionados.\nTente novamente mais tarde.',
+          timeout: 4000, type: 'error', layout: 'bottomCenter'
+        });
+      }
+    });
+  }
 }
