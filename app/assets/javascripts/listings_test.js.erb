@@ -995,7 +995,7 @@ function initPermissionListeners() {
   });
 }
 
-function submitPermissionsToDB() {
+function submitUserRolesToDB() {
   // se uma destas condições nao for verdade dá erro!
   if (!users_selected_valid || !roles_selected_valid || !time_selected_valid) {
     noty({
@@ -1051,4 +1051,65 @@ function submitPermissionsToDB() {
       }
     });
   }
+}
+
+// consoante o botao clicado, seleciona todas as entradas ou nenhuma.
+// atualiza ainda o numero de entradas selecionadas
+function changeTableSelection(select_all) {
+  console.log(select_all === true);
+
+  var checkboxes_selector = "input:checkbox[name=users_with_filter]";
+
+  var a = $(checkboxes_selector);
+  $(checkboxes_selector).attr('checked', select_all);
+
+  var length = $(checkboxes_selector + ":checked").length;
+  $("#selected_count").text(length);
+}
+
+function toggleFormVisibility(form_name) {
+
+  var elem_to_show = "", elem_to_hide = "", btn_to_disable = "", btn_to_enable = "",
+      float_btn_to_hide = "", float_btn_to_show = "";
+  if (form_name === "create") {
+    elem_to_show = "#create_user_roles_form";
+    elem_to_hide = "#destroy_user_roles_form";
+
+    float_btn_to_hide = "#destroy_user_roles_btn";
+    float_btn_to_show = "#create_user_roles_btn";
+
+    btn_to_disable = "#show_create_form_btn";
+    btn_to_enable = "#show_destroy_form_btn";
+  }
+  else if (form_name === "destroy") {
+    elem_to_hide = "#create_user_roles_form";
+    elem_to_show = "#destroy_user_roles_form";
+
+    float_btn_to_hide = "#create_user_roles_btn";
+    float_btn_to_show = "#destroy_user_roles_btn";
+
+    btn_to_enable = "#show_create_form_btn";
+    btn_to_disable = "#show_destroy_form_btn";
+  }
+
+  $(btn_to_enable).prop("disabled", false);
+  $(btn_to_disable).prop("disabled", true);
+
+  $.when(
+      $(elem_to_hide).fadeOut({duration: 500}).promise(),
+      $(float_btn_to_hide).fadeOut({duration: 500}).promise()
+  ).done(function () {
+    $(elem_to_show).fadeIn({duration: 500}).promise(),
+    $(float_btn_to_show).fadeIn({duration: 500}).promise()
+    .done(function () {
+      $('html,body').animate({
+        scrollTop: ($(elem_to_show).offset().top - $('.navbar-fixed').height() - 10),
+        duration: 1000
+      });
+    })
+  });
+}
+
+function removeUserRolesFromUser() {
+  console.log("siga remover os papeis deste utilizador!");
 }

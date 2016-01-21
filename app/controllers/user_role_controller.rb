@@ -34,12 +34,6 @@ class UserRoleController < ApplicationController
     expiration_date = params[:user_role][:expiration_date].to_f
     params[:user_role][:role_ids].each do |role_id|
       params[:user_role][:user_ids].each do |user_id|
-        puts "+++++++++++++++++++++++++++++++++++++++++++++++++++"
-        puts "role_id: " + role_id.to_s
-        puts "user_id: " + user_id.to_s
-        puts "expiration_date: " + expiration_date.to_s
-        puts "+++++++++++++++++++++++++++++++++++++++++++++++++++"
-
         user_role = UserRole.find_or_initialize_by(role_id: role_id.to_i, user_id: user_id.to_i)
         user_role.expiration_date = expiration_date.to_f.hours.since
         records_to_save.push(user_role)
@@ -59,4 +53,5 @@ class UserRoleController < ApplicationController
 
   def destroy
   end
+
 end

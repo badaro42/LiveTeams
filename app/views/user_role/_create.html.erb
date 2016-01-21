@@ -1,0 +1,76 @@
+<%# encoding: utf-8 %>
+
+<div class="white z-depth-1" style="padding: 15px 10px 0 10px;">
+  <h5 style="font-weight: 300; padding: 0 10px 0 10px; margin-bottom: 20px;">
+    <span style="font-size: 35px;font-weight: 400;">2. </span>
+    Use os filtros abaixo para filtrar os utilizadores pelo nome,
+    pela equipa a que pertecem e ainda pelo perfil que possuem
+  </h5>
+
+  <div id="permissions_search_div" class="col l4 m12 s12" style="margin-bottom: 20px;">
+    <%= form_for_filterrific @users_filter do |f| %>
+
+        <div class="input-field" style="margin-bottom: 25px;">
+          Filtrar por nome
+          <%= f.text_field(
+                  :search_query,
+                  class: 'filterrific-periodically-observed'
+              ) %>
+        </div>
+
+        <div class="input-field" style="margin-bottom: 40px;">
+          Filtrar por equipa
+          <%= f.select :with_team,
+                       @users_filter.select_options[:with_team],
+                       {:include_blank => '- Qualquer equipa -'} %>
+        </div>
+
+        <div class="input-field" style="margin-bottom: 30px;">
+          Filtrar por perfil
+          <%= f.select :with_role_name,
+                       @users_filter.select_options[:with_role_name],
+                       {:include_blank => '- Qualquer perfil -'} %>
+        </div>
+
+        <div>
+          <%= link_to(
+                  'Repor filtros',
+                  reset_filterrific_url,
+                  method: :get,
+                  style: "width: 100%;",
+                  class: "btn waves-effect white-btn"
+              # class: "right btn waves-effect"
+              ) %>
+        </div>
+
+    <% end %>
+  </div>
+
+  <div class="col l8 m12 s12" id="permissions_results">
+    <%= render partial: 'user_list', locals: {users: @users} %>
+  </div>
+
+  <hr class="nice-trick">
+</div>
+
+<div class="white z-depth-1" style="padding: 15px 10px 0 10px; margin: 20px 0 20px 0;">
+  <h5 style="font-weight: 300; padding: 0 10px 0 10px;">
+    <span style="font-size: 35px;font-weight: 400;">3. </span>
+    Selecione agora os papéis que quer atribuir aos utilizadores selecionados e defina por quanto tempo esses
+    mesmos papéis devem ser válidos
+  </h5>
+
+  <div class="row" style="padding: 0 10px 0 10px;">
+    <div class="input-field col l8 m6 s6">
+      <label for="select_roles_to_add"></label>
+      <%= select_tag "access", options_for_select(Role.remaining_roles_for_select), multiple: true,
+                     prompt: "- Escolha os papéis a atribuir -",
+                     class: '', id: 'select_roles_to_add' %>
+    </div>
+    <div class="input-field col l4 m6 s6">
+      <%= select_tag "access", options_for_select(Role.time_values_for_select), multiple: false,
+                     prompt: "- Escolha a validade dos papéis -",
+                     class: '', id: 'select_time' %>
+    </div>
+  </div>
+</div>

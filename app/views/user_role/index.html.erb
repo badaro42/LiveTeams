@@ -25,13 +25,21 @@
 <% end %>
 
 <% content_for :model_actions do %>
-    <div class="fixed-action-btn" style="bottom: 25px; right: 25px;">
-      <a href="#!" data-position="left" data-delay="0" data-tooltip="Atribuir permissões!"
-         class="btn-floating btn-large red tooltipped" onclick="submitPermissionsToDB()">
+    <div id="create_user_roles_btn" class="fixed-action-btn" style="bottom: 25px; right: 25px; display: none">
+      <a href="#!" data-position="left" data-delay="0" data-tooltip="Atribuir papéis!"
+         class="btn-floating btn-large red tooltipped" onclick="submitUserRolesToDB()">
         <i class="large material-icons">save</i>
       </a>
     </div>
+
+    <div id="destroy_user_roles_btn" class="fixed-action-btn" style="bottom: 25px; right: 25px; display: none">
+      <a href="#!" data-position="left" data-delay="0" data-tooltip="Remover papéis!"
+         class="btn-floating btn-large red tooltipped" onclick="removeUserRolesFromUser()">
+        <i class="large material-icons">delete</i>
+      </a>
+    </div>
 <% end %>
+
 
 <div class="row" style="margin: 10px 0 0 0;">
   <div class="" style="padding: 15px; margin-bottom: 15px;">
@@ -39,79 +47,31 @@
     <div class="divider" style="margin-top: 5px;"></div>
   </div>
 
-
-  <div class="white z-depth-1" style="padding: 15px 10px 0 10px;">
-    <h5 style="font-weight: 300; padding: 0 10px 0 10px; margin-bottom: 20px;">
-      <span style="font-size: 35px;font-weight: 400;">1. </span>
-      Use os filtros abaixo para filtrar os utilizadores pelo nome,
-      pela equipa a que pertecem e ainda pelo perfil que possuem
-    </h5>
-
-    <div class="col l4 m12 s12" style="margin-bottom: 20px;">
-      <%= form_for_filterrific @users_filter do |f| %>
-
-          <div class="input-field" style="margin-bottom: 25px;">
-            Filtrar por nome
-            <%= f.text_field(
-                    :search_query,
-                    class: 'filterrific-periodically-observed'
-                ) %>
-          </div>
-
-          <div class="input-field" style="margin-bottom: 40px;">
-            Filtrar por equipa
-            <%= f.select :with_team,
-                         @users_filter.select_options[:with_team],
-                         {:include_blank => '- Qualquer equipa -'} %>
-          </div>
-
-          <div class="input-field" style="margin-bottom: 30px;">
-            Filtrar por perfil
-            <%= f.select :with_role_name,
-                         @users_filter.select_options[:with_role_name],
-                         {:include_blank => '- Qualquer perfil -'} %>
-          </div>
-
-          <div>
-            <%= link_to(
-                    'Repor filtros',
-                    reset_filterrific_url,
-                    method: :get,
-                    style: "width: 100%;",
-                    class: "btn waves-effect white-btn"
-                # class: "right btn waves-effect"
-                ) %>
-          </div>
-
-      <% end %>
-    </div>
-
-    <div class="col l8 m12 s12" id="results">
-      <%= render partial: 'user_list', locals: {users: @users} %>
-    </div>
-
-    <hr class="nice-trick">
-  </div>
-
-  <div class="white z-depth-1" style="padding: 15px 10px 0 10px; margin: 20px 0 20px 0;">
+  <div class="row white z-depth-1" style="padding: 15px 10px 15px 10px; margin: 20px 0 20px 0;">
     <h5 style="font-weight: 300; padding: 0 10px 0 10px;">
-      <span style="font-size: 35px;font-weight: 400;">2. </span>
-      Selecione agora os papéis que quer atribuir aos utilizadores selecionados e defina por quanto tempo esses
-      mesmos papéis devem ser válidos
+      <span style="font-size: 35px;font-weight: 400;">1. </span>
+      Escolha qual a ação que pretende fazer - adicionar ou remover papéis aos utilizadores - e o formulário
+      apropriado é apresentado
     </h5>
 
-    <div class="row" style="padding: 0 10px 0 10px;">
-      <div class="input-field col l8 m6 s6">
-        <label for="select_roles_to_add"></label>
-        <%= select_tag "access", options_for_select(Role.remaining_roles_for_select), multiple: true,
-                       prompt: "- Escolha os papéis a atribuir -",
-                       class: '', id: 'select_roles_to_add' %>
-      </div>
-      <div class="input-field col l4 m6 s6">
-        <%= select_tag "access", options_for_select(Role.time_values_for_select), multiple: false,
-                       prompt: "- Escolha a validade dos papéis -",
-                       class: '', id: 'select_time' %>
-      </div>
+    <div class="col l6 m6 s6">
+      <button id="show_create_form_btn" style="width: 100%;" class="btn waves-effect white-btn"
+         onclick="toggleFormVisibility('create')">Adicionar papéis</button>
+    </div>
+    <div class="col l6 m6 s6">
+      <button id="show_destroy_form_btn" style="width: 100%;" class="btn waves-effect white-btn"
+         onclick="toggleFormVisibility('destroy')">Remover papéis</button>
     </div>
   </div>
+
+  <div id="create_user_roles_form" style="display: none;">
+    <!-- o conteudo da partial deve vir para aqui! -->
+    <%= render partial: "create" %>
+  </div>
+
+  <div id="destroy_user_roles_form" style="display: none;">
+    <!-- o conteudo da partial deve vir para aqui! -->
+    <%= render partial: "destroy" %>
+  </div>
+
 </div>
