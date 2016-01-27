@@ -249,14 +249,20 @@ Role.create(name: Role::GESTOR)
 Role.create(name: Role::OPERACIONAL)
 Role.create(name: Role::BASICO)
 
-Role.create(name: Role::REMOVER_GEO_ENTIDADES)
-Role.create(name: Role::REMOVER_UTILIZADORES)
-Role.create(name: Role::GERIR_EQUIPAS_BASIC)
-Role.create(name: Role::GERIR_EQUIPAS_GOD_MODE)
-Role.create(name: Role::GERIR_MEMBROS_EQUIPA)
-Role.create(name: Role::GERIR_EQUIPAS_E_MEMBROS_EQUIPA)
-Role.create(name: Role::EDITAR_TODAS_EQUIPAS)
-Role.create(name: Role::EDITAR_TODOS_UTILIZADORES)
+Role.create(name: Role::USER_UPDATE_ALL)
+Role.create(name: Role::USER_DESTROY_ALL)
+Role.create(name: Role::TEAM_CREATE)
+Role.create(name: Role::TEAM_UPDATE_OWN)
+Role.create(name: Role::TEAM_UPDATE_ALL)
+Role.create(name: Role::TEAM_DESTROY_OWN)
+Role.create(name: Role::TEAM_DESTROY_ALL)
+Role.create(name: Role::TEAM_MEMBER_CREATE)
+Role.create(name: Role::TEAM_MEMBER_DESTROY)
+Role.create(name: Role::GEO_ENTITY_CREATE)
+Role.create(name: Role::GEO_ENTITY_REMOVE_OWN)
+Role.create(name: Role::GEO_ENTITY_REMOVE_ALL)
+
+
 
 # ROLE_PERMISSION role_id:integer permission_id
 puts 'Associating permissions to roles'
@@ -320,32 +326,32 @@ RolePermission.create(role_id: 4, permission_id: 14)
 RolePermission.create(role_id: 4, permission_id: 18)
 
 
-# RolePermission.create(role_id: 5, permission_id: 21) # REMOVER TODAS AS GEO-ENTIDADES
-#
-#
-# RolePermission.create(role_id: 6, permission_id: 6) # REMOVER TODOS OS UTILIZADORES
-#
-#
-# RolePermission.create(role_id: 7, permission_id: 5) # GERIR EQUIPAS - APENAS PERMITE EDITAR E REMOVER AS CRIADAS
-# RolePermission.create(role_id: 7, permission_id: 7)
-# RolePermission.create(role_id: 7, permission_id: 8)
-#
-#
-# RolePermission.create(role_id: 8, permission_id: 9) # GERIR MEMBROS DE EQUIPAS
-# RolePermission.create(role_id: 8, permission_id: 12)
-#
-#
-# RolePermission.create(role_id: 9, permission_id: 5) # GERIR EQUIPAS E MEMBROS DE EQUIPAS
-# RolePermission.create(role_id: 9, permission_id: 7)
-# RolePermission.create(role_id: 9, permission_id: 8)
-# RolePermission.create(role_id: 9, permission_id: 9)
-# RolePermission.create(role_id: 9, permission_id: 12)
-#
-#
-# RolePermission.create(role_id: 10, permission_id: 12)
-#
-#
-# RolePermission.create(role_id: 11, permission_id: 12)
+RolePermission.create(role_id: 5, permission_id: 4) # USER_UPDATE_ALL
+
+RolePermission.create(role_id: 6, permission_id: 6) # USER_DESTROY_ALL
+
+RolePermission.create(role_id: 7, permission_id: 7) # TEAM_CREATE
+
+RolePermission.create(role_id: 8, permission_id: 9) # TEAM_UPDATE_OWN
+
+RolePermission.create(role_id: 9, permission_id: 10) # TEAM_UPDATE_ALL
+
+RolePermission.create(role_id: 10, permission_id: 11) # TEAM_DESTROY_OWN
+
+RolePermission.create(role_id: 11, permission_id: 12) # TEAM_DESTROY_ALL
+
+RolePermission.create(role_id: 12, permission_id: 13) # TEAM_MEMBER_CREATE
+
+RolePermission.create(role_id: 13, permission_id: 16) # TEAM_MEMBER_DESTROY
+
+RolePermission.create(role_id: 14, permission_id: 17) # GEO_ENTITY_CREATE
+
+RolePermission.create(role_id: 15, permission_id: 20) # GEO_ENTITY_REMOVE_OWN
+
+RolePermission.create(role_id: 16, permission_id: 21) # GEO_ENTITY_REMOVE_ALL
+
+
+
 
 # USER_ROLE user_id:integer role_id:integer expiration_date:date
 puts 'Associating roles to users'

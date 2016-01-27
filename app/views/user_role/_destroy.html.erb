@@ -1,4 +1,46 @@
 <%# encoding: utf-8 %>
 
-<h1>UserRole#destroy</h1>
-<p>Find me in app/views/user_role/destroy.html.erb</p>
+<div class="white z-depth-1" style="padding: 15px 10px 0 10px; margin-bottom: 20px;">
+  <h5 style="font-weight: 300; padding: 0 10px 0 10px; margin-bottom: 20px;">
+    <span style="font-size: 35px;font-weight: 400;">2. </span>
+    Use o campo de pesquisa abaixo para filtrar os utilizadores pelo nome
+  </h5>
+
+  <div id="permissions_search_div" class="col l12 m12 s12">
+    <%= form_for_filterrific @users_destroy_filter do |f| %>
+
+        <div id="destroy_role_partial_search" class="input-field">
+          Filtrar por nome
+          <%= f.text_field(
+                  :search_query,
+                  class: 'filterrific-periodically-observed'
+              ) %>
+        </div>
+
+        <!--<div>-->
+          <%#= link_to(
+#                   'Repor filtros',
+#                   reset_filterrific_url,
+#                   method: :get,
+#                   class: "btn waves-effect white-btn"
+#               # class: "right btn waves-effect"
+              ) %>
+        <!--</div>-->
+
+    <% end %>
+  </div>
+
+  <hr class="nice-trick">
+</div>
+
+<div class="white z-depth-1" style="padding: 15px 10px 0 10px; margin: 20px 0 20px 0;">
+  <h5 style="font-weight: 300; padding: 0 10px 0 10px;">
+    <span style="font-size: 35px;font-weight: 400;">3. </span>
+    A partir da lista de utilizadores que correspondem à sua pesquisa, escolha os papéis que pretende remover,
+    removendo a seleção correspondente
+  </h5>
+
+  <div id="destroy_permissions_results" class="row" style="padding: 0 10px 0 10px; margin: 0 0 20px 0;">
+    <%= render partial: 'user_list_destroy', locals: {users: @users_destroy} %>
+  </div>
+</div>

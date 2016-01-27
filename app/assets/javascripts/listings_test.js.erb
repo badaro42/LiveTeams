@@ -5,6 +5,11 @@ var cluster;
 var parent_list_entry_id, username_to_be_removed, user_role_to_be_removed;
 var uri;
 
+var DESTROY_ROLE_PARTIAL_SEARCH = "destroy_role_partial_search";
+var CREATE_ROLE_PARTIAL_SEARCH = "create_role_partial_search";
+var CREATE_ROLE_PARTIAL_TEAM_FILTER = "create_role_partial_team_filter";
+var CREATE_ROLE_PARTIAL_PROFILE_FILTER = "create_role_partial_profile_filter";
+
 // variaveis da cena da search bar
 var allEntityEntries, allEntityNames, entityNamesIndexed = [], entityEntriesIndexed = [];
 var searchBar, noResultsDiv;
@@ -452,6 +457,8 @@ $(document).ready(function () {
       else
         roles_selected_valid = false;
     });
+
+    $(".remove_user_roles").on('click', removeUserRolesFromUser);
   }
 
   // Toggle search
@@ -464,7 +471,27 @@ $(document).ready(function () {
 $(document).ajaxComplete(function () {
   console.log("TERMINOU AGR UM PEDIDO AJAX");
 
+  var elem = $(this).context.activeElement;
+  var parent_id = $(elem).parent().attr('id');
+
+  console.log(elem);
+  console.log(parent_id);
+
   initPermissionListeners();
+  $('.collapsible').collapsible({accordion: false});
+
+  $(".remove_user_roles").unbind('click', removeUserRolesFromUser);
+  $(".remove_user_roles").on('click', removeUserRolesFromUser);
+
+
+//  if (parent_id === DESTROY_ROLE_PARTIAL_SEARCH) {
+//    $('.collapsible').collapsible({accordion: false});
+//    $(".remove_user_roles").on('click', removeUserRolesFromUser);
+//  }
+//  else if (parent_id === CREATE_ROLE_PARTIAL_SEARCH || parent_id === CREATE_ROLE_PARTIAL_TEAM_FILTER ||
+//      parent_id === CREATE_ROLE_PARTIAL_PROFILE_FILTER) {
+//    initPermissionListeners();
+//  }
 });
 
 
@@ -1068,9 +1095,9 @@ function changeTableSelection(select_all) {
 }
 
 function toggleFormVisibility(form_name) {
-
   var elem_to_show = "", elem_to_hide = "", btn_to_disable = "", btn_to_enable = "",
       float_btn_to_hide = "", float_btn_to_show = "";
+
   if (form_name === "create") {
     elem_to_show = "#create_user_roles_form";
     elem_to_hide = "#destroy_user_roles_form";
@@ -1080,6 +1107,14 @@ function toggleFormVisibility(form_name) {
 
     btn_to_disable = "#show_create_form_btn";
     btn_to_enable = "#show_destroy_form_btn";
+
+    // repõe os valores dos filtros de cada vez que o utilizador muda de tab!
+//    $("#create_profile_filter").val("");
+//    $("#create_team_filter").val("");
+//    $('select').material_select();
+//
+//    $("#filterrific_search_query").val(" ");
+//    $("#filterrific_search_query").val("");
   }
   else if (form_name === "destroy") {
     elem_to_hide = "#create_user_roles_form";
@@ -1100,16 +1135,62 @@ function toggleFormVisibility(form_name) {
       $(float_btn_to_hide).fadeOut({duration: 500}).promise()
   ).done(function () {
     $(elem_to_show).fadeIn({duration: 500}).promise(),
-    $(float_btn_to_show).fadeIn({duration: 500}).promise()
-    .done(function () {
-      $('html,body').animate({
-        scrollTop: ($(elem_to_show).offset().top - $('.navbar-fixed').height() - 10),
-        duration: 1000
-      });
-    })
+        $(float_btn_to_show).fadeIn({duration: 500}).promise()
+            .done(function () {
+              $('html,body').animate({
+                scrollTop: ($(elem_to_show).offset().top - $('.navbar-fixed').height() - 10),
+                duration: 1000
+              });
+            })
   });
 }
 
 function removeUserRolesFromUser() {
-  console.log("siga remover os papeis deste utilizador!");
+  var role_name = $(this).attr("data-role-name"),
+      user_name = $(this).attr("data-user-name"),
+      role_id = $(this).attr("data-role-id"),
+      user_id = $(this).attr("data-user-id"),
+      parent_div = $(this).parent(),
+      temp_roles_count = $(this).closest(".temp_roles_count"),
+      li = $(this).closest("li"),
+      count_elem = $(li).find(".temp_roles_count");
+
+  console.log("role_id: " + role_id);
+  console.log("user_id: " + user_id);
+
+  if (confirm("ATENÇÂO!!\n\nTem a certeza que pretende remover o papel '" + role_name + "' do utilizador '" +
+          user_name + "'?")) {
+
+    $.ajax({
+      type: "DELETE",
+      url: "/permissions",
+      data: {
+        user_role: {
+          role_id: role_id,
+          user_id: user_id
+        }
+      },
+      success: function (result) {
+        console.log("sucesso removção papel");
+
+        $.when($(parent_div).fadeOut({duration: 1000}).promise()).done(function () {
+          $(parent_div).remove().promise()
+        });
+
+        var new_count_text = parseInt($(count_elem).text()) - 1;
+        $(count_elem).text(new_count_text);
+
+        noty({
+          text: 'O papel "' + role_name + '" foi removido com sucesso do utilizador "' + user_name + '"',
+          timeout: 4000, type: 'success', layout: 'bottomCenter'
+        });
+      },
+      error: function (err) {
+        noty({
+          text: 'Ocorreu um erro ao remover o papel do utilizador selecionado.\nTente novamente mais tarde.',
+          timeout: 4000, type: 'error', layout: 'bottomCenter'
+        });
+      }
+    });
+  }
 }

@@ -20,14 +20,18 @@ class User < ActiveRecord::Base
   ]
 
   REMAINING_ROLES = [
-      Role::REMOVER_GEO_ENTIDADES ,
-      Role::REMOVER_UTILIZADORES ,
-      Role::GERIR_EQUIPAS_BASIC ,
-      Role::GERIR_EQUIPAS_GOD_MODE ,
-      Role::GERIR_MEMBROS_EQUIPA ,
-      Role::GERIR_EQUIPAS_E_MEMBROS_EQUIPA ,
-      Role::EDITAR_TODOS_UTILIZADORES ,
-      Role::EDITAR_TODAS_EQUIPAS
+      Role::USER_UPDATE_ALL ,
+      Role::USER_DESTROY_ALL ,
+      Role::TEAM_CREATE ,
+      Role::TEAM_UPDATE_OWN ,
+      Role::TEAM_UPDATE_ALL ,
+      Role::TEAM_DESTROY_OWN ,
+      Role::TEAM_DESTROY_ALL ,
+      Role::GEO_ENTITY_REMOVE_OWN ,
+      Role::GEO_ENTITY_REMOVE_ALL ,
+      Role::GEO_ENTITY_CREATE ,
+      Role::TEAM_MEMBER_CREATE ,
+      Role::TEAM_MEMBER_DESTROY
   ]
 
   # Include default devise modules. Others available are:
@@ -132,6 +136,11 @@ class User < ActiveRecord::Base
   # concatena o primeiro com o ultimo para as labels e afins
   def full_name
     "#{first_name} #{last_name}"
+  end
+
+  # user.get_user_temporary_roles.map(&:permissions).flatten devolve todas as permissões temporarias do user
+  def get_user_temporary_roles
+    self.roles.where("role_id > ?", 4)
   end
 
   # verifica se o perfil do utilizador é igual ao passado em parametro

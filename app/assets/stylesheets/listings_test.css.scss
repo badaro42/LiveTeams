@@ -360,9 +360,6 @@ label {
   width: 100%;
 }
 
-
-
-
 .nice-trick {
   margin: 0;
   border-bottom-width: 0;
@@ -374,7 +371,6 @@ label {
   margin: 0;
 }
 
-
 // altera o estilo do botão
 // fundo branco, borda 1px cinzenta e cor cinzenta
 .white-btn {
@@ -382,7 +378,6 @@ label {
   border: 1px solid lightgrey;
   color: grey;
 }
-
 
 @media only screen and (min-width: 993px) {
   #users_filtered_table thead,
@@ -405,7 +400,6 @@ label {
     overflow-y: auto;
   }
 
-
   #users_filtered_table_body td:first-child,
   #users_filtered_table_header th:first-child {
     width: 16%;
@@ -425,4 +419,20 @@ label {
   #permissions_results {
     padding-left: 15px;
   }
+}
+
+.user_roles_to_remove {
+  //padding: 5px 20px 5px 20px !important;
+  padding: 10px 0 10px 0;
+  margin: 0 20px 0 20px;
+  border-bottom: 1px solid lightgrey;
+}
+
+//.user_roles_to_remove:first-child {
+//  padding: 15px 20px 5px 20px !important;
+//}
+
+.user_roles_to_remove:last-child {
+  //padding: 5px 20px 15px 20px !important;
+  border-bottom: 0 !important;
 }

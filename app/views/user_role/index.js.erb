@@ -1,3 +1,5 @@
-<% js = escape_javascript(render partial: 'user_list', locals: { users: @users }) %>
+<% js_create = escape_javascript(render partial: 'user_list_create', locals: { users: @users_create }) %>
+<% js_destroy = escape_javascript(render partial: 'user_list_destroy', locals: { users: @users_destroy }) %>
 
-$("#permissions_results").html("<%= js %>");
+$("#create_permissions_results").html("<%= js_create %>");
+$("#destroy_permissions_results").html("<%= js_destroy %>");

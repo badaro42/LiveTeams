@@ -14,14 +14,23 @@ class Role < ActiveRecord::Base
 
   # restantes papeis
   # ADICIONAR MAIS PAPEIS AQUI!!!!!!!!!!
-  REMOVER_GEO_ENTIDADES = "Remover geo-entidades"
-  REMOVER_UTILIZADORES = "Remover utilizadores"
-  GERIR_EQUIPAS_BASIC = "Gerir equipas (apenas permite editar e remover as equipas criadas pelo utilizador)"
-  GERIR_EQUIPAS_GOD_MODE = "Gerir equipas (controlo absoluto sobre todas as equipas)"
-  GERIR_MEMBROS_EQUIPA = "Gerir membros de equipas"
-  GERIR_EQUIPAS_E_MEMBROS_EQUIPA = "Gerir equipas e membros de equipas"
-  EDITAR_TODOS_UTILIZADORES = "Editar todos os utilizadores"
-  EDITAR_TODAS_EQUIPAS = "Editar todas as equipas"
+  USER_UPDATE_ALL = "Atualizar todos os utilizadores"
+  USER_DESTROY_ALL = "Remover todas contas de utilizadores"
+
+  TEAM_CREATE = "Criar novas equipas"
+  TEAM_UPDATE_OWN = "Atualizar as próprias equipas"
+  TEAM_UPDATE_ALL = "Atualizar todas as equipas"
+  TEAM_DESTROY_OWN = "Remover as próprias equipas"
+  TEAM_DESTROY_ALL = "Destruir todas as equipas"
+
+  GEO_ENTITY_REMOVE_OWN = "Remover as próprias geo-entidades"
+  GEO_ENTITY_REMOVE_ALL = "Remover todas as geo-entidades"
+  GEO_ENTITY_CREATE = "Criar novas geo-entidades"
+
+  TEAM_MEMBER_CREATE = "Adicionar membros às equipas"
+  TEAM_MEMBER_DESTROY = "Remover membros das equipas"
+
+
 
   # todos os papeis que existam na base de dados
   # a primeira linha apenas apresenta os 4 papeis principais

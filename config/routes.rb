@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   get 'permissions', to: 'user_role#index', as: :permissions
   post 'permissions', to: 'user_role#create', as: :permission_create
   delete 'permissions', to: 'user_role#destroy', as: :permission_destroy
+  get 'permissions/reset_filters', to: 'user_role#reset_filters'
 
   # rota para o SSE :)
   get '/entity_updates' => 'homepage#entity_updates'

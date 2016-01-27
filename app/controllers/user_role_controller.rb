@@ -1,8 +1,9 @@
 class UserRoleController < ApplicationController
+  before_filter :authenticate_user!
   layout "listings"
 
   def index
-    @users_filter = initialize_filterrific(
+    @users_create_filter = initialize_filterrific(
         User,
         params[:filterrific],
         select_options: {
@@ -12,7 +13,14 @@ class UserRoleController < ApplicationController
     # persistence_id: false
     ) or return
 
-    @users = User.filterrific_find(@users_filter)
+    @users_destroy_filter = initialize_filterrific(
+        User,
+        params[:filterrific]
+    # persistence_id: false
+    ) or return
+
+    @users_create = User.filterrific_find(@users_create_filter)
+    @users_destroy = User.filterrific_find(@users_destroy_filter)
 
     respond_to do |format|
       format.html
@@ -52,6 +60,17 @@ class UserRoleController < ApplicationController
   end
 
   def destroy
-  end
+    puts "********************************"
+    puts " USER_ROLE DESTROY DESTROY ROLES"
+    puts "********************************"
 
+    # TODO: DESATIVEI ESTA CENA APENAS PARA TESTES! ATIVAR MAIS TARDE!!
+    UserRole.destroy(UserRole.where("role_id = ? and user_id = ?", params[:user_role][:role_id],
+                                    params[:user_role][:user_id]).first)
+
+    render nothing: true, status: :ok
+
+  rescue ActiveRecord::RecordNotFound
+    render nothing: true, status: :internal_server_error
+  end
 end
