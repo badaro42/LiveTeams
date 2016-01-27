@@ -29,3 +29,10 @@ hr {
     border-top-width: 0;
     display: inline-block;
 }
+
+
+.white-btn {
+    background-color: #FFFFFF !important;
+    border: 1px solid lightgrey;
+    color: grey;
+}
