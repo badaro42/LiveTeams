@@ -110,12 +110,17 @@
       <ul id="profile-tabs-list" class="tabs" style="overflow-x: hidden;">
         <li class="tab col s6">
           <a class="stay-where-you-are active" href="#user-teams">
-            Equipas (<%= @user_teams.count %>)
+            Equipas (<%= @teams_belonging_or_created.count %>)
           </a>
         </li>
         <li class="tab col s6">
           <a href="#user-entities" class="stay-where-you-are">
             Geo-entidades (<%= @user_entities.count %>)
+          </a>
+        </li>
+        <li class="tab col s6">
+          <a href="#user-permissions" class="stay-where-you-are">
+            Permissões
           </a>
         </li>
       </ul>
@@ -141,6 +146,44 @@
                       <% else %>
                           <span style="font-size: 12px;">Membro</span>
                       <% end %>
+                    </strong>
+
+                    <%= link_to team, :data => {:position => 'left', :delay => '15',
+                                                :tooltip => 'Ir para a equipa'},
+                                class: 'tooltipped secondary-content', method: :get, style: 'cursor: pointer;' do %>
+                        <i class="material-icons">send</i>
+                    <% end %>
+                  </div>
+                </li>
+            <% end %>
+        <% end %>
+      </ul>
+
+      <ul class="collection with-header">
+        <li class="collection-header"><h5>Equipas que criou</h5></li>
+
+        <% if @user_created_teams.length == 0 %>
+            <li class="collection-item">
+              Não criou nenhuma equipa
+            </li>
+        <% else %>
+            <% @user_created_teams.each do |team| %>
+                <% belongs_to_team = TeamMember.where(team_id: team.id, user_id: @user.id).length == 0 ? false : true %>
+                <% text_to_show = "Não pertence à equipa" %>
+                <% if belongs_to_team %>
+                    <% if team.leader_id == @user.id %>
+                        <% text_to_show = "Líder" %>
+                    <% else %>
+                        <% text_to_show = "Membro" %>
+                    <% end %>
+                <% end %>
+
+                <li class="collection-item">
+                  <div>
+                    <strong>
+                      <span style="font-size: 15px;"><%= team.name %></span>
+                      <span> | </span>
+                      <span style="font-size: 12px;"><%= text_to_show %></span>
                     </strong>
 
                     <%= link_to team, :data => {:position => 'left', :delay => '15',
@@ -188,6 +231,39 @@
             <% end %>
         <% end %>
       </ul>
+    </div>
+
+    <div id="user-permissions" class="col s12 profile-tab-content">
+      <% temp_roles = @user.get_user_temporary_roles %>
+      <% if temp_roles.length > 0 %>
+          <table class="centered highlighted responsive-table">
+            <thead>
+            <tr>
+              <th>Modelo</th>
+              <th>Ação</th>
+              <th>Descrição</th>
+              <th>Válido até</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <% temp_roles.each do |role| %>
+                <% exp_date = UserRole.where(role_id: role.id, user_id: @user.id).first.expiration_date %>
+                <tr>
+                  <td><%= role.permissions.first.subject_class %></td>
+                  <td><%= role.permissions.first.subject_action %></td>
+                  <td><%= role.name %></td>
+                  <td><%= exp_date.to_formatted_s(:long) %></td>
+                </tr>
+            <% end %>
+            </tbody>
+          </table>
+      <% else %>
+          <div class="grey lighten-3 z-depth-1">
+            <p style="padding: 20px;">Não possui nenhuma permissão extraordinária para além daquelas inerentes
+              ao seu perfil, uma vez que nenhum administrador lhe atribui qualquer papel temporário.</p>
+          </div>
+      <% end %>
     </div>
   </div>
 </div>

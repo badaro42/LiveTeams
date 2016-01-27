@@ -63,7 +63,7 @@ class ApplicationController < ActionController::Base
     if object.is_a? User
       o_id = object.id.to_i
     elsif object.is_a? Team
-      o_id = object.leader_id.to_i
+      o_id = object.created_by_user_id.to_i
     elsif object.is_a? GeoEntity
       o_id = object.user_id.to_i
     end

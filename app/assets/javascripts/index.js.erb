@@ -395,40 +395,40 @@ $(document).ready(function () {
 
 //  TODO: ADICIONAR O IF, ESTA COMENTADO APENAS PARA EFEITOS DE TESTE!
   // apenas cria os controlos para adicionar geo-entidades se não o perfil NÃO for 'Básico'
-//  if (gon.user_profile !== "Basico") {
-  // cria a barra de controlos para a criaçao de entidades
-  L.drawLocal.draw.toolbar.buttons.polygon = 'Desenhar um polígono';
-  L.drawLocal.draw.toolbar.buttons.polyline = 'Desenhar uma linha poligonal';
-  L.drawLocal.draw.toolbar.buttons.marker = 'Desenhar um marcador';
-  L.drawLocal.draw.toolbar.buttons.rectangle = 'Desenhar um rectângulo';
-  L.drawLocal.draw.toolbar.buttons.circle = 'Desenhar um círculo';
-  var drawControl = new L.Control.Draw({
-    position: 'bottomleft',
-    draw: {
-      polygon: {
-        title: 'Polígono',
-        allowIntersection: true,
-        drawError: {
-          color: '#b00b00',
-          timeout: 1000
+  if (gon.can_create_geo_entities) {
+    // cria a barra de controlos para a criaçao de entidades
+    L.drawLocal.draw.toolbar.buttons.polygon = 'Desenhar um polígono';
+    L.drawLocal.draw.toolbar.buttons.polyline = 'Desenhar uma linha poligonal';
+    L.drawLocal.draw.toolbar.buttons.marker = 'Desenhar um marcador';
+    L.drawLocal.draw.toolbar.buttons.rectangle = 'Desenhar um rectângulo';
+    L.drawLocal.draw.toolbar.buttons.circle = 'Desenhar um círculo';
+    var drawControl = new L.Control.Draw({
+      position: 'bottomleft',
+      draw: {
+        polygon: {
+          title: 'Polígono',
+          allowIntersection: true,
+          drawError: {
+            color: '#b00b00',
+            timeout: 1000
+          },
+          shapeOptions: {
+            color: '#bada55'
+          },
+          showArea: true
         },
-        shapeOptions: {
-          color: '#bada55'
+        polyline: {
+          metric: true
         },
-        showArea: true
-      },
-      polyline: {
-        metric: true
-      },
-      circle: {
-        shapeOptions: {
-          color: '#662d91'
+        circle: {
+          shapeOptions: {
+            color: '#662d91'
+          }
         }
       }
-    }
-  });
-  map.addControl(drawControl);
-//  }
+    });
+    map.addControl(drawControl);
+  }
 
   // cria uma imagem com a inicial do nome do utilizador autenticado
   $('.profile_name').initial({

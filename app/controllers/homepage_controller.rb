@@ -14,11 +14,13 @@ class HomepageController < ApplicationController
     @most_active_users = User.all.order(sign_in_count: :desc).limit(15)
     @recently_changed_teams = Team.all.order(updated_at: :desc).limit(15)
 
+    can_create_geo_entities = can_perform_action? :create, GeoEntity
+
     gon.push({
                  user_id: current_user.id,
                  current_lat: current_user.latlon.lat,
                  current_lon: current_user.latlon.lon,
-                 user_profile: current_user.profile
+                 can_create_geo_entities: can_create_geo_entities
              })
   end
 

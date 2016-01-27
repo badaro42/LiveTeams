@@ -2,7 +2,9 @@
 
 <% content_for :title, @team.name + " :: PROCIV Portugal" %>
 <% content_for :model_actions do %>
-    <% if (can_perform_action? :update, @team) || (can_perform_action? :destroy, @team) %>
+    <% if (can_perform_action? :update, @team) || (can_perform_action? :destroy, @team) ||
+        (can_perform_action? :create, Team) %>
+
         <div class="fixed-action-btn" style="bottom: 25px; right: 25px;">
           <a class="btn-floating btn-large red">
             <i class="large material-icons">more_horiz</i>
@@ -84,21 +86,30 @@
     <div class="col l12 m6 s12">
       <%= image_tag @team_leader.avatar.url(:small), class: 'circle responsive-img' %>
 
-      <h6 class="hide-on-med-only" style="font-weight: 300;">
+      <h6 style="font-weight: 300;">
         Líder:
         <%= link_to @team_leader, method: :get do %>
             <%= @team_leader.full_name %>
         <% end %>
       </h6>
+
+      <div class="hide-on-med-only divider divider-margin"></div>
+
       <h6 class="hide-on-med-only" style="font-weight: 300;">
         Responsável por atualizar a posição:
         <%= link_to @location_user, method: :get do %>
             <%= @location_user.full_name %>
         <% end %>
       </h6>
+      <h6 class="hide-on-med-only" style="font-weight: 300;">
+        Equipa criada por:
+        <%= link_to @team_created_by, method: :get do %>
+            <%= @team_created_by.full_name %>
+        <% end %>
+      </h6>
     </div>
 
-    <div class="col l12 m6 s12 hide-on-large-only hide-on-small-only">
+    <div style="padding-top: 15px;" class="col l12 m6 s12 hide-on-large-only hide-on-small-only">
       <h6 style="font-weight: 300;">
         <strong><%= @team.name.mb_chars.upcase %></strong>
       </h6>
@@ -108,18 +119,18 @@
 
     <div class="col l12 m6 s12">
       <h6 class="hide-on-small-only hide-on-large-only" style="font-weight: 300;">
-        Líder:
-        <%= link_to @team_leader, method: :get do %>
-            <%= @team_leader.full_name %>
+        Responsável por atualizar a posição:
+        <%= link_to @location_user, method: :get do %>
+            <%= @location_user.full_name %>
         <% end %>
       </h6>
 
       <div class="divider divider-margin hide-on-med-only"></div>
 
       <h6 class="hide-on-small-only hide-on-large-only" style="font-weight: 300;">
-        Responsável por atualizar a posição:
-        <%= link_to @location_user, method: :get do %>
-            <%= @location_user.full_name %>
+        Equipa criada por:
+        <%= link_to @team_created_by, method: :get do %>
+            <%= @team_created_by.full_name %>
         <% end %>
       </h6>
 
@@ -138,12 +149,12 @@
   </div>
 
   <div id="team_coordinates" class="center col s12 m12 l8 z-depth-1 white"
-       style="padding-left: 20px; padding-top: 0px; padding-bottom: 20px; padding-right: 20px;">
+       style="padding: 0 20px 20px 20px;">
     <h5 style="font-weight: 300;">Coordenadas</h5>
 
     <div class="divider divider-margin"></div>
 
-    <div id="team_map" style="height: 350px;"></div>
+    <div id="team_map" style="height: 400px;"></div>
   </div>
 </div>
 

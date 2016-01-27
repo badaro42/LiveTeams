@@ -93,6 +93,9 @@ class TeamsController < ApplicationController
 
       # utilizador responsavel por atualizar a posição da equipa
       @location_user = User.find(@team.location_user_id)
+
+      # utilizador que criou a equipa
+      @team_created_by = User.find(@team.created_by_user_id)
     end
 
   rescue AccessDenied
@@ -122,16 +125,16 @@ class TeamsController < ApplicationController
     else
       custom_authorize! :update, @team
 
-      if @team.leader_id == current_user.id || current_user.profile == Role::ADMINISTRADOR
+      # if @team.leader_id == current_user.id || current_user.profile == Role::ADMINISTRADOR
         gon.current_team_id = @team.id
         gon.users_in_team = set_users_in_team
 
         @users_in_team = @team.users # para as dropdowns de escolha de lider/responsavel localização
         set_users_for_multiple_select("new")
-      else
-        flash[:error] = "Não tem permissão para editar equipas."
-        redirect_to @team
-      end
+      # else
+      #   flash[:error] = "Não tem permissão para editar equipas."
+      #   redirect_to @team
+      # end
     end
 
   rescue AccessDenied
@@ -150,6 +153,7 @@ class TeamsController < ApplicationController
     # vamos buscar a localização para esse utilizador e introduzimos na equipa
     @team.latlon = User.find(params[:team][:location_user_id]).latlon
     @team.leader_id = params[:team][:leader_id].to_i
+    @team.created_by_user_id = current_user.id
 
     # atualiza o papel do lider da equipa no caso deste ser 'Operacional'
     update_leader_profile

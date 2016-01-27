@@ -97,7 +97,17 @@ class UsersController < ApplicationController
 
       gon.curr_user_pos = @user.latlon
 
+      # as equipas a que pertence
       @user_teams = @user.teams
+
+      # as equipas que criou
+      @user_created_teams = Team.where(created_by_user_id: @user.id)
+
+      # uniao das equipas que criou com as que esta inserido
+      # pode ter criado uma equipa e nao estar inserido na mesma, p.e.
+      @teams_belonging_or_created = @user_teams | @user_created_teams
+
+      # as entidades que criou
       @user_entities = @user.geo_entities
     end
 

@@ -38,34 +38,6 @@
 <% end %>
 
 <div class="row" style="margin: 10px 0 20px 0;">
-  <!--<div class="col l12 m12 s12 white z-depth-1" id="advanced_options" style="padding-bottom: 11px;">-->
-  <!--<div class="section" style="padding-bottom: 0;">-->
-  <!--<div id="toggle_options_panel" style="cursor: pointer;">-->
-  <!--<i id="arrow_up" class="material-icons left md-36">keyboard_arrow_down</i>-->
-  <!--</div>-->
-
-  <!--<h5 style="margin-top: 4px;">Opções avançadas</h5>-->
-  <!--</div>-->
-
-  <!--<div id="options_div" style="margin-top: 25px; margin-left: 9px; display: none;">-->
-  <!--<div class="row" style="margin-bottom: 10px;">-->
-  <!--<div class="col l12 m12 s12">-->
-  <!--<a class="waves-effect waves-light btn" id="expand_all">-->
-  <!--Expandir todas as entradas-->
-  <!--</a>-->
-  <!--</div>-->
-  <!--</div>-->
-
-  <!--<div class="row" style="margin-bottom: 0;">-->
-  <!--<div class="col l12 m12 s12">-->
-  <!--<a class="waves-effect waves-light btn" id="collapse_all">-->
-  <!--Colapsar todas as entradas-->
-  <!--</a>-->
-  <!--</div>-->
-  <!--</div>-->
-  <!--</div>-->
-  <!--</div>-->
-
   <div class="" style="padding: 15px; margin-bottom: 15px;">
     <h3 style="font-weight: 200; margin: 0;">Equipas</h3>
     <div class="divider" style="margin-top: 5px;"></div>
@@ -90,7 +62,7 @@
               ) %>
         </div>
 
-        <div class="col l4 m6 s12 input-field">
+        <div class="col l4 m12 s12 input-field">
           Ordenar por
           <%= f.select(:sorted_by, @filterrific.select_options[:sorted_by]) %>
         </div>
@@ -115,5 +87,4 @@
   <div id="results" style="margin-top: 20px;">
     <%= render partial: 'list', locals: {teams: @teams} %>
   </div>
-
 </div>
