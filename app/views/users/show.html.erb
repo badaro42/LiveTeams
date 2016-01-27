@@ -86,8 +86,13 @@
           <div style="font-weight: 300; margin-top: 3px;">
             <%= link_to test_destroy_user_path(current_user), class: 'waves-effect waves-light btn red',
                         data: {confirm: "Tem a certeza que prentende eliminar a conta?\nEsta ação é irreversível!"},
-                        method: :delete do %>
-                Eliminar conta
+                        method: :delete, style: "width: 100%;" do %>
+                <i class="material-icons left">warning</i>
+                <% if current_user.id == @user.id %>
+                    Eliminar a sua conta
+                <% else %>
+                    Remover esta conta
+                <% end %>
             <% end %>
           </div>
       <% end %>

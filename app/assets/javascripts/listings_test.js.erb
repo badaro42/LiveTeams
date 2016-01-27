@@ -429,6 +429,7 @@ $(document).ready(function () {
     console.log("PÁGINA DAS PERMISSÕES!!!!");
 
     initPermissionListeners();
+//    $('select').material_select();
 
     $("#select_time").on('change', function () {
       console.log("ALTERAMOS O VALOR DO TEMPO PARA EXPIRAR.");
@@ -1069,6 +1070,14 @@ function submitUserRolesToDB() {
           text: 'As permissões foram atribuídas aos utilizadores selecionados com sucesso!',
           timeout: 4000, type: 'success', layout: 'bottomCenter'
         });
+
+        console.log("foda-se");
+
+        // remove todas as seleções feitas
+        $("input:checkbox[name=users_with_filter]").prop("checked", false);
+        $("#select_roles_to_add option").attr("selected", false);
+        $("#select_time option").attr("selected", false);
+        $('select').material_select();
       },
       error: function (err) {
         noty({
