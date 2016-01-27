@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160117122237) do
+ActiveRecord::Schema.define(version: 20160127151943) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -74,16 +74,18 @@ ActiveRecord::Schema.define(version: 20160117122237) do
   add_index "team_members", ["user_id"], name: "index_team_members_on_user_id", using: :btree
 
   create_table "teams", force: :cascade do |t|
-    t.string    "name",                                                                      null: false
-    t.geography "latlon_highlight", limit: {:srid=>4326, :type=>"point", :geographic=>true}
-    t.datetime  "created_at",                                                                null: false
-    t.datetime  "updated_at",                                                                null: false
+    t.string    "name",                                                                        null: false
+    t.geography "latlon_highlight",   limit: {:srid=>4326, :type=>"point", :geographic=>true}
+    t.datetime  "created_at",                                                                  null: false
+    t.datetime  "updated_at",                                                                  null: false
     t.integer   "leader_id"
     t.integer   "location_user_id"
-    t.geography "latlon",           limit: {:srid=>4326, :type=>"point", :geographic=>true}
+    t.geography "latlon",             limit: {:srid=>4326, :type=>"point", :geographic=>true}
     t.string    "address"
+    t.integer   "created_by_user_id"
   end
 
+  add_index "teams", ["created_by_user_id"], name: "index_teams_on_created_by_user_id", using: :btree
   add_index "teams", ["leader_id"], name: "index_teams_on_leader_id", using: :btree
   add_index "teams", ["location_user_id"], name: "index_teams_on_location_user_id", using: :btree
 
@@ -143,6 +145,7 @@ ActiveRecord::Schema.define(version: 20160117122237) do
   add_foreign_key "team_geo_entities", "teams"
   add_foreign_key "team_members", "teams"
   add_foreign_key "team_members", "users"
+  add_foreign_key "teams", "users", column: "created_by_user_id"
   add_foreign_key "teams", "users", column: "leader_id"
   add_foreign_key "teams", "users", column: "location_user_id"
   add_foreign_key "user_roles", "roles"

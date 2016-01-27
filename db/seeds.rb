@@ -173,16 +173,16 @@ TeamMember.create(team_id: 10, user_id: 20)
 
 
 puts 'Updating teams with location and leader'
-Team.update(1, leader_id: 1, location_user_id: 1, latlon: User.find(1).latlon)
-Team.update(2, leader_id: 3, location_user_id: 3, latlon: User.find(3).latlon)
-Team.update(3, leader_id: 19, location_user_id: 6, latlon: User.find(6).latlon)
-Team.update(4, leader_id: 13, location_user_id: 7, latlon: User.find(7).latlon)
-Team.update(5, leader_id: 8, location_user_id: 8, latlon: User.find(8).latlon)
-Team.update(6, leader_id: 11, location_user_id: 11, latlon: User.find(11).latlon)
-Team.update(7, leader_id: 15, location_user_id: 15, latlon: User.find(15).latlon)
-Team.update(8, leader_id: 18, location_user_id: 18, latlon: User.find(18).latlon)
-Team.update(9, leader_id: 2, location_user_id: 19, latlon: User.find(19).latlon)
-Team.update(10, leader_id: 11, location_user_id: 20, latlon: User.find(20).latlon)
+Team.update(1, created_by_user_id: 1, leader_id: 1, location_user_id: 1, latlon: User.find(1).latlon)
+Team.update(2, created_by_user_id: 3, leader_id: 3, location_user_id: 3, latlon: User.find(3).latlon)
+Team.update(3, created_by_user_id: 19, leader_id: 19, location_user_id: 6, latlon: User.find(6).latlon)
+Team.update(4, created_by_user_id: 13, leader_id: 13, location_user_id: 7, latlon: User.find(7).latlon)
+Team.update(5, created_by_user_id: 8, leader_id: 8, location_user_id: 8, latlon: User.find(8).latlon)
+Team.update(6, created_by_user_id: 11, leader_id: 11, location_user_id: 11, latlon: User.find(11).latlon)
+Team.update(7, created_by_user_id: 15, leader_id: 15, location_user_id: 15, latlon: User.find(15).latlon)
+Team.update(8, created_by_user_id: 18, leader_id: 18, location_user_id: 18, latlon: User.find(18).latlon)
+Team.update(9, created_by_user_id: 2, leader_id: 2, location_user_id: 19, latlon: User.find(19).latlon)
+Team.update(10, created_by_user_id: 11, leader_id: 11, location_user_id: 20, latlon: User.find(20).latlon)
 
 
 # GEO_ENTITY name:string user_id:integer entity_type:string radius:integer latlon:coordinates description:string
