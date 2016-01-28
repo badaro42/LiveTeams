@@ -25,7 +25,7 @@ Rails.application.routes.draw do
                                                   :password => 'password', :confirmation => 'confirmation' }
 
 
-  delete '/users/:id' => 'users#destroy', as: :test_destroy_user
+  delete '/users/:id' => 'users#destroy', as: :destroy_user
   delete '/team_members' => 'team_members#destroy'
   resources :geo_entities
   resources :team_members

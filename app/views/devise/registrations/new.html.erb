@@ -28,7 +28,7 @@
 
     <div class="input-field col s12 m6 l6">
       <%= f.label "Contacto telefónico", class: "active" %>
-      <%= f.text_field :phone_number, class: 'numeric', maxlength: 9, length: 9, required: true, class: "validate" %>
+      <%= f.text_field :phone_number, class: 'numeric validate', maxlength: 9, length: 9, required: true %>
     </div>
 
     <div class="col s12 m12 l12">
@@ -49,7 +49,7 @@
     <div class="file-field input-field col s12 m12 l12">
       <div class="btn white-btn">
         <span>Ficheiro</span>
-        <%= f.file_field :avatar, class: 'file', class: "validate" %>
+        <%= f.file_field :avatar, class: 'file validate' %>
       </div>
       <div class="file-path-wrapper">
         <input class="file-path validate" type="text" placeholder="Imagem de perfil">

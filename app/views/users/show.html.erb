@@ -80,12 +80,11 @@
         <span style="padding-left: 10px"><%= @user.phone_number %></span>
       </div>
 
-      <!-- TODO: (TESTE) MUDAR ISTO PARA OUTRO SITIO!!! -->
       <% if can_perform_action? :destroy, @user %>
           <div class="divider divider-margin"></div>
           <div style="font-weight: 300; margin-top: 3px;">
-            <%= link_to test_destroy_user_path(current_user), class: 'waves-effect waves-light btn red',
-                        data: {confirm: "Tem a certeza que prentende eliminar a conta?\nEsta ação é irreversível!"},
+            <%= link_to destroy_user_path(@user), class: 'waves-effect waves-light btn red',
+                        data: {confirm: "ATENÇÂO!!\n\nTem a certeza que prentende eliminar a conta?\nEsta ação é irreversível!"},
                         method: :delete, style: "width: 100%;" do %>
                 <i class="material-icons left">warning</i>
                 <% if current_user.id == @user.id %>
@@ -120,7 +119,7 @@
         </li>
         <li class="tab col s6">
           <a href="#user-entities" class="stay-where-you-are">
-            Geo-entidades (<%= @user_entities.count %>)
+            Geo-entidades (<%= @user.geo_entities.count %>)
           </a>
         </li>
         <li class="tab col s6">
@@ -135,12 +134,12 @@
       <ul class="collection with-header">
         <li class="collection-header"><h5>Equipas a que pertence</h5></li>
 
-        <% if @user_teams.count == 0 %>
+        <% if @user.teams.length == 0 %>
             <li class="collection-item">
               Não pertence a nenhuma equipa
             </li>
         <% else %>
-            <% @user_teams.each do |team| %>
+            <% @user.teams.each do |team| %>
                 <li class="collection-item">
                   <div>
                     <strong>
@@ -167,14 +166,15 @@
       <ul class="collection with-header">
         <li class="collection-header"><h5>Equipas que criou</h5></li>
 
-        <% if @user_created_teams.length == 0 %>
+        <% if @user.teams_created.length == 0 %>
             <li class="collection-item">
               Não criou nenhuma equipa
             </li>
         <% else %>
-            <% @user_created_teams.each do |team| %>
+            <% @user.teams_created.each do |team| %>
                 <% belongs_to_team = TeamMember.where(team_id: team.id, user_id: @user.id).length == 0 ? false : true %>
                 <% text_to_show = "Não pertence à equipa" %>
+
                 <% if belongs_to_team %>
                     <% if team.leader_id == @user.id %>
                         <% text_to_show = "Líder" %>
@@ -206,12 +206,12 @@
     <div id="user-entities" class="col s12 profile-tab-content">
       <ul class="collection with-header">
         <li class="collection-header"><h5>Geo-entidades que adicionou</h5></li>
-        <% if @user_entities.count == 0 %>
+        <% if @user.geo_entities.length == 0 %>
             <li class="collection-item">
               Não criou nenhuma geo-entidade
             </li>
         <% else %>
-            <% @user_entities.each do |entity| %>
+            <% @user.geo_entities.each do |entity| %>
                 <%= puts "ENTYITY ENTITYTHIUTR" %>
                 <%= puts entity.inspect %>
                 <li class="collection-item">
@@ -266,7 +266,7 @@
       <% else %>
           <div class="grey lighten-3 z-depth-1">
             <p style="padding: 20px;">Não possui nenhuma permissão extraordinária para além daquelas inerentes
-              ao seu perfil, uma vez que nenhum administrador lhe atribui qualquer papel temporário.</p>
+              ao seu perfil, uma vez que nenhum administrador lhe atribuíu qualquer papel temporário.</p>
           </div>
       <% end %>
     </div>

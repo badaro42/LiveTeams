@@ -62,7 +62,7 @@ class UsersController < ApplicationController
             sorted_by: User.options_for_sorted_by,
             with_role_name: Role.options_for_select
         }
-        # persistence_id: false
+    # persistence_id: false
     ) or return
 
     @users = @filterrific.find.page(params[:page])
@@ -94,21 +94,11 @@ class UsersController < ApplicationController
       # variaveis que podem ser acedidas no javascript
       gon.user_id = @user.id
       gon.current_user_id = current_user.id
-
       gon.curr_user_pos = @user.latlon
-
-      # as equipas a que pertence
-      @user_teams = @user.teams
-
-      # as equipas que criou
-      @user_created_teams = Team.where(created_by_user_id: @user.id)
 
       # uniao das equipas que criou com as que esta inserido
       # pode ter criado uma equipa e nao estar inserido na mesma, p.e.
-      @teams_belonging_or_created = @user_teams | @user_created_teams
-
-      # as entidades que criou
-      @user_entities = @user.geo_entities
+      @teams_belonging_or_created = @user.teams | @user.teams_created
     end
 
   rescue AccessDenied
@@ -116,8 +106,8 @@ class UsersController < ApplicationController
     redirect_to root_path
   end
 
-# obtemos primeiro o user pois há 2 endereços que são servidos por este metodo:
-# /account/edit e /users/:id/edit
+  # obtemos primeiro o user pois há 2 endereços que são servidos por este metodo:
+  # /account/edit e /users/:id/edit
   def edit
     if params[:id] == nil
       @user = User.find(current_user.id)
@@ -168,14 +158,53 @@ class UsersController < ApplicationController
     redirect_to @user
   end
 
+  # remover o utilizador do sistema
+  # ao remover a conta do utilizador, todas as entradas do utilizador na tabela "team_members" são removidas
   def destroy
     custom_authorize! :destroy, @user
 
-    respond_to do |format|
-      if @user.destroy
-        format.html { redirect_to root_path, success: "A sua conta foi removida com sucesso. Até sempre :'(" }
-      else
-        format.html { render nothing: true, error: "Ocorreu um erro ao remover o utilizador!" }
+    is_leader_of_any_team = @user.leading_teams.length > 0
+    is_in_charge_of_any_team_location = @user.teams_in_charge_of_location.length > 0
+
+    puts "É LIDER DE ALGUMA EQUIPA?"
+    puts is_leader_of_any_team
+    puts "É RESPONSAVEL PELA LOCALIZAÇAO DE ALGUMA EQUIPA?"
+    puts is_in_charge_of_any_team_location
+
+    # L - lider de equipa; R - responsavel pela localização de equipa
+    # apenas é possivel remover o utilizador caso ele nao seja lider ou responsavel pela localização de uma equipa
+    if is_leader_of_any_team || is_in_charge_of_any_team_location # L || R
+      custom_error = "Não é possível remover o utilizador '" + @user.full_name + "' uma vez que este é "
+      if is_leader_of_any_team # L-true
+        if is_in_charge_of_any_team_location # L-true, R-true
+          custom_error += "líder e responsável pela localização de pelo menos uma equipa."
+        else # L-true, R-false
+          custom_error += "líder de pelo menos uma equipa."
+        end
+      else # L-false, R-true
+        custom_error += "responsável pela localização de pelo menos uma equipa."
+      end
+
+      flash[:error] = custom_error
+      redirect_to @user
+    else # vamos então remover o utilizador
+      @user.destroy
+
+      respond_to do |format|
+        if @user.destroyed?
+          message_to_show = ""
+          if current_user == @user
+            message_to_show = "A sua conta foi removida com sucesso. Até sempre :'("
+          else
+            message_to_show = "A conta do utilizador '" + @user.full_name + "' foi removida com sucesso!"
+          end
+
+          flash[:success] = message_to_show
+          format.html { redirect_to users_path }
+        else
+          flash[:error] = "Ocorreu um erro ao remover o utilizador!"
+          format.html { redirect_to @user }
+        end
       end
     end
 
@@ -186,17 +215,17 @@ class UsersController < ApplicationController
 
 
   private
-# Use callbacks to share common setup or constraints between actions.
+  # Use callbacks to share common setup or constraints between actions.
   def set_user
     if User.exists?(params[:id].to_i)
       @user = User.find(params[:id])
     end
   end
 
-# recebe como parametro o novo perfil do utilizador
-# faz uma query à BD para obter o papel atual do utilizador, altera-o e volta a gravar o tuplo
-# NOTA: só permite atualizar o perfil de ADMIN ou GESTOR para OPERACIONAL ou BASICO caso o user nao seja lider
-# de nenhum equipa
+  # recebe como parametro o novo perfil do utilizador
+  # faz uma query à BD para obter o papel atual do utilizador, altera-o e volta a gravar o tuplo
+  # NOTA: só permite atualizar o perfil de ADMIN ou GESTOR para OPERACIONAL ou BASICO caso o user nao seja lider
+  # de nenhum equipa
   def update_user_role(new_role)
 
     # verificamos se é lider de alguma equipa

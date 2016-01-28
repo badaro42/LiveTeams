@@ -87,15 +87,6 @@ class TeamsController < ApplicationController
       @team.versions.each do |version|
         gon.team_versions.push(version.reify)
       end
-
-      # obtem o utilizador que é lider da equipa
-      @team_leader = User.find(@team.leader_id)
-
-      # utilizador responsavel por atualizar a posição da equipa
-      @location_user = User.find(@team.location_user_id)
-
-      # utilizador que criou a equipa
-      @team_created_by = User.find(@team.created_by_user_id)
     end
 
   rescue AccessDenied

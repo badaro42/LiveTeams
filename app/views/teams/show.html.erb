@@ -84,12 +84,12 @@
     </div>
 
     <div class="col l12 m6 s12">
-      <%= image_tag @team_leader.avatar.url(:small), class: 'circle responsive-img' %>
+      <%= image_tag @team.leader.avatar.url(:small), class: 'circle responsive-img' %>
 
       <h6 style="font-weight: 300;">
         Líder:
-        <%= link_to @team_leader, method: :get do %>
-            <%= @team_leader.full_name %>
+        <%= link_to @team.leader, method: :get do %>
+            <%= @team.leader.full_name %>
         <% end %>
       </h6>
 
@@ -97,14 +97,18 @@
 
       <h6 class="hide-on-med-only" style="font-weight: 300;">
         Responsável por atualizar a posição:
-        <%= link_to @location_user, method: :get do %>
-            <%= @location_user.full_name %>
+        <%= link_to @team.location_user, method: :get do %>
+            <%= @team.location_user.full_name %>
         <% end %>
       </h6>
       <h6 class="hide-on-med-only" style="font-weight: 300;">
         Equipa criada por:
-        <%= link_to @team_created_by, method: :get do %>
-            <%= @team_created_by.full_name %>
+        <% if @team.created_by_user.nil? %>
+            <span style="font-style: italic;">Utilizador removido</span>
+        <% else %>
+            <%= link_to @team.created_by_user, method: :get do %>
+                <%= @team.created_by_user.full_name %>
+            <% end %>
         <% end %>
       </h6>
     </div>
@@ -120,8 +124,8 @@
     <div class="col l12 m6 s12">
       <h6 class="hide-on-small-only hide-on-large-only" style="font-weight: 300;">
         Responsável por atualizar a posição:
-        <%= link_to @location_user, method: :get do %>
-            <%= @location_user.full_name %>
+        <%= link_to @team.location_user, method: :get do %>
+            <%= @team.location_user.full_name %>
         <% end %>
       </h6>
 
@@ -129,8 +133,12 @@
 
       <h6 class="hide-on-small-only hide-on-large-only" style="font-weight: 300;">
         Equipa criada por:
-        <%= link_to @team_created_by, method: :get do %>
-            <%= @team_created_by.full_name %>
+        <% if @team.created_by_user.nil? %>
+            <span style="font-style: italic;">Utilizador removido</span>
+        <% else %>
+            <%= link_to @team.created_by_user, method: :get do %>
+                <%= @team.created_by_user.full_name %>
+            <% end %>
         <% end %>
       </h6>
 
@@ -202,12 +210,15 @@
         <% @team.users.each do |user| %>
             <% is_leader = false %>
             <% is_in_charge_of_location = false %>
-            <% if user.id == @team_leader.id %>
+
+            <% if user.id == @team.leader.id %>
                 <% is_leader = true %>
             <% end %>
-            <% if user.id == @location_user.id %>
+
+            <% if user.id == @team.location_user.id %>
                 <% is_in_charge_of_location = true %>
             <% end %>
+
             <%= render partial: 'list_entry',
                        locals: {user: user, is_leader: is_leader, in_charge_of_location: is_in_charge_of_location} %>
         <% end %>

@@ -6,7 +6,7 @@
       <ul class="left navbar-buttons">
         <li>
           <%= link_to 'http://www.prociv.pt/Pages/default.aspx', target: '_blank', id: 'navbar-icon-div',
-                      style: 'font-size: 1.2rem; font-weight: 100; margin-top: 0;',
+                      style: 'font-size: 1.2rem; font-weight: 300; margin-top: 0;',
                       class: 'navbar-padding-top brand-logo left', method: :get do %>
               <%= image_tag 'prociv_logotipo.gif', class: 'circle left', height: '42', width: '42' %>
               <span>PROCIV</span>
@@ -25,7 +25,7 @@
         </li>
         <% if current_user.profile == Role::ADMINISTRADOR %>
             <li>
-              <%= link_to permissions_path, class: 'navbar-button', method: :get do %>
+              <%= link_to permissions_path, class: 'navbar-button', target: '_blank', method: :get do %>
                   Permissões
               <% end %>
             </li>

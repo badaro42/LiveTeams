@@ -21,6 +21,9 @@ class Team < ActiveRecord::Base
   has_many :geo_entities, through: :team_geo_entities
 
   belongs_to :user
+  belongs_to :created_by_user, class_name: 'User', foreign_key: 'created_by_user_id'
+  belongs_to :leader, class_name: 'User', foreign_key: 'leader_id'
+  belongs_to :location_user, class_name: 'User', foreign_key: 'location_user_id'
 
   # attr_accessor :leader_profile
   accepts_nested_attributes_for :team_members

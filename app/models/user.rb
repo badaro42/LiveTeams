@@ -11,7 +11,6 @@ class User < ActiveRecord::Base
   # will_paginate - numero de elementos por pagina
   self.per_page = 10
 
-
   BASIC_PROFILES = [
       Role::BASICO,
       Role::OPERACIONAL,
@@ -20,17 +19,17 @@ class User < ActiveRecord::Base
   ]
 
   REMAINING_ROLES = [
-      Role::USER_UPDATE_ALL ,
-      Role::USER_DESTROY_ALL ,
-      Role::TEAM_CREATE ,
-      Role::TEAM_UPDATE_OWN ,
-      Role::TEAM_UPDATE_ALL ,
-      Role::TEAM_DESTROY_OWN ,
-      Role::TEAM_DESTROY_ALL ,
-      Role::GEO_ENTITY_REMOVE_OWN ,
-      Role::GEO_ENTITY_REMOVE_ALL ,
-      Role::GEO_ENTITY_CREATE ,
-      Role::TEAM_MEMBER_CREATE ,
+      Role::USER_UPDATE_ALL,
+      Role::USER_DESTROY_ALL,
+      Role::TEAM_CREATE,
+      Role::TEAM_UPDATE_OWN,
+      Role::TEAM_UPDATE_ALL,
+      Role::TEAM_DESTROY_OWN,
+      Role::TEAM_DESTROY_ALL,
+      Role::GEO_ENTITY_REMOVE_OWN,
+      Role::GEO_ENTITY_REMOVE_ALL,
+      Role::GEO_ENTITY_CREATE,
+      Role::TEAM_MEMBER_CREATE,
       Role::TEAM_MEMBER_DESTROY
   ]
 
@@ -55,19 +54,24 @@ class User < ActiveRecord::Base
   validates :avatar, presence: true
   validates :profile, presence: true
   validates :email, presence: true, uniqueness: true
-
   validates_inclusion_of :profile, :in => BASIC_PROFILES
-
-  has_many :geo_entities
-  has_many :team_members
-  has_many :teams, through: :team_members
 
   # verifica a data limite aquando da chamada 'user.roles'
   # ou seja, apenas apresenta os papéis do utilizador que ainda nao tenham expirado
-  has_many :user_roles, -> { where "expiration_date > ?", Time.current }
-  has_many :roles, through: :user_roles
+  has_many :user_roles_not_expired, -> { where "expiration_date > ?", Time.current },
+           class_name: 'UserRole', foreign_key: 'user_id'
 
+  has_many :user_roles, dependent: :delete_all
+  has_many :geo_entities
+  has_many :team_members, dependent: :delete_all
+
+  has_many :teams, through: :team_members
+  has_many :roles, through: :user_roles
   has_many :permissions, through: :roles
+
+  has_many :teams_created, class_name: 'Team', foreign_key: 'created_by_user_id', dependent: :nullify
+  has_many :leading_teams, class_name: 'Team', foreign_key: 'leader_id'
+  has_many :teams_in_charge_of_location, class_name: 'Team', foreign_key: 'location_user_id'
 
 
   # o escopo para quando o utilizador insere uma pesquisa
@@ -131,7 +135,6 @@ class User < ActiveRecord::Base
         ['Perfil (a-z)', 'country_name_asc']
     ]
   end
-
 
   # concatena o primeiro com o ultimo para as labels e afins
   def full_name
