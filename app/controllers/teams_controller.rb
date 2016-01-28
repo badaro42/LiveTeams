@@ -44,8 +44,8 @@ class TeamsController < ApplicationController
         params[:filterrific],
         select_options: {
             sorted_by: Team.options_for_sorted_by
-        }
-        # persistence_id: false
+        },
+        persistence_id: false
     ) or return
 
     @teams = @filterrific.find.page(params[:page])

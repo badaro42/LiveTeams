@@ -9,14 +9,14 @@ class UserRoleController < ApplicationController
         select_options: {
             with_role_name: Role.options_for_select,
             with_team: Team.options_for_filter_by_team
-        }
-    # persistence_id: false
+        },
+        persistence_id: false
     ) or return
 
     @users_destroy_filter = initialize_filterrific(
         User,
-        params[:filterrific]
-    # persistence_id: false
+        params[:filterrific],
+        persistence_id: false
     ) or return
 
     @users_create = User.filterrific_find(@users_create_filter)

@@ -61,8 +61,8 @@ class UsersController < ApplicationController
         select_options: {
             sorted_by: User.options_for_sorted_by,
             with_role_name: Role.options_for_select
-        }
-    # persistence_id: false
+        },
+        persistence_id: false
     ) or return
 
     @users = @filterrific.find.page(params[:page])
