@@ -1,7 +1,6 @@
 class Team < ActiveRecord::Base
   has_paper_trail
 
-
   filterrific default_filter_params: {sorted_by: 'name_asc'},
               available_filters: %w[
                   sorted_by
@@ -12,7 +11,6 @@ class Team < ActiveRecord::Base
 
   # will_paginate - numero de elementos por pagina
   self.per_page = 5
-
 
   has_many :team_members, dependent: :delete_all
   has_many :users, through: :team_members

@@ -12,6 +12,7 @@ class GeoEntity < ActiveRecord::Base
 
   belongs_to :user
   belongs_to :team
+  belongs_to :category
 
   has_many :team_geo_entities, dependent: :delete_all
   has_many :teams, through: :team_geo_entities

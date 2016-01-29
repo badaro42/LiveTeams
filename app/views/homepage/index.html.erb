@@ -385,7 +385,7 @@
 
       <div class="list_wrapper" style="padding-right: 10px;">
         <div class="row" style="margin-top: 15px;">
-          <h6>Centrar mapa numa localização</h6>
+          <h6 style="font-weight: 300;">Centrar mapa numa localização</h6>
           <div style="height: 46px;">
             <div class="col l9 m9 s8" style="padding-left: 0;">
               <input id="geocode_location" placeholder="Insira um local" id="first_name" type="text" class="validate"
@@ -396,6 +396,18 @@
               <a id="btn_submit_geocode" style="padding-left: 10px; padding-right: 10px; width: 100%; height: 100%;
                   line-height: 46px;" class="waves-effect waves-light btn green"
                  onclick="javascript:geocodeLocation();">Enviar</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="row" style="margin-top: 15px;">
+          <h6>Filtrar entidades por categoria</h6>
+          <div style="height: 46px;">
+            <div class="col l12 m12 s12" style="padding-left: 0;">
+              <%= select_tag "filter_by_category", options_for_select(Category.options_for_select),
+                             prompt: "- Escolha uma categoria -",
+                             class: '', id: 'filter_geo_entities_by_category',
+                             onchange: "filterGeoEntitiesByCategory();" %>
             </div>
           </div>
         </div>
@@ -411,8 +423,8 @@
         <div>
           <div style="margin-top: 15px;">
             <input type="checkbox" class="filled-in" id="toggle-user-circle" checked="checked"
-            onchange="$(this).prop('checked') ? map.addLayer(user_centered_circle) :
-                map.removeLayer(user_centered_circle);"/>
+                   onchange="$(this).prop('checked') ? map.addLayer(user_centered_circle) :
+                       map.removeLayer(user_centered_circle);"/>
             <label for="toggle-user-circle">Mostrar círculo centrado na sua posição atual</label>
           </div>
           <blockquote style="margin-top: 5px; font-size: 13px;">

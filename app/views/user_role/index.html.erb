@@ -25,7 +25,7 @@
 <% end %>
 
 <% content_for :model_actions do %>
-    <div id="create_user_roles_btn" class="fixed-action-btn" style="bottom: 25px; right: 25px; display: none">
+    <div id="create_user_roles_btn" class="fixed-action-btn" style="bottom: 25px; right: 25px; display: block;">
       <a href="#!" data-position="left" data-delay="0" data-tooltip="Atribuir papéis!"
          class="btn-floating btn-large red tooltipped" onclick="submitUserRolesToDB()">
         <i class="large material-icons">save</i>
@@ -55,7 +55,7 @@
     </h5>
 
     <div class="col l6 m6 s6">
-      <button id="show_create_form_btn" style="width: 100%;" class="btn waves-effect white-btn"
+      <button disabled id="show_create_form_btn" style="width: 100%;" class="btn waves-effect white-btn"
          onclick="toggleFormVisibility('create')">Adicionar papéis</button>
     </div>
     <div class="col l6 m6 s6">
@@ -64,7 +64,7 @@
     </div>
   </div>
 
-  <div id="create_user_roles_form" style="display: none;">
+  <div id="create_user_roles_form" style="display: block;">
     <!-- o conteudo da partial deve vir para aqui! -->
     <%= render partial: "create" %>
   </div>

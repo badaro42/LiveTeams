@@ -23,7 +23,7 @@ var actions = {
 // objectos
 
 // este objeto representa uma geo-entidade
-function GeoEntity(id, name, description, user_name, user_id, radius, updated_at, type, layer) {
+function GeoEntity(id, name, description, user_name, user_id, radius, updated_at, type, layer, category_name, category_id) {
   this.f_id = id; // o id da geo-entidade na base de dados
   this.f_name = name; // o nome da geo-entidade
   this.description = description; // a descrição da geo-entidade
@@ -33,6 +33,8 @@ function GeoEntity(id, name, description, user_name, user_id, radius, updated_at
   this.updated_at = updated_at; // a data de atualização da geo-entidade
   this.ent_type = type; // o tipo da geo-entidade. ver 'geo_entity_types'
   this.layer = layer; // o objeto que representa esta geo-entidade no mapa
+  this.category_name = category_name; // a categoria desta entidade
+  this.category_id = category_id; // o identificador desta categoria na base de dados
 }
 
 // este objeto representa uma equipa
@@ -182,6 +184,8 @@ $(document).ready(function () {
       toggleNavBar(true);
     else
       toggleNavBar(false);
+
+    map.invalidateSize();
   });
 
   // listener para os botoes da sidebar que faz scroll para o inicio da lista
@@ -511,6 +515,7 @@ $(document).ready(function () {
     if (geo_data_loaded == 2) {
       map.spin(false);
       geo_data_loaded = 0;
+      map.invalidateSize();
     }
 
     noty({
@@ -546,6 +551,7 @@ $(document).ready(function () {
     if (geo_data_loaded == 2) {
       map.spin(false);
       geo_data_loaded = 0;
+      map.invalidateSize();
     }
 
     new_teams_count = 0;
@@ -1451,7 +1457,7 @@ function onEachGeoEntity(feature, layer) {
 
   new_entry = new GeoEntity(feature.properties.f_id, feature.properties.name, feature.properties.description,
       feature.properties.username, feature.properties.user_id, feature.properties.radius, feature.properties.updated_at,
-      feature.properties.entity_type, layer);
+      feature.properties.entity_type, layer, feature.properties.category_name, feature.properties.category_id);
 
   all_geo_entities.push(new_entry);
 
@@ -1591,9 +1597,17 @@ function toggleNavBar(to_show) {
       new_sidebar_height = curr_window_height - navbar_height - 2 * sidebar_padding;
     }
 
-    $('#frontpage-navbar').slideDown({queue: false});
-    $('#map').animate({'height': new_map_height, duration: 'slow', queue: false});
-    $('#sidebar').animate({'top': new_top + 'px', 'height': new_sidebar_height + 'px', duration: 'slow', queue: false});
+//    $('#frontpage-navbar').slideDown({queue: false});
+//    $('#map').animate({'height': new_map_height, duration: 'slow', queue: false});
+//    $('#sidebar').animate({'top': new_top + 'px', 'height': new_sidebar_height + 'px', duration: 'slow', queue: false});
+
+    $.when(
+        $('#frontpage-navbar').slideDown({duration: 500}).promise()
+    ).done(function () {
+      $('#map').animate({'height': new_map_height, duration: 500}).promise();
+      $('#sidebar').animate({'top': new_top + 'px', 'height': new_sidebar_height + 'px', duration: 500}).promise();
+    });
+
     curr_user_saved_prefs.show_navbar = true;
   }
   else {
@@ -1606,9 +1620,13 @@ function toggleNavBar(to_show) {
       new_sidebar_height = curr_window_height - 2 * sidebar_padding;
     }
 
-    $('#frontpage-navbar').slideUp({queue: false});
-    $('#sidebar').animate({'top': new_top + 'px', 'height': new_sidebar_height + 'px', duration: 'slow', queue: false});
-    $('#map').animate({'height': '100%', queue: false});
+    $.when(
+        $('#sidebar').animate({'top': new_top + 'px', 'height': new_sidebar_height + 'px', duration: 500}).promise()
+    ).done(function () {
+      $('#map').animate({'height': '100%'}).promise();
+      $('#frontpage-navbar').slideUp({duration: 500}).promise();
+    });
+
     curr_user_saved_prefs.show_navbar = false;
   }
   localStorage.setItem('user' + gon.user_id, JSON.stringify(curr_user_saved_prefs));
@@ -1890,4 +1908,16 @@ function geocodeLocation() {
       }
     });
   }
+}
+
+function filterGeoEntitiesByCategory() {
+  var sel_value = parseInt($("#filter_geo_entities_by_category").find(":selected").val());
+  console.log(sel_value);
+
+  $.each(all_geo_entities, function(i, g) {
+    if(g.category_id === sel_value || isNaN(sel_value))
+      map.addLayer(g.layer);
+    else
+      map.removeLayer(g.layer);
+  });
 }

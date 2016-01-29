@@ -465,8 +465,15 @@ $(document).ready(function () {
   // Toggle search
   $('a#toggle-search').click(toggleSearchBar);
 
-  // inicializa a select box para escolher o lider
-  $('select').material_select();
+  //TODO: TRATAR DO CASO DA DROPDOWN PARA ESCOLHER PAPEIS!! COLOCAR ESSA A ABRIR PARA CIMA!
+  $('select').material_select({});
+
+  $('#select_roles_to_add').material_select({
+    hover: false,
+    belowOrigin: false,
+    maxHeight: 200, // height 200px
+    arrangement: 'top' // Open the dropdown to top
+  });
 });
 
 $(document).ajaxComplete(function () {

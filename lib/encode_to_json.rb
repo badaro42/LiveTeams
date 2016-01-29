@@ -49,10 +49,11 @@ module EncodeToJson
     if size == 1
       feature = factory.feature(geo_entities.latlon, nil,
                                 {f_id: geo_entities.id, name: geo_entities.name,
-                                 username: User.find(geo_entities.user_id).full_name,
+                                 username: geo_entities.user.full_name,
                                  user_id: geo_entities.user_id, description: geo_entities.description,
                                  radius: geo_entities.radius, created_at: geo_entities.created_at,
-                                 updated_at: geo_entities.updated_at, entity_type: geo_entities.entity_type
+                                 updated_at: geo_entities.updated_at, entity_type: geo_entities.entity_type,
+                                 category_id: geo_entities.category_id, category_name: geo_entities.category.name
                                 }
       )
       geo_entities_to_json = RGeo::GeoJSON.encode feature
@@ -61,9 +62,10 @@ module EncodeToJson
       # transformadas em json
       mapped_feats = factory.map_feature_collection(geo_entities) {
           |f| factory.feature(f.latlon, nil,
-                              {f_id: f.id, name: f.name, username: User.find(f.user_id).full_name,
+                              {f_id: f.id, name: f.name, username: f.user.full_name,
                                user_id: f.user_id, description: f.description, radius: f.radius,
-                               updated_at: f.updated_at, created_at: f.created_at, entity_type: f.entity_type
+                               updated_at: f.updated_at, created_at: f.created_at, entity_type: f.entity_type,
+                               category_id: f.category_id, category_name: f.category.name
                               }
         )
       }
