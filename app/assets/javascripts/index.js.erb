@@ -307,7 +307,10 @@ $(document).ready(function () {
   setTimeout(eventSourceSetup, 10000);
 
   sidebar = L.control.sidebar('sidebar', {position: 'right'}).addTo(map);
-  cluster = L.markerClusterGroup();
+  cluster = L.markerClusterGroup({
+    animate: true,
+    animateAddingMarkers: true
+  });
 
 //  osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
   osmUrl = 'http://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png';
@@ -989,6 +992,7 @@ function insertGeoEntity() {
           type: 'success', layout: 'bottomCenter'
         });
 
+        cluster.addLayer(e_layer);
         drawnItems.addLayer(e_layer);
         map.addLayer(drawnItems);
 
@@ -2001,9 +2005,15 @@ function filterGeoEntitiesByCategory() {
   console.log(sel_value);
 
   $.each(all_geo_entities, function (i, g) {
-    if (g.category_id === sel_value || isNaN(sel_value))
+    if (g.category_id === sel_value || isNaN(sel_value)) {
       map.addLayer(g.layer);
-    else
+      cluster.addLayer(g.layer);
+    }
+    else {
       map.removeLayer(g.layer);
+      cluster.removeLayer(g.layer);
+    }
   });
+
+//  cluster.refreshClusters();
 }
