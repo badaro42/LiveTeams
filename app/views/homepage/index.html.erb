@@ -385,29 +385,25 @@
 
       <div class="list_wrapper" style="padding-right: 10px;">
         <div class="row" style="margin-top: 15px;">
-          <h6 style="font-weight: 300;">Centrar mapa numa localização</h6>
+          <h5 style="font-weight: 300; margin-bottom: 2px;">Centrar mapa numa localização</h5>
+          <span>Escreva o nome de um local e pressione na tecla 'Enter'</span>
           <div style="height: 46px;">
-            <div class="col l9 m9 s8" style="padding-left: 0;">
+            <div class="col l12 m12 s12" style="padding-left: 0; padding-right: 0;">
               <input id="geocode_location" placeholder="Insira um local" id="first_name" type="text" class="validate"
                      onkeyup="if (event.keyCode == 13)
-                         document.getElementById('btn_submit_geocode').click()">
-            </div>
-            <div class="col l3 m3 s4" style="padding-right: 0;">
-              <a id="btn_submit_geocode" style="padding-left: 10px; padding-right: 10px; width: 100%; height: 100%;
-                  line-height: 46px;" class="waves-effect waves-light btn green"
-                 onclick="javascript:geocodeLocation();">Enviar</a>
+                         geocodeLocation()">
             </div>
           </div>
         </div>
 
         <div class="row" style="margin-top: 15px;">
-          <h6>Filtrar entidades por categoria</h6>
+          <h5 style="font-weight: 300; margin-bottom: 5px;">Filtrar geo-entidades por categoria</h5>
           <div style="height: 46px;">
-            <div class="col l12 m12 s12" style="padding-left: 0;">
+            <div class="col l12 m12 s12" style="padding-left: 0; padding-right: 0;">
               <%= select_tag "filter_by_category", options_for_select(Category.options_for_select),
-                             prompt: "- Escolha uma categoria -",
+                             prompt: "- Qualquer categoria -",
                              class: '', id: 'filter_geo_entities_by_category',
-                             onchange: "filterGeoEntitiesByCategory();" %>
+                             onchange: "filterGeoEntitiesByCategory()" %>
             </div>
           </div>
         </div>
@@ -535,6 +531,14 @@
       <div class="input-field col s12">
         <textarea id="e_description" class="materialize-textarea"></textarea>
         <label for="e_description">Descrição</label>
+      </div>
+    </div>
+    <div class="row" id="entity_description_div">
+      <div class="input-field col s12">
+        <%= label_tag :select_category, "Escolha uma categoria para esta geo-entidade", style: "top: -20px;" %>
+        <%= select_tag :select_category, options_for_select(Category.options_for_select),
+                       prompt: "- Escolha uma categoria -",
+                       class: '', id: 'select_category_geo_entity' %>
       </div>
     </div>
     <div class="row" style="margin-bottom: 0;">

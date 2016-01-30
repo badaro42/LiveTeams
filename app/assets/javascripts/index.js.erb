@@ -466,7 +466,7 @@ $(document).ready(function () {
   });
 
   // inicializa as dropdowns que existem na pagina!
-  $('select').material_select();
+  $('select').material_select({hover: false, maxHeight: 200});
 
   map.spin(true, {
     lines: 15, // The number of lines to draw
@@ -597,11 +597,11 @@ $(document).ready(function () {
           // todas as equipas retornadas pelo servidor
           $.each(res, function (index, elem) {
             console.log(elem);
-            var text = elem.name + " (ID: " + elem.id + ")";
+            var text = elem.team.name + " (ID: " + elem.team.id + ")";
 
             // append das equipas obtidas do servidor ao select
             select.append($("<option/>", {
-              value: elem.id,
+              value: elem.team.id,
               text: text
             }));
           });
@@ -854,15 +854,18 @@ function insertGeoEntity() {
   var name = $('#e_name').val();
   var description = $('#e_description').val();
 
+  var sel_category = $("#select_category_geo_entity :selected").val();
+
   var sel_team_ids = [];
   $('#select_team_ids :selected').each(function () {
     sel_team_ids.push(parseInt($(this).val()));
   });
 
   var errors = "";
-  if (name.length === 0 || description.length === 0 || sel_team_ids.length === 0) {
+  if (name.length === 0 || description.length === 0 || sel_team_ids.length === 0 || sel_category === "") {
     errors += (name.length === 0 ? "- Nome da entidade vazio;<br>" : "") +
         (description.length === 0 ? "- Descrição vazia;<br>" : "") +
+        (sel_category === "" ? "- Nenhuma categoria selecionada;<br>" : "") +
         (sel_team_ids.length === 0 ? "- Nenhuma equipa selecionada;" : "");
 
     noty({
@@ -878,6 +881,7 @@ function insertGeoEntity() {
     console.log("descriçao: " + description);
     console.log("coordenadas: " + e_coords);
     console.log("id da equipa a associar: " + sel_team_ids);
+    console.log("id da categoria a associar: " + sel_category);
     console.log("************************************");
 
     $.ajax({
@@ -891,7 +895,8 @@ function insertGeoEntity() {
           radius: e_radius,
           description: description,
           latlon: e_coords,
-          team_ids: sel_team_ids
+          team_ids: sel_team_ids,
+          category_id: sel_category
         }
       },
       // adicionamos o id à lista de ids e criamos uma popup para essa entidade
@@ -1914,8 +1919,8 @@ function filterGeoEntitiesByCategory() {
   var sel_value = parseInt($("#filter_geo_entities_by_category").find(":selected").val());
   console.log(sel_value);
 
-  $.each(all_geo_entities, function(i, g) {
-    if(g.category_id === sel_value || isNaN(sel_value))
+  $.each(all_geo_entities, function (i, g) {
+    if (g.category_id === sel_value || isNaN(sel_value))
       map.addLayer(g.layer);
     else
       map.removeLayer(g.layer);

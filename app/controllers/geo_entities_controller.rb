@@ -123,6 +123,7 @@ class GeoEntitiesController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def geo_entity_params
-    params.require(:geo_entity).permit(:name, :latlon, :user_id, :description, :entity_type, :radius, {:team_ids => []})
+    params.require(:geo_entity).permit(:name, :latlon, :user_id, :description,
+                                       :entity_type, :category_id, :radius, {:team_ids => []})
   end
 end
