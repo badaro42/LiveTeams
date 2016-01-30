@@ -10,7 +10,7 @@
   <div id="permissions_search_div" class="col l4 m12 s12" style="margin-bottom: 20px;">
     <%= form_for_filterrific @users_create_filter do |f| %>
 
-        <div id="create_role_partial_search" class="input-field" style="margin-bottom: 25px;">
+        <div id="create_role_partial_search" class="input-field" style="margin-bottom: 45px;">
           Filtrar por nome
           <%= f.text_field(
                   :search_query,
@@ -18,15 +18,17 @@
               ) %>
         </div>
 
-        <div id="create_role_partial_team_filter" class="input-field" style="margin-bottom: 40px;">
-          Filtrar por equipa
+        <div id="create_role_partial_team_filter" class="input-field" style="margin-bottom: 60px;">
+          <%= f.label "Filtrar por equipa", for: :with_team,
+                      style: "left: 0; top: -23px; font-size: 15px; font-weight: 300; color: rgba(0,0,0,0.87);"  %>
           <%= f.select :with_team,
                        @users_create_filter.select_options[:with_team],
                        {:include_blank => '- Qualquer equipa -'}, id: "create_team_filter" %>
         </div>
 
         <div id="create_role_partial_profile_filter" class="input-field" style="margin-bottom: 30px;">
-          Filtrar por perfil
+          <%= f.label "Filtrar por perfil", for: :with_role_name,
+                      style: "left: 0; top: -23px; font-size: 15px; font-weight: 300; color: rgba(0,0,0,0.87);" %>
           <%= f.select :with_role_name,
                        @users_create_filter.select_options[:with_role_name],
                        {:include_blank => '- Qualquer perfil -'}, id: "create_profile_filter" %>
@@ -63,13 +65,12 @@
   <div class="row" style="padding: 0 10px 0 10px;">
     <div class="input-field col l8 m6 s6">
       <label for="select_roles_to_add"></label>
-      <%= select_tag "access", options_for_select(Role.remaining_roles_for_select), multiple: true,
-                     prompt: "- Escolha os papéis a atribuir -",
+      <%= select_tag "test222", options_for_select(Role.remaining_roles_for_select), multiple: true,
                      class: '', id: 'select_roles_to_add' %>
     </div>
     <div class="input-field col l4 m6 s6">
-      <%= select_tag "access", options_for_select(Role.time_values_for_select), multiple: false,
-                     prompt: "- Escolha a validade dos papéis -",
+      <%= select_tag "teste111", options_for_select(Role.time_values_for_select), multiple: false,
+                     include_blank: "- Escolha a validade dos papéis -",
                      class: '', id: 'select_time' %>
     </div>
   </div>

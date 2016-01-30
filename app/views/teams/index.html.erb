@@ -46,7 +46,7 @@
   <div class="white z-depth-1" style="padding: 15px 10px 0 10px;">
     <%= form_for_filterrific @filterrific do |f| %>
 
-        <div class="col l4 m12 s12 input-field">
+        <div class="col l4 m12 s12 input-field" style="margin-top: 0;">
           Pesquisar por equipa
           <%= f.text_field(
                   :search_team_query,
@@ -54,7 +54,7 @@
               ) %>
         </div>
 
-        <div class="col l4 m12 s12 input-field">
+        <div class="col l4 m12 s12 input-field" style="margin-top: 0;">
           Procurar por membro da equipa
           <%= f.text_field(
                   :search_team_member_query,
@@ -62,8 +62,9 @@
               ) %>
         </div>
 
-        <div class="col l4 m12 s12 input-field">
-          Ordenar por
+        <div class="col l4 m12 s12 input-field" style="margin-top: 22px;">
+          <%= f.label "Ordenar por", for: :sorted_by,
+                      style: "left: 11px; top: -21px; font-size: 15px; font-weight: 300; color: rgba(0,0,0,0.87);" %>
           <%= f.select(:sorted_by, @filterrific.select_options[:sorted_by]) %>
         </div>
 
