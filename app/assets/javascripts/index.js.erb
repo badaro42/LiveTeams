@@ -466,7 +466,7 @@ $(document).ready(function () {
             color: '#662d91',
             weight: 4,
             opacity: 0.6,
-            fillOpacity: 0.3
+            fillOpacity: 0.35
           }
         },
         rectangle: {
@@ -476,7 +476,7 @@ $(document).ready(function () {
             color: '#662d91',
             weight: 4,
             opacity: 0.6,
-            fillOpacity: 0.3
+            fillOpacity: 0.35
           }
         },
         polyline: {
@@ -495,7 +495,7 @@ $(document).ready(function () {
             color: '#662d91',
             weight: 4,
             opacity: 0.6,
-            fillOpacity: 0.4
+            fillOpacity: 0.35
           }
         }
       }
@@ -1500,10 +1500,8 @@ function teamPointToLayer(feature, latlng) {
 function geoPointToLayer(feature, latlng) {
   if (feature.properties.radius > 0)
     return L.circle(latlng, feature.properties.radius);
-  else {
-//    var icon = getIcon(feature.properties.category_id);
-    return L.marker(latlng, {icon: all_icons[feature.properties.category_id - 1]});
-  }
+  else
+    return L.marker(latlng);
 }
 
 // função executada pelo onEachFeature do metodo geoJSON das entidades geograficas
@@ -1516,8 +1514,16 @@ function onEachGeoEntity(feature, layer) {
 //  else if (layer.hasOwnProperty('_latlngs')) // tem mais do que um par de coordenadas
 //    temp_latlon = layer.getLatLngs();
 
-  layer.options.color = icon_colors[feature.properties.category_id - 1];
-  layer.options.fillColor = icon_colors[feature.properties.category_id - 1];
+
+  if (feature.geometry.type !== "Point") {
+    layer.options.color = icon_colors[feature.properties.category_id - 1];
+    layer.options.fillColor = icon_colors[feature.properties.category_id - 1];
+    layer.options.weight = 4;
+    layer.options.fillOpacity = 0.35;
+    layer.options.opacity = 0.6;
+  }
+  else
+    layer.options.icon = all_icons[feature.properties.category_id - 1];
 
   // no caso de ser circulo, introduzimos o raio na popup
   if (feature.properties.radius > 0) {
