@@ -402,8 +402,8 @@
             <div class="col l12 m12 s12" style="padding-left: 0; padding-right: 0;">
               <%= select_tag "filter_by_category", options_for_select(Category.options_for_select),
                              prompt: "- Qualquer categoria -",
-                             class: '', id: 'filter_geo_entities_by_category',
-                             onchange: "filterGeoEntitiesByCategory()" %>
+                             class: 'browser-default', id: 'filter_geo_entities_by_category',
+                             onchange: "filterGeoEntitiesByCategory();" %>
             </div>
           </div>
         </div>
