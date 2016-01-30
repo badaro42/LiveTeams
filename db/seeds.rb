@@ -187,10 +187,12 @@ Team.update(10, created_by_user_id: 11, leader_id: 11, location_user_id: 20, lat
 
 # CATEGORY name:string
 puts 'Adding categories'
-Category.create(name: "Urgente")
-Category.create(name: "Alerta")
-Category.create(name: "Acidente")
-Category.create(name: "Outros")
+Category.create(name: "Urgente") # icone vermelho
+Category.create(name: "Perigo") # icone laranja
+# Category.create(name: "Alerta") # icone amarelo
+Category.create(name: "Resolvido") # icone verde
+Category.create(name: "Informação") # icone azul
+Category.create(name: "Outros") # icone acinzentado
 
 
 # GEO_ENTITY name:string user_id:integer entity_type:string radius:integer latlon:coordinates description:string

@@ -1,5 +1,16 @@
 // **************************************
 // constantes
+
+var ICON_DEFAULT_SIZE = "l"; // valores possiveis: s, m, l
+var ICON_DEFAULT_SHAPE = "circle-stroked";
+var icon_colors = [
+  "#ff0000", //vermelho
+  "#ffa31a", //laranja
+  "#00cc00", //verde
+  "#1a75ff", //azul
+  "#999999" //cinzento
+];
+
 var SMARTHPHONE_MAX_WIDTH = 600;
 var geo_entity_types = {
   circle: "Círculo",
@@ -18,6 +29,41 @@ var actions = {
   create: "criada"
 };
 
+
+// **************************************
+// icones e cenas do mapa
+
+var urgent_icon = L.MakiMarkers.icon({ // categoria 'URGENTE'
+  icon: ICON_DEFAULT_SHAPE,
+  color: icon_colors[0],
+  size: ICON_DEFAULT_SIZE
+});
+
+var alert_icon = L.MakiMarkers.icon({ // categoria 'ALERTA'
+  icon: ICON_DEFAULT_SHAPE,
+  color: icon_colors[1],
+  size: ICON_DEFAULT_SIZE
+});
+
+var solved_icon = L.MakiMarkers.icon({ // categoria 'RESOLVIDO'
+  icon: ICON_DEFAULT_SHAPE,
+  color: icon_colors[2],
+  size: ICON_DEFAULT_SIZE
+});
+
+var information_icon = L.MakiMarkers.icon({ // categoria 'INFORMAÇÃO'
+  icon: ICON_DEFAULT_SHAPE,
+  color: icon_colors[3],
+  size: ICON_DEFAULT_SIZE
+});
+
+var others_icon = L.MakiMarkers.icon({ // categoria 'OUTROS'
+  icon: ICON_DEFAULT_SHAPE,
+  color: icon_colors[4],
+  size: ICON_DEFAULT_SIZE
+});
+
+var all_icons = [urgent_icon, alert_icon, solved_icon, information_icon, others_icon];
 
 // **************************************
 // objectos
@@ -263,7 +309,8 @@ $(document).ready(function () {
   sidebar = L.control.sidebar('sidebar', {position: 'right'}).addTo(map);
   cluster = L.markerClusterGroup();
 
-  osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+//  osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+  osmUrl = 'http://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png';
   osm = L.tileLayer(osmUrl, {maxZoom: 19});
 
   /* mapa principal */
@@ -413,21 +460,42 @@ $(document).ready(function () {
         polygon: {
           title: 'Polígono',
           allowIntersection: true,
-          drawError: {
-            color: '#b00b00',
-            timeout: 1000
-          },
+          color: '#662d91',
+          showArea: true,
           shapeOptions: {
-            color: '#bada55'
-          },
-          showArea: true
+            color: '#662d91',
+            weight: 4,
+            opacity: 0.6,
+            fillOpacity: 0.3
+          }
+        },
+        rectangle: {
+          metric: true,
+          showArea: true,
+          shapeOptions: {
+            color: '#662d91',
+            weight: 4,
+            opacity: 0.6,
+            fillOpacity: 0.3
+          }
         },
         polyline: {
-          metric: true
+          guidelineDistance: 15,
+          allowIntersection: true,
+          metric: true,
+          color: '#662d91',
+          shapeOptions: {
+            color: '#662d91',
+            weight: 4,
+            opacity: 0.6
+          }
         },
         circle: {
           shapeOptions: {
-            color: '#662d91'
+            color: '#662d91',
+            weight: 4,
+            opacity: 0.6,
+            fillOpacity: 0.4
           }
         }
       }
@@ -1432,8 +1500,10 @@ function teamPointToLayer(feature, latlng) {
 function geoPointToLayer(feature, latlng) {
   if (feature.properties.radius > 0)
     return L.circle(latlng, feature.properties.radius);
-  else
-    return L.marker(latlng);
+  else {
+//    var icon = getIcon(feature.properties.category_id);
+    return L.marker(latlng, {icon: all_icons[feature.properties.category_id - 1]});
+  }
 }
 
 // função executada pelo onEachFeature do metodo geoJSON das entidades geograficas
@@ -1445,6 +1515,9 @@ function onEachGeoEntity(feature, layer) {
 //    temp_latlon = [layer.getLatLng()];
 //  else if (layer.hasOwnProperty('_latlngs')) // tem mais do que um par de coordenadas
 //    temp_latlon = layer.getLatLngs();
+
+  layer.options.color = icon_colors[feature.properties.category_id - 1];
+  layer.options.fillColor = icon_colors[feature.properties.category_id - 1];
 
   // no caso de ser circulo, introduzimos o raio na popup
   if (feature.properties.radius > 0) {

@@ -24,6 +24,7 @@
 //= require initial
 //= require leaflet_numbered_markers
 //= require Leaflet.AccuratePosition
+//= require Leaflet.MakiMarkers
 //= require NoSleep.min
 //= require easy-button
 //= require jquery.numeric.min
