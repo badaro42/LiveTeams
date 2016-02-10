@@ -1,6 +1,6 @@
 <%# encoding: utf-8 %>
 
-<% content_for :title, @team.name + " :: PROCIV Portugal" %>
+<% content_for :title, @team.name + " :: LiveTeams Portugal" %>
 <% content_for :model_actions do %>
     <% if (can_perform_action? :update, @team) || (can_perform_action? :destroy, @team) ||
         (can_perform_action? :create, Team) %>

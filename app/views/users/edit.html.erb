@@ -1,6 +1,6 @@
 <%# encoding: utf-8 %>
 
-<% content_for :title, "Editar utilizador :: PROCIV Portugal" %>
+<% content_for :title, "Editar '" + @user.full_name.to_s + "' :: LiveTeams Portugal" %>
 <% content_for :navbar_buttons do %>
     <li>
       <%= link_to root_path, class: 'navbar-button', method: :get do %>
