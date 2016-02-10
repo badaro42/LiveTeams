@@ -2,30 +2,27 @@
   <b>NOTA:</b> Apenas utilizadores que têm papéis temporários atribuídos são apresentados
 </p>
 
-<% if users.length == 0 %>
-    <div class="grey lighten-3 z-depth-1"
-         style="width: 100%; margin: 20px 0 20px 0; padding: 20px; font-style: italic;">
-      Nenhum utilizador corresponde à sua pesquisa. Experimente refinar os parâmetros de pesquisa.
-    </div>
-<% else %>
-    <ul class="collapsible" data-collapsible="expandable">
+<ul class="collapsible" data-collapsible="expandable">
+  <% no_users_to_show = true %>
+  <% if users.length > 0 %>
       <% users.each do |user| %>
-          <% remaining_roles = user.get_user_temporary_roles %>
-          <% if remaining_roles.length > 0 %>
+          <% temp_roles = user.get_user_temporary_roles %>
+          <% if temp_roles.length > 0 %>
+              <% no_users_to_show = false %>
+
               <li>
                 <div class="collapsible-header active">
                   <i class="material-icons">person_outline</i>
                   <%#= image_tag user.avatar.url(:thumb), height: 40, width: 40, class: "circle", style: "margin-top: 6px;" %>
                   <span>
                 <b><%= user.full_name %></b> | Papéis temporários que possui:
-                <span class="temp_roles_count"><%= remaining_roles.length %></span>
+                <span class="temp_roles_count"><%= temp_roles.length %></span>
               </span>
                 </div>
 
                 <div class="collapsible-body">
-                  <% remaining_roles.each do |role| %>
-                      <% current_role = user.user_roles.where("role_id = ? and expiration_date > ?",
-                                                              role.id, Time.current).first %>
+                  <% temp_roles.each do |temp_role| %>
+                      <% role = Role.find(temp_role.role_id) %>
                       <div class="user_roles_to_remove truncate">
                         <button class="remove_user_roles btn waves-effect red" style="padding: 0 15px 0 15px;"
                                 data-user-id="<%= user.id %>" data-role-id="<%= role.id %>"
@@ -34,7 +31,7 @@
                         </button>
                     <span class="truncate" style="display: inline; padding-left: 15px;">
                       <b><%= role.name %></b>, válido por mais <%= distance_of_time_in_words(
-                                                                       Time.current, current_role.expiration_date) %>
+                                                                       Time.current, temp_role.expiration_date) %>
                     </span>
                       </div>
                   <% end %>
@@ -42,5 +39,22 @@
               </li>
           <% end %>
       <% end %>
-    </ul>
-<% end %>
+
+      <% if no_users_to_show %>
+          <div class="grey lighten-3 z-depth-1"
+               style="width: 100%; margin: 0 0 20px 0; padding: 20px; font-style: italic; text-align: center;
+                   font-size: 17px;">
+            Nenhum dos utilizadores que correspondem à sua pesquisa tem papéis temporários associados.<br>
+            Experimente procurar com outro nome.
+          </div>
+      <% end %>
+
+  <% else %>
+      <div class="grey lighten-3 z-depth-1"
+           style="width: 100%; margin: 0 0 20px 0; padding: 20px; font-style: italic; text-align: center;
+               font-size: 17px;">
+        Nenhum utilizador corresponde à sua pesquisa.<br>
+        Experimente refinar os parâmetros de pesquisa.
+      </div>
+  <% end %>
+</ul>

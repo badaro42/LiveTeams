@@ -535,7 +535,7 @@
     </div>
     <div class="row" id="entity_description_div">
       <div class="input-field col s12">
-        <%= label_tag :select_category, "Escolha uma categoria para esta geo-entidade", style: "top: -20px;" %>
+        <%= label_tag :select_category, "Categoria a associar", style: "top: -20px;" %>
         <%= select_tag :select_category, options_for_select(Category.options_for_select),
                        prompt: "- Escolha uma categoria -",
                        class: '', id: 'select_category_geo_entity' %>
@@ -546,7 +546,7 @@
       <div id="select_team_ids_div" class="input-field col s12">
         <select id="select_team_ids" class="browser-default" multiple required>
         </select>
-        <label style="top: 0;" for="select_team_id">Associar a geo-entidade a uma ou mais equipas</label>
+        <label style="top: 0;" for="select_team_id">Associar a uma ou mais equipas</label>
         <div class="row" style="margin-top: 10px; margin-bottom: 0;">
           <div id="select_all_teams" class="col s12 m12 l6">
             <a style="width: 100%; padding-left: 5px; padding-right: 5px;"

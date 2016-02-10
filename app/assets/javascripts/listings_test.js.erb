@@ -466,7 +466,7 @@ $(document).ready(function () {
   $('a#toggle-search').click(toggleSearchBar);
 
   //TODO: TRATAR DO CASO DA DROPDOWN PARA ESCOLHER PAPEIS!! COLOCAR ESSA A ABRIR PARA CIMA!
-  $('select').material_select({maxHeight: 300, arrangement: 'bottom'});
+  $('select').material_select({maxHeight: 300, arrangement: 'top'});
 
   $('select#select_roles_to_add').material_select({
     maxHeight: 300, // height 200px
@@ -1127,8 +1127,12 @@ function toggleFormVisibility(form_name) {
 //    $("#create_team_filter").val("");
 //    $('select').material_select();
 //
-//    $("#filterrific_search_query").val(" ");
-//    $("#filterrific_search_query").val("");
+    $("#filterrific_search_query").val(" ");
+    setTimeout(
+        function() {
+          $("#filterrific_search_query").val("");
+        }, 1000
+    );
   }
   else if (form_name === "destroy") {
     elem_to_hide = "#create_user_roles_form";
@@ -1143,6 +1147,13 @@ function toggleFormVisibility(form_name) {
 
   $(btn_to_enable).prop("disabled", false);
   $(btn_to_disable).prop("disabled", true);
+
+  $("#filterrific_search_query2").val(" ");
+  setTimeout(
+      function() {
+        $("#filterrific_search_query2").val("");
+      }, 1000
+  );
 
   $.when(
       $(elem_to_hide).fadeOut({duration: 500}).promise(),
