@@ -187,43 +187,225 @@ Team.update(10, created_by_user_id: 11, leader_id: 11, location_user_id: 20, lat
 
 # CATEGORY name:string
 puts 'Adding categories'
-Category.create(name: "Urgente") # icone vermelho
-Category.create(name: "Perigo") # icone laranja
+Category.create(name: "Urgente") # ID 1; icone vermelho
+Category.create(name: "Perigo") # ID 2; icone laranja
 # Category.create(name: "Alerta") # icone amarelo
-Category.create(name: "Resolvido") # icone verde
-Category.create(name: "Informação") # icone azul
-Category.create(name: "Outros") # icone acinzentado
+Category.create(name: "Resolvido") # ID 3; icone verde
+Category.create(name: "Informação") # ID 4; icone azul
+Category.create(name: "Outros") # ID 5; icone acinzentado
 
 
 # GEO_ENTITY name:string user_id:integer entity_type:string radius:integer latlon:coordinates description:string
 puts 'Adding Geographic Entities'
 GeoEntity.create(name: "Entrada para o Arsenal do Alfeite", user_id: 2, entity_type: "marker", radius: 0,
                  latlon: "POINT(-9.154230505228043 38.658546181023475)",
-                 description: "Tambem conhecida por Portao Verde", category_id: 2) # Port�o Verde
+                 description: "Tambem conhecida por Portao Verde", category_id: 2) # ID 1
 
 GeoEntity.create(name: "Belo caminho por Portugal", user_id: 1, entity_type: "polyline", radius: 0,
                  latlon: "LINESTRING(-9.166889190673828 38.64583568648869, -8.715591430664062 39.257778150283336, " +
                      "-8.442392349243164 40.272715386988686, -8.231935501098633 40.305189027180226, " +
                      "-7.912387847900391 40.65095033081072, -7.702789306640625 41.306697618181886, " +
                      "-7.412896156311036 41.34846396411108)",
-                 description: "Demora-se um bocado a chegar, mas a recompensa vale a pena", category_id: 3) # Lisboa - Sta. Eug�nia
+                 description: "Demora-se um bocado a chegar, mas a recompensa vale a pena", category_id: 3) # ID 2
 
 GeoEntity.create(name: "Base Naval de Lisboa - Arsenal do Alfeite", user_id: 3, entity_type: "polygon", radius: 0,
                  latlon: "POLYGON((-9.157555103302002 38.66761893813652, -9.144165515899658 38.67324799343888, " +
                      "-9.128201007843018 38.65749892823337, -9.13764238357544 38.64811486000121, " +
                      "-9.145710468292236 38.6563594998049, -9.157555103302002 38.66761893813652))",
-                 description: "Zona bem grande e com alguns navios porreiros", category_id: 1) # �rea do Arsenal do Alfeite
+                 description: "Zona bem grande e com alguns navios porreiros", category_id: 1) # ID 3
+
+GeoEntity.create(name: "Área afectada pelas cheias", user_id: 1, entity_type: "polygon", radius: 0,
+                 latlon: "POLYGON((-9.241604804992676 38.64414301807133, -9.235403537750244 38.63747250975212, " +
+                     "-9.232399463653564 38.63859547797987, -9.234330654144287 38.64263466599115, " +
+                     "-9.236605167388916 38.643941906294984, -9.237592220306396 38.64586920427144, " +
+                     "-9.240617752075195 38.64529939983218, -9.240210056304932 38.644645795042905))",
+                 description: "Este polígono representa a área que está afectada pelas cheias de dia 20 de janeiro",
+                 category_id: 2) # ID 4
+
+GeoEntity.create(name: "Charneca da Caparica - Perigo", user_id: 1, entity_type: "marker", radius: 0,
+                 latlon: "POINT(-9.203710556030273 38.63135453802258)",
+                 description: "Árvore caída a obstruir a estrada", category_id: 2) # ID 5
+
+GeoEntity.create(name: "Vale Figueira - Perigo", user_id: 1, entity_type: "marker", radius: 0,
+                 latlon: "POINT(-9.178390502929688 38.62733147755926)",
+                 description: "Estrada inundada, sargeta entipuda", category_id: 2) # ID 6
+
+GeoEntity.create(name: "Informação à beira do Aterro Sanitário", user_id: 1, entity_type: "marker", radius: 0,
+                 latlon: "POINT(-9.14637565612793 38.61861407216631)",
+                 description: "Teste de cluster com o outro ao lado", category_id: 4) # ID 7
+
+GeoEntity.create(name: "Resolvido, para os lados do Talaminho", user_id: 1, entity_type: "marker", radius: 0,
+                 latlon: "POINT(-9.14186954498291 38.62293937883101)",
+                 description: "É com este que se faz o teste de cluster :)", category_id: 3) # ID 8
+
+GeoEntity.create(name: "Um polígono em cima da Amora", user_id: 1, entity_type: "polygon", radius: 0,
+                 latlon: "POLYGON((-9.121055603027344 38.6329636990003, -9.107322692871094 38.631622734027125, " +
+                     "-9.107322692871094 38.6255880812546, -9.117107391357422 38.62303996425438, " +
+                     "-9.12689208984375 38.623844642562396, -9.125862121582031 38.62974534092597))",
+                 description: "Deve ser cinzento, categoria dos outros",
+                 category_id: 5) # ID 9
+
+GeoEntity.create(name: "Baía do Seixal", user_id: 1, entity_type: "marker", radius: 0,
+                 latlon: "POINT(-9.103031158447266 38.64167935991964)",
+                 description: "Zona muito bonita, a ver o rio.", category_id: 4) # ID 10
+
+GeoEntity.create(name: "Acidente grave na A2", user_id: 1, entity_type: "marker", radius: 0,
+                 latlon: "POINT(-9.158134460449219 38.640003353587836)",
+                 description: "Sentido Norte-Sul, carro capotado", category_id: 1) # ID 11
+
+GeoEntity.create(name: "Vale do Grou - Resolvido", user_id: 1, entity_type: "marker", radius: 0,
+                 latlon: "POINT(-9.189891815185547 38.641277121974554)",
+                 description: "Via desobstruída, árvore caída removida", category_id: 3) # ID 12
+
+GeoEntity.create(name: "Bairro residencial Monte da Caparica", user_id: 1, entity_type: "rectangle", radius: 0,
+                 latlon: "POLYGON((-9.200706481933594 38.6616543371365, -9.200706481933594 38.667149830216715, " +
+                     "-9.190406799316404 38.667149830216715, -9.190406799316404 38.6616543371365))",
+                 description: "Era só para testar esta coisa das categorias", category_id: 4) # ID 13
+
+GeoEntity.create(name: "Posto de Controlo Móvel da Proteção Civil", user_id: 1, entity_type: "marker", radius: 0,
+                 latlon: "POINT(-9.234051704406738 38.64595299865978)",
+                 description: "Estas coordenadas representam o posto de controlo móvel montado por causa das cheias",
+                 category_id: 4) # ID 14
+
+GeoEntity.create(name: "ESTRADA CORTADA", user_id: 1, entity_type: "marker", radius: 0,
+                 latlon: "POINT(-9.240124225616455 38.643874868910785)",
+                 description: "Estrada intransitável, a água atinge 1 metro, prosseguir antes pela AVENIDA DAS ANDORINHAS",
+                 category_id: 1) # ID 15
+
+GeoEntity.create(name: "Habitação 3: situação resolvida", user_id: 1, entity_type: "marker", radius: 0,
+                 latlon: "POINT(-9.23750638961792 38.64318773210687)",
+                 description: "O auxílo foi prestado. Cave inundada já está normalizada;",
+                 category_id: 3) # ID 16
+
+GeoEntity.create(name: "Habitação 2: pede auxílio", user_id: 1, entity_type: "marker", radius: 0,
+                 latlon: "POINT(-9.236712455749512 38.642332991765365)",
+                 description: "Piso térreo alagado. Idosa acamada precisa de ambulância;",
+                 category_id: 2) # ID 17
+
+GeoEntity.create(name: "Muro desabou", user_id: 1, entity_type: "marker", radius: 0,
+                 latlon: "POINT(-9.235564470291138 38.64216539442453)",
+                 description: "Muro desabou para a via pública. 1 pessoa ferida, possivelmente perna partida",
+                 category_id: 2) # ID 18
+
+GeoEntity.create(name: "Restaurante 'Come Aqui: Bom e Barato': pede auxílio", user_id: 1, entity_type: "marker",
+                 radius: 0, latlon: "POINT(-9.235832691192627 38.640636050583296)",
+                 description: "Várias pessoas dentro do restaurante; Incendio começou num curto-circuito na cave: " +
+                     "risco de explosão das botijas de gás; 5 feridos ligeiros devido a inalação de fumo",
+                 category_id: 1) # ID 19
+
+GeoEntity.create(name: "Habitação 1: pede auxílio", user_id: 1, entity_type: "marker", radius: 0,
+                 latlon: "POINT(-9.234459400177002 38.640246376935494)",
+                 description: "Garagem/cave alagada",
+                 category_id: 2) # ID 20
+
+GeoEntity.create(name: "Idoso diz que perdeu 50 euros", user_id: 1, entity_type: "circle", radius: 20,
+                 latlon: "POINT(-9.231981039047241 38.64074918124551)",
+                 description: "Idoso perdeu o dinheiro quando fugia do vendaval e dos trovões; " +
+                     "Não é urgente, a não ser que alguém esteja com dificuldades económicas",
+                 category_id: 5) # ID 21
 
 
 # TEAM_GEO_ENTITY team_id:integer geo_entity_id:integer
 TeamGeoEntity.create(geo_entity_id: 1, team_id: 5)
 TeamGeoEntity.create(geo_entity_id: 1, team_id: 7)
+
 TeamGeoEntity.create(geo_entity_id: 2, team_id: 2)
 TeamGeoEntity.create(geo_entity_id: 2, team_id: 3)
 TeamGeoEntity.create(geo_entity_id: 2, team_id: 6)
 TeamGeoEntity.create(geo_entity_id: 2, team_id: 8)
+
 TeamGeoEntity.create(geo_entity_id: 3, team_id: 1)
 TeamGeoEntity.create(geo_entity_id: 3, team_id: 4)
+
+TeamGeoEntity.create(geo_entity_id: 4, team_id: 1)
+TeamGeoEntity.create(geo_entity_id: 4, team_id: 2)
+TeamGeoEntity.create(geo_entity_id: 4, team_id: 3)
+TeamGeoEntity.create(geo_entity_id: 4, team_id: 4)
+TeamGeoEntity.create(geo_entity_id: 4, team_id: 5)
+TeamGeoEntity.create(geo_entity_id: 4, team_id: 6)
+TeamGeoEntity.create(geo_entity_id: 4, team_id: 7)
+TeamGeoEntity.create(geo_entity_id: 4, team_id: 8)
+TeamGeoEntity.create(geo_entity_id: 4, team_id: 9)
+TeamGeoEntity.create(geo_entity_id: 4, team_id: 10)
+
+TeamGeoEntity.create(geo_entity_id: 5, team_id: 8)
+TeamGeoEntity.create(geo_entity_id: 5, team_id: 9)
+
+TeamGeoEntity.create(geo_entity_id: 6, team_id: 1)
+TeamGeoEntity.create(geo_entity_id: 6, team_id: 3)
+TeamGeoEntity.create(geo_entity_id: 6, team_id: 6)
+TeamGeoEntity.create(geo_entity_id: 6, team_id: 7)
+
+TeamGeoEntity.create(geo_entity_id: 7, team_id: 4)
+
+TeamGeoEntity.create(geo_entity_id: 8, team_id: 1)
+TeamGeoEntity.create(geo_entity_id: 8, team_id: 2)
+TeamGeoEntity.create(geo_entity_id: 8, team_id: 6)
+TeamGeoEntity.create(geo_entity_id: 8, team_id: 7)
+TeamGeoEntity.create(geo_entity_id: 8, team_id: 8)
+
+TeamGeoEntity.create(geo_entity_id: 9, team_id: 4)
+TeamGeoEntity.create(geo_entity_id: 9, team_id: 5)
+TeamGeoEntity.create(geo_entity_id: 9, team_id: 6)
+
+TeamGeoEntity.create(geo_entity_id: 10, team_id: 3)
+TeamGeoEntity.create(geo_entity_id: 10, team_id: 6)
+
+TeamGeoEntity.create(geo_entity_id: 11, team_id: 1)
+TeamGeoEntity.create(geo_entity_id: 11, team_id: 2)
+TeamGeoEntity.create(geo_entity_id: 11, team_id: 4)
+
+TeamGeoEntity.create(geo_entity_id: 12, team_id: 5)
+TeamGeoEntity.create(geo_entity_id: 12, team_id: 8)
+
+TeamGeoEntity.create(geo_entity_id: 13, team_id: 10)
+
+TeamGeoEntity.create(geo_entity_id: 14, team_id: 1)
+TeamGeoEntity.create(geo_entity_id: 14, team_id: 2)
+TeamGeoEntity.create(geo_entity_id: 14, team_id: 3)
+TeamGeoEntity.create(geo_entity_id: 14, team_id: 4)
+TeamGeoEntity.create(geo_entity_id: 14, team_id: 5)
+TeamGeoEntity.create(geo_entity_id: 14, team_id: 6)
+TeamGeoEntity.create(geo_entity_id: 14, team_id: 7)
+TeamGeoEntity.create(geo_entity_id: 14, team_id: 8)
+TeamGeoEntity.create(geo_entity_id: 14, team_id: 9)
+TeamGeoEntity.create(geo_entity_id: 14, team_id: 10)
+
+TeamGeoEntity.create(geo_entity_id: 15, team_id: 1)
+TeamGeoEntity.create(geo_entity_id: 15, team_id: 2)
+TeamGeoEntity.create(geo_entity_id: 15, team_id: 3)
+TeamGeoEntity.create(geo_entity_id: 15, team_id: 4)
+TeamGeoEntity.create(geo_entity_id: 15, team_id: 5)
+TeamGeoEntity.create(geo_entity_id: 15, team_id: 6)
+TeamGeoEntity.create(geo_entity_id: 15, team_id: 7)
+TeamGeoEntity.create(geo_entity_id: 15, team_id: 8)
+TeamGeoEntity.create(geo_entity_id: 15, team_id: 9)
+TeamGeoEntity.create(geo_entity_id: 15, team_id: 10)
+
+TeamGeoEntity.create(geo_entity_id: 16, team_id: 1)
+TeamGeoEntity.create(geo_entity_id: 16, team_id: 2)
+TeamGeoEntity.create(geo_entity_id: 16, team_id: 4)
+
+TeamGeoEntity.create(geo_entity_id: 17, team_id: 5)
+TeamGeoEntity.create(geo_entity_id: 17, team_id: 6)
+
+TeamGeoEntity.create(geo_entity_id: 18, team_id: 3)
+TeamGeoEntity.create(geo_entity_id: 18, team_id: 6)
+TeamGeoEntity.create(geo_entity_id: 18, team_id: 7)
+
+TeamGeoEntity.create(geo_entity_id: 19, team_id: 1)
+TeamGeoEntity.create(geo_entity_id: 19, team_id: 2)
+TeamGeoEntity.create(geo_entity_id: 19, team_id: 3)
+TeamGeoEntity.create(geo_entity_id: 19, team_id: 5)
+TeamGeoEntity.create(geo_entity_id: 19, team_id: 6)
+TeamGeoEntity.create(geo_entity_id: 19, team_id: 7)
+TeamGeoEntity.create(geo_entity_id: 19, team_id: 10)
+
+TeamGeoEntity.create(geo_entity_id: 20, team_id: 1)
+
+TeamGeoEntity.create(geo_entity_id: 21, team_id: 1)
+TeamGeoEntity.create(geo_entity_id: 21, team_id: 1)
+
 
 # PERMISSION subject_class:string subject_action:string
 puts 'Adding Permissions'
@@ -279,72 +461,54 @@ Role.create(name: Role::GEO_ENTITY_REMOVE_ALL)
 Role.create(name: Role::MANAGE_TEMPORARY_USER_ROLES)
 
 
-
 # ROLE_PERMISSION role_id:integer permission_id
 puts 'Associating permissions to roles'
 RolePermission.create(role_id: 1, permission_id: 2) # ADMINISTRADOR
 RolePermission.create(role_id: 1, permission_id: 4)
 RolePermission.create(role_id: 1, permission_id: 6)
-
 RolePermission.create(role_id: 1, permission_id: 7)
 RolePermission.create(role_id: 1, permission_id: 8)
 RolePermission.create(role_id: 1, permission_id: 10)
 RolePermission.create(role_id: 1, permission_id: 12)
-
 RolePermission.create(role_id: 1, permission_id: 13)
 RolePermission.create(role_id: 1, permission_id: 14)
 RolePermission.create(role_id: 1, permission_id: 16)
-
 RolePermission.create(role_id: 1, permission_id: 17)
 RolePermission.create(role_id: 1, permission_id: 18)
 RolePermission.create(role_id: 1, permission_id: 21)
-
 RolePermission.create(role_id: 1, permission_id: 22)
 RolePermission.create(role_id: 1, permission_id: 23)
 RolePermission.create(role_id: 1, permission_id: 24)
 
-
 RolePermission.create(role_id: 2, permission_id: 2) # GESTOR
 RolePermission.create(role_id: 2, permission_id: 3)
 RolePermission.create(role_id: 2, permission_id: 5)
-
 RolePermission.create(role_id: 2, permission_id: 7)
 RolePermission.create(role_id: 2, permission_id: 8)
 RolePermission.create(role_id: 2, permission_id: 9)
 RolePermission.create(role_id: 2, permission_id: 11)
-
 RolePermission.create(role_id: 2, permission_id: 13)
 RolePermission.create(role_id: 2, permission_id: 14)
 RolePermission.create(role_id: 2, permission_id: 16)
-
 RolePermission.create(role_id: 2, permission_id: 17)
 RolePermission.create(role_id: 2, permission_id: 18)
 RolePermission.create(role_id: 2, permission_id: 21)
 
-
 RolePermission.create(role_id: 3, permission_id: 2) # OPERACIONAL
 RolePermission.create(role_id: 3, permission_id: 3)
 RolePermission.create(role_id: 3, permission_id: 5)
-
 RolePermission.create(role_id: 3, permission_id: 8)
-
 RolePermission.create(role_id: 3, permission_id: 14)
-
 RolePermission.create(role_id: 3, permission_id: 17)
 RolePermission.create(role_id: 3, permission_id: 18)
 RolePermission.create(role_id: 3, permission_id: 20)
 
-
 RolePermission.create(role_id: 4, permission_id: 2) # BASICO
 RolePermission.create(role_id: 4, permission_id: 3)
 RolePermission.create(role_id: 4, permission_id: 5)
-
 RolePermission.create(role_id: 4, permission_id: 8)
-
 RolePermission.create(role_id: 4, permission_id: 14)
-
 RolePermission.create(role_id: 4, permission_id: 18)
-
 
 RolePermission.create(role_id: 5, permission_id: 4) # USER_UPDATE_ALL
 
