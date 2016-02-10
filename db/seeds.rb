@@ -249,8 +249,13 @@ Permission.create(subject_class: Permission::CLASS_TEAM_MEMBER, subject_action: 
 Permission.create(subject_class: Permission::CLASS_GEO_ENTITY, subject_action: Permission::ACTION_CREATE) #17: geo_entity create
 Permission.create(subject_class: Permission::CLASS_GEO_ENTITY, subject_action: Permission::ACTION_READ) #18: geo_entity read
 Permission.create(subject_class: Permission::CLASS_GEO_ENTITY, subject_action: Permission::ACTION_UPDATE_ALL) #19: geo_entity update
-Permission.create(subject_class: Permission::CLASS_GEO_ENTITY, subject_action: Permission::ACTION_DESTROY_OWN) #20: geo_entity destroy own geo_entities
-Permission.create(subject_class: Permission::CLASS_GEO_ENTITY, subject_action: Permission::ACTION_DESTROY_ALL) #21: geo_entity destroy all geo_entities
+Permission.create(subject_class: Permission::CLASS_GEO_ENTITY, subject_action: Permission::ACTION_DESTROY_OWN) #20: geo_entity destroy own
+Permission.create(subject_class: Permission::CLASS_GEO_ENTITY, subject_action: Permission::ACTION_DESTROY_ALL) #21: geo_entity destroy all
+
+Permission.create(subject_class: Permission::CLASS_USER_ROLE, subject_action: Permission::ACTION_CREATE) #22: user_role create
+Permission.create(subject_class: Permission::CLASS_USER_ROLE, subject_action: Permission::ACTION_READ) #23: user_role read
+Permission.create(subject_class: Permission::CLASS_USER_ROLE, subject_action: Permission::ACTION_DESTROY_ALL) #24: user_role destroy all
+
 
 # ROLE name:string permission_ids:array de strings
 puts 'Adding Roles'
@@ -271,6 +276,7 @@ Role.create(name: Role::TEAM_MEMBER_DESTROY)
 Role.create(name: Role::GEO_ENTITY_CREATE)
 Role.create(name: Role::GEO_ENTITY_REMOVE_OWN)
 Role.create(name: Role::GEO_ENTITY_REMOVE_ALL)
+Role.create(name: Role::MANAGE_TEMPORARY_USER_ROLES)
 
 
 
@@ -292,6 +298,10 @@ RolePermission.create(role_id: 1, permission_id: 16)
 RolePermission.create(role_id: 1, permission_id: 17)
 RolePermission.create(role_id: 1, permission_id: 18)
 RolePermission.create(role_id: 1, permission_id: 21)
+
+RolePermission.create(role_id: 1, permission_id: 22)
+RolePermission.create(role_id: 1, permission_id: 23)
+RolePermission.create(role_id: 1, permission_id: 24)
 
 
 RolePermission.create(role_id: 2, permission_id: 2) # GESTOR
@@ -359,6 +369,10 @@ RolePermission.create(role_id: 14, permission_id: 17) # GEO_ENTITY_CREATE
 RolePermission.create(role_id: 15, permission_id: 20) # GEO_ENTITY_REMOVE_OWN
 
 RolePermission.create(role_id: 16, permission_id: 21) # GEO_ENTITY_REMOVE_ALL
+
+RolePermission.create(role_id: 17, permission_id: 22) # MANAGE_PERMISSIONS
+RolePermission.create(role_id: 17, permission_id: 23)
+RolePermission.create(role_id: 17, permission_id: 24)
 
 
 

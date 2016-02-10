@@ -30,6 +30,7 @@ class Role < ActiveRecord::Base
   TEAM_MEMBER_CREATE = "Adicionar membros às equipas"
   TEAM_MEMBER_DESTROY = "Remover membros das equipas"
 
+  MANAGE_TEMPORARY_USER_ROLES = "Adicionar/remover papéis temporários"
 
 
   # todos os papeis que existam na base de dados

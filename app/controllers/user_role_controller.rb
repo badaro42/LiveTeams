@@ -3,6 +3,8 @@ class UserRoleController < ApplicationController
   layout "listings"
 
   def index
+    custom_authorize! :read, UserRole
+
     @users_create_filter = initialize_filterrific(
         User,
         params[:filterrific],
@@ -22,6 +24,8 @@ class UserRoleController < ApplicationController
     @users_create = User.filterrific_find(@users_create_filter)
     @users_destroy = User.filterrific_find(@users_destroy_filter)
 
+    # puts @users_destroy.inspect
+
     respond_to do |format|
       format.html
       format.js
@@ -31,9 +35,15 @@ class UserRoleController < ApplicationController
     # There is an issue with the persisted param_set. Reset it.
     puts "Had to reset filterrific params: #{ e.message }"
     redirect_to(reset_filterrific_url(format: :html)) and return
+
+  rescue AccessDenied
+    flash[:error] = "Não tem permissão para gerir papéis temporários"
+    redirect_to root_path
   end
 
   def create
+    custom_authorize! :create, UserRole
+
     puts "************************"
     puts " USER_ROLE CREATE ROLES"
     puts "************************"
@@ -57,9 +67,14 @@ class UserRoleController < ApplicationController
   rescue Exception
     render nothing: true, status: :internal_server_error
 
+  rescue AccessDenied
+    flash[:error] = "Não tem permissão para atribuir papéis temporários"
+    redirect_to root_path
   end
 
   def destroy
+    custom_authorize! :destroy, UserRole
+
     puts "********************************"
     puts " USER_ROLE DESTROY DESTROY ROLES"
     puts "********************************"
@@ -72,5 +87,9 @@ class UserRoleController < ApplicationController
 
   rescue ActiveRecord::RecordNotFound
     render nothing: true, status: :internal_server_error
+
+  rescue AccessDenied
+    flash[:error] = "Não tem permissão para revogar papéis temporários"
+    redirect_to root_path
   end
 end

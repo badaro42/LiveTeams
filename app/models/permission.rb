@@ -9,6 +9,7 @@ class Permission < ActiveRecord::Base
   CLASS_GEO_ENTITY = "GeoEntity"
   CLASS_TEAM = "Team"
   CLASS_TEAM_MEMBER = "TeamMember"
+  CLASS_USER_ROLE = "UserRole"
 
   # as diferentes ações que podem ser executadas sobre os objetos
   # dificilmente serão adicionadas mais constantes, uma vez que estão são as ações CRUD
