@@ -23,7 +23,7 @@
               Mapa
           <% end %>
         </li>
-        <% if current_user.profile == Role::ADMINISTRADOR %>
+        <% if can_perform_action? :read, UserRole %>
             <li>
               <%= link_to permissions_path, class: 'navbar-button', target: '_blank', method: :get do %>
                   Permissões
@@ -115,7 +115,7 @@
           <% end %>
         </li>
 
-        <% if current_user.profile == Role::ADMINISTRADOR %>
+        <% if can_perform_action? :read, UserRole %>
             <li class="divider"></li>
 
             <li id="list_permisions_path_entry" class="sidenav-entry">

@@ -18,7 +18,7 @@
           Mapa
       <% end %>
     </li>
-    <% if current_user.profile == Role::ADMINISTRADOR %>
+    <% if can_perform_action? :read, UserRole %>
         <li>
           <%= link_to permissions_path, class: 'navbar-button', method: :get do %>
               Permissões
