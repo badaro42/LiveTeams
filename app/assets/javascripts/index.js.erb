@@ -1519,7 +1519,7 @@ function onEachGeoEntity(feature, layer) {
 //    temp_latlon = layer.getLatLngs();
 
 
-  if (feature.geometry.type !== "Point") {
+  if (feature.geometry.type !== "Point" || feature.properties.radius > 0) {
     layer.options.color = icon_colors[feature.properties.category_id - 1];
     layer.options.fillColor = icon_colors[feature.properties.category_id - 1];
     layer.options.weight = 4;
