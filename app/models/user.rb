@@ -143,7 +143,7 @@ class User < ActiveRecord::Base
 
   # user.get_user_temporary_roles.map(&:permissions).flatten devolve todas as permissões temporarias do user
   def get_user_temporary_roles
-    self.roles.where("role_id > ?", 4)
+    self.user_roles.where("role_id > ? and expiration_date > ?", 4, Time.current)
   end
 
   # verifica se o perfil do utilizador é igual ao passado em parametro

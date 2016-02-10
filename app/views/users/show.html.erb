@@ -124,7 +124,7 @@
         </li>
         <li class="tab col s6">
           <a href="#user-permissions" class="stay-where-you-are">
-            Permissões
+            Permissões (<%= @user.get_user_temporary_roles.map(&:role).map(&:permissions).flatten.length %>)
           </a>
         </li>
       </ul>
@@ -239,8 +239,8 @@
     </div>
 
     <div id="user-permissions" class="col s12 profile-tab-content">
-      <% temp_roles = @user.get_user_temporary_roles %>
-      <% if temp_roles.length > 0 %>
+      <% temp_user_roles = @user.get_user_temporary_roles %>
+      <% if temp_user_roles.length > 0 %>
           <table class="centered highlighted responsive-table">
             <thead>
             <tr>
@@ -252,14 +252,16 @@
             </thead>
 
             <tbody>
-            <% temp_roles.each do |role| %>
-                <% exp_date = UserRole.where(role_id: role.id, user_id: @user.id).first.expiration_date %>
-                <tr>
-                  <td><%= role.permissions.first.subject_class %></td>
-                  <td><%= role.permissions.first.subject_action %></td>
-                  <td><%= role.name %></td>
-                  <td><%= exp_date.to_formatted_s(:long) %></td>
-                </tr>
+            <% temp_user_roles.each do |user_role| %>
+                <% role = Role.find(user_role.role_id) %>
+                <% role.permissions.each do |permission| %>
+                    <tr>
+                      <td><%= permission.subject_class %></td>
+                      <td><%= permission.subject_action %></td>
+                      <td><%= role.name %></td>
+                      <td><%= user_role.expiration_date.to_formatted_s(:long) %></td>
+                    </tr>
+                <% end %>
             <% end %>
             </tbody>
           </table>
