@@ -304,6 +304,9 @@ GeoEntity.create(name: "Idoso diz que perdeu 50 euros", user_id: 1, entity_type:
                      "Não é urgente, a não ser que alguém esteja com dificuldades económicas",
                  category_id: 5) # ID 21
 
+# GeoEntity.create(name: "teste da piroca", user_id: 1, entity_type: "marker", radius: 0,
+#                  latlon: "POINT(-9.0 38.0)", description: "teste teste", category_id: 4) # ID 21
+
 
 # TEAM_GEO_ENTITY team_id:integer geo_entity_id:integer
 TeamGeoEntity.create(geo_entity_id: 1, team_id: 5)

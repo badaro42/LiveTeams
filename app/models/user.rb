@@ -1,4 +1,5 @@
 class User < ActiveRecord::Base
+  has_paper_trail
 
   filterrific default_filter_params: {sorted_by: 'name_asc'},
               available_filters: %w[

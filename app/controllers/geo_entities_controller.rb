@@ -4,33 +4,33 @@ class GeoEntitiesController < ApplicationController
   require 'encode_to_json'
 
   def geo_entities_to_json
-    geo_entities_to_json = ""
-
+    # geo_entities_to_json = ""
+    #
     # caso o utilizador atual seja admin ou gestor, apresenta todas as entidades
-    if current_user.profile === Role::ADMINISTRADOR || current_user.profile === Role::GESTOR
-      geo_entities_to_json = EncodeToJson::encode_geo_entities_to_json(GeoEntity.all)
-    else
-      # para os restantes perfis, apenas mostra as entidades dentro do raio de 500m,
-      # com centro na localização do utilizador
-      conn = PGconn.open(:dbname => 'TeseGestaoEmergencia_development', password: "postgres", user: "postgres")
-      res = conn.exec('SELECT * FROM geo_entities WHERE ST_DWithin(latlon,
-              ST_MakePoint(-9.151471853256226, 38.676933444637925), 500)') # coordenadas do Bruno Aleixo 2
+    # if current_user.profile === Role::ADMINISTRADOR || current_user.profile === Role::GESTOR
+    #   geo_entities_to_json = EncodeToJson::encode_geo_entities_to_json(GeoEntity.all)
+    # else
+    #   # para os restantes perfis, apenas mostra as entidades dentro do raio de 500m,
+    #   # com centro na localização do utilizador
+    #   conn = PGconn.open(:dbname => 'TeseGestaoEmergencia_development', password: "postgres", user: "postgres")
+    #   res = conn.exec('SELECT * FROM geo_entities WHERE ST_DWithin(latlon,
+    #           ST_MakePoint(-9.151471853256226, 38.676933444637925), 500)') # coordenadas do Bruno Aleixo 2
+    #
+    #   geo0 = GeoEntity.new(res[0])
+    #   geo1 = GeoEntity.new(res[1])
+    #
+    #   puts geo0.inspect
+    #   puts geo1.inspect
+    #
+    #   arr = []
+    #   arr.push(geo0)
+    #   arr.push(geo1)
+    #
+    #   geo_entities_to_json = EncodeToJson::encode_geo_entities_to_json(arr)
+    #   # ***********************************************************************************************************
+    # end
 
-      geo0 = GeoEntity.new(res[0])
-      geo1 = GeoEntity.new(res[1])
-
-      puts geo0.inspect
-      puts geo1.inspect
-
-      arr = []
-      arr.push(geo0)
-      arr.push(geo1)
-
-      geo_entities_to_json = EncodeToJson::encode_geo_entities_to_json(arr)
-      # ***********************************************************************************************************
-    end
-
-    # geo_entities_to_json = EncodeToJson::encode_geo_entities_to_json(GeoEntity.all)
+    geo_entities_to_json = EncodeToJson::encode_geo_entities_to_json(GeoEntity.all)
     render json: geo_entities_to_json
   end
 

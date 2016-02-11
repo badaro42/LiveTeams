@@ -4,8 +4,22 @@ class TeamsController < ApplicationController
   require 'encode_to_json'
   layout "listings"
 
+  # mapeia as equipas num objecto GeoJSON para ser tratado no javascript
+  # caso user seja BASICO: nao mostra nenhuma equipa
+  # caso user seja OPERACIONAL: mostra apenas as equipas a que pertence
+  # caso user seja GESTOR ou ADMINISTRADOR: mostra todas as equipas no sistema
   def teams_to_json
-    teams_to_json = EncodeToJson::encode_teams_to_json(Team.all)
+    if current_user.profile == Role::BASICO
+      teams_to_json = ""
+    elsif current_user.profile == Role::OPERACIONAL
+      if current_user.teams.length > 0
+        teams_to_json = EncodeToJson::encode_teams_to_json(current_user.teams)
+      else
+        teams_to_json = ""
+      end
+    else
+      teams_to_json = EncodeToJson::encode_teams_to_json(Team.all)
+    end
     render json: teams_to_json
   end
 
@@ -117,11 +131,11 @@ class TeamsController < ApplicationController
       custom_authorize! :update, @team
 
       # if @team.leader_id == current_user.id || current_user.profile == Role::ADMINISTRADOR
-        gon.current_team_id = @team.id
-        gon.users_in_team = set_users_in_team
+      gon.current_team_id = @team.id
+      gon.users_in_team = set_users_in_team
 
-        @users_in_team = @team.users # para as dropdowns de escolha de lider/responsavel localização
-        set_users_for_multiple_select("new")
+      @users_in_team = @team.users # para as dropdowns de escolha de lider/responsavel localização
+      set_users_for_multiple_select("new")
       # else
       #   flash[:error] = "Não tem permissão para editar equipas."
       #   redirect_to @team
