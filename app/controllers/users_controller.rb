@@ -2,7 +2,13 @@ class UsersController < ApplicationController
   # before_action :set_user, only: [:show]
   before_action :set_user, only: [:show, :edit, :update, :destroy]
   before_filter :authenticate_user!
+  require 'encode_to_json'
   layout "listings"
+
+  def users_to_json
+    users_to_json = EncodeToJson::encode_users_to_json(User.where.not(id: current_user.id))
+    render json: users_to_json
+  end
 
   def update_location
     current_latlon = current_user.latlon

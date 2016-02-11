@@ -7,13 +7,14 @@ module EncodeToJson
     teams_to_json = nil
 
     if obj.length == 1
-      feature = factory.feature(User.find(obj.location_user_id).latlon, nil,
+      team = obj.first
+      feature = factory.feature(User.find(team.location_user_id).latlon, nil,
                                 {
-                                    name: obj.name, f_id: obj.id, location_user_id: obj.location_user_id,
-                                    created_at: obj.created_at, updated_at: obj.updated_at,
-                                    location_user_name: User.find(obj.location_user_id).full_name,
-                                    leader_id: obj.leader_id, leader_name: User.find(obj.leader_id).full_name,
-                                    highlight_coords: obj.latlon_highlight
+                                    name: team.name, f_id: team.id, location_user_id: team.location_user_id,
+                                    created_at: team.created_at, updated_at: team.updated_at,
+                                    location_user_name: User.find(team.location_user_id).full_name,
+                                    leader_id: team.leader_id, leader_name: User.find(team.leader_id).full_name,
+                                    highlight_coords: team.latlon_highlight
                                 }
       )
       teams_to_json = RGeo::GeoJSON.encode feature

@@ -571,11 +571,6 @@ $(document).ready(function () {
     onEachFeature: onEachGeoEntity
   });
 
-  var teams_json = new L.GeoJSON.AJAX("/teams/teams_to_json.json", {
-    pointToLayer: teamPointToLayer,
-    onEachFeature: onEachTeam
-  });
-
   // listener invocado quando a chamada ajax das entidades terminar!
   geo_entities.on('data:loaded', function () {
     console.log("vector com os indices das geo_entities: " + all_geo_entities);
@@ -603,23 +598,38 @@ $(document).ready(function () {
       centerMapOnGeoEntity(entity_id);
   });
 
-  geo_entities.on('data:error', function (err) {
-    console.log(err);
-    noty({
-      text: 'Erro a carregar as entidades geográficas do servidor!', timeout: 3500,
-      type: 'error', layout: 'bottomCenter'
+  // apenas executa a chamada ajax para popular as equipas caso pertença a alguma equipa,
+  // ou caso seja Gestor ou Administrador
+  if(gon.number_of_teams > 0 || gon.current_profile === "Gestor" || gon.current_profile === "Administrador") {
+    var teams_json = new L.GeoJSON.AJAX("/teams/teams_to_json.json", {
+      pointToLayer: teamPointToLayer,
+      onEachFeature: onEachTeam
     });
-  });
 
-  // listener invocado quando a chamada ajax das equipas terminar!
-  teams_json.on('data:loaded', function () {
-    console.log("vector com os indices das equipas!!!!!:");
-    console.log(all_teams);
-    console.log("finish");
+    // listener invocado quando a chamada ajax das equipas terminar!
+    teams_json.on('data:loaded', function () {
+      console.log("vector com os indices das equipas!!!!!:");
+      console.log(all_teams);
+      console.log("finish");
 
-    cluster.addLayer(teams_json);
-    map.addLayer(cluster);
+      cluster.addLayer(teams_json);
+      map.addLayer(cluster);
 
+      geo_data_loaded++;
+      if (geo_data_loaded == 2) {
+        map.spin(false);
+        geo_data_loaded = 0;
+        map.invalidateSize();
+      }
+
+      new_teams_count = 0;
+      updated_teams_count = 0;
+      removed_teams_count = 0;
+
+      noty({text: 'Equipas carregadas com sucesso!', timeout: 4000, type: 'success', layout: 'bottomCenter'});
+    });
+  }
+  else {
     geo_data_loaded++;
     if (geo_data_loaded == 2) {
       map.spin(false);
@@ -627,20 +637,11 @@ $(document).ready(function () {
       map.invalidateSize();
     }
 
-    new_teams_count = 0;
-    updated_teams_count = 0;
-    removed_teams_count = 0;
-
-    noty({text: 'Equipas carregadas com sucesso!', timeout: 3500, type: 'success', layout: 'bottomCenter'});
-  });
-
-  teams_json.on('data:error', function (err) {
-    console.log(err);
     noty({
-      text: 'Erro a carregar as equipas do servidor!', timeout: 3500,
-      type: 'error', layout: 'bottomCenter'
+      text: 'Não há nenhuma entidade geográfica para apresentar', timeout: 4000,
+      type: 'information', layout: 'bottomCenter'
     });
-  });
+  }
 
 
 // ****************** LISTENERS PARA A CRIA��O/EDI��O DE ENTIDADES ******************
