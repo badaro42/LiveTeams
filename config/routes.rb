@@ -12,6 +12,7 @@ Rails.application.routes.draw do
   # rotas para as chamadas ajax na pagina principal
   get '/teams/teams_to_json', to: 'teams#teams_to_json'
   get '/geo_entities/geo_entities_to_json', to: 'geo_entities#geo_entities_to_json'
+  get '/users/users_to_json', to: 'users#users_to_json'
   get '/teams/reverse_geocode_coords', to: 'teams#reverse_geocode_coords'
   get '/geocode_location', to: 'homepage#geocode_location'
   get '/teams/get_teams_by_profile', to: 'teams#get_teams_by_profile'

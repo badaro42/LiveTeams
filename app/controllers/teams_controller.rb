@@ -9,14 +9,15 @@ class TeamsController < ApplicationController
   # caso user seja OPERACIONAL: mostra apenas as equipas a que pertence
   # caso user seja GESTOR ou ADMINISTRADOR: mostra todas as equipas no sistema
   def teams_to_json
-    teams_to_json = ""
+    # teams_to_json = ""
+    #
+    # if current_user.profile == Role::OPERACIONAL
+    #   teams_to_json = EncodeToJson::encode_teams_to_json(current_user.teams.to_a)
+    # elsif current_user.profile == Role::GESTOR || current_user.profile == Role::ADMINISTRADOR
+    #   teams_to_json = EncodeToJson::encode_teams_to_json(Team.all)
+    # end
 
-    if current_user.profile == Role::OPERACIONAL
-      teams_to_json = EncodeToJson::encode_teams_to_json(current_user.teams.to_a)
-    elsif current_user.profile == Role::GESTOR || current_user.profile == Role::ADMINISTRADOR
-      teams_to_json = EncodeToJson::encode_teams_to_json(Team.all)
-    end
-
+    teams_to_json = EncodeToJson::encode_teams_to_json(Team.all)
     render json: teams_to_json
   end
 

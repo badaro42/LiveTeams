@@ -384,9 +384,9 @@
       </h1>
 
       <div class="list_wrapper" style="padding-right: 10px;">
-        <div class="row" style="margin-top: 15px;">
-          <h5 style="font-weight: 300; margin-bottom: 2px;">Centrar mapa numa localização</h5>
-          <span>Escreva o nome de um local e pressione na tecla 'Enter'</span>
+        <div class="row" style="margin-top: 15px; margin-bottom: 15px;">
+          <h6 style="font-weight: 400; margin-bottom: 2px;">Centrar mapa numa localização</h6>
+          <span style="font-style: italic;">Escreva o nome de um local e pressione na tecla 'Enter'</span>
           <div style="height: 46px;">
             <div class="col l12 m12 s12" style="padding-left: 0; padding-right: 0;">
               <input id="geocode_location" placeholder="Insira um local" id="first_name" type="text" class="validate"
@@ -396,8 +396,8 @@
           </div>
         </div>
 
-        <div class="row" style="margin-top: 15px;">
-          <h5 style="font-weight: 300; margin-bottom: 5px;">Filtrar geo-entidades por categoria</h5>
+        <div class="row" style="margin-top: 0; margin-bottom: 30px;">
+          <h6 style="font-weight: 400; margin-bottom: 5px;">Filtrar geo-entidades por categoria</h6>
           <div style="height: 46px;">
             <div class="col l12 m12 s12" style="padding-left: 0; padding-right: 0;">
               <%= select_tag "filter_by_category", options_for_select(Category.options_for_select),
@@ -406,6 +406,25 @@
                              onchange: "filterGeoEntitiesByCategory();" %>
             </div>
           </div>
+        </div>
+
+        <div class="row" style="margin-top: 15px;">
+          <h6 style="font-weight: 400; margin-bottom: 5px;">Visibilidade das entidades</h6>
+          <p>
+            <input type="checkbox" class="filled-in" id="checkbox_toggle_geo_entities" checked="checked"
+                   onchange="toggleEntityVisibility('geo_entities')"/>
+            <label for="checkbox_toggle_geo_entities">Mostrar geo-entidades</label>
+          </p>
+          <p>
+            <input type="checkbox" class="filled-in" id="checkbox_toggle_users" checked="checked"
+                   onchange="toggleEntityVisibility('users')"/>
+            <label for="checkbox_toggle_users">Mostrar utilizadores</label>
+          </p>
+          <p>
+            <input type="checkbox" class="filled-in" id="checkbox_toggle_teams" checked="checked"
+                   onchange="toggleEntityVisibility('teams')"/>
+            <label for="checkbox_toggle_teams">Mostrar equipas</label>
+          </p>
         </div>
       </div>
     </div>
