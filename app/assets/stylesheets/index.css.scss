@@ -8,6 +8,11 @@ html, body, #container {
   font-weight: 300;
 }
 
+.leaflet-container {
+  font-family: "Roboto", sans-serif !important;
+  font-size: 13px;
+}
+
 /* ********************* REGRAS PARA PERSONALIZAR OS ICONES DA GOOGLE ********************** */
 /*Rules for sizing the icon.*/
 .material-icons.md-18 {
@@ -102,8 +107,6 @@ html, body, #container {
     left: -66px !important;
     transform: rotate(0deg);
   }
-
-
 
   .leaflet-bottom.leaflet-left {
     transform: rotate(90deg);
@@ -216,7 +219,6 @@ html, body, #container {
     left: -65px !important;
     transform: rotate(0deg);
   }
-
 
   .leaflet-bottom.leaflet-left {
     transform: rotate(90deg);
@@ -616,7 +618,6 @@ html, body, #container {
 #timeline > div:last-child {
   margin-bottom: 0 !important;
 }
-
 
 // altera o estilo do botão
 // fundo branco, borda 1px cinzenta e cor cinzenta

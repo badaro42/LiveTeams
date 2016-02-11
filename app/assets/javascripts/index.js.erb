@@ -1507,7 +1507,7 @@ function teamPointToLayer(feature, latlng) {
 
   if (feature.properties.updated_at !== null) {
     var popup = L.popup({maxWidth: 250});
-    var content = '<span>Equipa número <b>' + feature.properties.f_id + '</b><br>' +
+    var content = '<span>Equipa número <b>' + feature.properties.f_id + '</b><br><br>' +
         '<b>Nome: </b>' + feature.properties.name + '<br>' +
         '<b>Líder: </b><a data-method="get" href="/users/' + feature.properties.leader_id + '">' +
         feature.properties.leader_name + '</a><br><b>Responsável pela posição: </b>' +
@@ -1574,35 +1574,18 @@ function userToLayer(feature, latlng) {
 //    removed_teams_count++;
 //  }
 
-  // updates periodicos enviados pelo servidor
-  // apenas precisamos de guardar historico para updates do servidor ou ações do utilizador criadas durante a sessao
-//  if (add_to_event_history) {
-//    createNewHistoryEntry(object_type.team, feature.properties.f_id, feature.properties.name, new Date(),
-//        curr_action, false, -1, -1);
-//  }
+  var popup = L.popup({maxWidth: 500});
+  var content = '<div><h6 style="font-size: 18px; margin-bottom: 0;">[' + feature.properties.user_id +
+      '] <b>' + feature.properties.full_name + '</b></h6>' + '<span>' + feature.properties.profile + '</span>' +
+      '<p>Coordenadas mais recentes:<br>Latitude: <b>' + new_marker.getLatLng().lat + '</b><br>Longitude: <b>' +
+      new_marker.getLatLng().lng + '</b></p><p><b>Email: </b>' + feature.properties.email + '<br>' +
+      '<b>Contacto: </b>' + feature.properties.phone_number + '</p></div>';
 
-  if (feature.properties.updated_at !== null) {
-    var popup = L.popup({maxWidth: 250});
-    var content = '<span>Utilizador número <b>' + feature.properties.user_id + '</b><br>' +
-        '<b>Nome: </b>' + feature.properties.name + '<br>' +
-        '</span>';
+  content += '<div class="center-align"><a data-method="get" href="/users/' + feature.properties.user_id + '" ' +
+      'class="waves-effect waves-light btn white-text" target="_blank" style="width: 100%;">Abrir perfil</a></div>';
 
-    // so coloca as coordenadas de destaque na popup caso a equipa em questao esteja destacada
-//    if (feature.properties.highlight_coords !== null) {
-//      var parsed_highlight_coords = parsePointCoordinates(feature.properties.highlight_coords);
-//      content += '<p>Esta equipa está destacada para as coordenadas: <br>' +
-//          '<b>Latitude: </b>' + parsed_highlight_coords[1] + ';<br>' +
-//          '<b>Longitude: </b>' + parsed_highlight_coords[0] + '</p>'
-//    }
-//    else
-//      content += '<p>Esta equipa não está destacada para nenhum ponto. </p>';
-
-    content += '<div class="center-align"><a data-method="get" href="/users/' + feature.properties.user_id + '" ' +
-        'class="waves-effect waves-light btn white-text" target="_blank" style="width: 100%;">Abrir perfil</a></div>';
-
-    popup.setContent(content);
-    new_marker.bindPopup(popup);
-  }
+  popup.setContent(content);
+  new_marker.bindPopup(popup);
 
   return new_marker;
 }
@@ -2123,8 +2106,6 @@ function filterGeoEntitiesByCategory() {
       cluster.removeLayer(g.layer);
     }
   });
-
-//  cluster.refreshClusters();
 }
 
 function toggleEntityVisibility(entity) {
@@ -2146,16 +2127,13 @@ function toggleEntityVisibility(entity) {
     });
   }
   else if (entity === "geo_entities") {
-    $.each(all_geo_entities, function (i, g) {
-      if (is_visible) {
-        map.addLayer(g.layer);
-        cluster.addLayer(g.layer);
-      }
-      else {
+    if (is_visible)
+      filterGeoEntitiesByCategory();
+    else
+      $.each(all_geo_entities, function (i, g) {
         map.removeLayer(g.layer);
         cluster.removeLayer(g.layer);
-      }
-    });
+      });
   }
   else if (entity === "users") {
     $.each(all_users, function (i, g) {
