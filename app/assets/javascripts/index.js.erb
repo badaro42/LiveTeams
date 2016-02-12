@@ -69,12 +69,13 @@ var all_icons = [urgent_icon, alert_icon, solved_icon, information_icon, others_
 // objectos
 
 // este objeto representa um utilizador
-function User(id, full_name, email, phone_number, profile, layer) {
+function User(id, full_name, email, phone_number, profile, updated_at, layer) {
   this.user_id = id;
   this.full_name = full_name;
   this.email = email;
   this.phone_number = phone_number;
   this.profile = profile;
+  this.updated_at = updated_at;
   this.layer = layer;
 }
 
@@ -135,11 +136,15 @@ var e_type, e_radius, e_coords, coords_to_display, e_length, e_area, e_layer, e_
 
 var add_to_event_history = false;
 
+var noSleep;
+
 // cada entrada é da forma {id: feature_id, type: tipo (em portugues),
 // latlon: array com objetos L.latLng), layer: o objeto que esta no mapa}
 var all_geo_entities;
 var all_teams; // cada entrada é da forma {id: feature_id, marker: L.marker(L.latLng(lat, lng))}
 var all_users;
+
+var users_to_remove = [];
 var teams_to_remove = [];
 var geo_ents_to_remove = [];
 var source;
@@ -147,6 +152,10 @@ var source;
 var new_teams_count = 0;
 var updated_teams_count = 0;
 var removed_teams_count = 0;
+
+var new_users_count = 0;
+var updated_users_count = 0;
+var removed_users_count = 0;
 
 var previous_user_location; // {timestamp: Date(), position: L.latLng(lat, lng)}
 var no_sleep_enabled = false;
@@ -297,24 +306,41 @@ $(document).ready(function () {
     localStorage.setItem('user' + gon.user_id, JSON.stringify(curr_user_saved_prefs));
   });
 
+
   // apenas ativa a cena do wake lock caso seja um dispositivo movel
-  if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent)) {
-    // Take the user to a different screen here.
-//    alert("Dispositivo Móvel.");
+  if (isMobile()) {
+    noty({
+      text: '[TESTE] Dispositivo móvel', timeout: 3500,
+      type: 'information', layout: 'bottomCenter'
+    });
 
-    var noSleep = new NoSleep();
+    noSleep = new NoSleep();
 
-    var obj = document.getElementById('map');
-    obj.addEventListener('touchstart', function () {
-      if (!no_sleep_enabled) {
-        console.log("NoSleep Ativado :)");
-        noSleep.enable(); // keep the screen on!
-        no_sleep_enabled = true;
-      }
-    }, false);
+    var i;
+    var objects_to_listen = [
+      document.getElementsByTagName('body')[0],
+      document.getElementById('map')
+    ];
+
+    for (i = 0; i < objects_to_listen.length; i++) {
+      objects_to_listen[i].addEventListener('touchstart', function () {
+        if (!no_sleep_enabled) {
+          noty({
+            text: '[TESTE] NoSleep ativado', timeout: 3500,
+            type: 'success', layout: 'bottomCenter'
+          });
+
+          noSleep.enable(); // keep the screen on!
+          no_sleep_enabled = true;
+        }
+      }, false);
+    }
   }
   else {
-//    alert("Dispositivo Fixo.");
+    noty({
+      text: '[TESTE] Dispositivo fixo.', timeout: 3500,
+      type: 'information', layout: 'bottomCenter'
+    });
   }
 
   all_teams = [];
@@ -618,6 +644,10 @@ $(document).ready(function () {
         timeout: 4000, type: 'success', layout: 'bottomCenter'
       });
     }
+
+    new_users_count = 0;
+    updated_users_count = 0;
+    removed_users_count = 0;
   });
 
   // retorna todas as entidades que estao na BD
@@ -848,45 +878,6 @@ $(document).ready(function () {
   });
 });
 
-// listeners para quando se carrega numa tecla predefinida.
-$(document).keyup(function (e) {
-  var elem, parent, tab_name, keyCode;
-  keyCode = e.keyCode;
-
-  // apenas queremos apanhar estas teclas quando a modal esta fechada, caso contrario
-  // sempre que se introduzisse texto nas caixas de texto as abas laterais eram ativadas
-//  if (!is_modal_open) {
-//    // teclas que ativam a sidebar lateral
-//    if (keyCode == 69 || keyCode == 80 || keyCode == 85 || keyCode == 87 || keyCode == 83) {
-//      if (keyCode == 69) { // tecla 'E'
-//        elem = $('#teams-tab-icon');
-//        tab_name = 'teams';
-//      }
-//      else if (keyCode == 80) { // tecla 'P'
-//        elem = $('#profile-tab-icon');
-//        tab_name = 'profile';
-//      }
-//      else if (keyCode == 85) { // tecla 'U'
-//        elem = $('#users-tab-icon');
-//        tab_name = 'users';
-//      }
-//      else if (keyCode == 87) { // tecla 'W'
-//        elem = $('#warnings-tab-icon');
-//        tab_name = 'warnings';
-//      }
-//      else if (keyCode == 83) { // tecla 'S'
-//        elem = $('#search-tab-icon');
-//        tab_name = 'search';
-//      }
-//
-//      parent = elem.parent();
-//      if (parent.hasClass('active'))
-//        sidebar.close(tab_name);
-//      else
-//        sidebar.open(tab_name);
-//    }
-//  }
-});
 
 /**
  * Transforma uma string com coordenadas num array
@@ -1206,8 +1197,7 @@ function addTeamToMap(json) {
   console.log(json_arr);
 
   new_layer = L.geoJson(json_arr, {
-    pointToLayer: teamPointToLayer,
-    onEachFeature: onEachTeam
+    pointToLayer: teamPointToLayer
   });
 
   if (new_teams_count == 1)
@@ -1252,6 +1242,65 @@ function addTeamToMap(json) {
 }
 
 
+/**
+ * Metodo executado quando recebemos atualizações dos utilizadores do servidor (SSE)
+ *
+ * @param json
+ */
+function addUserToMap(json) {
+  console.log("RECEBEMOS NOVA UTILIZADOR!!!!");
+
+  var new_layer;
+  var json_arr = JSON.parse(json);
+  console.log(json_arr);
+
+  new_layer = L.geoJson(json_arr, {
+    pointToLayer: userToLayer
+  });
+
+  if (new_users_count == 1)
+    noty({
+      text: 'Um novo utilizador foi adicionado ao mapa!', timeout: 3500,
+      type: 'information', layout: 'bottomCenter'
+    });
+  else if (new_users_count > 1)
+    noty({
+      text: 'Dois ou mais novos utilizadores foram adicionados ao mapa!', timeout: 3500,
+      type: 'information', layout: 'bottomCenter'
+    });
+
+  if (updated_users_count == 1)
+    noty({
+      text: 'Um utilizador foi atualizado!', timeout: 3500,
+      type: 'information', layout: 'bottomCenter'
+    });
+  else if (updated_users_count > 1)
+    noty({
+      text: 'Dois ou mais utilizadores foram atualizados!', timeout: 3500,
+      type: 'information', layout: 'bottomCenter'
+    });
+
+  if (removed_users_count == 1)
+    noty({
+      text: 'Um utilizador foi removido do mapa!', timeout: 3500,
+      type: 'information', layout: 'bottomCenter'
+    });
+  else if (removed_users_count > 1)
+    noty({
+      text: 'Dois ou mais utilizadores foram removidos do mapa!', timeout: 3500,
+      type: 'information', layout: 'bottomCenter'
+    });
+
+  new_users_count = 0;
+  updated_users_count = 0;
+  removed_users_count = 0;
+
+  cluster.addLayer(new_layer);
+  map.addLayer(cluster);
+}
+
+
+
 // ****************** SSE STUFF :) ************************
 function eventSourceSetup() {
   console.log("START DA CENA DO EVENT_SOURCE");
@@ -1278,7 +1327,42 @@ function eventSourceSetup() {
     add_to_event_history = false;
     cleanRemovedTeams();
   }, false);
+
+  // listener para a receçao de updates das equipas
+  source.addEventListener('user_updates', function (e) {
+//    add_to_event_history = true;
+    addUserToMap(e.data);
+//    add_to_event_history = false;
+    cleanRemovedUsers();
+  }, false);
 }
+
+
+/**
+ * remove do array de utilizadors todas aqueles que tenham sido eliminados através dos updates via SSE
+ */
+function cleanRemovedUsers() {
+  console.log("utilizadores para remover:");
+  console.log(users_to_remove);
+
+  if (users_to_remove.length > 0) {
+    var temp_arr = [];
+    $.each(users_to_remove, function (index, elem) {
+      cluster.removeLayer(elem.layer);
+      map.removeLayer(elem.layer);
+      temp_arr.push(elem.user_id);
+    });
+
+    all_users = $.grep(all_users, function (elem, index) {
+      return $.inArray(elem.user_id, temp_arr) == -1;
+    });
+
+    users_to_remove = [];
+    console.log("acabei de limpar os utilizadores que ja tinham sido removidos!");
+  }
+}
+
+
 
 /**
  * remove do array de equipas todas as equipas que tenham sido eliminadas através dos updates via SSE
@@ -1356,13 +1440,31 @@ function teamIsInMap(param_id) {
  */
 function geoEntityIsInMap(param_id) {
   var i;
-  var length = all_geo_entities.length
+  var length = all_geo_entities.length;
   for (i = 0; i < length; i++) {
     if (all_geo_entities[i].f_id === param_id) // a entidade geografica existe
       return i;
   }
   return -1;
 }
+
+/**
+ * Verifica se o utilizador ja existe ou nao no mapa
+ * Retorna -1 caso nao esteja no mapa
+ * Retorna o indice caso ja exista no mapa
+ *
+ * @param param_id é o id que o utilizador possui na base de dados, e não o indice da mesma no array de utilizadores
+ */
+function userIsInMap(param_id) {
+  var i;
+  var length = all_users.length;
+  for (i = 0; i < length; i++) {
+    if (all_users[i].user_id === param_id) // o utilizador existe
+      return i;
+  }
+  return -1;
+}
+
 
 /**
  * apresenta as coordenadas da entidade selecionada num modal no fundo da pagina
@@ -1536,50 +1638,46 @@ function teamPointToLayer(feature, latlng) {
 
 function userToLayer(feature, latlng) {
   console.log(feature);
-//  var index = teamIsInMap(feature.properties.f_id);
+  var index = userIsInMap(feature.properties.user_id);
   var new_marker = L.marker(latlng, {icon: user_icon});
-  var user_to_push;
-//  var old_marker, team_to_push;
-//  var curr_action;
+  var old_marker, user_to_push;
 
   user_to_push = new User(feature.properties.user_id, feature.properties.full_name, feature.properties.email,
-      feature.properties.phone_number, feature.properties.profile, new_marker);
+      feature.properties.phone_number, feature.properties.profile, feature.properties.updated_at, new_marker);
 
-  all_users.push(user_to_push);
+  if (index == -1) { // utilizador nao existe no mapa
+    all_users.push(user_to_push);
+    new_users_count++;
 
-//  if (index == -1) {//equipa nao existe no mapa
-//    all_teams.push(team_to_push);
-//
-//    curr_action = actions.create;
-//    new_teams_count++;
-//
-//    console.log("NOVA EQUIPA RECEBIDA!!!");
-//  }
-//  else {
-//    // guardamos o antigo marcador da equipa para removermos e colocarmos o novo no mapa
-//    old_marker = all_teams[index].marker;
-//    all_teams[index] = team_to_push;
-//
-//    cluster.removeLayer(old_marker);
-//    map.removeLayer(old_marker);
-//
-//    curr_action = actions.update;
-//    updated_teams_count++;
-//  }
+    console.log("NOVO UTILIZADOR do servidor!!!");
+  }
+  else {
+    // guardamos o antigo marcador do utilizador para removermos e colocarmos o novo no mapa
+    old_marker = all_users[index].layer;
+    all_users[index] = user_to_push;
 
-//  if (feature.properties.updated_at === null) {
-//    teams_to_remove.push(team_to_push);
-//
-//    curr_action = actions.remove;
-//    removed_teams_count++;
-//  }
+    cluster.removeLayer(old_marker);
+    map.removeLayer(old_marker);
+
+    updated_users_count++;
+
+    console.log("UTILIZADOR atualizado do servidor!!!");
+  }
+
+  if (feature.properties.updated_at === null) {
+    users_to_remove.push(user_to_push);
+    removed_users_count++;
+
+    console.log("UTILIZADOR para remover!!!");
+  }
 
   var popup = L.popup({maxWidth: 500});
-  var content = '<div><h6 style="font-size: 18px; margin-bottom: 0;">[' + feature.properties.user_id +
-      '] <b>' + feature.properties.full_name + '</b></h6>' + '<span>' + feature.properties.profile + '</span>' +
-      '<p>Coordenadas mais recentes:<br>Latitude: <b>' + new_marker.getLatLng().lat + '</b><br>Longitude: <b>' +
-      new_marker.getLatLng().lng + '</b></p><p><b>Email: </b>' + feature.properties.email + '<br>' +
-      '<b>Contacto: </b>' + feature.properties.phone_number + '</p></div>';
+  var content = '<div><h6 style="font-size: 20px; margin-bottom: 0;">[' + feature.properties.user_id +
+      '] <b>' + feature.properties.full_name + '</b></h6>' + '<span style="font-size: 16px;">' +
+      feature.properties.profile + '</span>' + '<p>Coordenadas mais recentes:<br>Latitude: <b>' +
+      new_marker.getLatLng().lat + '</b><br>Longitude: <b>' + new_marker.getLatLng().lng + '</b></p>' +
+      '<p><b>Email: </b>' + feature.properties.email + '<br><b>Contacto: </b>' +
+      feature.properties.phone_number + '</p></div>';
 
   content += '<div class="center-align"><a data-method="get" href="/users/' + feature.properties.user_id + '" ' +
       'class="waves-effect waves-light btn white-text" target="_blank" style="width: 100%;">Abrir perfil</a></div>';
@@ -2146,5 +2244,19 @@ function toggleEntityVisibility(entity) {
         cluster.removeLayer(g.layer);
       }
     });
+  }
+}
+
+/**
+ * Função que testa se o utilizador está ou não a usar um dispositivo móvel
+ * @returns {boolean}
+ */
+function isMobile() {
+  try {
+    document.createEvent("TouchEvent");
+    return true;
+  }
+  catch (e) {
+    return false;
   }
 }

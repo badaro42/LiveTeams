@@ -6,8 +6,15 @@ module EncodeToJson
     factory = RGeo::GeoJSON::EntityFactory.instance
     teams_to_json = nil
 
-    if obj.length == 1
-      team = obj.first
+    arr = []
+    if obj.is_a? Team
+      arr.push(obj)
+    else
+      arr = obj
+    end
+
+    if arr.length == 1
+      team = arr.first
       feature = factory.feature(User.find(team.location_user_id).latlon, nil,
                                 {
                                     name: team.name, f_id: team.id, location_user_id: team.location_user_id,
@@ -19,7 +26,7 @@ module EncodeToJson
       )
       teams_to_json = RGeo::GeoJSON.encode feature
     else
-      mapped_teams = factory.map_feature_collection(obj) {
+      mapped_teams = factory.map_feature_collection(arr) {
           |f| factory.feature(User.find(f.location_user_id).latlon, nil,
                               {
                                   name: f.name, f_id: f.id, location_user_id: f.location_user_id,
@@ -80,20 +87,28 @@ module EncodeToJson
     factory = RGeo::GeoJSON::EntityFactory.instance
     users_to_json = nil
 
-    if obj.length == 1
-      feature = factory.feature(obj.latlon, nil,
+    arr = []
+    if obj.is_a? User
+      arr.push(obj)
+    else
+      arr = obj
+    end
+
+    if arr.length == 1
+      user = arr.first
+      feature = factory.feature(user.latlon, nil,
                                 {
-                                    user_id: obj.id, full_name: obj.full_name, email: obj.email,
-                                    phone_number: obj.phone_number, profile: obj.profile
+                                    user_id: user.id, full_name: user.full_name, email: user.email,
+                                    phone_number: user.phone_number, profile: user.profile, updated_at: user.updated_at
                                 }
       )
       users_to_json = RGeo::GeoJSON.encode feature
     else
-      mapped_feats = factory.map_feature_collection(obj) {
+      mapped_feats = factory.map_feature_collection(arr) {
           |f| factory.feature(f.latlon, nil,
                               {
                                   user_id: f.id, full_name: f.full_name, email: f.email,
-                                  phone_number: f.phone_number, profile: f.profile
+                                  phone_number: f.phone_number, profile: f.profile, updated_at: f.updated_at
                               }
         )
       }

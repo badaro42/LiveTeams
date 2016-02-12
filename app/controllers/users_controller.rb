@@ -5,6 +5,7 @@ class UsersController < ApplicationController
   require 'encode_to_json'
   layout "listings"
 
+  # aquando da população do mapa, devolve todos os utilizadores menos ele proprio
   def users_to_json
     users_to_json = EncodeToJson::encode_users_to_json(User.where.not(id: current_user.id))
     render json: users_to_json
