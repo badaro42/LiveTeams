@@ -40,18 +40,27 @@ module EncodeToJson
     factory = RGeo::GeoJSON::EntityFactory.instance
     geo_entities_to_json = nil
 
-    if obj.length == 1
-      feature = factory.feature(obj.latlon, nil,
+    arr = []
+    if obj.is_a? GeoEntity
+      arr.push(obj)
+    else
+      arr = obj
+    end
+
+    if arr.length == 1
+      geo_entity = arr.first
+      feature = factory.feature(geo_entity.latlon, nil,
                                 {
-                                    f_id: obj.id, name: obj.name, username: obj.user.full_name, user_id: obj.user_id,
-                                    description: obj.description, radius: obj.radius, created_at: obj.created_at,
-                                    updated_at: obj.updated_at, entity_type: obj.entity_type,
-                                    category_id: obj.category_id, category_name: obj.category.name
+                                    f_id: geo_entity.id, name: geo_entity.name, username: geo_entity.user.full_name,
+                                    user_id: geo_entity.user_id, description: geo_entity.description,
+                                    radius: geo_entity.radius, created_at: geo_entity.created_at,
+                                    updated_at: geo_entity.updated_at, entity_type: geo_entity.entity_type,
+                                    category_id: geo_entity.category_id, category_name: geo_entity.category.name
                                 }
       )
       geo_entities_to_json = RGeo::GeoJSON.encode feature
     else
-      mapped_feats = factory.map_feature_collection(obj) {
+      mapped_feats = factory.map_feature_collection(arr) {
           |f| factory.feature(f.latlon, nil,
                               {
                                   f_id: f.id, name: f.name, username: f.user.full_name, user_id: f.user_id,

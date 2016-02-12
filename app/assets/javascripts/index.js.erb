@@ -1264,7 +1264,7 @@ function eventSourceSetup() {
   }
 
   // listener para a receção de updates de entidades geograficas
-  source.addEventListener('entity_updates', function (e) {
+  source.addEventListener('geo_entity_updates', function (e) {
     add_to_event_history = true;
     addGeoEntityToMap(e.data);
     add_to_event_history = false;
