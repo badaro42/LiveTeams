@@ -95,7 +95,7 @@ function GeoEntity(id, name, description, user_name, user_id, radius, updated_at
 }
 
 // este objeto representa uma equipa
-function Team(id, name, loc_user_id, loc_user_name, updated_at, leader_name, leader_id, highlight_coords, marker) {
+function Team(id, name, loc_user_id, loc_user_name, updated_at, leader_name, leader_id, highlight_coords_layer, marker) {
   this.t_id = id; // o id da equipa na base de dados
   this.t_name = name; // o nome da equipa
   this.location_user_id = loc_user_id; // o id do utilizador responsavel pela localização da equipa
@@ -103,7 +103,7 @@ function Team(id, name, loc_user_id, loc_user_name, updated_at, leader_name, lea
   this.updated_at = updated_at; // a data de atualização da equipa
   this.leader_name = leader_name; // o nome do lider da equipa
   this.leader_id = leader_id; // o id do lider da equipa
-  this.highlight_coords = highlight_coords; // as coordenadas de destaque da equipa
+  this.highlight_coords_layer = highlight_coords_layer; // as coordenadas de destaque da equipa
   this.marker = marker; // o objeto que representa o marcador da equipa no mapa
 }
 
@@ -143,23 +143,17 @@ var noSleep;
 var all_geo_entities;
 var all_teams; // cada entrada é da forma {id: feature_id, marker: L.marker(L.latLng(lat, lng))}
 var all_users;
+var user_teams;
 
 var users_to_remove = [];
 var teams_to_remove = [];
 var geo_ents_to_remove = [];
 var source;
 
-var new_teams_count = 0;
-var updated_teams_count = 0;
-var removed_teams_count = 0;
-
-var new_users_count = 0;
-var updated_users_count = 0;
-var removed_users_count = 0;
-
 var previous_user_location; // {timestamp: Date(), position: L.latLng(lat, lng)}
 var no_sleep_enabled = false;
 var is_modal_open = false;
+var only_show_own_teams = true;
 
 
 // variaveis relacionadas a informação guardada no browser - localStorage
@@ -191,6 +185,13 @@ var user_icon = L.icon({
 
 var user_pos_icon = L.icon({
   iconUrl: '/assets/user-64.png',
+  iconSize: [38, 38], // size of the icon
+  iconAnchor: [19, 30], // point of the icon which will correspond to marker's location
+  popupAnchor: [-1, -30] // point from which the popup should open relative to the iconAnchor
+});
+
+var highlight_coords_icon = L.icon({
+  iconUrl: '/assets/bullseye-64.png',
   iconSize: [38, 38], // size of the icon
   iconAnchor: [19, 30], // point of the icon which will correspond to marker's location
   popupAnchor: [-1, -30] // point from which the popup should open relative to the iconAnchor
@@ -346,10 +347,11 @@ $(document).ready(function () {
   all_teams = [];
   all_geo_entities = [];
   all_users = [];
+  user_teams = [];
 
   // delay da inicialização do eventSource
-  // delay atual - 10 segundos
-  setTimeout(eventSourceSetup, 10000);
+  // delay atual - 7,5 segundos
+  setTimeout(eventSourceSetup, 7500);
 
   sidebar = L.control.sidebar('sidebar', {position: 'right'}).addTo(map);
   cluster = L.markerClusterGroup({
@@ -644,10 +646,6 @@ $(document).ready(function () {
         timeout: 4000, type: 'success', layout: 'bottomCenter'
       });
     }
-
-    new_users_count = 0;
-    updated_users_count = 0;
-    removed_users_count = 0;
   });
 
   // retorna todas as entidades que estao na BD
@@ -705,10 +703,6 @@ $(document).ready(function () {
         timeout: 4000, type: 'success', layout: 'bottomCenter'
       });
     }
-
-    new_teams_count = 0;
-    updated_teams_count = 0;
-    removed_teams_count = 0;
   });
 
 
@@ -1068,9 +1062,7 @@ function addGeoEntityToMap(json) {
   console.log("UPDATES server sent event!!!!!!");
 
   var json_arr = JSON.parse(json);
-  var new_layer; //, ent_type, latlon_arr = [];
-  var new_features_count = 0;
-  var removed_features_count = 0;
+  var new_layer;
   var process_geojson = false;
 
   console.log(json_arr);
@@ -1082,15 +1074,12 @@ function addGeoEntityToMap(json) {
     if (geo_ent_in_map == -1) { //geo-entidade nao esta no mapa
       if (json_arr.properties.updated_at !== null) { // nova geo-entidade para adicionar ao mapa
         console.log("apenas uma - GEO-ENTIDADE NAO EXISTE NO ARRAY");
-        new_features_count++;
         process_geojson = true;
       }
     }
     else { // geo-entidade esta presente no mapa
       if (json_arr.properties.updated_at === null) { //removemos a geo-entidade do mapa - ja nao existe no servidor
         console.log("apenas uma - GEO-ENTIDADE É PARA REMOVER");
-
-        removed_features_count++;
         geo_ents_to_remove.push(all_geo_entities[geo_ent_in_map]);
       }
     }
@@ -1131,15 +1120,12 @@ function addGeoEntityToMap(json) {
           console.log("apenas uma - GEO-ENTIDADE NAO EXISTE NO ARRAY");
 
           final_json_arr.features.push(elem);
-          new_features_count++;
           process_geojson = true;
         }
       }
       else { // geo-entidade esta presente no mapa
         if (elem.properties.updated_at === null) { //removemos a geo-entidade do mapa - ja nao existe no servidor
           console.log("apenas uma - GEO-ENTIDADE É PARA REMOVER");
-
-          removed_features_count++;
           geo_ents_to_remove.push(all_geo_entities[index_in_map]);
         }
       }
@@ -1158,30 +1144,6 @@ function addGeoEntityToMap(json) {
       map.addLayer(cluster);
     }
   }
-
-  // criação de popup a indicar o numero de novas geo-entidades
-  if (new_features_count == 1)
-    noty({
-      text: 'Uma nova geo-entidade foi adicionada ao mapa!', timeout: 3500,
-      type: 'information', layout: 'bottomCenter'
-    });
-  else if (new_features_count > 1)
-    noty({
-      text: 'Duas ou mais novas geo-entidades foram adicionadas ao mapa!', timeout: 3500,
-      type: 'information', layout: 'bottomCenter'
-    });
-
-  // criação de popup a indicar o numero de geo-entidades removidas
-  if (removed_features_count == 1)
-    noty({
-      text: 'Uma geo-entidade foi removida do mapa!', timeout: 3500,
-      type: 'information', layout: 'bottomCenter'
-    });
-  else if (removed_features_count > 1)
-    noty({
-      text: 'Duas ou mais geo-entidades foram removidas do mapa!', timeout: 3500,
-      type: 'information', layout: 'bottomCenter'
-    });
 }
 
 /**
@@ -1199,43 +1161,6 @@ function addTeamToMap(json) {
   new_layer = L.geoJson(json_arr, {
     pointToLayer: teamPointToLayer
   });
-
-  if (new_teams_count == 1)
-    noty({
-      text: 'Uma nova equipa foi adicionada ao mapa!', timeout: 3500,
-      type: 'information', layout: 'bottomCenter'
-    });
-  else if (new_teams_count > 1)
-    noty({
-      text: 'Duas ou mais novas equipas foram adicionadas ao mapa!', timeout: 3500,
-      type: 'information', layout: 'bottomCenter'
-    });
-
-  if (updated_teams_count == 1)
-    noty({
-      text: 'Uma equipa foi atualizada!', timeout: 3500,
-      type: 'information', layout: 'bottomCenter'
-    });
-  else if (updated_teams_count > 1)
-    noty({
-      text: 'Duas ou mais equipas foram atualizadas!', timeout: 3500,
-      type: 'information', layout: 'bottomCenter'
-    });
-
-  if (removed_teams_count == 1)
-    noty({
-      text: 'Uma equipa foi removida do mapa!', timeout: 3500,
-      type: 'information', layout: 'bottomCenter'
-    });
-  else if (removed_teams_count > 1)
-    noty({
-      text: 'Duas ou mais equipas foram removidas do mapa!', timeout: 3500,
-      type: 'information', layout: 'bottomCenter'
-    });
-
-  new_teams_count = 0;
-  updated_teams_count = 0;
-  removed_teams_count = 0;
 
   cluster.addLayer(new_layer);
   map.addLayer(cluster);
@@ -1258,43 +1183,6 @@ function addUserToMap(json) {
     pointToLayer: userToLayer
   });
 
-  if (new_users_count == 1)
-    noty({
-      text: 'Um novo utilizador foi adicionado ao mapa!', timeout: 3500,
-      type: 'information', layout: 'bottomCenter'
-    });
-  else if (new_users_count > 1)
-    noty({
-      text: 'Dois ou mais novos utilizadores foram adicionados ao mapa!', timeout: 3500,
-      type: 'information', layout: 'bottomCenter'
-    });
-
-  if (updated_users_count == 1)
-    noty({
-      text: 'Um utilizador foi atualizado!', timeout: 3500,
-      type: 'information', layout: 'bottomCenter'
-    });
-  else if (updated_users_count > 1)
-    noty({
-      text: 'Dois ou mais utilizadores foram atualizados!', timeout: 3500,
-      type: 'information', layout: 'bottomCenter'
-    });
-
-  if (removed_users_count == 1)
-    noty({
-      text: 'Um utilizador foi removido do mapa!', timeout: 3500,
-      type: 'information', layout: 'bottomCenter'
-    });
-  else if (removed_users_count > 1)
-    noty({
-      text: 'Dois ou mais utilizadores foram removidos do mapa!', timeout: 3500,
-      type: 'information', layout: 'bottomCenter'
-    });
-
-  new_users_count = 0;
-  updated_users_count = 0;
-  removed_users_count = 0;
-
   cluster.addLayer(new_layer);
   map.addLayer(cluster);
 }
@@ -1306,35 +1194,43 @@ function eventSourceSetup() {
   console.log("START DA CENA DO EVENT_SOURCE");
 
   // SSE stuff - atualização de informação
-  if (!!window.EventSource)
+  if (!!window.EventSource) {
     source = new EventSource("/entity_updates");
-  else {
-    // Result to xhr polling :(
+
+    // listener para a receção de updates de entidades geograficas
+    source.addEventListener('geo_entity_updates', function (e) {
+      add_to_event_history = true;
+      addGeoEntityToMap(e.data);
+      add_to_event_history = false;
+      cleanRemovedGeoEntities();
+    }, false);
+
+    // listener para a receçao de updates das equipas
+    source.addEventListener('team_updates', function (e) {
+      add_to_event_history = true;
+      addTeamToMap(e.data);
+      add_to_event_history = false;
+      cleanRemovedTeams();
+    }, false);
+
+    // listener para a receçao de updates das equipas
+    source.addEventListener('user_updates', function (e) {
+      addUserToMap(e.data);
+      cleanRemovedUsers();
+    }, false);
+
+    // listener para a recepção dos ids das equipa a que pertence atualmente
+    source.addEventListener('user_teams', function (e) {
+      user_teams = $.parseJSON(e.data);
+      console.log(user_teams);
+    }, false);
   }
-
-  // listener para a receção de updates de entidades geograficas
-  source.addEventListener('geo_entity_updates', function (e) {
-    add_to_event_history = true;
-    addGeoEntityToMap(e.data);
-    add_to_event_history = false;
-    cleanRemovedGeoEntities();
-  }, false);
-
-  // listener para a receçao de updates das equipas
-  source.addEventListener('team_updates', function (e) {
-    add_to_event_history = true;
-    addTeamToMap(e.data);
-    add_to_event_history = false;
-    cleanRemovedTeams();
-  }, false);
-
-  // listener para a receçao de updates das equipas
-  source.addEventListener('user_updates', function (e) {
-//    add_to_event_history = true;
-    addUserToMap(e.data);
-//    add_to_event_history = false;
-    cleanRemovedUsers();
-  }, false);
+  else {
+    noty({
+      text: 'A atualização automática de entidades não é suportada por este browser.', timeout: 5000,
+      type: 'error', layout: 'bottomCenter'
+    });
+  }
 }
 
 
@@ -1566,38 +1462,58 @@ function teamPointToLayer(feature, latlng) {
   console.log(feature);
   var index = teamIsInMap(feature.properties.f_id);
   var new_marker = L.marker(latlng, {icon: team_icon});
-  var old_marker, team_to_push;
+  var old_highlight_layer, old_marker, team_to_push;
+  var new_hightlight_layer = null;
   var curr_action;
+
+  // se a equipa tiver coordenadas de destaque, criamos uma layer para as representar
+  if (feature.properties.highlight_coords !== null) {
+    var parsed_coords = parsePointCoordinates(feature.properties.highlight_coords);
+    var highlight_coords = L.latLng(parsed_coords[1], parsed_coords[0]);
+    new_hightlight_layer = L.marker(highlight_coords, {icon: highlight_coords_icon});
+  }
 
   team_to_push = new Team(feature.properties.f_id, feature.properties.name, feature.properties.location_user_id,
       feature.properties.location_user_name, feature.properties.updated_at, feature.properties.leader_name,
-      feature.properties.leader_id, feature.properties.highlight_coords, new_marker);
+      feature.properties.leader_id, new_hightlight_layer, new_marker);
 
-  if (index == -1) {//equipa nao existe no mapa
+  if (index == -1) { //equipa nao existe no mapa
     all_teams.push(team_to_push);
 
-    curr_action = actions.create;
-    new_teams_count++;
+    // se a nova equipa tiver coordenadas de destaque, adicionamos ao mapa
+    if (new_hightlight_layer !== null) {
+      cluster.addLayer(new_hightlight_layer);
+      map.addLayer(new_hightlight_layer);
+    }
 
+    curr_action = actions.create;
     console.log("NOVA EQUIPA RECEBIDA!!!");
   }
   else {
     // guardamos o antigo marcador da equipa para removermos e colocarmos o novo no mapa
     old_marker = all_teams[index].marker;
+    old_highlight_layer = all_teams[index].highlight_coords_layer;
     all_teams[index] = team_to_push;
+
+    // removemos a layer de destaque do mapa, caso houvesse
+    if (old_highlight_layer !== null) {
+      cluster.removeLayer(old_highlight_layer);
+      map.removeLayer(old_highlight_layer);
+    }
+    if (new_hightlight_layer !== null) {
+      cluster.addLayer(new_hightlight_layer);
+      map.addLayer(new_hightlight_layer);
+    }
 
     cluster.removeLayer(old_marker);
     map.removeLayer(old_marker);
 
     curr_action = actions.update;
-    updated_teams_count++;
   }
 
   if (feature.properties.updated_at === null) {
     teams_to_remove.push(team_to_push);
-
     curr_action = actions.remove;
-    removed_teams_count++;
   }
 
   // updates periodicos enviados pelo servidor
@@ -1609,25 +1525,29 @@ function teamPointToLayer(feature, latlng) {
 
   if (feature.properties.updated_at !== null) {
     var popup = L.popup({maxWidth: 250});
-    var content = '<span>Equipa número <b>' + feature.properties.f_id + '</b><br><br>' +
-        '<b>Nome: </b>' + feature.properties.name + '<br>' +
-        '<b>Líder: </b><a data-method="get" href="/users/' + feature.properties.leader_id + '">' +
+
+    var content = '<div><h6 style="font-size: 20px; margin-bottom: 0;">[' + feature.properties.f_id +
+        '] <b>' + feature.properties.name + '</b></h6>' +
+        '<p><b>Líder: </b><a data-method="get" href="/users/' + feature.properties.leader_id + '">' +
         feature.properties.leader_name + '</a><br><b>Responsável pela posição: </b>' +
         '<a data-method="get" href="/users/' + feature.properties.location_user_id + '">' +
-        feature.properties.location_user_name + '</a></span>';
+        feature.properties.location_user_name + '</a></p>';
 
     // so coloca as coordenadas de destaque na popup caso a equipa em questao esteja destacada
-    if (feature.properties.highlight_coords !== null) {
-      var parsed_highlight_coords = parsePointCoordinates(feature.properties.highlight_coords);
-      content += '<p>Esta equipa está destacada para as coordenadas: <br>' +
-          '<b>Latitude: </b>' + parsed_highlight_coords[1] + ';<br>' +
-          '<b>Longitude: </b>' + parsed_highlight_coords[0] + '</p>'
+    if (new_hightlight_layer !== null) {
+      content += '<div class="center-align" style="margin-bottom: 0;"><button ' +
+          'class="waves-effect waves-light btn white-text" style="width: 100%; padding-left: 0; padding-right: 0;">' +
+          'Centrar no destaque</button></div>';
+
+      var highlight_popup = L.popup({maxWidth: 250});
+//      var highlight_content =
     }
     else
       content += '<p>Esta equipa não está destacada para nenhum ponto. </p>';
 
     content += '<div class="center-align"><a data-method="get" href="/teams/' + feature.properties.f_id + '" ' +
-        'class="waves-effect waves-light btn white-text" target="_blank" style="width: 100%;">Ir para equipa</a></div>';
+        'class="waves-effect waves-light btn white-text" target="_blank" ' +
+        'style="width: 100%; padding-left: 0; padding-right: 0;">Ir para equipa</a></div></div>';
 
     popup.setContent(content);
     new_marker.bindPopup(popup);
@@ -1647,8 +1567,6 @@ function userToLayer(feature, latlng) {
 
   if (index == -1) { // utilizador nao existe no mapa
     all_users.push(user_to_push);
-    new_users_count++;
-
     console.log("NOVO UTILIZADOR do servidor!!!");
   }
   else {
@@ -1659,15 +1577,11 @@ function userToLayer(feature, latlng) {
     cluster.removeLayer(old_marker);
     map.removeLayer(old_marker);
 
-    updated_users_count++;
-
     console.log("UTILIZADOR atualizado do servidor!!!");
   }
 
   if (feature.properties.updated_at === null) {
     users_to_remove.push(user_to_push);
-    removed_users_count++;
-
     console.log("UTILIZADOR para remover!!!");
   }
 
@@ -1703,12 +1617,6 @@ function onEachGeoEntity(feature, layer) {
   var new_entry, ent_type, temp_latlon, curr_action, radius = 0;
   var popup = L.popup({maxWidth: 250});
 
-//  if (layer.hasOwnProperty('_latlng')) // só tem um par de coordenadas
-//    temp_latlon = [layer.getLatLng()];
-//  else if (layer.hasOwnProperty('_latlngs')) // tem mais do que um par de coordenadas
-//    temp_latlon = layer.getLatLngs();
-
-
   if (feature.geometry.type !== "Point" || feature.properties.radius > 0) {
     layer.options.color = icon_colors[feature.properties.category_id - 1];
     layer.options.fillColor = icon_colors[feature.properties.category_id - 1];
@@ -1732,8 +1640,6 @@ function onEachGeoEntity(feature, layer) {
     else if (feature.geometry.type === "Point")
       ent_type = geo_entity_types.point;
   }
-
-//  new_entry = {id: feature.properties.f_id, latlon: temp_latlon, type: ent_type, layer: layer};
 
   new_entry = new GeoEntity(feature.properties.f_id, feature.properties.name, feature.properties.description,
       feature.properties.username, feature.properties.user_id, feature.properties.radius, feature.properties.updated_at,
@@ -1876,10 +1782,6 @@ function toggleNavBar(to_show) {
       new_top = navbar_height + sidebar_padding;
       new_sidebar_height = curr_window_height - navbar_height - 2 * sidebar_padding;
     }
-
-//    $('#frontpage-navbar').slideDown({queue: false});
-//    $('#map').animate({'height': new_map_height, duration: 'slow', queue: false});
-//    $('#sidebar').animate({'top': new_top + 'px', 'height': new_sidebar_height + 'px', duration: 'slow', queue: false});
 
     $.when(
         $('#frontpage-navbar').slideDown({duration: 500}).promise()
@@ -2208,15 +2110,33 @@ function filterGeoEntitiesByCategory() {
 
 function toggleEntityVisibility(entity) {
   var id = "#checkbox_toggle_" + entity;
-  var is_visible = $(id).is(":checked");
+  var is_checked = $(id).is(":checked");
 
-  console.log(entity + " is checked? " + is_visible);
+  console.log(entity + " is checked? " + is_checked);
 
   if (entity === "teams") {
+    var elem = $("#checkbox_toggle_own_teams");
+    if(is_checked)
+        $(elem).prop("disabled", false);
+    else
+        $(elem).prop("disabled", true);
+
     $.each(all_teams, function (i, g) {
-      if (is_visible) {
-        map.addLayer(g.marker);
-        cluster.addLayer(g.marker);
+      if (is_checked) {
+        if (only_show_own_teams) {
+          if (user_teams.includes(g.t_id)) {
+            map.addLayer(g.marker);
+            cluster.addLayer(g.marker);
+          }
+          else {
+            map.removeLayer(g.marker);
+            cluster.removeLayer(g.marker);
+          }
+        }
+        else {
+          map.addLayer(g.marker);
+          cluster.addLayer(g.marker);
+        }
       }
       else {
         map.removeLayer(g.marker);
@@ -2225,7 +2145,7 @@ function toggleEntityVisibility(entity) {
     });
   }
   else if (entity === "geo_entities") {
-    if (is_visible)
+    if (is_checked)
       filterGeoEntitiesByCategory();
     else
       $.each(all_geo_entities, function (i, g) {
@@ -2235,7 +2155,7 @@ function toggleEntityVisibility(entity) {
   }
   else if (entity === "users") {
     $.each(all_users, function (i, g) {
-      if (is_visible) {
+      if (is_checked) {
         map.addLayer(g.layer);
         cluster.addLayer(g.layer);
       }
@@ -2245,6 +2165,33 @@ function toggleEntityVisibility(entity) {
       }
     });
   }
+}
+
+/**
+ * Função que apresenta ou esconde apenas as equipas do utilizador
+ *
+ * OWN_TEAMS_CHECKBOX passa a seleccionada:
+ *  Se ALL_TEAMS_CHECKBOX está ativada - esconde todas menos as equipas do utilizador
+ *  Se ALL_TEAMS_CHECKBOX está desativada - selecciona a checkbox das equipas e apresenta apenas as suas equipas
+ * OWN_TEAMS_CHECKBOX deixa de estar seleccionada:
+ *  Se ALL_TEAMS_CHECKBOX está ativada - apresenta todas as equipas
+ */
+function filterByOwnTeams() {
+  var is_this_checked = $("#checkbox_toggle_own_teams").is(":checked");
+  var is_teams_checked = $("#checkbox_toggle_teams").is(":checked");
+
+  console.log("own teams checked? " + is_this_checked);
+  console.log("ALL teams checked? " + is_teams_checked);
+
+  if (is_this_checked) {
+    only_show_own_teams = true;
+    if (!is_teams_checked)
+      $("#checkbox_toggle_teams").prop("checked", true);
+  }
+  else
+    only_show_own_teams = false;
+
+  toggleEntityVisibility('teams');
 }
 
 /**

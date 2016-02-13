@@ -142,6 +142,10 @@ class User < ActiveRecord::Base
     "#{first_name} #{last_name}"
   end
 
+  def get_user_teams_ids
+    self.teams.map(&:id)
+  end
+
   # user.get_user_temporary_roles.map(&:permissions).flatten devolve todas as permissões temporarias do user
   def get_user_temporary_roles
     self.user_roles.where("role_id > ? and expiration_date > ?", 4, Time.current)

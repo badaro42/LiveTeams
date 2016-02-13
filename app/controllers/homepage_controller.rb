@@ -46,7 +46,6 @@ class HomepageController < ApplicationController
     users_to_parse = User.where("created_at between ? and ? OR updated_at between ? and ?",
                                 10.seconds.ago, Time.now, 10.seconds.ago, Time.now)
 
-
     # devolve as equipas e geo-entidade eliminadas nos ultimos 22 segundos
     rec_del_team_array = []
     rec_del_geo_ent_array = []
@@ -86,7 +85,20 @@ class HomepageController < ApplicationController
     users_to_json = EncodeToJson::encode_users_to_json(users_to_parse)
 
     begin
-      if geo_entities_to_parse.length > 0 || teams_to_parse.length > 0 || users_to_parse.length > 0
+      # as equipas a que o utilizador pertence
+      team_ids_arr = current_user.get_user_teams_ids
+      puts "------------------------------"
+      puts team_ids_arr.inspect
+      puts team_ids_arr.length
+      puts "------------------------------"
+
+      if geo_entities_to_parse.length > 0 || teams_to_parse.length > 0 || users_to_parse.length > 0 ||
+          team_ids_arr.length > 0
+        if team_ids_arr.length > 0
+          puts "------ ESTE UTILIZADOR PERTENCE A PELO MENOS 1 EQUIPA ------"
+          team_ids_json = team_ids_arr.to_json
+          sse.write(team_ids_json, event: 'user_teams')
+        end
         if geo_entities_to_parse.length > 0
           puts "****** NOVA GEO-ENTIDADE NOS ÚLTIMOS 3 SEGUNDOS ******"
           sse.write(geo_entities_to_json, event: 'geo_entity_updates')

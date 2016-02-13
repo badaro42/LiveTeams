@@ -409,18 +409,25 @@
         </div>
 
         <div class="row" style="margin-top: 15px;">
-          <h6 style="font-weight: 400; margin-bottom: 5px;">Visibilidade das entidades</h6>
+          <h6 style="font-weight: 400; margin-bottom: 5px;">Opções de visibilidade</h6>
           <p>
+            <input type="checkbox" class="filled-in" id="checkbox_toggle_own_teams" checked="checked"
+                   onchange="filterByOwnTeams()"/>
+            <label for="checkbox_toggle_own_teams">Mostrar apenas as minhas equipas e respetivos destaques</label>
+          </p>
+
+          <p style="margin-bottom: 5px; margin-top: 5px;">
+          <!--<p style="margin-bottom: 5px;">-->
             <input type="checkbox" class="filled-in" id="checkbox_toggle_geo_entities" checked="checked"
                    onchange="toggleEntityVisibility('geo_entities')"/>
             <label for="checkbox_toggle_geo_entities">Mostrar geo-entidades</label>
           </p>
-          <p>
+          <p style="margin-bottom: 5px; margin-top: 5px;">
             <input type="checkbox" class="filled-in" id="checkbox_toggle_users" checked="checked"
                    onchange="toggleEntityVisibility('users')"/>
             <label for="checkbox_toggle_users">Mostrar utilizadores</label>
           </p>
-          <p>
+          <p style="margin-top: 5px;">
             <input type="checkbox" class="filled-in" id="checkbox_toggle_teams" checked="checked"
                    onchange="toggleEntityVisibility('teams')"/>
             <label for="checkbox_toggle_teams">Mostrar equipas</label>
