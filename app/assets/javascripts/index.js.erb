@@ -628,40 +628,41 @@ $(document).ready(function () {
   );
 
   // ****************** CHAMADAS ASSINCRONAS PARA POPULAR O MAPA ******************
-  $.ajax({
-    type: "GET",
-    url: "/users/get_user_teams",
-    dataType: "json",
-    success: function (res) {
-      user_teams = res;
-      checkIfAllDataIsLoaded();
-    },
-    error: function (res) {}
-  });
-
-
   var users_json = new L.GeoJSON.AJAX("/users/users_to_json.json", {
     pointToLayer: userToLayer
   });
 
-  users_json.on('data:loaded', function () {
-//    cluster.addLayer(users_json);
-//    map.addLayer(cluster);
-
-    checkIfAllDataIsLoaded();
-  });
-
-  // retorna todas as entidades que estao na BD
   var geo_entities = new L.GeoJSON.AJAX("/geo_entities/geo_entities_to_json.json", {
     pointToLayer: geoPointToLayer,
     onEachFeature: onEachGeoEntity
   });
 
+  var teams_json = new L.GeoJSON.AJAX("/teams/teams_to_json.json", {
+    pointToLayer: teamPointToLayer
+  });
+
+  $.ajax({
+    type: "GET",
+    url: "/users/get_user_teams",
+    dataType: "json",
+    success: function (res) {
+      console.log("IDs das equipas a que pertence carregados com sucesso do servidor!");
+      user_teams = res;
+      checkIfAllDataIsLoaded();
+    },
+    error: function (res) {
+    }
+  });
+
+
+  users_json.on('data:loaded', function () {
+    console.log("Utilizadores carregados com sucesso do servidor!");
+    checkIfAllDataIsLoaded();
+  });
+
   // listener invocado quando a chamada ajax das entidades terminar!
   geo_entities.on('data:loaded', function () {
-    console.log("vector com os indices das geo_entities: " + all_geo_entities);
-    console.log("finish");
-
+    console.log("Geo-Entidades carregadas com sucesso do servidor!");
     cluster.addLayer(geo_entities);
     map.addLayer(cluster);
 
@@ -674,26 +675,16 @@ $(document).ready(function () {
       centerMapOnGeoEntity(entity_id);
   });
 
-  var teams_json = new L.GeoJSON.AJAX("/teams/teams_to_json.json", {
-    pointToLayer: teamPointToLayer
-  });
-
   // listener invocado quando a chamada ajax das equipas terminar!
   teams_json.on('data:loaded', function () {
-    console.log("vector com os indices das equipas!!!!!:");
-    console.log(all_teams);
-    console.log("finish");
-
-//    cluster.addLayer(teams_json);
-//    map.addLayer(cluster);
-
+    console.log("Equipas carregadas com sucesso do servidor!");
     checkIfAllDataIsLoaded();
   });
 
 
-// ****************** LISTENERS PARA A CRIA��O/EDI��O DE ENTIDADES ******************
+// ****************** LISTENERS PARA A CRIAÇÃO/EDIÇÃO DE ENTIDADES ******************
 
-  /* listener invocado quando � criada uma feature */
+  /* listener invocado quando é criada uma geo-entidade */
   map.on('draw:created', function (e) {
     console.log(e);
     e_type = e.layerType;
@@ -1044,7 +1035,7 @@ $('.stay-where-you-are').click(function (e) {
 
 // recebe o json do servidor, processa-o e adiciona as entidades ao mapa
 function addGeoEntityToMap(json) {
-  console.log("UPDATES server sent event!!!!!!");
+  console.log("UPDATES - geo-entity - server sent event!!!!!!");
 
   var json_arr = JSON.parse(json);
   var new_layer;
@@ -1147,8 +1138,8 @@ function addTeamToMap(json) {
     pointToLayer: teamPointToLayer
   });
 
-  cluster.addLayer(new_layer);
-  map.addLayer(cluster);
+//  cluster.addLayer(new_layer);
+//  map.addLayer(cluster);
 }
 
 
@@ -1466,10 +1457,10 @@ function teamPointToLayer(feature, latlng) {
     all_teams.push(team_to_push);
 
     // se a nova equipa tiver coordenadas de destaque, adicionamos ao mapa
-    if (new_hightlight_layer !== null) {
-      cluster.addLayer(new_hightlight_layer);
-      map.addLayer(new_hightlight_layer);
-    }
+//    if (new_hightlight_layer !== null) {
+//      cluster.addLayer(new_hightlight_layer);
+//      map.addLayer(new_hightlight_layer);
+//    }
 
     curr_action = actions.create;
     console.log("NOVA EQUIPA RECEBIDA!!!");
@@ -1485,10 +1476,10 @@ function teamPointToLayer(feature, latlng) {
       cluster.removeLayer(old_highlight_layer);
       map.removeLayer(old_highlight_layer);
     }
-    if (new_hightlight_layer !== null) {
-      cluster.addLayer(new_hightlight_layer);
-      map.addLayer(new_hightlight_layer);
-    }
+//    if (new_hightlight_layer !== null) {
+//      cluster.addLayer(new_hightlight_layer);
+//      map.addLayer(new_hightlight_layer);
+//    }
 
     cluster.removeLayer(old_marker);
     map.removeLayer(old_marker);
@@ -1524,7 +1515,7 @@ function teamPointToLayer(feature, latlng) {
           'class="waves-effect waves-light btn white-text" style="width: 100%; padding-left: 0; padding-right: 0;">' +
           'Centrar no destaque</button></div>';
 
-      var highlight_popup = L.popup({maxWidth: 250});
+//      var highlight_popup = L.popup({maxWidth: 250});
 //      var highlight_content =
     }
     else
@@ -2107,24 +2098,40 @@ function toggleEntityVisibility(entity) {
       $(elem).prop("disabled", true);
 
     $.each(all_teams, function (i, g) {
-      if (is_checked) {
-        if (only_show_own_teams) {
-          if (user_teams.includes(g.t_id)) {
+      if (is_checked) { // é para apresentar equipas!
+        if (only_show_own_teams) { // apenas as equipas a que o user pertence
+          if (user_teams.includes(g.t_id)) { 
             map.addLayer(g.marker);
+            if (g.highlight_coords_layer !== null) {
+              map.addLayer(g.highlight_coords_layer);
+              cluster.addLayer(g.highlight_coords_layer);
+            }
             cluster.addLayer(g.marker);
           }
           else {
             map.removeLayer(g.marker);
+            if (g.highlight_coords_layer !== null) {
+              map.removeLayer(g.highlight_coords_layer);
+              cluster.removeLayer(g.highlight_coords_layer);
+            }
             cluster.removeLayer(g.marker);
           }
         }
         else {
           map.addLayer(g.marker);
+          if (g.highlight_coords_layer !== null) {
+            map.addLayer(g.highlight_coords_layer);
+            cluster.addLayer(g.highlight_coords_layer);
+          }
           cluster.addLayer(g.marker);
         }
       }
       else {
         map.removeLayer(g.marker);
+        if (g.highlight_coords_layer !== null) {
+          map.removeLayer(g.highlight_coords_layer);
+          cluster.removeLayer(g.highlight_coords_layer);
+        }
         cluster.removeLayer(g.marker);
       }
     });
