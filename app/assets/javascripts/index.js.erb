@@ -1522,8 +1522,9 @@ function teamPointToLayer(feature, latlng) {
     // so coloca as coordenadas de destaque na popup caso a equipa em questao esteja destacada
     if (new_hightlight_layer !== null) {
       content += '<div class="center-align" style="margin-bottom: 10px;"><button ' +
-          'class="waves-effect waves-light btn white-text" style="width: 100%; padding-left: 0; padding-right: 0;">' +
-          'Centrar no destaque</button></div>';
+          'onclick="map.panTo({lat:' + new_hightlight_layer.getLatLng().lat + ', lng:' +
+          new_hightlight_layer.getLatLng().lng + '}); " class="waves-effect waves-light btn white-text" ' +
+          'style="width: 100%; padding-left: 0; padding-right: 0;">Centrar no destaque</button></div>';
 
 //      var highlight_popup = L.popup({maxWidth: 250});
 //      var highlight_content =
@@ -1641,16 +1642,17 @@ function onEachGeoEntity(feature, layer) {
   else {
     curr_action = actions.create;
 
-    var popupContent = '<span>Entidade geográfica nº <b>' + feature.properties.f_id +
-        '</b>, adicionada pelo utilizador <a data-method="get" href="/users/' + feature.properties.user_id + '">' +
-        feature.properties.username + '</a>.</span><p><b>Tipo: </b>' + ent_type + '<br>' +
-        (radius > 0 ? '<b>Raio: </b>' + radius + ' metros<br>' : '') + '<b>Nome: </b>' + feature.properties.name + '<br>' +
+    var popupContent = '<div><h6 style="font-size: 20px; margin-bottom: 0;">[' + feature.properties.f_id + '] ' +
+        '<b>' + feature.properties.name + '</b></h6>' + '<span style="font-size: 16px;">' +
+        feature.properties.category_name + '</span>' + '<p><b>Tipo: </b>' + ent_type + '<br>' +
+        (radius > 0 ? '<b>Raio: </b>' + radius + ' metros<br>' : '') + '<b>Adicionada por: </b>' +
+        '<a data-method="get" href="/users/' + feature.properties.user_id + '">' + feature.properties.username + '</a><br>' +
         '<b>Descrição: </b>' + feature.properties.description + '</p><div style="display: inline-block">' +
         '<a href="javascript:showEntityCoordinates(' + feature.properties.f_id + ');" ' +
         'class="geo-popup-btn waves-effect waves-light btn white-text">Ver coordenadas</a></div>' +
         '<div style="display: inline-block" class="right"><a href="javascript:removeGeoEntity(' +
         feature.properties.f_id + ');" class="geo-popup-btn red waves-effect waves-light btn white-text">' +
-        '<i class="material-icons">delete</i></a></div>';
+        '<i class="material-icons">delete</i></a></div></div>';
 
     popup.setContent(popupContent);
     layer.bindPopup(popup);
