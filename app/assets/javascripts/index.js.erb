@@ -172,7 +172,7 @@ var geo_data_loaded = 0;
 var team_icon = L.icon({
   iconUrl: '/assets/team_icon.png',
   iconSize: [38, 38], // size of the icon
-  iconAnchor: [19, 30], // point of the icon which will correspond to marker's location
+  iconAnchor: [19, 21], // point of the icon which will correspond to marker's location
   popupAnchor: [-1, -30] // point from which the popup should open relative to the iconAnchor
 });
 
@@ -193,7 +193,7 @@ var user_pos_icon = L.icon({
 var highlight_coords_icon = L.icon({
   iconUrl: '/assets/bullseye-64.png',
   iconSize: [38, 38], // size of the icon
-  iconAnchor: [19, 30], // point of the icon which will correspond to marker's location
+  iconAnchor: [19, 19], // point of the icon which will correspond to marker's location
   popupAnchor: [-1, -30] // point from which the popup should open relative to the iconAnchor
 });
 
@@ -657,6 +657,13 @@ $(document).ready(function () {
 
   users_json.on('data:loaded', function () {
     console.log("Utilizadores carregados com sucesso do servidor!");
+
+    // apenas apresenta os utilizadores de inicio caso o perfil seja ADMINISTRADOR ou GESTOR
+    if (gon.current_profile === "Administrador" || gon.current_profile === "Gestor") {
+      cluster.addLayer(users_json);
+      map.addLayer(cluster);
+    }
+
     checkIfAllDataIsLoaded();
   });
 
@@ -678,6 +685,9 @@ $(document).ready(function () {
   // listener invocado quando a chamada ajax das equipas terminar!
   teams_json.on('data:loaded', function () {
     console.log("Equipas carregadas com sucesso do servidor!");
+//    cluster.removeLayer(geo_entities);
+//    map.removeLayer(geo_entities);
+
     checkIfAllDataIsLoaded();
   });
 
@@ -1511,7 +1521,7 @@ function teamPointToLayer(feature, latlng) {
 
     // so coloca as coordenadas de destaque na popup caso a equipa em questao esteja destacada
     if (new_hightlight_layer !== null) {
-      content += '<div class="center-align" style="margin-bottom: 0;"><button ' +
+      content += '<div class="center-align" style="margin-bottom: 10px;"><button ' +
           'class="waves-effect waves-light btn white-text" style="width: 100%; padding-left: 0; padding-right: 0;">' +
           'Centrar no destaque</button></div>';
 
@@ -2068,28 +2078,19 @@ function geocodeLocation() {
   }
 }
 
-function filterGeoEntitiesByCategory() {
-  var sel_value = parseInt($("#filter_geo_entities_by_category").find(":selected").val());
-  console.log(sel_value);
-
-  $.each(all_geo_entities, function (i, g) {
-    if (g.category_id === sel_value || isNaN(sel_value)) {
-      map.addLayer(g.layer);
-      cluster.addLayer(g.layer);
-    }
-    else {
-      map.removeLayer(g.layer);
-      cluster.removeLayer(g.layer);
-    }
-  });
-}
-
+/**
+ * Função que apresenta ou esconde os diferentes tipos de entidades consoante
+ * os filtros que o utilizador ativou (ou desativou)
+ * @param entity - o tipo das entidades a filtrar ('geo_entities', 'users' ou 'teams')
+ */
 function toggleEntityVisibility(entity) {
   var id = "#checkbox_toggle_" + entity;
   var is_checked = $(id).is(":checked");
 
   console.log(entity + " is checked? " + is_checked);
 
+  var arr_to_add = [];
+  var arr_to_remove = [];
   if (entity === "teams") {
     var elem = $("#checkbox_toggle_own_teams");
     if (is_checked)
@@ -2100,62 +2101,77 @@ function toggleEntityVisibility(entity) {
     $.each(all_teams, function (i, g) {
       if (is_checked) { // é para apresentar equipas!
         if (only_show_own_teams) { // apenas as equipas a que o user pertence
-          if (user_teams.includes(g.t_id)) { 
-            map.addLayer(g.marker);
-            if (g.highlight_coords_layer !== null) {
-              map.addLayer(g.highlight_coords_layer);
-              cluster.addLayer(g.highlight_coords_layer);
+          if (user_teams.includes(g.t_id)) { // o id da equipa esta contido no array de equipas do user
+            if (!cluster.hasLayer(g.marker)) { // apenas adicionamos o marcador ao mapa se ele nao estiver ja lá
+              arr_to_add.push(g.marker);
+              if (g.highlight_coords_layer !== null)
+                arr_to_add.push(g.highlight_coords_layer);
             }
-            cluster.addLayer(g.marker);
           }
           else {
-            map.removeLayer(g.marker);
-            if (g.highlight_coords_layer !== null) {
-              map.removeLayer(g.highlight_coords_layer);
-              cluster.removeLayer(g.highlight_coords_layer);
+            if (cluster.hasLayer(g.marker)) {
+              arr_to_remove.push(g.marker);
+              if (g.highlight_coords_layer !== null)
+                arr_to_remove.push(g.highlight_coords_layer);
             }
-            cluster.removeLayer(g.marker);
           }
         }
         else {
-          map.addLayer(g.marker);
-          if (g.highlight_coords_layer !== null) {
-            map.addLayer(g.highlight_coords_layer);
-            cluster.addLayer(g.highlight_coords_layer);
+          if (!cluster.hasLayer(g.marker)) {
+            arr_to_add.push(g.marker);
+            if (g.highlight_coords_layer !== null)
+              arr_to_add.push(g.highlight_coords_layer);
           }
-          cluster.addLayer(g.marker);
         }
       }
       else {
-        map.removeLayer(g.marker);
-        if (g.highlight_coords_layer !== null) {
-          map.removeLayer(g.highlight_coords_layer);
-          cluster.removeLayer(g.highlight_coords_layer);
+        if (cluster.hasLayer(g.marker)) {
+          arr_to_remove.push(g.marker);
+          if (g.highlight_coords_layer !== null)
+            arr_to_remove.push(g.highlight_coords_layer);
         }
-        cluster.removeLayer(g.marker);
       }
     });
   }
   else if (entity === "geo_entities") {
-    if (is_checked)
-      filterGeoEntitiesByCategory();
+    if (is_checked) {
+      var sel_value = parseInt($("#filter_geo_entities_by_category").find(":selected").val());
+      console.log(sel_value);
+
+      $.each(all_geo_entities, function (i, g) {
+        if (g.category_id === sel_value || isNaN(sel_value)) {
+          if (!cluster.hasLayer(g.layer))
+            arr_to_add.push(g.layer);
+        }
+        else {
+          if (cluster.hasLayer(g.layer))
+            arr_to_remove.push(g.layer);
+        }
+      });
+    }
     else
       $.each(all_geo_entities, function (i, g) {
-        map.removeLayer(g.layer);
-        cluster.removeLayer(g.layer);
+        arr_to_remove.push(g.layer);
       });
   }
   else if (entity === "users") {
     $.each(all_users, function (i, g) {
-      if (is_checked) {
-        map.addLayer(g.layer);
-        cluster.addLayer(g.layer);
-      }
-      else {
-        map.removeLayer(g.layer);
-        cluster.removeLayer(g.layer);
-      }
+      if (is_checked)
+        arr_to_add.push(g.layer);
+      else
+        arr_to_remove.push(g.layer);
     });
+  }
+
+  if (arr_to_remove.length > 0) {
+    console.log("HA ENTIDADES PARA REMOVER!!!");
+    cluster.removeLayers(arr_to_remove);
+    map.removeLayer(arr_to_remove);
+  }
+  if (arr_to_add.length > 0) {
+    console.log("HÁ ENTIDADES PARA ADICIONAR!!!");
+    cluster.addLayers(arr_to_add);
+    map.addLayer(arr_to_add);
   }
 }
 

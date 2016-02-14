@@ -403,7 +403,7 @@
               <%= select_tag "filter_by_category", options_for_select(Category.options_for_select),
                              prompt: "- Qualquer categoria -",
                              class: 'browser-default', id: 'filter_geo_entities_by_category',
-                             onchange: "filterGeoEntitiesByCategory();" %>
+                             onchange: "toggleEntityVisibility('geo_entities');" %>
             </div>
           </div>
         </div>
