@@ -628,24 +628,27 @@ $(document).ready(function () {
   );
 
   // ****************** CHAMADAS ASSINCRONAS PARA POPULAR O MAPA ******************
+  $.ajax({
+    type: "GET",
+    url: "/users/get_user_teams",
+    dataType: "json",
+    success: function (res) {
+      user_teams = res;
+      checkIfAllDataIsLoaded();
+    },
+    error: function (res) {}
+  });
+
+
   var users_json = new L.GeoJSON.AJAX("/users/users_to_json.json", {
     pointToLayer: userToLayer
   });
 
   users_json.on('data:loaded', function () {
-    cluster.addLayer(users_json);
-    map.addLayer(cluster);
+//    cluster.addLayer(users_json);
+//    map.addLayer(cluster);
 
-    geo_data_loaded++;
-    if (geo_data_loaded == 3) {
-      map.spin(false);
-      map.invalidateSize();
-
-      noty({
-        text: 'Dados das equipas, geo-entidades e utilizadores obtidos do servidor com sucesso!',
-        timeout: 4000, type: 'success', layout: 'bottomCenter'
-      });
-    }
+    checkIfAllDataIsLoaded();
   });
 
   // retorna todas as entidades que estao na BD
@@ -662,16 +665,7 @@ $(document).ready(function () {
     cluster.addLayer(geo_entities);
     map.addLayer(cluster);
 
-    geo_data_loaded++;
-    if (geo_data_loaded == 3) {
-      map.spin(false);
-      map.invalidateSize();
-
-      noty({
-        text: 'Dados das equipas, geo-entidades e utilizadores populados com sucesso!',
-        timeout: 4000, type: 'success', layout: 'bottomCenter'
-      });
-    }
+    checkIfAllDataIsLoaded();
 
     // caso haja parametro, centra o mapa na entidade enviada
     var entity_id = parseInt(getURLParameter('entity_id'));
@@ -690,19 +684,10 @@ $(document).ready(function () {
     console.log(all_teams);
     console.log("finish");
 
-    cluster.addLayer(teams_json);
-    map.addLayer(cluster);
+//    cluster.addLayer(teams_json);
+//    map.addLayer(cluster);
 
-    geo_data_loaded++;
-    if (geo_data_loaded == 3) {
-      map.spin(false);
-      map.invalidateSize();
-
-      noty({
-        text: 'Dados das equipas, geo-entidades e utilizadores populados com sucesso!',
-        timeout: 4000, type: 'success', layout: 'bottomCenter'
-      });
-    }
+    checkIfAllDataIsLoaded();
   });
 
 
@@ -2116,10 +2101,10 @@ function toggleEntityVisibility(entity) {
 
   if (entity === "teams") {
     var elem = $("#checkbox_toggle_own_teams");
-    if(is_checked)
-        $(elem).prop("disabled", false);
+    if (is_checked)
+      $(elem).prop("disabled", false);
     else
-        $(elem).prop("disabled", true);
+      $(elem).prop("disabled", true);
 
     $.each(all_teams, function (i, g) {
       if (is_checked) {
@@ -2195,6 +2180,44 @@ function filterByOwnTeams() {
 }
 
 /**
+ * Função que inicializa os filtros consoante o perfil atual do utilizador
+ * BÁSICO: apenas tem acesso às geo-entidades, NÃO TEM ACESSO ÀS EQUIPAS E UTILIZADORES
+ * OPERACIONAL: tem acesso às geo-entidades e às posições e destaques das equipas a que pertence
+ * GESTOR: tem acesso a tudo
+ * ADMINISTRADOR: tem acesso a tudo
+ */
+function setupFilters() {
+  var own_teams_elem = "#checkbox_toggle_own_teams";
+  var users_elem = "#checkbox_toggle_users";
+  var teams_elem = "#checkbox_toggle_teams";
+
+  if (gon.current_profile === "Básico" || gon.current_profile === "Operacional") {
+    if (gon.current_profile === "Básico") {
+      $(own_teams_elem).prop("checked", false); //remove a seleção da checkbox das proprias equipas
+      $(own_teams_elem).prop("disabled", true); //desativa a checkbox das proprias equipas
+
+      $(users_elem).prop("checked", false); //remove a seleção da checkbox dos utilizadores
+      $(users_elem).prop("disabled", true); //desativa a checkbox dos utilizadores
+
+      $(teams_elem).prop("checked", false); //remove a seleção da checkbox de todas as equipas
+      $(teams_elem).prop("disabled", true); //desativa a checkbox de todas as equipas
+
+      filterByOwnTeams();
+    }
+    else {//o perfil é OPERACIONAL
+      $(users_elem).prop("checked", false); //remove a seleção da checkbox dos utilizadores
+      $(users_elem).prop("disabled", true); //desativa a checkbox dos utilizadores
+
+      filterByOwnTeams();
+    }
+  }
+  else if (gon.current_profile === "Gestor" || gon.current_profile === "Administrador") {
+    $(own_teams_elem).prop("checked", false); //desativa a checkbox das proprias equipas
+    filterByOwnTeams();
+  }
+}
+
+/**
  * Função que testa se o utilizador está ou não a usar um dispositivo móvel
  * @returns {boolean}
  */
@@ -2205,5 +2228,20 @@ function isMobile() {
   }
   catch (e) {
     return false;
+  }
+}
+
+function checkIfAllDataIsLoaded() {
+  geo_data_loaded++;
+  if (geo_data_loaded == 4) {
+    map.spin(false);
+    map.invalidateSize();
+
+    setupFilters();
+
+    noty({
+      text: 'Dados das equipas, geo-entidades e utilizadores obtidos do servidor com sucesso!',
+      timeout: 4000, type: 'success', layout: 'bottomCenter'
+    });
   }
 }

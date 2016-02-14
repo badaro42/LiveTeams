@@ -5,6 +5,11 @@ class UsersController < ApplicationController
   require 'encode_to_json'
   layout "listings"
 
+  def get_user_teams
+    team_ids_arr = current_user.get_user_teams_ids
+    render json: team_ids_arr
+  end
+
   # aquando da população do mapa, devolve todos os utilizadores menos ele proprio
   def users_to_json
     users_to_json = EncodeToJson::encode_users_to_json(User.where.not(id: current_user.id))
