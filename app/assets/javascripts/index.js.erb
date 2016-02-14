@@ -1466,12 +1466,6 @@ function teamPointToLayer(feature, latlng) {
   if (index == -1) { //equipa nao existe no mapa
     all_teams.push(team_to_push);
 
-    // se a nova equipa tiver coordenadas de destaque, adicionamos ao mapa
-//    if (new_hightlight_layer !== null) {
-//      cluster.addLayer(new_hightlight_layer);
-//      map.addLayer(new_hightlight_layer);
-//    }
-
     curr_action = actions.create;
     console.log("NOVA EQUIPA RECEBIDA!!!");
   }
@@ -1486,10 +1480,6 @@ function teamPointToLayer(feature, latlng) {
       cluster.removeLayer(old_highlight_layer);
       map.removeLayer(old_highlight_layer);
     }
-//    if (new_hightlight_layer !== null) {
-//      cluster.addLayer(new_hightlight_layer);
-//      map.addLayer(new_hightlight_layer);
-//    }
 
     cluster.removeLayer(old_marker);
     map.removeLayer(old_marker);
@@ -1517,17 +1507,28 @@ function teamPointToLayer(feature, latlng) {
         '<p><b>Líder: </b><a data-method="get" href="/users/' + feature.properties.leader_id + '">' +
         feature.properties.leader_name + '</a><br><b>Responsável pela posição: </b>' +
         '<a data-method="get" href="/users/' + feature.properties.location_user_id + '">' +
-        feature.properties.location_user_name + '</a></p>';
+        feature.properties.location_user_name + '</a></p><p>Coordenadas mais recentes:<br>Latitude: <b>' +
+        new_marker.getLatLng().lat + '</b><br>Longitude: <b>' + new_marker.getLatLng().lng + '</b></p>';
 
     // so coloca as coordenadas de destaque na popup caso a equipa em questao esteja destacada
     if (new_hightlight_layer !== null) {
+      var highlight_popup = L.popup({maxWidth: 250});
+      var highlight_content = '<div><p>A equipa <b>' + feature.properties.name + '</b> está destacada para este ponto,' +
+          ' com as seguintes coordenadas: </p><p>Latitude: <b>' + new_hightlight_layer.getLatLng().lat + '</b><br>' +
+          'Longitude: <b>' + new_hightlight_layer.getLatLng().lng + '</b><p>' +
+          '<div class="center-align" style="margin-bottom: 10px;"><button ' +
+          'onclick="map.panTo({lat:' + new_marker.getLatLng().lat + ', lng:' +
+          new_marker.getLatLng().lng + '}); " class="waves-effect waves-light btn white-text" ' +
+          'style="width: 100%; padding-left: 0; padding-right: 0;">Centrar na equipa</button></div></div>';
+
+      highlight_popup.setContent(highlight_content);
+      new_hightlight_layer.bindPopup(highlight_popup);
+
       content += '<div class="center-align" style="margin-bottom: 10px;"><button ' +
           'onclick="map.panTo({lat:' + new_hightlight_layer.getLatLng().lat + ', lng:' +
-          new_hightlight_layer.getLatLng().lng + '}); " class="waves-effect waves-light btn white-text" ' +
+          new_hightlight_layer.getLatLng().lng + '});" ' +
+          'class="waves-effect waves-light btn white-text" ' +
           'style="width: 100%; padding-left: 0; padding-right: 0;">Centrar no destaque</button></div>';
-
-//      var highlight_popup = L.popup({maxWidth: 250});
-//      var highlight_content =
     }
     else
       content += '<p>Esta equipa não está destacada para nenhum ponto. </p>';
@@ -1572,7 +1573,7 @@ function userToLayer(feature, latlng) {
     console.log("UTILIZADOR para remover!!!");
   }
 
-  var popup = L.popup({maxWidth: 500});
+  var popup = L.popup({minWidth: 250, maxWidth: 300});
   var content = '<div><h6 style="font-size: 20px; margin-bottom: 0;">[' + feature.properties.user_id +
       '] <b>' + feature.properties.full_name + '</b></h6>' + '<span style="font-size: 16px;">' +
       feature.properties.profile + '</span>' + '<p>Coordenadas mais recentes:<br>Latitude: <b>' +
