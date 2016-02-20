@@ -29,6 +29,29 @@ var actions = {
   create: "criada"
 };
 
+var spin_options = {
+  lines: 15, // The number of lines to draw
+  length: 0, // The length of each line
+  width: 11, // The line thickness
+  radius: 40, // The radius of the inner circle
+  scale: 0.5, // Scales overall size of the spinner
+  corners: 1, // Corner roundness (0..1)
+  color: '#000', // #rgb or #rrggbb or array of colors
+  opacity: 0, // Opacity of the lines
+  rotate: 0, // The rotation offset
+  direction: 1, // 1: clockwise, -1: counterclockwise
+  speed: 1.2, // Rounds per second
+  trail: 60, // Afterglow percentage
+  fps: 30, // Frames per second when using setTimeout() as a fallback for CSS
+  zIndex: 2e9, // The z-index (defaults to 2000000000)
+  className: 'spinner', // The CSS class to assign to the spinner
+  top: '50%', // Top position relative to parent
+  left: '50%', // Left position relative to parent
+  shadow: false, // Whether to render a shadow
+  hwaccel: true, // Whether to use hardware acceleration
+  position: 'absolute' // Element positioning
+};
+
 
 // **************************************
 // icones e cenas do mapa
@@ -588,28 +611,7 @@ $(document).ready(function () {
   $('select').material_select({hover: false, maxHeight: 200});
 
 
-  map.spin(true, {
-    lines: 15, // The number of lines to draw
-    length: 0, // The length of each line
-    width: 11, // The line thickness
-    radius: 40, // The radius of the inner circle
-    scale: 0.5, // Scales overall size of the spinner
-    corners: 1, // Corner roundness (0..1)
-    color: '#000', // #rgb or #rrggbb or array of colors
-    opacity: 0, // Opacity of the lines
-    rotate: 0, // The rotation offset
-    direction: 1, // 1: clockwise, -1: counterclockwise
-    speed: 1.2, // Rounds per second
-    trail: 60, // Afterglow percentage
-    fps: 30, // Frames per second when using setTimeout() as a fallback for CSS
-    zIndex: 2e9, // The z-index (defaults to 2000000000)
-    className: 'spinner', // The CSS class to assign to the spinner
-    top: '50%', // Top position relative to parent
-    left: '50%', // Left position relative to parent
-    shadow: false, // Whether to render a shadow
-    hwaccel: true, // Whether to use hardware acceleration
-    position: 'absolute' // Element positioning
-  });
+  map.spin(true, spin_options);
 
   setTimeout(
       function () {
@@ -703,6 +705,8 @@ $(document).ready(function () {
 
     var select = $('#select_team_ids');
 
+    map.spin(true, spin_options);
+
     // vai obter todas as equipas para popular a select box
     // assim garante-se que as equipas para selecionar estão sempre de acordo com a base de dados!
     $.ajax({
@@ -712,11 +716,14 @@ $(document).ready(function () {
       success: function (res) {
         console.log(res.length);
 
+        map.spin(false);
+
         // primeiro removemos todas as entradas que la estao
         $(select).find('option').remove();
 
+        // o utilizador pertence pelo menos a uma equipa
+        // pode criar a geo-entidade à vontade
         if (res.length > 0) {
-          // todas as equipas retornadas pelo servidor
           $.each(res, function (index, elem) {
             console.log(elem);
             var text = elem.team.name + " (ID: " + elem.team.id + ")";
@@ -727,126 +734,131 @@ $(document).ready(function () {
               text: text
             }));
           });
+
+          if (e_type === 'marker' || e_type === 'circle') {
+            $("#e_area_div").prop('hidden', true);
+            $("#e_length_div").prop('hidden', true);
+            $("#e_num_points_div").prop('hidden', true);
+
+            if (e_type === 'circle') {
+              e_radius = e_layer.getRadius();
+              $('#e_type_div').removeClass('s4 s12').addClass('s6');
+              $("#e_radius_div").prop('hidden', false);
+              $('#e_radius').text(Math.round(e_radius));
+              $('#e_type').text("Circulo");
+            }
+            else {
+              e_radius = 0;
+              $('#e_type_div').removeClass('s4 s6').addClass('s12');
+              $("#e_radius_div").prop('hidden', true);
+              $('#e_type').text("Marcador");
+            }
+
+            console.log(e_layer);
+            e_coords = "POINT(" + e_layer.getLatLng().lng + " " + e_layer.getLatLng().lat + ")";
+          }
+          else if (e_type === 'polyline' || e_type === 'rectangle' || e_type === 'polygon') {
+            e_radius = 0;
+            e_num_points = e_layer.getLatLngs().length;
+
+            $("#e_radius_div").prop('hidden', true);
+            $("#e_num_points_div").prop('hidden', false);
+            $('#e_num_points').text(e_num_points);
+
+            if (e_type === 'polyline') {
+              e_coords = "LINESTRING(";
+
+              $('#e_type_div').removeClass('s6 s12').addClass('s4');
+              $("#e_area_div").prop('hidden', true);
+              $('#e_type').text("Linha Poligonal");
+            }
+            else {
+              if (e_type === 'rectangle')
+                $('#e_type').text("Rectangulo");
+              else
+                $('#e_type').text("Poligono");
+
+              e_coords = "POLYGON((";
+              e_area = L.GeometryUtil.geodesicArea(e_layer.getLatLngs());
+              e_area = (Math.round(e_area) / 100000) + "";
+              e_area = e_area.replace(".", ",");
+
+              $('#e_type_div').removeClass('s6 s12').addClass('s4');
+              $("#e_length_div").prop('hidden', true);
+              $("#e_area_div").prop('hidden', false);
+              $('#e_area').text(e_area);
+            }
+
+            console.log(e_layer.getLatLngs());
+
+            var temp_point = null;
+            var c_arr = e_layer.getLatLngs();
+            coords_to_display = "";
+            e_length = 0;
+            $.each(c_arr, function (i, curr_point) {
+              coords_to_display += curr_point;
+              if (e_type === 'polyline') {
+                if (temp_point == null)
+                  temp_point = curr_point;
+                else {
+                  e_length += temp_point.distanceTo(curr_point);
+                  temp_point = curr_point;
+                }
+              }
+              e_coords += curr_point.lng + " " + curr_point.lat;
+              if (i < c_arr.length - 1) {
+                e_coords += ",";
+                coords_to_display += "\n";
+              }
+            });
+
+            $('#e_coords').val(coords_to_display);
+            $('#e_coords').trigger('autoresize');
+            $('#e_coords_div label').addClass('active');
+
+            e_length = (Math.round(e_length) / 1000) + "";
+            e_length = e_length.replace(".", ",");
+            if (e_type === 'polyline') {
+              e_coords += ")";
+              $("#e_length_div").prop('hidden', false);
+              $('#e_length').text(e_length);
+            }
+            else
+              e_coords += "))";
+          }
+
+          // função executada quando a modal para inserir nova entidade é fechada
+          var onModalHide = function () {
+            is_modal_open = false;
+          };
+
+          $('#confirm_entity_creation').openModal({
+            complete: onModalHide
+          });
+
+          is_modal_open = true;
+
+          $('#select_team_ids_div label').addClass('active');
+          console.log("final do each.");
         }
         else {
-          select.append($("<option/>", {
-            value: "",
-            text: "Não pertence a nenhuma equipa.",
-            disabled: true
-          }));
+          noty({
+            text: 'De momento, não pode adicionar geo-entidades. \n' +
+            'Necessita de pertencer a pelo menos uma equipa', timeout: 3500,
+            type: 'information', layout: 'bottomCenter'
+          });
         }
 
-        $('#select_team_ids_div label').addClass('active');
-        console.log("final do each.");
+
       },
       error: function (res) {
-        console.log("erro a popular as equipas: dropdown nova geo-entidade!!!");
-        console.log(res);
+        noty({
+          text: 'Ocorreu um erro inesperado que impede a criação de geo-entidades.\n' +
+          'Por favor tente mais tarde', timeout: 3500,
+          type: 'error', layout: 'bottomCenter'
+        });
       }
     });
-
-    if (e_type === 'marker' || e_type === 'circle') {
-      $("#e_area_div").prop('hidden', true);
-      $("#e_length_div").prop('hidden', true);
-      $("#e_num_points_div").prop('hidden', true);
-
-      if (e_type === 'circle') {
-        e_radius = e_layer.getRadius();
-        $('#e_type_div').removeClass('s4 s12').addClass('s6');
-        $("#e_radius_div").prop('hidden', false);
-        $('#e_radius').text(Math.round(e_radius));
-        $('#e_type').text("Circulo");
-      }
-      else {
-        e_radius = 0;
-        $('#e_type_div').removeClass('s4 s6').addClass('s12');
-        $("#e_radius_div").prop('hidden', true);
-        $('#e_type').text("Marcador");
-      }
-
-      console.log(e_layer);
-      e_coords = "POINT(" + e_layer.getLatLng().lng + " " + e_layer.getLatLng().lat + ")";
-    }
-    else if (e_type === 'polyline' || e_type === 'rectangle' || e_type === 'polygon') {
-      e_radius = 0;
-      e_num_points = e_layer.getLatLngs().length;
-
-      $("#e_radius_div").prop('hidden', true);
-      $("#e_num_points_div").prop('hidden', false);
-      $('#e_num_points').text(e_num_points);
-
-      if (e_type === 'polyline') {
-        e_coords = "LINESTRING(";
-
-        $('#e_type_div').removeClass('s6 s12').addClass('s4');
-        $("#e_area_div").prop('hidden', true);
-        $('#e_type').text("Linha Poligonal");
-      }
-      else {
-        if (e_type === 'rectangle')
-          $('#e_type').text("Rectangulo");
-        else
-          $('#e_type').text("Poligono");
-
-        e_coords = "POLYGON((";
-        e_area = L.GeometryUtil.geodesicArea(e_layer.getLatLngs());
-        e_area = (Math.round(e_area) / 100000) + "";
-        e_area = e_area.replace(".", ",");
-
-        $('#e_type_div').removeClass('s6 s12').addClass('s4');
-        $("#e_length_div").prop('hidden', true);
-        $("#e_area_div").prop('hidden', false);
-        $('#e_area').text(e_area);
-      }
-
-      console.log(e_layer.getLatLngs());
-
-      var temp_point = null;
-      var c_arr = e_layer.getLatLngs();
-      coords_to_display = "";
-      e_length = 0;
-      $.each(c_arr, function (i, curr_point) {
-        coords_to_display += curr_point;
-        if (e_type === 'polyline') {
-          if (temp_point == null)
-            temp_point = curr_point;
-          else {
-            e_length += temp_point.distanceTo(curr_point);
-            temp_point = curr_point;
-          }
-        }
-        e_coords += curr_point.lng + " " + curr_point.lat;
-        if (i < c_arr.length - 1) {
-          e_coords += ",";
-          coords_to_display += "\n";
-        }
-      });
-
-      $('#e_coords').val(coords_to_display);
-      $('#e_coords').trigger('autoresize');
-      $('#e_coords_div label').addClass('active');
-
-      e_length = (Math.round(e_length) / 1000) + "";
-      e_length = e_length.replace(".", ",");
-      if (e_type === 'polyline') {
-        e_coords += ")";
-        $("#e_length_div").prop('hidden', false);
-        $('#e_length').text(e_length);
-      }
-      else
-        e_coords += "))";
-    }
-
-    // função executada quando a modal para inserir nova entidade é fechada
-    var onModalHide = function () {
-      is_modal_open = false;
-    };
-
-    $('#confirm_entity_creation').openModal({
-      complete: onModalHide
-    });
-
-    is_modal_open = true;
   });
 
   /* listener invocado quando se edita uma feature */
@@ -1148,6 +1160,22 @@ function addTeamToMap(json) {
     pointToLayer: teamPointToLayer
   });
 
+  console.log(new_layer);
+
+//  var
+//      if ($("#checkbox_toggle_teams").is(":checked")) { //é para apresentar as equipas no mapa!
+//    if ($("#checkbox_toggle_own_teams").is(":checked")) { //apenas as proprias equipas, temos que filtrar!
+//      $.each(new_layer._layers, function (i, g) {
+//        if()
+//            }
+//    }
+//    else { //todas as equipas que recebemos são para apresentar
+//      cluster.addLayer(new_layer);
+//      map.addLayer(cluster);
+//    }
+//  }
+
+//  TODO: ATIVAR ESTA PORRA, SENAO ISTO NAO FUNCIONA!!
 //  cluster.addLayer(new_layer);
 //  map.addLayer(cluster);
 }

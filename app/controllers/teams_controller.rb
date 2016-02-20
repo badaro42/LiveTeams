@@ -29,14 +29,15 @@ class TeamsController < ApplicationController
     render json: address.to_json
   end
 
+  # metodo que devolve as equipas apra popular a dropdown aquando se cria nova geo-entidade
+  # caso admin ou gestor, devolve todas as equipas
+  # caso operacional, devolve apenas as equipas a que ele pertence
+  # caso basico, devolve vazio (mas de qualquer forma este metodo nunca deve ser invocado com esse perfil).
   def get_teams_by_profile
-    # dropdown das equipas no mapa
     teams_to_ret = nil
     if current_user.profile === Role::ADMINISTRADOR || current_user.profile === Role::GESTOR
       teams_to_ret = Team.all.order(id: :asc)
-      # elsif current_user.profile === User::OPERACIONAL
-      # TODO: APENAS PARA TESTES!!!! remover a condição abaixo e colocar a que esta comentada
-    elsif current_user.profile === Role::OPERACIONAL || current_user.profile === Role::BASICO
+    elsif current_user.profile === Role::OPERACIONAL
       tm = TeamMember.where(user_id: current_user.id).map(&:team_id).flatten
       teams_to_ret = Team.find(tm)
     end
