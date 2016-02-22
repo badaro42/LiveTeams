@@ -818,8 +818,7 @@ function checkUsersWithoutTeam() {
 // redirecciona para a pagina principal e centra o mapa na entidade selecionada
 function goToGeoEntity(entity_id) {
   var new_uri = "http://" + uri.host + "?entity_id=" + entity_id;
-  console.log(new_uri);
-  window.location.replace(new_uri);
+  window.location.href = new_uri;
 }
 
 /**
@@ -1122,11 +1121,6 @@ function toggleFormVisibility(form_name) {
     btn_to_disable = "#show_create_form_btn";
     btn_to_enable = "#show_destroy_form_btn";
 
-    // repõe os valores dos filtros de cada vez que o utilizador muda de tab!
-//    $("#create_profile_filter").val("");
-//    $("#create_team_filter").val("");
-//    $('select').material_select();
-//
     $("#filterrific_search_query").val(" ");
     setTimeout(
         function() {
