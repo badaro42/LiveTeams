@@ -1,11 +1,11 @@
 <div class="white z-depth-1">
   <div style="padding: 20px 0 20px 0; margin-bottom: 0; margin-left: 2%; margin-right: 2%;">
-    <div>
-      <div style="display: inline-block;">
-        <%= page_entries_info users %>
-        <%= render_filterrific_spinner %>
+    <div class="row" style="margin: 0;">
+      <div class="col l6 m6 s6 valign-wrapper" style="padding-left: 0; height: 38px;">
+        <span class="valign"><%= page_entries_info users %>
+        <%= render_filterrific_spinner %></span>
       </div>
-      <div class="right" style="display: inline-block; margin-top: -7px;">
+      <div class="col l6 m6 s6" style="padding-right: 0;">
         <%= link_to(
                 'Repor filtros',
                 reset_filterrific_url,
