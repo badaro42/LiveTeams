@@ -1170,6 +1170,9 @@ function addTeamToMap(json) {
 
   console.log(new_layer);
 
+//  var layers_to_add = [];
+
+
 //  var
 //      if ($("#checkbox_toggle_teams").is(":checked")) { //é para apresentar as equipas no mapa!
 //    if ($("#checkbox_toggle_own_teams").is(":checked")) { //apenas as proprias equipas, temos que filtrar!
@@ -1244,7 +1247,6 @@ function eventSourceSetup() {
     // listener para a recepção dos ids das equipa a que pertence atualmente
     source.addEventListener('user_teams', function (e) {
       user_teams = $.parseJSON(e.data);
-      console.log(user_teams);
     }, false);
   }
   else {
@@ -1685,9 +1687,9 @@ function onEachGeoEntity(feature, layer) {
         (radius > 0 ? '<b>Raio: </b>' + radius + ' metros<br>' : '') + '<b>Adicionada por: </b>' +
         '<a data-method="get" href="/users/' + feature.properties.user_id + '">' + feature.properties.username + '</a><br>' +
         '<b>Descrição: </b>' + feature.properties.description + '</p><div style="display: inline-block">' +
-        '<a href="showEntityCoordinates(' + feature.properties.f_id + ');" ' +
+        '<a href="javascript:showEntityCoordinates(' + feature.properties.f_id + ');" ' +
         'class="geo-popup-btn waves-effect waves-light btn white-text">Ver coordenadas</a></div>' +
-        '<div style="display: inline-block" class="right"><a href="removeGeoEntity(' +
+        '<div style="display: inline-block" class="right"><a href="javascript:removeGeoEntity(' +
         feature.properties.f_id + ');" class="geo-popup-btn red waves-effect waves-light btn white-text">' +
         '<i class="material-icons">delete</i></a></div></div>';
 
@@ -1726,14 +1728,15 @@ function centerMapOnEntity(entity_id, ent_type) {
     if (ent_type == object_type.geo_entity) { //geo-entidade
       entity = all_geo_entities[indexOnArray];
       coords = (entity.layer.hasOwnProperty('_latlng') ? [entity.layer.getLatLng()] : entity.layer.getLatLngs());
+      entity.layer.openPopup();
     }
     else { //equipa
       entity = all_teams[indexOnArray];
       coords = [entity.marker.getLatLng()];
+//      entity.marker.openPopup();
     }
 
     map.fitBounds(coords, {maxZoom: parseInt(curr_user_saved_prefs.max_zoom)});
-    entity.layer.openPopup();
 
     noty({
       text: 'Mapa centrado na ' + message + ' nº' + entity_id + '.', timeout: 3500,
@@ -2101,6 +2104,7 @@ function clearHistoyEntries() {
 function geocodeLocation() {
   var loc = $('#geocode_location').val();
 
+  map.spin(true, spin_options);
   if (loc.length > 0) {
     $.ajax({
       type: "GET",
@@ -2126,6 +2130,8 @@ function geocodeLocation() {
             text: 'Erro a efetuar o geocoding, tente pesquisar outro local.', timeout: 3500,
             type: 'error', layout: 'bottomCenter'
           });
+
+        map.spin(false);
       },
       error: function (err) {
         console.log(err);
@@ -2134,6 +2140,8 @@ function geocodeLocation() {
           text: 'Erro a efetuar o geocoding, tente pesquisar outro local.', timeout: 3500,
           type: 'error', layout: 'bottomCenter'
         });
+
+        map.spin(false);
       }
     });
   }

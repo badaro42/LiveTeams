@@ -160,7 +160,6 @@
         </a>
       </li>
       <li>
-        <!--<a id="history-tab-icon" class="badge1" data-badge="3" href="#history" role="tab">-->
         <a id="history-tab-icon" class="badge1" href="#history" role="tab">
           <i class="material-icons extra-padding">history</i>
         </a>
@@ -226,14 +225,30 @@
           </div>
         </div>
 
-        <div class="white z-depth-1" style="margin-top: 10px; padding: 10px;">
+        <div class="white z-depth-1" style="margin-top: 10px; margin-bottom: 10px; padding: 10px;">
           <h5>As minhas equipas</h5>
+
           <div class="divider"></div>
-          <div class="center" style="margin-bottom: 10px;">
-            <%= link_to "#!", id: 'remove-navbar', class: 'waves-effect waves-light btn white-btn' do %>
-                Remover barra
+
+          <ul class="collection" style="margin-bottom: 0;">
+            <% current_user.teams.each do |team| %>
+                <li class="collection-item avatar" style="padding-left: 20px;">
+                  <span class="title">
+                    <%= link_to team.name, team, method: :get, target: '_blank' %>
+                  </span>
+
+                  <% status = team.leader.id == current_user.id ? "Líder da equipa" : "Membro da equipa" %>
+                  <p>
+                    <%= status %>, <%= team.users.length %> membros
+                  </p>
+
+                  <a href="#!" class="tooltipped secondary-content" onclick="centerMapOnEntity(<%= team.id %>,'Equipa');"
+                     data-tooltip="Centrar mapa nesta equipa" data-delay="0" data-position="left">
+                    <i class="material-icons">my_location</i>
+                  </a>
+                </li>
             <% end %>
-          </div>
+          </ul>
         </div>
       </div>
     </div>
@@ -281,17 +296,23 @@
 
                 <div class="collapsible-body">
                   <ul class="collection">
-                    <% team.users.each do |member| %>
+                    <li class="collection-item avatar team-list-item">
+                      <!-- RIBBON PARA INDICAR O CHEFE DE EQUIPA -->
+                      <div class="corner-ribbon top-right red shadow">Líder</div>
 
+                      <%= image_tag team.leader.avatar.url, class: 'circle' %>
+                      <span class="title" style="font-weight: 300">
+                        <%= link_to team.leader.full_name, team.leader, method: :get, target: '_blank' %>
+                      </span>
+
+                      <p><%= team.leader.profile %></p>
+                    </li>
+
+                    <% team.users.where.not(id: team.leader.id).each do |member| %>
                         <li class="collection-item avatar team-list-item">
-                          <% if member.id == team.leader_id %>
-                              <!-- RIBBON PARA INDICAR O CHEFE DE EQUIPA -->
-                              <div class="corner-ribbon top-right red shadow">Líder</div>
-                          <% end %>
-
                           <%= image_tag member.avatar.url, class: 'circle' %>
                           <span class="title" style="font-weight: 300">
-                              <%= member.full_name %>
+                              <%= link_to member.full_name, member, method: :get, target: '_blank' %>
                           </span>
 
                           <p><%= member.profile %></p>
@@ -410,7 +431,7 @@
 
         <div class="row" style="margin-top: 15px;">
           <h6 style="font-weight: 400; margin-bottom: 5px;">Opções de visibilidade</h6>
-          <span style="font-style: italic;">Mediante o seu perfil atual algumas opções podem estar desativadas</span>
+          <span style="font-style: italic;">Em função do seu perfil atual algumas opções podem estar desativadas</span>
           <p>
             <input type="checkbox" class="filled-in" id="checkbox_toggle_own_teams" checked="checked"
                    onchange="filterByOwnTeams()"/>
@@ -418,7 +439,7 @@
           </p>
 
           <p style="margin-bottom: 5px; margin-top: 5px;">
-          <!--<p style="margin-bottom: 5px;">-->
+            <!--<p style="margin-bottom: 5px;">-->
             <input type="checkbox" class="filled-in" id="checkbox_toggle_geo_entities" checked="checked"
                    onchange="toggleEntityVisibility('geo_entities')"/>
             <label for="checkbox_toggle_geo_entities">Mostrar geo-entidades</label>
@@ -501,17 +522,6 @@
     </div>
   </div>
 </div>
-
-<!--<div id="location_div">-->
-<!--<div id="location_symbol">-->
-<!--<i class="material-icons">my_location</i>-->
-<!--</div>-->
-<!--<div id="curr_location">-->
-<!--<div>-->
-<!--<span class="truncate">Santa Eugénia, Alijó.</span>-->
-<!--</div>-->
-<!--</div>-->
-<!--</div>-->
 
 
 <!-- Modal Structure -->
