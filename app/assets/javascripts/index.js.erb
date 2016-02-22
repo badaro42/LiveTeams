@@ -677,11 +677,12 @@ $(document).ready(function () {
 
     checkIfAllDataIsLoaded();
 
-    // caso haja parametro, centra o mapa na entidade enviada
+    // caso haja parametro, centra o mapa na geo-entidade enviada
     var entity_id = parseInt(getURLParameter('entity_id'));
+    var entity_type = getURLParameter('entity_type');
 
-    if (!isNaN(entity_id))
-      centerMapOnGeoEntity(entity_id);
+    if (!isNaN(entity_id) && entity_type == object_type.geo_entity)
+      centerMapOnEntity(entity_id, entity_type);
   });
 
   // listener invocado quando a chamada ajax das equipas terminar!
@@ -691,6 +692,13 @@ $(document).ready(function () {
 //    map.removeLayer(geo_entities);
 
     checkIfAllDataIsLoaded();
+
+    // caso haja parametro, centra o mapa na entidade enviada
+    var entity_id = parseInt(getURLParameter('entity_id'));
+    var entity_type = getURLParameter('entity_type');
+
+    if (!isNaN(entity_id) && entity_type == object_type.team)
+      centerMapOnEntity(entity_id, entity_type);
   });
 
 
@@ -1677,9 +1685,9 @@ function onEachGeoEntity(feature, layer) {
         (radius > 0 ? '<b>Raio: </b>' + radius + ' metros<br>' : '') + '<b>Adicionada por: </b>' +
         '<a data-method="get" href="/users/' + feature.properties.user_id + '">' + feature.properties.username + '</a><br>' +
         '<b>Descrição: </b>' + feature.properties.description + '</p><div style="display: inline-block">' +
-        '<a href="javascript:showEntityCoordinates(' + feature.properties.f_id + ');" ' +
+        '<a href="showEntityCoordinates(' + feature.properties.f_id + ');" ' +
         'class="geo-popup-btn waves-effect waves-light btn white-text">Ver coordenadas</a></div>' +
-        '<div style="display: inline-block" class="right"><a href="javascript:removeGeoEntity(' +
+        '<div style="display: inline-block" class="right"><a href="removeGeoEntity(' +
         feature.properties.f_id + ');" class="geo-popup-btn red waves-effect waves-light btn white-text">' +
         '<i class="material-icons">delete</i></a></div></div>';
 
@@ -1700,24 +1708,41 @@ function onEachGeoEntity(feature, layer) {
  * caso o URL contenha o campo 'entity_id', vamos verificar se a entidade existe no mapa
  * se sim, centramos o mapa nessa entidade.
  */
-function centerMapOnGeoEntity(entity_id) {
-  var indexOnArray = geoEntityIsInMap(entity_id);
+function centerMapOnEntity(entity_id, ent_type) {
+  var indexOnArray, entity, coords, message;
+
+  if (ent_type == object_type.geo_entity) {
+    indexOnArray = geoEntityIsInMap(entity_id);
+    message = "geo-entidade";
+  }
+  else if (ent_type == object_type.team) {
+    indexOnArray = teamIsInMap(entity_id);
+    message = "equipa";
+  }
+  else
+    indexOnArray = -1;
 
   if (indexOnArray > -1) { // a entidade existe, centramos
-    var entity = all_geo_entities[indexOnArray];
-    var coords = (entity.layer.hasOwnProperty('_latlng') ? [entity.layer.getLatLng()] : entity.layer.getLatLngs());
+    if (ent_type == object_type.geo_entity) { //geo-entidade
+      entity = all_geo_entities[indexOnArray];
+      coords = (entity.layer.hasOwnProperty('_latlng') ? [entity.layer.getLatLng()] : entity.layer.getLatLngs());
+    }
+    else { //equipa
+      entity = all_teams[indexOnArray];
+      coords = [entity.marker.getLatLng()];
+    }
 
     map.fitBounds(coords, {maxZoom: parseInt(curr_user_saved_prefs.max_zoom)});
     entity.layer.openPopup();
 
     noty({
-      text: 'Mapa centrado na geo-entidade nº' + entity_id + '.', timeout: 3500,
+      text: 'Mapa centrado na ' + message + ' nº' + entity_id + '.', timeout: 3500,
       type: 'information', layout: 'bottomCenter'
     });
   }
   else
     noty({
-      text: 'A geo-entidade nº' + entity_id + ' não existe no sistema.', timeout: 3500,
+      text: 'A ' + message + ' nº' + entity_id + ' não existe no sistema.', timeout: 3500,
       type: 'error', layout: 'bottomCenter'
     });
 }
@@ -1914,20 +1939,25 @@ function prependHistoryDivEntry(entry) {
   var who_did = ""; // apenas aplicavel às geo-entidades
   var icon_to_center = "";
   var when_was_updated = "";
+  var link_to_add = "";
 
   console.log(entry.watched);
 
   // no caso de ser entidade geografica, colocamos o utilizador que a adicionou/removeu
   if (entry.obj_type === object_type.geo_entity) {
+    link_to_add = "centerMapOnEntity(" + entry.obj_id + ", '" + object_type.geo_entity + "')";
     if (entry.user_id === gon.user_id) // foi o proprio utilizador a realizar a ação
       who_did = " por si";
     else if (entry.user_id > 0)
       who_did = " pelo utilizador " + entry.username;
   }
+  else if (entry.obj_type === object_type.team) {
+    link_to_add = "centerMapOnEntity(" + entry.obj_id + ", '" + object_type.team + "')";
+  }
 
   if (entry.action === actions.create || entry.action === actions.update) {
     icon_to_center = '<a class="waves-effect waves-light btn-flat right" ' +
-        'onclick="javascript:centerMapOnGeoEntity(' + entry.obj_id + ')"' +
+        'onclick="' + link_to_add + '" ' +
         'style="padding: 8px; line-height: normal; top: -10px; height: 38px;">' +
         '<i style="line-height: 23px !important;" class="material-icons md-24">my_location</i></a>';
 

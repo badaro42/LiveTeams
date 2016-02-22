@@ -817,7 +817,8 @@ function checkUsersWithoutTeam() {
 
 // redirecciona para a pagina principal e centra o mapa na entidade selecionada
 function goToGeoEntity(entity_id) {
-  var new_uri = "http://" + uri.host + "?entity_id=" + entity_id;
+  var type = "Geo-entidade";
+  var new_uri = "http://" + uri.host + "?entity_type=" + type + "&entity_id=" + entity_id;
   window.location.href = new_uri;
 }
 
