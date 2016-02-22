@@ -16,7 +16,7 @@
     <div class="row input-field col s12 m12 l12"
          style="margin-top: 20px; margin-bottom: 15px; margin-left: 0; margin-right: 0; padding: 0;">
       <%= f.label "Nome da equipa", class: "fixed-position" %>
-      <%= f.text_field :name, required: true, autofocus: true %>
+      <%= f.text_field :name, required: true, placeholder: " ", autofocus: true %>
     </div>
 
     <div class="row" style="margin-bottom: 35px;">
@@ -28,7 +28,10 @@
     </div>
 
     <div class="row">
-      <%= f.label "Adicionar utilizadores à equipa", for: "dropdown_all_users", style: "padding-left: 10px;" %>
+      <% lol = '' %>
+      <%= f.label "dropdown_all_users", raw("Associar utilizadores à equipa<br>
+      <span style='font-style: italic; padding-left: 10px;'>NOTA: no desktop mantenha o Control premido para marcar
+      mais do que uma entrada</span>"), style: "padding-left: 10px;" %>
 
       <div class="users_forms" style="margin-top: 10px;">
         <div class="col l12 m12 s12">

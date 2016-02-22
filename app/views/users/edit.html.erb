@@ -43,22 +43,22 @@
             <h5 style="margin-left: 10px;">Dados do <%= @user.first_name %></h5>
           </div>
 
-          <div class="input-field col s12 m6 l6">
+          <div class="input-field col s12 m6 l6" style="margin-bottom: 10px;">
             <%= f.label "Primeiro Nome" %>
             <%= f.text_field :first_name, autofocus: true, required: true %>
           </div>
 
-          <div class="input-field col s12 m6 l6">
+          <div class="input-field col s12 m6 l6" style="margin-bottom: 10px;">
             <%= f.label "Último Nome" %>
             <%= f.text_field :last_name, required: true %>
           </div>
 
-          <div class="input-field col s12 m6 l6">
+          <div class="input-field col s12 m6 l6" style="margin-bottom: 10px;">
             <%= f.label "Endereço de email", class: "fixed-position" %>
             <%= f.text_field :email, required: true %>
           </div>
 
-          <div class="input-field col s12 m6 l6">
+          <div class="input-field col s12 m6 l6" style="margin-bottom: 10px;">
             <%= f.label "Contacto telefónico" %>
             <%= f.text_field :phone_number, class: 'numeric', maxlength: 9, required: true %>
           </div>
@@ -66,7 +66,7 @@
 
         <!-- apenas os admins e os gestores podem alterar o seu proprio perfil -->
         <% if current_user.profile == Role::ADMINISTRADOR || current_user.profile == Role::GESTOR %>
-            <div class="col l12 s12" style="margin-top: 20px; padding: 0;">
+            <div class="col l12 s12" style="margin-top: 10px; padding: 0;">
               <div class="section">
                 <h5 style="margin-left: 10px; display: inline;">Alterar perfil do utilizador</h5>
               </div>

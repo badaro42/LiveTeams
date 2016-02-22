@@ -12,38 +12,40 @@
     <div class="input-field col s12 m6 l6">
       <!--<i class="material-icons prefix">account_circle</i>-->
       <%= f.label "Primeiro Nome" %>
-      <%= f.text_field :first_name, autofocus: true, required: true, class: "validate" %>
+      <%= f.text_field :first_name, autofocus: true, placeholder: " ", required: true, class: "validate" %>
     </div>
 
     <div class="input-field col s12 m6 l6">
       <!--<i class="material-icons prefix">account_circle</i>-->
       <%= f.label "Último Nome" %>
-      <%= f.text_field :last_name, required: true, class: "validate" %>
+      <%= f.text_field :last_name, required: true, placeholder: " ", class: "validate" %>
     </div>
 
     <div class="input-field col s12 m6 l6">
       <%= f.label "Endereço de email" %>
-      <%= f.email_field :email, required: true, class: "validate" %>
+      <%= f.email_field :email, required: true, placeholder: " ", class: "validate" %>
     </div>
 
     <div class="input-field col s12 m6 l6">
       <%= f.label "Contacto telefónico", class: "active" %>
-      <%= f.text_field :phone_number, class: 'numeric validate', maxlength: 9, length: 9, required: true %>
+      <%= f.text_field :phone_number, class: 'numeric validate', maxlength: 9, length: 9,
+                       placeholder: " ", required: true %>
     </div>
 
-    <div class="col s12 m12 l12">
+    <div class="col s12 m12 l12" style="margin-bottom: 5px;">
       <p style="font-weight: 300; font-style: italic; margin-top: 20px;">
         <b>NOTA</b>: a password tem que conter pelo menos <b>8</b> caracteres</p>
     </div>
 
     <div class="input-field col s12 m6 l6">
       <%= f.label "Password", class: "active" %>
-      <%= f.password_field :password, autocomplete: "off", required: true, class: "validate" %>
+      <%= f.password_field :password, autocomplete: "off", placeholder: " ", required: true, class: "validate" %>
     </div>
 
     <div class="input-field col s12 m6 l6">
       <%= f.label "Repita password" %>
-      <%= f.password_field :password_confirmation, autocomplete: "off", required: true, class: "validate" %>
+      <%= f.password_field :password_confirmation, placeholder: " ", autocomplete: "off",
+                           required: true, class: "validate" %>
     </div>
 
     <div class="file-field input-field col s12 m12 l12">

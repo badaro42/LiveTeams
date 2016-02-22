@@ -158,10 +158,10 @@ $(document).ready(function () {
       // seleciona as entradas da multiple dropdown para aqueles utilizadores que ja estejam na equipa
       setDefaultSelectedEntries();
 
-      osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+      osmUrl = 'http://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png';
       osm = L.tileLayer(osmUrl, {maxZoom: 19});
       team_map = L.map("team_map", {
-        zoom: 12,
+        zoom: 15,
         center: point_coords,
         layers: [osm],
         zoomControl: true,
@@ -213,10 +213,10 @@ $(document).ready(function () {
       curr_team_leader_id = $('#choose_leader_dropdown').find(':selected').val();
       curr_team_location_id = $('#select_team_position').find(':selected').val();
 
-      osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+      osmUrl = 'http://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png';
       osm = L.tileLayer(osmUrl, {maxZoom: 19});
       team_map = L.map("team_map", {
-        zoom: 12,
+        zoom: 15,
         center: [38.627881, -9.161007],
         layers: [osm],
         zoomControl: true,
@@ -259,10 +259,10 @@ $(document).ready(function () {
         removeSingleUserFromTeam(parent_list_entry_id, user_id);
       });
 
-      osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+      osmUrl = 'http://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png';
       osm = L.tileLayer(osmUrl, {maxZoom: 19});
       team_map = L.map("team_map", {
-        zoom: 12,
+        zoom: 15,
         center: [38.627881, -9.161007],
         layers: [osm],
         zoomControl: true,
@@ -379,10 +379,10 @@ $(document).ready(function () {
 
       console.log("PÁGINA PARA APRESENTAR UTILIZADOR!!!");
 
-      osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+      osmUrl = 'http://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png';
       osm = L.tileLayer(osmUrl, {maxZoom: 19});
       user_map = L.map("user_map", {
-        zoom: 12,
+        zoom: 15,
         center: L.latLng(38.627881, -9.161007),
         layers: [osm],
         zoomControl: true,

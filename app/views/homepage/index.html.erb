@@ -556,11 +556,11 @@
     </div>
     <div class="row" id="entity_description_div">
       <div class="input-field col s12">
-        <textarea id="e_description" class="materialize-textarea"></textarea>
+        <textarea id="e_description" class="materialize-textarea" rows="10"></textarea>
         <label for="e_description">Descrição</label>
       </div>
     </div>
-    <div class="row" id="entity_description_div">
+    <div class="row" style="margin-bottom: 45px;">
       <div class="input-field col s12">
         <%= label_tag :select_category, "Categoria a associar", style: "top: -20px;" %>
         <%= select_tag :select_category, options_for_select(Category.options_for_select),
@@ -569,11 +569,16 @@
       </div>
     </div>
     <div class="row" style="margin-bottom: 0;">
-
       <div id="select_team_ids_div" class="input-field col s12">
         <select id="select_team_ids" class="browser-default" multiple required>
         </select>
-        <label style="top: 0;" for="select_team_id">Associar a uma ou mais equipas</label>
+        <label for="select_team_id">
+          Associar a uma ou mais equipas
+          <br>
+          <span style="font-style: italic">
+            NOTA: no desktop mantenha o Control premido para marcar mais do que uma entrada
+          </span>
+        </label>
         <div class="row" style="margin-top: 10px; margin-bottom: 0;">
           <div id="select_all_teams" class="col s12 m12 l6">
             <a style="width: 100%; padding-left: 5px; padding-right: 5px;"
