@@ -19,24 +19,24 @@
       </a>
       <ul class="navbar-buttons right hide-on-med-and-down">
         <li>
-          <%= link_to root_path, target: '_blank', class: 'navbar-button active', method: :get do %>
+          <%= link_to root_path, target: '', class: 'navbar-button active', method: :get do %>
               Mapa
           <% end %>
         </li>
         <% if can_perform_action? :read, UserRole %>
             <li>
-              <%= link_to permissions_path, class: 'navbar-button', target: '_blank', method: :get do %>
+              <%= link_to permissions_path, class: 'navbar-button', target: '', method: :get do %>
                   Permissões
               <% end %>
             </li>
         <% end %>
         <li>
-          <%= link_to teams_path, class: 'navbar-button', target: '_blank', method: :get do %>
+          <%= link_to teams_path, class: 'navbar-button', target: '', method: :get do %>
               Equipas
           <% end %>
         </li>
         <li>
-          <%= link_to users_path, class: 'navbar-button', target: '_blank', method: :get do %>
+          <%= link_to users_path, class: 'navbar-button', target: '', method: :get do %>
               Membros
           <% end %>
         </li>
@@ -52,12 +52,12 @@
 
       <ul id="dropdown-profile" class="dropdown-content">
         <li>
-          <%= link_to current_user, target: '_blank', method: :get do %>
+          <%= link_to current_user, target: '', method: :get do %>
               Ver perfil
           <% end %>
         </li>
         <li>
-          <%= link_to edit_user_path(current_user), target: '_blank', method: :get do %>
+          <%= link_to edit_user_path(current_user), target: '', method: :get do %>
               Editar perfil
           <% end %>
         </li>
@@ -77,39 +77,39 @@
               <%= image_tag current_user.avatar.url(:thumb), class: 'circle valign', style: 'margin-top: 0;',
                             height: '32', width: '32' %>
               <%= link_to current_user, class: 'valign white-text', style: ' margin-bottom: 28px; height: 32px;',
-                          target: '_blank', method: :get do %>
+                          target: '', method: :get do %>
                   <%= current_user.full_name %>
               <% end %>
             </div>
           </div>
         </li>
         <li>
-          <%= link_to root_path, target: '_blank', style: 'text-transform: none; padding-left: 0;',
+          <%= link_to root_path, target: '', style: 'text-transform: none; padding-left: 0;',
                       class: 'btn-flat navbar-button active', method: :get do %>
               <i class="material-icons left">map</i>Mapa
           <% end %>
         </li>
         <li>
-          <%= link_to teams_path, target: '_blank', style: 'text-transform: none; padding-left: 0;',
+          <%= link_to teams_path, target: '', style: 'text-transform: none; padding-left: 0;',
                       class: 'btn-flat navbar-button', method: :get do %>
               <i class="material-icons left">people</i>Equipas
           <% end %>
         </li>
         <li>
-          <%= link_to users_path, target: '_blank', style: 'text-transform: none; padding-left: 0;',
+          <%= link_to users_path, target: '', style: 'text-transform: none; padding-left: 0;',
                       class: 'btn-flat navbar-button', method: :get do %>
               <i class="material-icons left">person</i>Membros
           <% end %>
         </li>
         <li class="divider"></li>
         <li>
-          <%= link_to current_user, target: '_blank', style: 'text-transform: none; padding-left: 0;',
+          <%= link_to current_user, target: '', style: 'text-transform: none; padding-left: 0;',
                       class: 'btn-flat navbar-button', method: :get do %>
               <i class="material-icons left">account_box</i>Ver perfil
           <% end %>
         </li>
         <li>
-          <%= link_to edit_user_path(current_user), target: '_blank', style: 'text-transform: none; padding-left: 0;',
+          <%= link_to edit_user_path(current_user), target: '', style: 'text-transform: none; padding-left: 0;',
                       class: 'btn-flat navbar-button', method: :get do %>
               <i class="material-icons left">edit</i>Editar perfil
           <% end %>
@@ -196,7 +196,7 @@
 
             <div class="col l8 m12 s7">
               <h5 style="font-weight: 300; margin-top: 10px; margin-bottom: 10px;">
-                <%= link_to current_user.full_name, current_user, target: '_blank', :method => :get %>
+                <%= link_to current_user.full_name, current_user, target: '', :method => :get %>
               </h5>
 
               <div class="divider center-align" style="width: 70%; margin-left: 15%;"></div>
@@ -215,7 +215,7 @@
                             title: 'Encerrar sessão' do %>
                     <i class="material-icons">power_settings_new</i>
                 <% end %>
-                <%= link_to edit_user_path(current_user), method: :get, target: '_blank',
+                <%= link_to edit_user_path(current_user), method: :get, target: '',
                             class: 'waves-effect waves-light btn white-btn', title: 'Editar o seu perfil',
                             style: 'margin-left: 2px; padding-left: 10px; padding-right: 10px;' do %>
                     <i class="material-icons">edit</i>
@@ -234,7 +234,7 @@
             <% current_user.teams.each do |team| %>
                 <li class="collection-item avatar" style="padding-left: 20px;">
                   <span class="title">
-                    <%= link_to team.name, team, method: :get, target: '_blank' %>
+                    <%= link_to team.name, team, method: :get, target: '' %>
                   </span>
 
                   <% status = team.leader.id == current_user.id ? "Líder da equipa" : "Membro da equipa" %>
@@ -268,7 +268,7 @@
             </p>
           </div>
           <div class="col l5 m5 s5" style="padding: 0;">
-            <%= link_to teams_url, method: :get, target: '_blank', style: 'width: 100%; padding: 0 10px;',
+            <%= link_to teams_url, method: :get, target: '', style: 'width: 100%; padding: 0 10px;',
                         class: 'right waves-effect waves-light btn valign white-btn' do %>
                 Ver todas
             <% end %>
@@ -286,7 +286,7 @@
                     </span>
                   </div>
                   <div class="collapse_header_link">
-                    <%= link_to team, method: :get, target: '_blank', :data => {:position => 'left', :delay => '0',
+                    <%= link_to team, method: :get, target: '', :data => {:position => 'left', :delay => '0',
                                                                                 :tooltip => 'Ver mais detalhes'},
                                 class: 'tooltipped edit-team-btn waves-effect waves-teal btn-flat' do %>
                         <i class="material-icons">more_vert</i>
@@ -302,7 +302,7 @@
 
                       <%= image_tag team.leader.avatar.url, class: 'circle' %>
                       <span class="title" style="font-weight: 300">
-                        <%= link_to team.leader.full_name, team.leader, method: :get, target: '_blank' %>
+                        <%= link_to team.leader.full_name, team.leader, method: :get, target: '' %>
                       </span>
 
                       <p><%= team.leader.profile %></p>
@@ -312,7 +312,7 @@
                         <li class="collection-item avatar team-list-item">
                           <%= image_tag member.avatar.url, class: 'circle' %>
                           <span class="title" style="font-weight: 300">
-                              <%= link_to member.full_name, member, method: :get, target: '_blank' %>
+                              <%= link_to member.full_name, member, method: :get, target: '' %>
                           </span>
 
                           <p><%= member.profile %></p>
@@ -341,7 +341,7 @@
             <p class="center" style="font-weight: 300; margin: 0;">A mostrar os 15 utilizadores mais ativos</p>
           </div>
           <div class="col l5 m5 s5" style="padding: 0;">
-            <%= link_to users_url, method: :get, target: '_blank', style: 'width: 100%; padding: 0 10px;',
+            <%= link_to users_url, method: :get, target: '', style: 'width: 100%; padding: 0 10px;',
                         class: 'right waves-effect waves-light btn valign white-btn' do %>
                 Ver todos
             <% end %>
@@ -353,8 +353,7 @@
               <li class="collection-item avatar">
                 <%= image_tag user.avatar.url(:thumb), class: 'circle responsive-img' %>
                 <span class="title" style="font-weight: 300">
-                  <%= link_to user, method: :get, target: '_blank',
-                              class: '' do %>
+                  <%= link_to user, method: :get, target: '', class: '' do %>
                       <%= user.first_name %> <%= user.last_name %>
                   <% end %>
                 </span>

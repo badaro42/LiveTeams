@@ -1572,7 +1572,7 @@ function teamPointToLayer(feature, latlng) {
       content += '<p>Esta equipa não está destacada para nenhum ponto. </p>';
 
     content += '<div class="center-align"><a data-method="get" href="/teams/' + feature.properties.f_id + '" ' +
-        'class="waves-effect waves-light btn white-text" target="_blank" ' +
+        'class="waves-effect waves-light btn white-text" target="" ' +
         'style="width: 100%; padding-left: 0; padding-right: 0;">Ir para equipa</a></div></div>';
 
     popup.setContent(content);
@@ -1620,7 +1620,7 @@ function userToLayer(feature, latlng) {
       feature.properties.phone_number + '</p></div>';
 
   content += '<div class="center-align"><a data-method="get" href="/users/' + feature.properties.user_id + '" ' +
-      'class="waves-effect waves-light btn white-text" target="_blank" style="width: 100%;">Abrir perfil</a></div>';
+      'class="waves-effect waves-light btn white-text" target="" style="width: 100%;">Abrir perfil</a></div>';
 
   popup.setContent(content);
   new_marker.bindPopup(popup);
@@ -1996,9 +1996,9 @@ function prependHistoryDivEntry(entry) {
       entry.obj_type + ' ' + entry.action + '</span>' + icon_to_center + '</h6><div style="margin-top: 5px;"><div>' +
       '<span class="timeline-timestamp" style="font-style: italic; font-size: 12px;">' + when_was_updated +
       '</span></div><div><p style="margin: 0;">A ' + entry.obj_type.toLowerCase() + ' ' +
-      (entry.obj_type === object_type.team ? ('<b><a data-method="get" target="_blank" href="/teams/' +
+      (entry.obj_type === object_type.team ? ('<b><a data-method="get" target="" href="/teams/' +
       entry.obj_id + '">' + entry.title + '</a></b>') : 'com título <b>' + entry.title + '</b>') +
-      ' foi ' + info_text + '<a data-method="get" target="_blank" href="/users/' + entry.user_id + '">' +
+      ' foi ' + info_text + '<a data-method="get" target="" href="/users/' + entry.user_id + '">' +
       who_did + '</a>.</p></div></div></div></div>';
 
   $('#timeline').prepend(new_element);
