@@ -1538,7 +1538,7 @@ function teamPointToLayer(feature, latlng) {
   }
 
   if (feature.properties.updated_at !== null) {
-    var popup = L.popup({minWidth: 250, maxWidth: 250});
+    var popup = L.popup({minWidth: 200, maxWidth: 220});
 
     var content = '<div><h6 style="font-size: 20px; margin-bottom: 0;">[' + feature.properties.f_id +
         '] <b>' + feature.properties.name + '</b></h6>' +
@@ -1550,7 +1550,7 @@ function teamPointToLayer(feature, latlng) {
 
     // so coloca as coordenadas de destaque na popup caso a equipa em questao esteja destacada
     if (new_hightlight_layer !== null) {
-      var highlight_popup = L.popup({maxWidth: 250});
+      var highlight_popup = L.popup({minWidth: 200, maxWidth: 220});
       var highlight_content = '<div><p>A equipa <b>' + feature.properties.name + '</b> está destacada para este ponto,' +
           ' com as seguintes coordenadas: </p><p>Latitude: <b>' + new_hightlight_layer.getLatLng().lat + '</b><br>' +
           'Longitude: <b>' + new_hightlight_layer.getLatLng().lng + '</b><p>' +
@@ -1611,7 +1611,7 @@ function userToLayer(feature, latlng) {
     console.log("UTILIZADOR para remover!!!");
   }
 
-  var popup = L.popup({minWidth: 250, maxWidth: 300});
+  var popup = L.popup({minWidth: 200, maxWidth: 220});
   var content = '<div><h6 style="font-size: 20px; margin-bottom: 0;">[' + feature.properties.user_id +
       '] <b>' + feature.properties.full_name + '</b></h6>' + '<span style="font-size: 16px;">' +
       feature.properties.profile + '</span>' + '<p>Coordenadas mais recentes:<br>Latitude: <b>' +
@@ -1641,7 +1641,7 @@ function geoPointToLayer(feature, latlng) {
 // função executada pelo onEachFeature do metodo geoJSON das entidades geograficas
 function onEachGeoEntity(feature, layer) {
   var new_entry, ent_type, temp_latlon, curr_action, radius = 0;
-  var popup = L.popup({minWidth: 250, maxWidth: 250});
+  var popup = L.popup({minWidth: 225, maxWidth: 225});
 
   if (feature.geometry.type !== "Point" || feature.properties.radius > 0) {
     layer.options.color = icon_colors[feature.properties.category_id - 1];
@@ -1688,10 +1688,10 @@ function onEachGeoEntity(feature, layer) {
         '<a data-method="get" href="/users/' + feature.properties.user_id + '">' + feature.properties.username + '</a><br>' +
         '<b>Descrição: </b>' + feature.properties.description + '</p><div style="display: inline-block">' +
         '<a href="javascript:showEntityCoordinates(' + feature.properties.f_id + ');" ' +
-        'class="geo-popup-btn waves-effect waves-light btn white-text">Ver coordenadas</a></div>' +
+        'class="geo-popup-btn waves-effect waves-light btn white-text" style="padding: 0 15px;">Ver coordenadas</a></div>' +
         '<div style="display: inline-block" class="right"><a href="javascript:removeGeoEntity(' +
-        feature.properties.f_id + ');" class="geo-popup-btn red waves-effect waves-light btn white-text">' +
-        '<i class="material-icons">delete</i></a></div></div>';
+        feature.properties.f_id + ');" class="geo-popup-btn red waves-effect waves-light btn white-text" ' +
+        'style="padding: 0 15px;"><i class="material-icons">delete</i></a></div></div>';
 
     popup.setContent(popupContent);
     layer.bindPopup(popup);

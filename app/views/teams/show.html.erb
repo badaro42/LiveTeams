@@ -175,14 +175,14 @@
       </div>
 
       <div id="add_user_form">
-        <div class="col s7 l9 m8" style="padding-left: 0;">
+        <div class="col s6 l9 m8" style="padding-left: 0;">
           <%= select_tag 'dropdown_add_user_to_team', grouped_options_for_select(@users_for_select),
                          {prompt: 'Escolha um utilizador', class: 'browser-default', id: "dropdown_add_user_to_team"} %>
         </div>
 
-        <div class="col s5 l3 m4 right-align" style="padding-right: 0;">
+        <div class="col s6 l3 m4" style="padding-right: 0;">
           <a id="confirm_add_user" class="waves-effect waves-light btn green"
-             style="height: 41px; line-height: 41px;">Adicionar!</a>
+             style="height: 41px; line-height: 41px; width: 100%; padding: 0 15px;">Adicionar!</a>
         </div>
       </div>
 
