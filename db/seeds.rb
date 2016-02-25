@@ -127,6 +127,7 @@ if seeds_to_use == usability_test_seeds
 
   TeamMember.create(team_id: 7, user_id: 3)
   TeamMember.create(team_id: 7, user_id: 4)
+  TeamMember.create(team_id: 7, user_id: 9)
 
 
   puts '*USABILITY_TEST* Updating teams with location and leader'
@@ -493,6 +494,11 @@ if seeds_to_use == usability_test_seeds
   UserRole.create(user_id: 9, role_id: 3, expiration_date: 10.years.since) # operacional
   UserRole.create(user_id: 10, role_id: 4, expiration_date: 10.years.since) # basico
   UserRole.create(user_id: 11, role_id: 1, expiration_date: 10.years.since) # admin
+
+  # permissoes para remover do utilizador "Filipa Dias"
+  UserRole.create(user_id: 5, role_id: 7, expiration_date: 5.hours.since)
+  UserRole.create(user_id: 5, role_id: 12, expiration_date: 5.hours.since)
+  UserRole.create(user_id: 5, role_id: 14, expiration_date: 5.hours.since)
 
 elsif seeds_to_use == regular_seeds
   puts "#############################"
