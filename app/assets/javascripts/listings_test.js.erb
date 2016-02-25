@@ -73,7 +73,7 @@ $(document).ready(function () {
   cluster = L.markerClusterGroup({chunkedLoading: true});
 
   // atualizar posição do utilizador
-  $("#update_location").click(function (e) {
+  $("#update_location").click(function () {
     console.log("CARREGUEI NO BOTAO PARA ATUALIZAR POSIÇÃO");
     var text_coords = $("#new_coords").val();
     var c_arr = parsePointCoordinates(text_coords);
@@ -126,9 +126,15 @@ $(document).ready(function () {
     $('#list_teams_path_entry').addClass('active');
 
     if (edit_page) {
+      console.log("PÁGINA PARA EDITAR EQUIPA!!!");
       create_team_page = false;
 
-      console.log("PÁGINA PARA EDITAR EQUIPA!!!");
+      $(':input',document.edit_team).bind(
+          "change", function() {
+            setConfirmUnload(true);
+          }
+      ); // Prevent accidental navigation away
+
       $('#dropdown_all_users').on('change', multipleDropdownOnChange);
       $('#select-none-btn').on('click', selectNoUsers);
       $('#select-all-btn').on('click', selectAllUsers);
@@ -195,7 +201,12 @@ $(document).ready(function () {
     else if (new_page) {
       create_team_page = true;
 
-      // TODO: MAPA VAZIO
+      $(':input',document.edit_team).bind(
+          "change", function() {
+            setConfirmUnload(true);
+          }
+      ); // Prevent accidental navigation away
+
       console.log("PÁGINA PARA CRIAR NOVA EQUIPA!!!");
 
       $('#dropdown_all_users').on('change', multipleDropdownOnChange);
@@ -246,7 +257,7 @@ $(document).ready(function () {
       $('.remove-user-from-team').on('click', openConfirmRemovalModal);
 
       // o admin carregou no botao para remover o membro. vamos entao fazer-lhe a vontade
-      $('#modal_confirm_removal').on('click', function (e) {
+      $('#modal_confirm_removal').on('click', function () {
         var user_id = parseInt(parent_list_entry_id.split("_")[1]);
 
         console.log(parent_list_entry_id);
@@ -405,8 +416,13 @@ $(document).ready(function () {
       else
         $('#list_users_path_entry').addClass('active');
 
-
       console.log("PÁGINA PARA editar UTILIZADOR!!!");
+
+      $(':input',document.edit_user).bind(
+          "change", function() {
+            setConfirmUnload(true);
+          }
+      ); // Prevent accidental navigation away
 
       // apenas permite numeros no campo do numero de telefone
       $(".numeric").numeric();
@@ -466,7 +482,7 @@ $(document).ready(function () {
   // questionario devem aceder ao formulario.
   $(".evaluation_form_link").click(function () {
     if (!confirm("O questionário é destinado apenas para os utilizadores que já completaram as tarefas do teste " +
-            "de usabilidade.\nPor favor, avance apenas se estiver nesta situação."))
+            "de usabilidade.\n\nPor favor, avance apenas se estiver nesta situação."))
       return false;
   });
 
@@ -965,6 +981,7 @@ function leaderDropdownOnChange(e) {
     },
     error: function (err) {
       console.log("ERRO NA CENA DO PERFIL!!!!!");
+      console.log(err);
     }
   });
 }
@@ -1083,8 +1100,6 @@ function submitUserRolesToDB() {
           text: 'As permissões foram atribuídas aos utilizadores selecionados com sucesso!',
           timeout: 4000, type: 'success', layout: 'bottomCenter'
         });
-
-        console.log("foda-se");
 
         // remove todas as seleções feitas
         $("input:checkbox[name=users_with_filter]").prop("checked", false);
@@ -1221,4 +1236,15 @@ function removeUserRolesFromUser() {
       }
     });
   }
+}
+
+function unloadMessage() {
+  return 'Introduziu novos dados no formulário.' +
+      ' Se navegar para outra página sem gravar' +
+      ' primeiro os dados introduzidos,' +
+      ' as alterações serão perdidas.';
+}
+
+function setConfirmUnload(on) {
+  window.onbeforeunload = (on) ? unloadMessage : null;
 }
