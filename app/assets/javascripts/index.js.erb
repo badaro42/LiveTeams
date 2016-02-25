@@ -1538,7 +1538,7 @@ function teamPointToLayer(feature, latlng) {
   }
 
   if (feature.properties.updated_at !== null) {
-    var popup = L.popup({maxWidth: 250});
+    var popup = L.popup({minWidth: 250, maxWidth: 250});
 
     var content = '<div><h6 style="font-size: 20px; margin-bottom: 0;">[' + feature.properties.f_id +
         '] <b>' + feature.properties.name + '</b></h6>' +
@@ -1641,7 +1641,7 @@ function geoPointToLayer(feature, latlng) {
 // função executada pelo onEachFeature do metodo geoJSON das entidades geograficas
 function onEachGeoEntity(feature, layer) {
   var new_entry, ent_type, temp_latlon, curr_action, radius = 0;
-  var popup = L.popup({maxWidth: 250});
+  var popup = L.popup({minWidth: 250, maxWidth: 250});
 
   if (feature.geometry.type !== "Point" || feature.properties.radius > 0) {
     layer.options.color = icon_colors[feature.properties.category_id - 1];
