@@ -5,11 +5,6 @@ var cluster;
 var parent_list_entry_id, username_to_be_removed, user_role_to_be_removed;
 var uri;
 
-var DESTROY_ROLE_PARTIAL_SEARCH = "destroy_role_partial_search";
-var CREATE_ROLE_PARTIAL_SEARCH = "create_role_partial_search";
-var CREATE_ROLE_PARTIAL_TEAM_FILTER = "create_role_partial_team_filter";
-var CREATE_ROLE_PARTIAL_PROFILE_FILTER = "create_role_partial_profile_filter";
-
 // variaveis da cena da search bar
 var allEntityEntries, allEntityNames, entityNamesIndexed = [], entityEntriesIndexed = [];
 var searchBar, noResultsDiv;
@@ -110,6 +105,7 @@ $(document).ready(function () {
   var users_pages = href.indexOf("users") > -1;
   var teams_pages = href.indexOf("teams") > -1;
   var permissions_pages = href.indexOf("permissions") > -1;
+  var evaluation_form_page = href.indexOf("evaluation_form") > -1;
   var account_pages = href.indexOf("account") > -1;
   var edit_page = href.indexOf("edit") > -1;
   var new_page = href.indexOf("new") > -1;
@@ -428,6 +424,7 @@ $(document).ready(function () {
   else if (permissions_pages) {
     console.log("PÁGINA DAS PERMISSÕES!!!!");
 
+    $('#list_permissions_path_entry').addClass('active');
     initPermissionListeners();
 //    $('select').material_select();
 
@@ -461,6 +458,17 @@ $(document).ready(function () {
 
     $(".remove_user_roles").on('click', removeUserRolesFromUser);
   }
+  else if (evaluation_form_page) {
+    $('#list_evaluation_form_path_entry').addClass('active');
+  }
+
+  // apresenta uma caixa de confirmação a avisar que apenas os utilizadores que ja concluiram o
+  // questionario devem aceder ao formulario.
+  $(".evaluation_form_link").click(function () {
+    if (!confirm("O questionário é destinado apenas para os utilizadores que já completaram as tarefas do teste " +
+            "de usabilidade.\nPor favor, avance apenas se estiver nesta situação."))
+      return false;
+  });
 
   // Toggle search
   $('a#toggle-search').click(toggleSearchBar);
@@ -1124,7 +1132,7 @@ function toggleFormVisibility(form_name) {
 
     $("#filterrific_search_query").val(" ");
     setTimeout(
-        function() {
+        function () {
           $("#filterrific_search_query").val("");
         }, 1000
     );
@@ -1145,7 +1153,7 @@ function toggleFormVisibility(form_name) {
 
   $("#filterrific_search_query2").val(" ");
   setTimeout(
-      function() {
+      function () {
         $("#filterrific_search_query2").val("");
       }, 1000
   );

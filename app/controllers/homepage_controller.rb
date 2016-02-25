@@ -2,6 +2,7 @@ class HomepageController < ApplicationController
   include ActionController::Live
   before_filter :authenticate_user!
   require 'encode_to_json'
+  layout "listings", only: :evaluation_form
 
   def geocode_location
     require 'geocoder'
@@ -24,6 +25,11 @@ class HomepageController < ApplicationController
                  number_of_teams: current_user.teams.length,
                  current_profile: current_user.profile
              })
+  end
+
+  # metodo a ser usado apenas na avaliação!
+  def evaluation_form
+
   end
 
   def entity_updates

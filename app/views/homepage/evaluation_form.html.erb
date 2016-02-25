@@ -1,6 +1,6 @@
 <%# encoding: utf-8 %>
 
-<% content_for :title, "Nova equipa :: LiveTeams Portugal" %>
+<% content_for :title, "Questionário :: LiveTeams Portugal" %>
 <% content_for :navbar_buttons do %>
     <li>
       <%= link_to root_path, class: 'navbar-button', method: :get do %>
@@ -8,7 +8,7 @@
       <% end %>
     </li>
     <li>
-      <%= link_to evaluation_form_path, class: 'evaluation_form_link navbar-button', method: :get do %>
+      <%= link_to evaluation_form_path, class: 'evaluation_form_link navbar-button active', method: :get do %>
           Questionário
       <% end %>
     </li>
@@ -20,7 +20,7 @@
         </li>
     <% end %>
     <li>
-      <%= link_to teams_path, class: 'navbar-button active', method: :get do %>
+      <%= link_to teams_path, class: 'navbar-button', method: :get do %>
           Equipas
       <% end %>
     </li>
@@ -31,12 +31,8 @@
     </li>
 <% end %>
 
-<div class="white z-depth-1">
-  <div class="row" style="margin: 20px; padding-bottom: 15px;">
-    <h3 style="margin-top: 0; padding-top: 25px; margin-bottom: 25px; font-weight: 200;">
-      Adicionar nova equipa
-    </h3>
 
-    <%= render 'form' %>
-  </div>
-</div>
+<iframe src="https://docs.google.com/forms/d/11pB4XjdBqo1rb6weuLdgrJ8YxgW4eq1xqDVf93-58j0/viewform?embedded=true"
+        style="overflow:hidden;overflow-x:hidden;overflow-y:hidden;height:calc( 100% - 64px );
+            width:100%;position:fixed;top:64px;left:0px;right:0px;bottom:50px"
+        frameborder="0" marginheight="0" marginwidth="0">A carregar o questionário...</iframe>

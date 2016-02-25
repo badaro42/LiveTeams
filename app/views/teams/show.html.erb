@@ -48,6 +48,11 @@
           Mapa
       <% end %>
     </li>
+    <li>
+      <%= link_to evaluation_form_path, class: 'evaluation_form_link navbar-button', method: :get do %>
+          Questionário
+      <% end %>
+    </li>
     <% if can_perform_action? :read, UserRole %>
         <li>
           <%= link_to permissions_path, class: 'navbar-button', method: :get do %>

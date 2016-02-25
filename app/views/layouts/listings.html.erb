@@ -103,11 +103,17 @@
               <i class="material-icons left">person</i>Membros
           <% end %>
         </li>
+        <li id="list_evaluation_form_path_entry" class="sidenav-entry">
+          <%= link_to evaluation_form_path, style: 'text-transform: none; padding-left: 0;',
+                      class: 'btn-flat navbar-button evaluation_form_link', method: :get do %>
+              <i class="material-icons left">format_list_bulleted</i>Questionário
+          <% end %>
+        </li>
 
         <% if can_perform_action? :read, UserRole %>
             <li class="divider"></li>
 
-            <li id="list_permisions_path_entry" class="sidenav-entry">
+            <li id="list_permissions_path_entry" class="sidenav-entry">
               <%= link_to permissions_path, style: 'text-transform: none; padding-left: 0;',
                           class: 'btn-flat navbar-button', method: :get do %>
                   <i class="material-icons left">lock_outliner</i>Permissões

@@ -17,6 +17,10 @@ main {
   flex: 1 0 auto;
 }
 
+.side-nav a.btn, .side-nav a.btn-large, .side-nav a.btn-large, .side-nav a.btn-flat, .side-nav a.btn-floating {
+  margin: 0 !important;
+}
+
 /* ------------------------------------------ */
 .fixed-position {
   left: auto !important;

@@ -237,6 +237,13 @@ $(document).ready(function () {
       }
   );
 
+  // apresenta uma caixa de confirmação a avisar que apenas os utilizadores que ja concluiram o
+  // questionario devem aceder ao formulario.
+  $(".evaluation_form_link").click(function () {
+    if (!confirm("O questionário é destinado apenas para os utilizadores que já completaram as tarefas do teste " +
+            "de usabilidade.\nPor favor, avance apenas se estiver nesta situação."))
+      return false;
+  });
 
   // inicialização da barra de navegação lateral
   $(".button-collapse").sideNav();

@@ -1,5 +1,8 @@
 Rails.application.routes.draw do
 
+  # rota para o questionario pos-sessao
+  get 'evaluation_form', to: 'homepage#evaluation_form', as: :evaluation_form
+
   # routes para as paginas de permissões!
   get 'permissions', to: 'user_role#index', as: :permissions
   post 'permissions', to: 'user_role#create', as: :permission_create

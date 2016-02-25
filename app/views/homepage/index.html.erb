@@ -1,3 +1,4 @@
+
 <%# encoding: utf-8 %>
 
 <div id="frontpage-navbar" class="navbar-fixed">
@@ -23,9 +24,15 @@
               Mapa
           <% end %>
         </li>
+        <li>
+          <%= link_to evaluation_form_path, class: 'evaluation_form_link navbar-button', method: :get do %>
+              Questionário
+          <% end %>
+        </li>
         <% if can_perform_action? :read, UserRole %>
             <li>
-              <%= link_to permissions_path, class: 'navbar-button', target: '', method: :get do %>
+              <%= link_to permissions_path, class: 'navbar-button', target: '',
+                          method: :get do %>
                   Permissões
               <% end %>
             </li>
@@ -78,48 +85,43 @@
                             height: '32', width: '32' %>
               <%= link_to current_user, class: 'valign white-text', style: ' margin-bottom: 28px; height: 32px;',
                           target: '', method: :get do %>
-                  <%= current_user.full_name %>
+                  <%= current_user.first_name %>
               <% end %>
             </div>
           </div>
         </li>
         <li>
-          <%= link_to root_path, target: '', style: 'text-transform: none; padding-left: 0;',
+          <%= link_to root_path, target: '', style: 'text-transform: none; padding-left: 15px; padding-right: 30px;',
                       class: 'btn-flat navbar-button active', method: :get do %>
               <i class="material-icons left">map</i>Mapa
           <% end %>
         </li>
         <li>
-          <%= link_to teams_path, target: '', style: 'text-transform: none; padding-left: 0;',
+          <%= link_to teams_path, target: '', style: 'text-transform: none; padding-left: 15px; padding-right: 30px;',
                       class: 'btn-flat navbar-button', method: :get do %>
               <i class="material-icons left">people</i>Equipas
           <% end %>
         </li>
         <li>
-          <%= link_to users_path, target: '', style: 'text-transform: none; padding-left: 0;',
+          <%= link_to users_path, target: '', style: 'text-transform: none; padding-left: 15px; padding-right: 30px;',
                       class: 'btn-flat navbar-button', method: :get do %>
               <i class="material-icons left">person</i>Membros
           <% end %>
         </li>
-        <li class="divider"></li>
-        <li>
-          <%= link_to current_user, target: '', style: 'text-transform: none; padding-left: 0;',
-                      class: 'btn-flat navbar-button', method: :get do %>
-              <i class="material-icons left">account_box</i>Ver perfil
+
+        <li id="list_evaluation_form_path_entry" class="sidenav-entry">
+          <%= link_to evaluation_form_path, style: 'text-transform: none; padding-left: 15px; padding-right: 30px;',
+                      class: 'btn-flat navbar-button evaluation_form_link', method: :get do %>
+              <i class="material-icons left">format_list_bulleted</i>Questionário
           <% end %>
         </li>
-        <li>
-          <%= link_to edit_user_path(current_user), target: '', style: 'text-transform: none; padding-left: 0;',
-                      class: 'btn-flat navbar-button', method: :get do %>
-              <i class="material-icons left">edit</i>Editar perfil
-          <% end %>
-        </li>
+
 
         <% if can_perform_action? :read, UserRole %>
             <li class="divider"></li>
 
             <li id="list_permisions_path_entry" class="sidenav-entry">
-              <%= link_to permissions_path, style: 'text-transform: none; padding-left: 0;',
+              <%= link_to permissions_path, style: 'text-transform: none; padding-left: 15px; padding-right: 30px;',
                           class: 'btn-flat navbar-button', method: :get do %>
                   <i class="material-icons left">lock_outliner</i>Permissões
               <% end %>
@@ -128,7 +130,21 @@
 
         <li class="divider"></li>
         <li>
-          <%= link_to destroy_user_session_path, style: 'text-transform: none; padding-left: 0;',
+          <%= link_to current_user, target: '', style: 'text-transform: none; padding-left: 15px; padding-right: 30px;',
+                      class: 'btn-flat navbar-button', method: :get do %>
+              <i class="material-icons left">account_box</i>Ver perfil
+          <% end %>
+        </li>
+        <li>
+          <%= link_to edit_user_path(current_user), target: '', style: 'text-transform: none; padding-left: 15px; padding-right: 30px;',
+                      class: 'btn-flat navbar-button', method: :get do %>
+              <i class="material-icons left">edit</i>Editar perfil
+          <% end %>
+        </li>
+
+        <li class="divider"></li>
+        <li>
+          <%= link_to destroy_user_session_path, style: 'text-transform: none; padding-left: 15px; padding-right: 30px;',
                       class: 'btn-flat navbar-button', method: :delete do %>
               <i class="material-icons left">power_settings_new</i>Logout
           <% end %>

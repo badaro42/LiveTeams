@@ -18,6 +18,10 @@ label {
   font-size: 1rem !important;
 }
 
+.side-nav a.btn, .side-nav a.btn-large, .side-nav a.btn-large, .side-nav a.btn-flat, .side-nav a.btn-floating {
+  margin: 0 !important;
+}
+
 /* ********************* REGRAS PARA PERSONALIZAR OS ICONES DA GOOGLE ********************** */
 /*Rules for sizing the icon.*/
 .material-icons.md-18 {
