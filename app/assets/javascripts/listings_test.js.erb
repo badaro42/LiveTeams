@@ -119,8 +119,6 @@ $(document).ready(function () {
   var is_a_number = !isNaN(parseInt(href[href.length - 1]));
   var text_coords, point_coords;
 
-  // TODO: COLOCAR PAGINAS ESPECIFICAS EM CIMA!!!
-  // TODO: EX: /users/new antes de /users
   // estamos na pagina para editar equipa - /teams/12/edit
   if (teams_pages) {
     $('#list_teams_path_entry').addClass('active');
@@ -129,11 +127,9 @@ $(document).ready(function () {
       console.log("PÁGINA PARA EDITAR EQUIPA!!!");
       create_team_page = false;
 
-      $(':input',document.edit_team).bind(
-          "change", function() {
-            setConfirmUnload(true);
-          }
-      ); // Prevent accidental navigation away
+      $('#edit_team_' + gon.current_team_id + ' :input').on("change", function() {
+        setConfirmUnload(true);
+      }); // Evitar que o utilizador saia acidentalmente da página
 
       $('#dropdown_all_users').on('change', multipleDropdownOnChange);
       $('#select-none-btn').on('click', selectNoUsers);
@@ -201,11 +197,9 @@ $(document).ready(function () {
     else if (new_page) {
       create_team_page = true;
 
-      $(':input',document.edit_team).bind(
-          "change", function() {
-            setConfirmUnload(true);
-          }
-      ); // Prevent accidental navigation away
+      $('#new_team :input').on("change", function() {
+        setConfirmUnload(true);
+      }); // Evitar que o utilizador saia acidentalmente da página
 
       console.log("PÁGINA PARA CRIAR NOVA EQUIPA!!!");
 
@@ -418,11 +412,22 @@ $(document).ready(function () {
 
       console.log("PÁGINA PARA editar UTILIZADOR!!!");
 
-      $(':input',document.edit_user).bind(
-          "change", function() {
-            setConfirmUnload(true);
-          }
-      ); // Prevent accidental navigation away
+      if(users_pages) {
+        $('#edit_user_' + gon.current_user_id + ' :input').on("change", function() {
+          setConfirmUnload(true);
+        }); // Evitar que o utilizador saia acidentalmente da página
+
+        // desativar a janela de aviso quando submete as alterações
+        $('#edit_user_' + gon.current_user_id).submit(function() {setConfirmUnload(false)});
+      }
+      else {
+        $('#edit_user :input').on("change", function() {
+          setConfirmUnload(true);
+        }); // Evitar que o utilizador saia acidentalmente da página
+
+        // desativar a janela de aviso quando submete as alterações
+        $('#edit_user').submit(function() {setConfirmUnload(false)});
+      }
 
       // apenas permite numeros no campo do numero de telefone
       $(".numeric").numeric();
@@ -988,6 +993,8 @@ function leaderDropdownOnChange(e) {
 
 
 function onTeamFormSubmit() {
+  setConfirmUnload(false);
+
   if (curr_leader_profile === "Operacional") {
     var string_to_show = "ATENÇÃO!!\n\nO utilizador selecionado como líder tem o perfil 'Operacional'.\n\nUma vez " +
         "que utilizadores com este perfil não podem liderar equipas, ao confirmar a ação, carregando no 'OK', " +
@@ -999,6 +1006,8 @@ function onTeamFormSubmit() {
     }
     else {
       console.log("caga nisso, vou escolher outro sóce");
+      setConfirmUnload(true);
+
       return false; // return false to cancel form action
     }
   }
