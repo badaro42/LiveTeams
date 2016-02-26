@@ -7,11 +7,13 @@
           Mapa
       <% end %>
     </li>
-    <li>
-      <%= link_to evaluation_form_path, class: 'evaluation_form_link navbar-button', method: :get do %>
-          Questionário
-      <% end %>
-    </li>
+    <% if show_evaluation_form? %>
+        <li>
+          <%= link_to evaluation_form_path, class: 'evaluation_form_link navbar-button', method: :get do %>
+              Questionário
+          <% end %>
+        </li>
+    <% end %>
     <li>
       <%= link_to permissions_path, class: 'active navbar-button', method: :get do %>
           Permissões
@@ -38,10 +40,10 @@
     </div>
 
     <!--<div id="destroy_user_roles_btn" class="fixed-action-btn" style="bottom: 25px; right: 25px; display: none">-->
-      <!--<a href="#!" data-position="left" data-delay="0" data-tooltip="Remover papéis!"-->
-         <!--class="btn-floating btn-large red tooltipped" onclick="removeUserRolesFromUser()">-->
-        <!--<i class="large material-icons">delete</i>-->
-      <!--</a>-->
+    <!--<a href="#!" data-position="left" data-delay="0" data-tooltip="Remover papéis!"-->
+    <!--class="btn-floating btn-large red tooltipped" onclick="removeUserRolesFromUser()">-->
+    <!--<i class="large material-icons">delete</i>-->
+    <!--</a>-->
     <!--</div>-->
 <% end %>
 
@@ -61,11 +63,13 @@
 
     <div class="col l6 m6 s6">
       <button disabled id="show_create_form_btn" style="width: 100%;" class="btn waves-effect white-btn"
-         onclick="toggleFormVisibility('create')">Adicionar papéis</button>
+              onclick="toggleFormVisibility('create')">Adicionar papéis
+      </button>
     </div>
     <div class="col l6 m6 s6">
       <button id="show_destroy_form_btn" style="width: 100%;" class="btn waves-effect white-btn"
-         onclick="toggleFormVisibility('destroy')">Remover papéis</button>
+              onclick="toggleFormVisibility('destroy')">Remover papéis
+      </button>
     </div>
   </div>
 

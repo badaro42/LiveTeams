@@ -103,12 +103,15 @@
               <i class="material-icons left">person</i>Membros
           <% end %>
         </li>
-        <li id="list_evaluation_form_path_entry" class="sidenav-entry">
-          <%= link_to evaluation_form_path, style: 'text-transform: none; padding-left: 0;',
-                      class: 'btn-flat navbar-button evaluation_form_link', method: :get do %>
-              <i class="material-icons left">format_list_bulleted</i>Questionário
-          <% end %>
-        </li>
+
+        <% if show_evaluation_form? %>
+            <li id="list_evaluation_form_path_entry" class="sidenav-entry">
+              <%= link_to evaluation_form_path, style: 'text-transform: none; padding-left: 0;',
+                          class: 'btn-flat navbar-button evaluation_form_link', method: :get do %>
+                  <i class="material-icons left">format_list_bulleted</i>Questionário
+              <% end %>
+            </li>
+        <% end %>
 
         <% if can_perform_action? :read, UserRole %>
             <li class="divider"></li>

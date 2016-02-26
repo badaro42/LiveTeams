@@ -7,7 +7,16 @@ class ApplicationController < ActionController::Base
   add_flash_types :success, :warning, :danger, :info
 
   helper_method :can_perform_action?
+  helper_method :show_evaluation_form?
 
+  # **************************************************************************
+  # METODO USADO PARA VERIFICAR SE A PAGINA DO FORMULARIO DEVE SER APRESENTADA
+  # true: apresenta a página e o form;
+  # false: esconde a página e não apresenta o formulário.
+  # **************************************************************************
+  def show_evaluation_form?
+    false
+  end
 
   # o utilizador nao tem permissoes para realizar a ação pretendida
   class AccessDenied < StandardError

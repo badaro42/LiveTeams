@@ -29,7 +29,10 @@ class HomepageController < ApplicationController
 
   # metodo a ser usado apenas na avaliação!
   def evaluation_form
-
+    if !show_evaluation_form?
+      flash[:error] = "A página do questionário não está disponível. Contacte o administrador caso se trate de um erro."
+      redirect_to root_path
+    end
   end
 
   def entity_updates

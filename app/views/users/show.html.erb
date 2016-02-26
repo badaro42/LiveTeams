@@ -27,11 +27,13 @@
           Mapa
       <% end %>
     </li>
-    <li>
-      <%= link_to evaluation_form_path, class: 'evaluation_form_link navbar-button', method: :get do %>
-          Questionário
-      <% end %>
-    </li>
+    <% if show_evaluation_form? %>
+        <li>
+          <%= link_to evaluation_form_path, class: 'evaluation_form_link navbar-button', method: :get do %>
+              Questionário
+          <% end %>
+        </li>
+    <% end %>
     <% if can_perform_action? :read, UserRole %>
         <li>
           <%= link_to permissions_path, class: 'navbar-button', method: :get do %>
