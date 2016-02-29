@@ -15,7 +15,7 @@ class ApplicationController < ActionController::Base
   # false: esconde a página e não apresenta o formulário.
   # **************************************************************************
   def show_evaluation_form?
-    false
+    true
   end
 
   # o utilizador nao tem permissoes para realizar a ação pretendida
