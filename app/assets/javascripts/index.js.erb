@@ -458,9 +458,6 @@ $(document).ready(function () {
     }).addTo(map);
 
     map.on('locationfound', function (e) {
-      console.log("POSIÇÃO OBTIDA COM SUCESSO!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-      console.log(e);
-
       var distance = -1, time_spanned = -1, curr_time, prev_time;
       if (typeof previous_user_location !== 'undefined') {
         distance = previous_user_location.position.distanceTo(e.latlng);
@@ -496,10 +493,6 @@ $(document).ready(function () {
           success: function (result) {
             console.log(result);
 
-//            var new_marker = L.marker(e.latlng, {icon: user_pos_icon});
-//            cluster.addLayer(new_marker);
-//            map.addLayer(cluster);
-
             var d = new Date();
             var time = d.toLocaleTimeString();
 
@@ -515,16 +508,14 @@ $(document).ready(function () {
             console.log(err);
           }
         });
-//      map.setView(c_latlng, 16);
       }
-//      setTimeout(map.locate(), 5000);
     });
 
   }
   else { /* geolocation IS NOT available */
     noty({
-      text: 'Este browser não suporta geolocalização!', timeout: 3500,
-      type: 'error', layout: 'bottomCenter'
+      text: 'Este browser não suporta geolocalização, pelo que não é possível observar alterações na sua localização',
+      timeout: 3500, type: 'error', layout: 'bottomCenter'
     });
   }
 

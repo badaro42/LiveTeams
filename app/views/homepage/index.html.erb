@@ -244,11 +244,11 @@
         </div>
 
         <div class="white z-depth-1" style="margin-top: 10px; margin-bottom: 10px; padding: 10px;">
-          <h5>As minhas equipas</h5>
+          <h5 style="margin-bottom: 5px;">As minhas equipas</h5>
 
           <div class="divider"></div>
 
-          <ul class="collection" style="margin-bottom: 0;">
+          <ul class="collection" style="margin-bottom: 0; margin-top: 10px;">
             <% current_user.teams.each do |team| %>
                 <li class="collection-item avatar" style="padding-left: 20px;">
                   <span class="title">
@@ -266,6 +266,29 @@
                   </a>
                 </li>
             <% end %>
+          </ul>
+        </div>
+
+        <div class="white z-depth-1" style="margin-top: 10px; margin-bottom: 10px; padding: 10px;">
+          <h5 style="margin-bottom: 5px;">Medições da posição</h5>
+
+          <div class="divider"></div>
+
+          <ul id="current_position_list" class="collection" style="margin-bottom: 0; margin-top: 10px;">
+            <!--<li class="collection-item">-->
+              <!--<span>Coordenadas: [38,8; -9,98]</span>-->
+              <!--<br>-->
+              <!--<span>Precisão da medição: 50 metros</span>-->
+              <!--<br>-->
+              <!--<span>Data do sistema: 10 de janeiro de 2016, 11h45m</span>-->
+            <!--</li>-->
+            <!--<li class="collection-item">-->
+              <!--<span>Coordenadas: [38,8; -9,98]</span>-->
+              <!--<br>-->
+              <!--<span>Precisão da medição: 50 metros</span>-->
+              <!--<br>-->
+              <!--<span>Data do sistema: 10 de janeiro de 2016, 11h45m</span>-->
+            <!--</li>-->
           </ul>
         </div>
       </div>
