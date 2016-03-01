@@ -449,13 +449,9 @@
         <div class="row" style="margin-top: 15px;">
           <h6 style="font-weight: 400; margin-bottom: 5px;">Opções de visibilidade</h6>
           <span style="font-style: italic;">Em função do seu perfil atual algumas opções podem estar desativadas</span>
-          <p>
-            <input type="checkbox" class="filled-in" id="checkbox_toggle_own_teams" checked="checked"
-                   onchange="filterByOwnTeams()"/>
-            <label for="checkbox_toggle_own_teams">Mostrar apenas as minhas equipas e respetivos destaques</label>
-          </p>
 
-          <p style="margin-bottom: 5px; margin-top: 5px;">
+
+          <p style="margin-bottom: 5px; margin-top: 10px;">
             <!--<p style="margin-bottom: 5px;">-->
             <input type="checkbox" class="filled-in" id="checkbox_toggle_geo_entities" checked="checked"
                    onchange="toggleEntityVisibility('geo_entities')"/>
@@ -466,10 +462,15 @@
                    onchange="toggleEntityVisibility('users')"/>
             <label for="checkbox_toggle_users">Mostrar utilizadores</label>
           </p>
-          <p style="margin-top: 5px;">
+          <p style="margin-top: 5px; margin-bottom: 5px;">
             <input type="checkbox" class="filled-in" id="checkbox_toggle_teams" checked="checked"
-                   onchange="toggleEntityVisibility('teams')"/>
+                   onchange="preTeamFilter(true)"/>
             <label for="checkbox_toggle_teams">Mostrar equipas</label>
+          </p>
+          <p style="margin-top: 5px; margin-bottom: 5px; margin-left: 20px;">
+            <input type="checkbox" class="filled-in" id="checkbox_toggle_own_teams" checked="checked"
+                   onchange="preTeamFilter(false)"/>
+            <label for="checkbox_toggle_own_teams">Mostrar apenas as minhas equipas e respetivos destaques</label>
           </p>
         </div>
       </div>

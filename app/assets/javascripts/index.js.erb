@@ -1,6 +1,10 @@
 // **************************************
 // constantes
 
+var NO_TEAMS = -1;
+var ONLY_OWN_TEAMS = 0;
+var ALL_TEAMS = 1;
+
 var ICON_DEFAULT_SIZE = "l"; // valores possiveis: s, m, l
 var ICON_DEFAULT_SHAPE = "circle-stroked";
 var icon_colors = [
@@ -51,6 +55,14 @@ var spin_options = {
   hwaccel: true, // Whether to use hardware acceleration
   position: 'absolute' // Element positioning
 };
+
+
+// **************************************
+// variaveis dos filtros!!
+
+var show_users = false;
+var show_teams = NO_TEAMS;
+var show_geo_entities = false;
 
 
 // **************************************
@@ -176,7 +188,7 @@ var source;
 var previous_user_location; // {timestamp: Date(), position: L.latLng(lat, lng)}
 var no_sleep_enabled = false;
 var is_modal_open = false;
-var only_show_own_teams = true;
+//var only_show_own_teams = true;
 
 
 // variaveis relacionadas a informação guardada no browser - localStorage
@@ -272,6 +284,9 @@ $(document).ready(function () {
     }
   });
 
+  // inicializa os filtros das entidades que devem ser apresentadas no mapa, em função do perfil do utilizador
+  setupFilters();
+
   // verifica as preferencias do utilizador no objeto localStorage
   last_window_height = window.innerHeight;
   checkUserPreferences();
@@ -311,11 +326,6 @@ $(document).ready(function () {
   $('#select_no_teams').on('click', function () {
     console.log("select_no_teams clique");
     $('#select_team_ids option').prop('selected', false);
-  });
-
-  $('#button-da-merda').on('click', function () {
-    console.log("CARREGUEI NO BOTAO!!! HEHE");
-    $('#modal_entity_coordinates').openModal();
   });
 
   // apenas permite numeros no campo do numero de telefone
@@ -525,10 +535,8 @@ $(document).ready(function () {
   /* controlo do zoom do mapa  */
   map.zoomControl.setPosition('topleft');
 
-//  TODO: ADICIONAR O IF, ESTA COMENTADO APENAS PARA EFEITOS DE TESTE!
   // apenas cria os controlos para adicionar geo-entidades se não o perfil NÃO for 'Básico'
   if (gon.can_create_geo_entities) {
-    // cria a barra de controlos para a criaçao de entidades
     L.drawLocal.draw.toolbar.buttons.polygon = 'Desenhar um polígono';
     L.drawLocal.draw.toolbar.buttons.polyline = 'Desenhar uma linha poligonal';
     L.drawLocal.draw.toolbar.buttons.marker = 'Desenhar um marcador';
@@ -636,20 +644,6 @@ $(document).ready(function () {
       30000
   );
 
-  // ****************** CHAMADAS ASSINCRONAS PARA POPULAR O MAPA ******************
-  var users_json = new L.GeoJSON.AJAX("/users/users_to_json.json", {
-    pointToLayer: userToLayer
-  });
-
-  var geo_entities = new L.GeoJSON.AJAX("/geo_entities/geo_entities_to_json.json", {
-    pointToLayer: geoPointToLayer,
-    onEachFeature: onEachGeoEntity
-  });
-
-  var teams_json = new L.GeoJSON.AJAX("/teams/teams_to_json.json", {
-    pointToLayer: teamPointToLayer
-  });
-
   $.ajax({
     type: "GET",
     url: "/users/get_user_teams",
@@ -657,55 +651,19 @@ $(document).ready(function () {
     success: function (res) {
       console.log("IDs das equipas a que pertence carregados com sucesso do servidor!");
       user_teams = res;
-      checkIfAllDataIsLoaded();
+
+//      checkIfAllDataIsLoaded();
+      setupAsyncronousCalls();
     },
     error: function (res) {
+      noty({
+        text: 'Não foi possível obter as equipas a que pertence. Se não vir nenhuma equipa no mapa, ' +
+        'desative a opção "Apenas as equipas a que pertence".',
+        timeout: 3500, type: 'information', layout: 'bottomCenter'
+      });
+
+      setupAsyncronousCalls();
     }
-  });
-
-
-  users_json.on('data:loaded', function () {
-    console.log("Utilizadores carregados com sucesso do servidor!");
-
-    // apenas apresenta os utilizadores de inicio caso o perfil seja ADMINISTRADOR ou GESTOR
-    if (gon.current_profile === "Administrador" || gon.current_profile === "Gestor") {
-      cluster.addLayer(users_json);
-      map.addLayer(cluster);
-    }
-
-    checkIfAllDataIsLoaded();
-  });
-
-  // listener invocado quando a chamada ajax das entidades terminar!
-  geo_entities.on('data:loaded', function () {
-    console.log("Geo-Entidades carregadas com sucesso do servidor!");
-    cluster.addLayer(geo_entities);
-    map.addLayer(cluster);
-
-    checkIfAllDataIsLoaded();
-
-    // caso haja parametro, centra o mapa na geo-entidade enviada
-    var entity_id = parseInt(getURLParameter('entity_id'));
-    var entity_type = getURLParameter('entity_type');
-
-    if (!isNaN(entity_id) && entity_type == object_type.geo_entity)
-      centerMapOnEntity(entity_id, entity_type);
-  });
-
-  // listener invocado quando a chamada ajax das equipas terminar!
-  teams_json.on('data:loaded', function () {
-    console.log("Equipas carregadas com sucesso do servidor!");
-//    cluster.removeLayer(geo_entities);
-//    map.removeLayer(geo_entities);
-
-    checkIfAllDataIsLoaded();
-
-    // caso haja parametro, centra o mapa na entidade enviada
-    var entity_id = parseInt(getURLParameter('entity_id'));
-    var entity_type = getURLParameter('entity_type');
-
-    if (!isNaN(entity_id) && entity_type == object_type.team)
-      centerMapOnEntity(entity_id, entity_type);
   });
 
 
@@ -1101,13 +1059,16 @@ function addGeoEntityToMap(json) {
     // ou é uma nova geo-entidade (que não existe no mapa) e não é para remover;
     // ou é uma geo-entidade que existe no mapa e é para remover.
     if (process_geojson) {
-      new_layer = L.geoJson(json_arr, {
+      L.geoJson(json_arr, {
         pointToLayer: geoPointToLayer,
-        onEachFeature: onEachGeoEntity
+        onEachFeature: onEachGeoEntity,
+        filter: function (feature, layer) {
+          return show_geo_entities;
+        }
       }).addTo(map);
 
-      cluster.addLayer(new_layer);
-      map.addLayer(cluster);
+//      cluster.addLayer(new_layer);
+//      map.addLayer(cluster);
     }
   }
 
@@ -1148,13 +1109,16 @@ function addGeoEntityToMap(json) {
     console.log(final_json_arr);
 
     if (process_geojson) {
-      new_layer = L.geoJson(final_json_arr, {
+      L.geoJson(final_json_arr, {
         pointToLayer: geoPointToLayer,
-        onEachFeature: onEachGeoEntity
+        onEachFeature: onEachGeoEntity,
+        filter: function (feature, layer) {
+          return show_geo_entities;
+        }
       }).addTo(map);
 
-      cluster.addLayer(new_layer);
-      map.addLayer(cluster);
+//      cluster.addLayer(new_layer);
+//      map.addLayer(cluster);
     }
   }
 }
@@ -1172,30 +1136,13 @@ function addTeamToMap(json) {
   console.log(json_arr);
 
   new_layer = L.geoJson(json_arr, {
-    pointToLayer: teamPointToLayer
+    pointToLayer: teamPointToLayer,
+    filter: filterTeamsGeojson
   });
 
+  cluster.addLayer(new_layer);
+  map.addLayer(new_layer);
   console.log(new_layer);
-
-//  var layers_to_add = [];
-
-
-//  var
-//      if ($("#checkbox_toggle_teams").is(":checked")) { //é para apresentar as equipas no mapa!
-//    if ($("#checkbox_toggle_own_teams").is(":checked")) { //apenas as proprias equipas, temos que filtrar!
-//      $.each(new_layer._layers, function (i, g) {
-//        if()
-//            }
-//    }
-//    else { //todas as equipas que recebemos são para apresentar
-//      cluster.addLayer(new_layer);
-//      map.addLayer(cluster);
-//    }
-//  }
-
-//  TODO: ATIVAR ESTA PORRA, SENAO ISTO NAO FUNCIONA!!
-//  cluster.addLayer(new_layer);
-//  map.addLayer(cluster);
 }
 
 
@@ -1568,6 +1515,15 @@ function teamPointToLayer(feature, latlng) {
 
       highlight_popup.setContent(highlight_content);
       new_hightlight_layer.bindPopup(highlight_popup);
+
+      // coloca o destaque no ecra caso alguma das condições se verifique:
+      // - show_teams igual a ALL_TEAMS;
+      // - show_teams igual a ONLY_OWN_TEAMS e o utilizador pertence à equipa
+      if((show_teams == ALL_TEAMS) ||
+          (show_teams == ONLY_OWN_TEAMS && user_teams.includes(parseInt(feature.properties.f_id)))) {
+        cluster.addLayer(new_hightlight_layer);
+        map.addLayer(new_hightlight_layer);
+      }
 
       content += '<div class="center-align" style="margin-bottom: 10px;"><button ' +
           'onclick="map.panTo({lat:' + new_hightlight_layer.getLatLng().lat + ', lng:' +
@@ -2162,45 +2118,37 @@ function geocodeLocation() {
 function toggleEntityVisibility(entity) {
   var id = "#checkbox_toggle_" + entity;
   var is_checked = $(id).is(":checked");
+  var arr_to_add = [];
+  var arr_to_remove = [];
 
   console.log(entity + " is checked? " + is_checked);
 
-  var arr_to_add = [];
-  var arr_to_remove = [];
   if (entity === "teams") {
-    var elem = $("#checkbox_toggle_own_teams");
-    if (is_checked)
-      $(elem).prop("disabled", false);
-    else
-      $(elem).prop("disabled", true);
-
     $.each(all_teams, function (i, g) {
-      if (is_checked) { // é para apresentar equipas!
-        if (only_show_own_teams) { // apenas as equipas a que o user pertence
-          if (user_teams.includes(g.t_id)) { // o id da equipa esta contido no array de equipas do user
-            if (!cluster.hasLayer(g.marker)) { // apenas adicionamos o marcador ao mapa se ele nao estiver ja lá
-              arr_to_add.push(g.marker);
-              if (g.highlight_coords_layer !== null)
-                arr_to_add.push(g.highlight_coords_layer);
-            }
-          }
-          else {
-            if (cluster.hasLayer(g.marker)) {
-              arr_to_remove.push(g.marker);
-              if (g.highlight_coords_layer !== null)
-                arr_to_remove.push(g.highlight_coords_layer);
-            }
-          }
-        }
-        else {
-          if (!cluster.hasLayer(g.marker)) {
+      if (show_teams == ONLY_OWN_TEAMS) { // apenas as equipas a que o user pertence
+        if (user_teams.includes(g.t_id)) { // o id da equipa esta contido no array de equipas do user
+          if (!cluster.hasLayer(g.marker)) { // apenas adicionamos o marcador ao mapa se ele nao estiver ja lá
             arr_to_add.push(g.marker);
             if (g.highlight_coords_layer !== null)
               arr_to_add.push(g.highlight_coords_layer);
           }
         }
+        else {
+          if (cluster.hasLayer(g.marker)) {
+            arr_to_remove.push(g.marker);
+            if (g.highlight_coords_layer !== null)
+              arr_to_remove.push(g.highlight_coords_layer);
+          }
+        }
       }
-      else {
+      else if (show_teams == ALL_TEAMS) { // todas as equipas
+        if (!cluster.hasLayer(g.marker)) {
+          arr_to_add.push(g.marker);
+          if (g.highlight_coords_layer !== null)
+            arr_to_add.push(g.highlight_coords_layer);
+        }
+      }
+      else { // nenhuma equipa!
         if (cluster.hasLayer(g.marker)) {
           arr_to_remove.push(g.marker);
           if (g.highlight_coords_layer !== null)
@@ -2211,6 +2159,8 @@ function toggleEntityVisibility(entity) {
   }
   else if (entity === "geo_entities") {
     if (is_checked) {
+      show_geo_entities = true;
+
       var sel_value = parseInt($("#filter_geo_entities_by_category").find(":selected").val());
       console.log(sel_value);
 
@@ -2225,18 +2175,29 @@ function toggleEntityVisibility(entity) {
         }
       });
     }
-    else
+    else {
+      show_geo_entities = false;
+
       $.each(all_geo_entities, function (i, g) {
         arr_to_remove.push(g.layer);
       });
+    }
   }
   else if (entity === "users") {
-    $.each(all_users, function (i, g) {
-      if (is_checked)
+    if (is_checked) {
+      show_users = true;
+
+      $.each(all_users, function (i, g) {
         arr_to_add.push(g.layer);
-      else
+      });
+    }
+    else {
+      show_users = false;
+
+      $.each(all_users, function (i, g) {
         arr_to_remove.push(g.layer);
-    });
+      });
+    }
   }
 
   if (arr_to_remove.length > 0) {
@@ -2254,27 +2215,36 @@ function toggleEntityVisibility(entity) {
 /**
  * Função que apresenta ou esconde apenas as equipas do utilizador
  *
- * OWN_TEAMS_CHECKBOX passa a seleccionada:
- *  Se ALL_TEAMS_CHECKBOX está ativada - esconde todas menos as equipas do utilizador
- *  Se ALL_TEAMS_CHECKBOX está desativada - selecciona a checkbox das equipas e apresenta apenas as suas equipas
- * OWN_TEAMS_CHECKBOX deixa de estar seleccionada:
- *  Se ALL_TEAMS_CHECKBOX está ativada - apresenta todas as equipas
+ * ALL_TEAMS_CHECKBOX esta seleccionada:
+ *  Se OWN_TEAMS_CHECKBOX esta ativada - apresenta apenas as equipas a que pertence
+ *  Se OWN_TEAMS_CHECKBOX nao está ativada - apresenta todas as equipas
+ * ALL_TEAMS_CHECKBOX nao esta seleccionada:
+ *  Se OWN_TEAMS_CHECKBOX esta ativada - selecciona a checkbox das equipas e apresenta apenas aquelas a que pertence
+ *  Se OWN_TEAMS_CHECKBOX nao está ativada - não apresenta nada.
  */
-function filterByOwnTeams() {
-  var is_this_checked = $("#checkbox_toggle_own_teams").is(":checked");
-  var is_teams_checked = $("#checkbox_toggle_teams").is(":checked");
+function preTeamFilter(is_all_teams) {
+  var checkbox_own_teams = $("#checkbox_toggle_own_teams");
+  var checkbox_all_teams = $("#checkbox_toggle_teams");
 
-  console.log("own teams checked? " + is_this_checked);
-  console.log("ALL teams checked? " + is_teams_checked);
+  console.log("own teams checked? " + $(checkbox_own_teams).is(":checked"));
+  console.log("ALL teams checked? " + $(checkbox_all_teams).is(":checked"));
 
-  if (is_this_checked) {
-    only_show_own_teams = true;
-    if (!is_teams_checked)
-      $("#checkbox_toggle_teams").prop("checked", true);
+  if ($(checkbox_all_teams).is(":checked")) {
+    if ($(checkbox_own_teams).is(":checked"))
+      show_teams = ONLY_OWN_TEAMS;
+    else
+      show_teams = ALL_TEAMS;
   }
-  else
-    only_show_own_teams = false;
-
+  else {
+    if(is_all_teams) {
+      $(checkbox_own_teams).prop("checked", false);
+      show_teams = NO_TEAMS;
+    }
+    else {
+      $(checkbox_all_teams).prop("checked", true);
+      show_teams = ONLY_OWN_TEAMS;
+    }
+  }
   toggleEntityVisibility('teams');
 }
 
@@ -2290,6 +2260,8 @@ function setupFilters() {
   var users_elem = "#checkbox_toggle_users";
   var teams_elem = "#checkbox_toggle_teams";
 
+  show_geo_entities = true; // todos os perfis começam com as geo-entidades no mapa.
+
   if (gon.current_profile === "Básico" || gon.current_profile === "Operacional") {
     if (gon.current_profile === "Básico") {
       $(own_teams_elem).prop("checked", false); //remove a seleção da checkbox das proprias equipas
@@ -2300,19 +2272,17 @@ function setupFilters() {
 
       $(teams_elem).prop("checked", false); //remove a seleção da checkbox de todas as equipas
       $(teams_elem).prop("disabled", true); //desativa a checkbox de todas as equipas
-
-      filterByOwnTeams();
     }
     else {//o perfil é OPERACIONAL
       $(users_elem).prop("checked", false); //remove a seleção da checkbox dos utilizadores
       $(users_elem).prop("disabled", true); //desativa a checkbox dos utilizadores
-
-      filterByOwnTeams();
+      show_teams = ONLY_OWN_TEAMS; // apenas as equipas a que pertence
     }
   }
   else if (gon.current_profile === "Gestor" || gon.current_profile === "Administrador") {
     $(own_teams_elem).prop("checked", false); //desativa a checkbox das proprias equipas
-    filterByOwnTeams();
+    show_users = true;
+    show_teams = ALL_TEAMS;
   }
 }
 
@@ -2332,15 +2302,92 @@ function isMobile() {
 
 function checkIfAllDataIsLoaded() {
   geo_data_loaded++;
-  if (geo_data_loaded == 4) {
+  if (geo_data_loaded == 3) {
     map.spin(false);
     map.invalidateSize();
 
-    setupFilters();
+//    setupFilters();
 
     noty({
       text: 'Dados das equipas, geo-entidades e utilizadores obtidos do servidor com sucesso!',
       timeout: 4000, type: 'success', layout: 'bottomCenter'
     });
   }
+}
+
+function setupAsyncronousCalls() {
+// ****************** CHAMADAS ASSINCRONAS PARA POPULAR O MAPA ******************
+  var users_json = new L.GeoJSON.AJAX("/users/users_to_json.json", {
+    pointToLayer: userToLayer,
+    filter: function (feature, layer) {
+      return show_users;
+    }
+  });
+
+  var geo_entities = new L.GeoJSON.AJAX("/geo_entities/geo_entities_to_json.json", {
+    pointToLayer: geoPointToLayer,
+    onEachFeature: onEachGeoEntity,
+    filter: function (feature, layer) {
+      return show_geo_entities;
+    }
+  });
+
+  var teams_json = new L.GeoJSON.AJAX("/teams/teams_to_json.json", {
+    pointToLayer: teamPointToLayer,
+    filter: filterTeamsGeojson
+  });
+
+  users_json.on('data:loaded', function () {
+    console.log("Utilizadores carregados com sucesso do servidor!");
+
+    // apenas apresenta os utilizadores de inicio caso o perfil seja ADMINISTRADOR ou GESTOR
+    if (gon.current_profile === "Administrador" || gon.current_profile === "Gestor") {
+      cluster.addLayer(users_json);
+      map.addLayer(cluster);
+    }
+
+    checkIfAllDataIsLoaded();
+  });
+
+  // listener invocado quando a chamada ajax das entidades terminar!
+  geo_entities.on('data:loaded', function () {
+    console.log("Geo-Entidades carregadas com sucesso do servidor!");
+    cluster.addLayer(geo_entities);
+    map.addLayer(cluster);
+
+    checkIfAllDataIsLoaded();
+
+    // caso haja parametro, centra o mapa na geo-entidade enviada
+    var entity_id = parseInt(getURLParameter('entity_id'));
+    var entity_type = getURLParameter('entity_type');
+
+    if (!isNaN(entity_id) && entity_type == object_type.geo_entity)
+      centerMapOnEntity(entity_id, entity_type);
+  });
+
+  // listener invocado quando a chamada ajax das equipas terminar!
+  teams_json.on('data:loaded', function () {
+    console.log("Equipas carregadas com sucesso do servidor!");
+
+    cluster.addLayer(teams_json);
+    map.addLayer(cluster);
+
+    checkIfAllDataIsLoaded();
+
+    // caso haja parametro, centra o mapa na entidade enviada
+    var entity_id = parseInt(getURLParameter('entity_id'));
+    var entity_type = getURLParameter('entity_type');
+
+    if (!isNaN(entity_id) && entity_type == object_type.team)
+      centerMapOnEntity(entity_id, entity_type);
+  });
+}
+
+function filterTeamsGeojson(feature, layer) {
+  if (show_teams == ALL_TEAMS) // mostrar todas as equipas
+    return true;
+  else if (show_teams == ONLY_OWN_TEAMS) // apenas as equipas a que pertence
+    return user_teams.includes(parseInt(feature.properties.f_id));
+  else // não é para mostrar nenhuma equipa
+    return false;
 }
