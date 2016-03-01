@@ -12,23 +12,23 @@
     <div class="input-field col s12 m6 l6">
       <!--<i class="material-icons prefix">account_circle</i>-->
       <%= f.label "Primeiro Nome" %>
-      <%= f.text_field :first_name, autofocus: true, placeholder: " ", required: true, class: "validate" %>
+      <%= f.text_field :first_name, autofocus: true, placeholder: " ", required: true, class: "username" %>
     </div>
 
     <div class="input-field col s12 m6 l6">
       <!--<i class="material-icons prefix">account_circle</i>-->
       <%= f.label "Último Nome" %>
-      <%= f.text_field :last_name, required: true, placeholder: " ", class: "validate" %>
+      <%= f.text_field :last_name, required: true, placeholder: " ", class: "username" %>
     </div>
 
     <div class="input-field col s12 m6 l6">
       <%= f.label "Endereço de email" %>
-      <%= f.email_field :email, required: true, placeholder: " ", class: "validate" %>
+      <%= f.email_field :email, required: true, placeholder: " ", class: "email" %>
     </div>
 
     <div class="input-field col s12 m6 l6">
       <%= f.label "Contacto telefónico", class: "active" %>
-      <%= f.text_field :phone_number, class: 'numeric validate', maxlength: 9, length: 9,
+      <%= f.text_field :phone_number, class: 'numeric phone_number', maxlength: 9, length: 9,
                        placeholder: " ", required: true %>
     </div>
 
@@ -39,22 +39,23 @@
 
     <div class="input-field col s12 m6 l6">
       <%= f.label "Password", class: "active" %>
-      <%= f.password_field :password, autocomplete: "off", placeholder: " ", required: true, class: "validate" %>
+      <%= f.password_field :password, autocomplete: "off", placeholder: " ", required: true,
+                           class: "password" %>
     </div>
 
     <div class="input-field col s12 m6 l6">
       <%= f.label "Repita password" %>
       <%= f.password_field :password_confirmation, placeholder: " ", autocomplete: "off",
-                           required: true, class: "validate" %>
+                           required: true, class: "password" %>
     </div>
 
     <div class="file-field input-field col s12 m12 l12">
       <div class="btn white-btn">
         <span>Ficheiro</span>
-        <%= f.file_field :avatar, class: 'file validate' %>
+        <%= f.file_field :avatar, class: 'file avatar' %>
       </div>
       <div class="file-path-wrapper">
-        <input class="file-path validate" type="text" placeholder="Imagem de perfil">
+        <input class="file-path" type="text" placeholder="Imagem de perfil">
       </div>
     </div>
 
@@ -63,7 +64,8 @@
     <%= f.hidden_field :latlon %>
 
     <div class="actions col s12 m12 l12 center-align" style="margin-top: 20px;">
-      <%= f.button 'Registar!', class: "btn green waves-effect waves-light", style: 'width: 100%;' %>
+      <%= f.button 'Registar!', class: "btn green waves-effect waves-light",
+                   id: "submit_register_form", disabled: true, style: 'width: 100%;' %>
     </div>
 
 <% end %>

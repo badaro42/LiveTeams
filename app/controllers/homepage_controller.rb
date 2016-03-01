@@ -47,13 +47,13 @@ class HomepageController < ApplicationController
 
     # devolve os utilizadores criados ou atualizados nos ultimos 22 segundos
     geo_entities_to_parse = GeoEntity.where("created_at between ? and ? OR updated_at between ? and ?",
-                                            10.seconds.ago, Time.now, 10.seconds.ago, Time.now)
+                                            5.seconds.ago, Time.now, 5.seconds.ago, Time.now)
     # devolve as equipas criadas ou atualizadas nos ultimos 22 segundos
     teams_to_parse = Team.where("created_at between ? and ? OR updated_at between ? and ?",
-                                10.seconds.ago, Time.now, 10.seconds.ago, Time.now)
+                                5.seconds.ago, Time.now, 5.seconds.ago, Time.now)
 
     users_to_parse = User.where("created_at between ? and ? OR updated_at between ? and ?",
-                                10.seconds.ago, Time.now, 10.seconds.ago, Time.now)
+                                5.seconds.ago, Time.now, 5.seconds.ago, Time.now)
 
     # devolve as equipas e geo-entidade eliminadas nos ultimos 22 segundos
     rec_del_team_array = []
@@ -61,11 +61,11 @@ class HomepageController < ApplicationController
     rec_del_users_array = []
 
     rec_del_team_versions = PaperTrail::Version.where('event = ? and created_at > ? and item_type = ?',
-                                                      'destroy', 10.seconds.ago, 'Team')
+                                                      'destroy', 5.seconds.ago, 'Team')
     rec_del_geo_ent_versions = PaperTrail::Version.where('event = ? and created_at > ? and item_type = ?',
-                                                         'destroy', 10.seconds.ago, 'GeoEntity')
+                                                         'destroy', 5.seconds.ago, 'GeoEntity')
     rec_del_users_versions = PaperTrail::Version.where('event = ? and created_at > ? and item_type = ?',
-                                                       'destroy', 10.seconds.ago, 'User')
+                                                       'destroy', 5.seconds.ago, 'User')
 
     # pomos a data de atualização a nil para no javascript sabermos que é para remover
     rec_del_team_versions.each do |team|
