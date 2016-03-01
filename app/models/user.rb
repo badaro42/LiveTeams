@@ -109,8 +109,8 @@ class User < ActiveRecord::Base
         order("users.created_at #{ direction }")
       when /^name_/
         order("LOWER(users.first_name) #{ direction }, LOWER(users.last_name) #{ direction }")
-      # when /^country_name_/
-      #   order("LOWER(countries.name) #{ direction }").includes(:country)
+      when /^profile_/
+        order("LOWER(users.profile) #{ direction }")
       else
         raise(ArgumentError, "Invalid sort option: #{ sort_option.inspect }")
     end
@@ -133,7 +133,8 @@ class User < ActiveRecord::Base
         ['Nome (z-a)', 'name_desc'],
         ['Data de registo (mais recente primeiro)', 'created_at_desc'],
         ['Data de registo (mais antigo primeiro)', 'created_at_asc'],
-        ['Perfil (a-z)', 'country_name_asc']
+        ['Perfil (a-z)', 'profile_asc'],
+        ['Perfil (z-a)', 'profile_desc']
     ]
   end
 
