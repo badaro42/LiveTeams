@@ -1059,16 +1059,16 @@ function addGeoEntityToMap(json) {
     // ou é uma nova geo-entidade (que não existe no mapa) e não é para remover;
     // ou é uma geo-entidade que existe no mapa e é para remover.
     if (process_geojson) {
-      L.geoJson(json_arr, {
+      new_layer = L.geoJson(json_arr, {
         pointToLayer: geoPointToLayer,
         onEachFeature: onEachGeoEntity,
         filter: function (feature, layer) {
           return show_geo_entities;
         }
-      }).addTo(map);
+      });
 
-//      cluster.addLayer(new_layer);
-//      map.addLayer(cluster);
+      cluster.addLayer(new_layer);
+      map.addLayer(cluster);
     }
   }
 
@@ -1109,16 +1109,16 @@ function addGeoEntityToMap(json) {
     console.log(final_json_arr);
 
     if (process_geojson) {
-      L.geoJson(final_json_arr, {
+      new_layer = L.geoJson(final_json_arr, {
         pointToLayer: geoPointToLayer,
         onEachFeature: onEachGeoEntity,
         filter: function (feature, layer) {
           return show_geo_entities;
         }
-      }).addTo(map);
+      });
 
-//      cluster.addLayer(new_layer);
-//      map.addLayer(cluster);
+      cluster.addLayer(new_layer);
+      map.addLayer(cluster);
     }
   }
 }
@@ -1159,7 +1159,10 @@ function addUserToMap(json) {
   console.log(json_arr);
 
   new_layer = L.geoJson(json_arr, {
-    pointToLayer: userToLayer
+    pointToLayer: userToLayer,
+    filter: function(feature, layer) {
+      return show_users;
+    }
   });
 
   cluster.addLayer(new_layer);
