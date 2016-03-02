@@ -992,16 +992,25 @@ function insertGeoEntity() {
         $('#confirm_entity_creation').closeModal();
       },
       error: function (err) {
-        if (err.status == 403) // o utilizador nao tem permissoes para remover geo-entidades
+        if (err.status == 403) { // o utilizador nao tem permissoes para remover geo-entidades
           noty({
             text: 'Não tem permissões para adicionar geo-entidades.', timeout: 4000,
             type: 'error', layout: 'bottomCenter'
           });
-        else
+        }
+        else if (err.status == 422) { // não foi possivel gravar a entidade. ex: poligonos NÃO convexos
+          noty({
+            text: 'Não foi possível gravar essa geo-entidade. ' +
+            'No caso de ser um polígono, não é possível gravar polígonos não convexos.', timeout: 4000,
+            type: 'error', layout: 'bottomCenter'
+          });
+        }
+        else {
           noty({
             text: 'Erro a introduzir a geo-entidade. Tente novamente mais tarde.', timeout: 4000,
             type: 'error', layout: 'bottomCenter'
           });
+        }
 
         console.log("erro a adicionar o marcador");
         console.log(err);
@@ -1151,7 +1160,7 @@ function addUserToMap(json) {
 
   new_layer = L.geoJson(json_arr, {
     pointToLayer: userToLayer,
-    filter: function(feature, layer) {
+    filter: function (feature, layer) {
       return show_users;
     }
   });
@@ -1513,7 +1522,7 @@ function teamPointToLayer(feature, latlng) {
       // coloca o destaque no ecra caso alguma das condições se verifique:
       // - show_teams igual a ALL_TEAMS;
       // - show_teams igual a ONLY_OWN_TEAMS e o utilizador pertence à equipa
-      if((show_teams == ALL_TEAMS) ||
+      if ((show_teams == ALL_TEAMS) ||
           (show_teams == ONLY_OWN_TEAMS && user_teams.includes(parseInt(feature.properties.f_id)))) {
         cluster.addLayer(new_hightlight_layer);
         map.addLayer(new_hightlight_layer);
@@ -2230,7 +2239,7 @@ function preTeamFilter(is_all_teams) {
       show_teams = ALL_TEAMS;
   }
   else {
-    if(is_all_teams) {
+    if (is_all_teams) {
       $(checkbox_own_teams).prop("checked", false);
       show_teams = NO_TEAMS;
     }
