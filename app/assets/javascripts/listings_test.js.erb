@@ -390,17 +390,34 @@ $(document).ready(function () {
         attributionControl: false
       });
 
-      var center, coords_arr, c_marker;
-      if (gon.curr_user_pos !== null) {
-        coords_arr = parsePointCoordinates(gon.curr_user_pos);
-        center = L.latLng(coords_arr[1], coords_arr[0]);
-        user_map.panTo(center);
+      console.log(gon.curr_user_pos);
+      console.log(gon.past_coordinates);
 
-        c_marker = L.marker(center).addTo(user_map);
-        popupContent = "<span>Este utilizador encontra-se neste ponto<br> com as seguintes coordenadas:</span>" +
-            "<p>Latitude: <b>" + c_marker.getLatLng().lat + "</b>,<br>Longitude: <b>" +
-            c_marker.getLatLng().lng + "</b></p>";
-        c_marker.bindPopup(popupContent).openPopup();
+      var center, coords_arr, c_marker, i;
+      if (gon.curr_user_pos !== null) {
+
+        gon.past_coordinates.push(gon.curr_user_pos);
+        for(i = 0; i < gon.past_coordinates.length; i++) {
+          coords_arr = parsePointCoordinates(gon.past_coordinates[i]);
+          center = L.latLng(coords_arr[1], coords_arr[0]);
+
+          c_marker = L.marker(center).addTo(user_map);
+          popupContent = "<span>Este utilizador encontra-se neste ponto<br> com as seguintes coordenadas:</span>" +
+              "<p>Latitude: <b>" + c_marker.getLatLng().lat + "</b>,<br>Longitude: <b>" +
+              c_marker.getLatLng().lng + "</b></p>";
+          c_marker.bindPopup(popupContent).openPopup();
+        }
+
+
+//        coords_arr = parsePointCoordinates(gon.curr_user_pos);
+//        center = L.latLng(coords_arr[1], coords_arr[0]);
+//        user_map.panTo(center);
+//
+//        c_marker = L.marker(center).addTo(user_map);
+//        popupContent = "<span>Este utilizador encontra-se neste ponto<br> com as seguintes coordenadas:</span>" +
+//            "<p>Latitude: <b>" + c_marker.getLatLng().lat + "</b>,<br>Longitude: <b>" +
+//            c_marker.getLatLng().lng + "</b></p>";
+//        c_marker.bindPopup(popupContent).openPopup();
       }
     }
     else if (edit_page) {

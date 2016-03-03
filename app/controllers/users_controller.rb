@@ -108,6 +108,8 @@ class UsersController < ApplicationController
       gon.current_user_id = current_user.id
       gon.curr_user_pos = @user.latlon
 
+      gon.past_coordinates = @user.versions.length == 0 ? [] : @user.versions.map(&:reify).compact.map(&:latlon)
+
       # uniao das equipas que criou com as que esta inserido
       # pode ter criado uma equipa e nao estar inserido na mesma, p.e.
       @teams_belonging_or_created = @user.teams | @user.teams_created
