@@ -5,6 +5,8 @@ var cluster;
 var parent_list_entry_id, username_to_be_removed, user_role_to_be_removed;
 var uri;
 
+var unique_coords_arr = [];
+
 // variaveis da cena da search bar
 var allEntityEntries, allEntityNames, entityNamesIndexed = [], entityEntriesIndexed = [];
 var searchBar, noResultsDiv;
@@ -127,7 +129,7 @@ $(document).ready(function () {
       console.log("PÁGINA PARA EDITAR EQUIPA!!!");
       create_team_page = false;
 
-      $('#edit_team_' + gon.current_team_id + ' :input').on("change", function() {
+      $('#edit_team_' + gon.current_team_id + ' :input').on("change", function () {
         setConfirmUnload(true);
       }); // Evitar que o utilizador saia acidentalmente da página
 
@@ -197,7 +199,7 @@ $(document).ready(function () {
     else if (new_page) {
       create_team_page = true;
 
-      $('#new_team :input').on("change", function() {
+      $('#new_team :input').on("change", function () {
         setConfirmUnload(true);
       }); // Evitar que o utilizador saia acidentalmente da página
 
@@ -393,19 +395,24 @@ $(document).ready(function () {
       console.log(gon.curr_user_pos);
       console.log(gon.past_coordinates);
 
-      var center, coords_arr, c_marker, i;
+      var center, coords_arr, c_marker, i, last_coords = "";
       if (gon.curr_user_pos !== null) {
-
         gon.past_coordinates.push(gon.curr_user_pos);
-        for(i = 0; i < gon.past_coordinates.length; i++) {
-          coords_arr = parsePointCoordinates(gon.past_coordinates[i]);
-          center = L.latLng(coords_arr[1], coords_arr[0]);
 
-          c_marker = L.marker(center).addTo(user_map);
-          popupContent = "<span>Este utilizador encontra-se neste ponto<br> com as seguintes coordenadas:</span>" +
-              "<p>Latitude: <b>" + c_marker.getLatLng().lat + "</b>,<br>Longitude: <b>" +
-              c_marker.getLatLng().lng + "</b></p>";
-          c_marker.bindPopup(popupContent).openPopup();
+        for (i = 0; i < gon.past_coordinates.length; i++) {
+          if (isCoordsUnique(gon.past_coordinates[i]) && gon.past_coordinates[i] !== last_coords) {
+            coords_arr = parsePointCoordinates(gon.past_coordinates[i]);
+            center = L.latLng(coords_arr[1], coords_arr[0]);
+
+            c_marker = L.marker(center).addTo(user_map);
+            popupContent = "<span>Este utilizador encontra-se neste ponto<br> com as seguintes coordenadas:</span>" +
+                "<p>Latitude: <b>" + c_marker.getLatLng().lat + "</b>,<br>Longitude: <b>" +
+                c_marker.getLatLng().lng + "</b></p>";
+            c_marker.bindPopup(popupContent).openPopup();
+
+            unique_coords_arr.push(gon.past_coordinates[i]);
+            last_coords = gon.past_coordinates[i];
+          }
         }
 
 
@@ -429,21 +436,25 @@ $(document).ready(function () {
 
       console.log("PÁGINA PARA editar UTILIZADOR!!!");
 
-      if(users_pages) {
-        $('#edit_user_' + gon.current_user_id + ' :input').on("change", function() {
+      if (users_pages) {
+        $('#edit_user_' + gon.current_user_id + ' :input').on("change", function () {
           setConfirmUnload(true);
         }); // Evitar que o utilizador saia acidentalmente da página
 
         // desativar a janela de aviso quando submete as alterações
-        $('#edit_user_' + gon.current_user_id).submit(function() {setConfirmUnload(false)});
+        $('#edit_user_' + gon.current_user_id).submit(function () {
+          setConfirmUnload(false)
+        });
       }
       else {
-        $('#edit_user :input').on("change", function() {
+        $('#edit_user :input').on("change", function () {
           setConfirmUnload(true);
         }); // Evitar que o utilizador saia acidentalmente da página
 
         // desativar a janela de aviso quando submete as alterações
-        $('#edit_user').submit(function() {setConfirmUnload(false)});
+        $('#edit_user').submit(function () {
+          setConfirmUnload(false)
+        });
       }
 
       // apenas permite numeros no campo do numero de telefone
@@ -1273,4 +1284,14 @@ function unloadMessage() {
 
 function setConfirmUnload(on) {
   window.onbeforeunload = (on) ? unloadMessage : null;
+}
+
+// verifica se este par de coordenadas é unico
+function isCoordsUnique(curr_coords) {
+  var i;
+  for (i = 0; i < unique_coords_arr.length; i++) {
+    if (curr_coords == unique_coords_arr[i])
+      return false;
+  }
+  return true;
 }
