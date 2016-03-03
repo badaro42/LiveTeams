@@ -200,7 +200,8 @@ var curr_user_saved_prefs = { // local storage - objeto com as preferencias do u
   show_navbar: null, // o estado de visibilidade da navbar na pagina inicial
   events_history: [], // array com todas as entradas do historico
   max_zoom: 16, // valor default: se houver valor no localStorage, substitui este
-  history_entries_limit: 25 // controla o numero maximo de entradas no historico
+  history_entries_limit: 25, // controla o numero maximo de entradas no historico
+  show_user_centered_circle: false
 };
 var last_window_height;
 
@@ -242,7 +243,7 @@ var highlight_coords_icon = L.icon({
  */
 $(document).ready(function () {
 
-  $("#play_sound").on("click", function() {
+  $("#play_sound").on("click", function () {
     console.log("teste som");
     console.log(user_reached_highlight_sound);
 
@@ -294,6 +295,11 @@ $(document).ready(function () {
         }, 10000);
       }
     }
+  });
+
+  $("#toggle-user-circle").on("click", function (e) {
+    curr_user_saved_prefs.show_user_centered_circle = $(e.target).is(":checked");
+    localStorage.setItem('user' + gon.user_id, JSON.stringify(curr_user_saved_prefs));
   });
 
   // inicializa os filtros das entidades que devem ser apresentadas no mapa, em função do perfil do utilizador
@@ -419,19 +425,24 @@ $(document).ready(function () {
   map = L.map("map", {
     zoom: 16,
 //    center: [38.627881, -9.161007],
-//    center: L.latLng(gon.current_lat, gon.current_lon),
+    center: L.latLng(gon.current_lat, gon.current_lon),
     layers: [osm],
     zoomControl: true,
     attributionControl: false
   });
 
+  // inicializa o circulo centrado na posição atual do utilizador
   user_centered_circle = L.circle(L.latLng(gon.current_lat, gon.current_lon), 500, {
     color: 'blue',
     fillOpacity: 0.2,
     weight: 0,
     clickable: false
-  }).addTo(map);
-  map.fitBounds(user_centered_circle);
+  });
+
+  if (curr_user_saved_prefs.show_user_centered_circle) { // apenas apresenta o circulo se a opção tiver selecionada
+    map.addLayer(user_centered_circle);
+    map.fitBounds(user_centered_circle);
+  }
 
   // ativa a geolocalização apenas se o browser a suportar
   if ("geolocation" in navigator) { /* geolocation is available */
@@ -489,6 +500,19 @@ $(document).ready(function () {
       // a ultima medição tenha sido há mais de 10 segundos
       if ((distance == -1 || distance > 10) && (time_spanned == -1 || time_spanned > 10)) {
         console.log("POSIÇÃO A MAIS DE 10METROS E HÁ MAIS DE 10SEGUNDOS!!!!!!");
+
+        var prev_circle = user_centered_circle;
+        user_centered_circle = L.circle(L.latLng(e.latlng.lat, e.latlng.lng), 500, {
+          color: 'blue',
+          fillOpacity: 0.2,
+          weight: 0,
+          clickable: false
+        });
+
+        if (curr_user_saved_prefs.show_user_centered_circle) {
+          map.removeLayer(prev_circle);
+          map.addLayer(user_centered_circle);
+        }
 
         searchForHighlightAroundMe(e.latlng);
 
@@ -1487,10 +1511,10 @@ function teamPointToLayer(feature, latlng) {
     old_highlight_layer = all_teams[index].highlight_coords_layer;
 
     // no caso das coordenadas de destaque serem iguais às anteriores, mantem a flag que ja tinha!
-    if(old_highlight_layer !== null) { // equipa ja estava destacada
-      if(new_hightlight_layer !== null) {
-        if(old_highlight_layer.getLatLng() === new_hightlight_layer.getLatLng())
-            team_to_push.user_reached_highlight = all_teams[index].user_reached_highlight;
+    if (old_highlight_layer !== null) { // equipa ja estava destacada
+      if (new_hightlight_layer !== null) {
+        if (old_highlight_layer.getLatLng() === new_hightlight_layer.getLatLng())
+          team_to_push.user_reached_highlight = all_teams[index].user_reached_highlight;
       }
     }
 
@@ -1766,6 +1790,7 @@ function checkUserPreferences() {
   console.log(local_storage_user_prefs);
 
   var show_navbar_checkbox = $('#homepage-toggle-navbar');
+  var show_user_circle = $('#toggle-user-circle');
 
   // o utilizador ja iniciou sessão, vamos obter as suas preferencias
   if (local_storage_user_prefs !== null) {
@@ -1775,6 +1800,13 @@ function checkUserPreferences() {
     // altera o nivel de zoom máximo para aquele que o utilizador definiu previamente
     $("#range_max_zoom").val(local_storage_user_prefs.max_zoom);
     curr_user_saved_prefs.max_zoom = local_storage_user_prefs.max_zoom;
+
+    // apresenta ou esconde o circulo centrado na posição do utilizador
+    curr_user_saved_prefs.show_user_centered_circle = local_storage_user_prefs.show_user_centered_circle;
+    if (!local_storage_user_prefs.show_user_centered_circle)
+      show_user_circle.prop('checked', false);
+    else
+      show_user_circle.prop('checked', true);
 
     // altera o limite de entradas para o que o utilizador definiu anteriormente
     $('#entries_number').text(local_storage_user_prefs.history_entries_limit);
@@ -2424,14 +2456,14 @@ function filterTeamsGeojson(feature, layer) {
 // procura se alguma das suas equipas esta destacada para as imediações do ponto onde está
 function searchForHighlightAroundMe(curr_latlon) {
   var i, team_id, curr_team, distance;
-  for(i = 0; i < user_teams.length; i++) { // apenas equipas a que o utilizador pertença
+  for (i = 0; i < user_teams.length; i++) { // apenas equipas a que o utilizador pertença
     team_id = teamIsInMap(user_teams[i]);
-    if(team_id != -1) { // a equipa existe
-      if(all_teams[team_id].highlight_coords_layer !== null) { // e esta destacada para um local
+    if (team_id != -1) { // a equipa existe
+      if (all_teams[team_id].highlight_coords_layer !== null) { // e esta destacada para um local
         distance = curr_latlon.distanceTo(all_teams[team_id].highlight_coords_layer.getLatLng());
 
         // o utilizador esta a menos de 25 metros do destaque, lançamos o aviso!
-        if(distance < HIGHLIGHT_DISTANCE_THRESHOLD && !all_teams[team_id].user_reached_highlight) {
+        if (distance < HIGHLIGHT_DISTANCE_THRESHOLD && !all_teams[team_id].user_reached_highlight) {
           all_teams[team_id].user_reached_highlight = true;
 
           user_reached_highlight_sound.play();
