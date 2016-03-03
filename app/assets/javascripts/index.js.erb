@@ -131,7 +131,8 @@ function GeoEntity(id, name, description, user_name, user_id, radius, updated_at
 }
 
 // este objeto representa uma equipa
-function Team(id, name, loc_user_id, loc_user_name, updated_at, leader_name, leader_id, highlight_coords_layer, marker) {
+function Team(id, name, loc_user_id, loc_user_name, updated_at, leader_name, leader_id, highlight_coords_layer,
+              marker, user_reached_highlight) {
   this.t_id = id; // o id da equipa na base de dados
   this.t_name = name; // o nome da equipa
   this.location_user_id = loc_user_id; // o id do utilizador responsavel pela localização da equipa
@@ -141,7 +142,7 @@ function Team(id, name, loc_user_id, loc_user_name, updated_at, leader_name, lea
   this.leader_id = leader_id; // o id do lider da equipa
   this.highlight_coords_layer = highlight_coords_layer; // as coordenadas de destaque da equipa
   this.marker = marker; // o objeto que representa o marcador da equipa no mapa
-  this.user_reached_highlight; // flag que indica se o utilizador ja chegou ao highlight
+  this.user_reached_highlight = user_reached_highlight; // flag que indica se o utilizador ja chegou ao highlight
 }
 
 // este objeto representa uma entrada do histórico apresentado na barra lateral
@@ -368,10 +369,10 @@ $(document).ready(function () {
 
   // apenas ativa a cena do wake lock caso seja um dispositivo movel
   if (isMobile()) {
-    noty({
-      text: '[TESTE] Dispositivo móvel', timeout: 3500,
-      type: 'information', layout: 'bottomCenter'
-    });
+//    noty({
+//      text: '[TESTE] Dispositivo móvel', timeout: 3500,
+//      type: 'information', layout: 'bottomCenter'
+//    });
 
     noSleep = new NoSleep();
 
@@ -384,10 +385,10 @@ $(document).ready(function () {
     for (i = 0; i < objects_to_listen.length; i++) {
       objects_to_listen[i].addEventListener('touchstart', function () {
         if (!no_sleep_enabled) {
-          noty({
-            text: '[TESTE] NoSleep ativado', timeout: 3500,
-            type: 'success', layout: 'bottomCenter'
-          });
+//          noty({
+//            text: '[TESTE] NoSleep ativado', timeout: 3500,
+//            type: 'success', layout: 'bottomCenter'
+//          });
 
           noSleep.enable(); // keep the screen on!
           no_sleep_enabled = true;
@@ -396,10 +397,10 @@ $(document).ready(function () {
     }
   }
   else {
-    noty({
-      text: '[TESTE] Dispositivo fixo.', timeout: 3500,
-      type: 'information', layout: 'bottomCenter'
-    });
+//    noty({
+//      text: '[TESTE] Dispositivo fixo.', timeout: 3500,
+//      type: 'information', layout: 'bottomCenter'
+//    });
   }
 
   all_teams = [];
@@ -1484,7 +1485,6 @@ function teamPointToLayer(feature, latlng) {
   var old_highlight_layer, old_marker, team_to_push;
   var new_hightlight_layer = null;
   var curr_action;
-  var has_user_reached_highlight;
 
   // se a equipa tiver coordenadas de destaque, criamos uma layer para as representar
   if (feature.properties.highlight_coords !== null) {
@@ -1504,8 +1504,6 @@ function teamPointToLayer(feature, latlng) {
     console.log("NOVA EQUIPA RECEBIDA!!!");
   }
   else {
-    has_user_reached_highlight = all_teams[index].user_reached_highlight;
-
     // guardamos o antigo marcador da equipa para removermos e colocarmos o novo no mapa
     old_marker = all_teams[index].marker;
     old_highlight_layer = all_teams[index].highlight_coords_layer;
