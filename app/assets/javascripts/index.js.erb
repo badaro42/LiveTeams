@@ -2431,7 +2431,7 @@ function searchForHighlightAroundMe(curr_latlon) {
         distance = curr_latlon.distanceTo(all_teams[team_id].highlight_coords_layer.getLatLng());
 
         // o utilizador esta a menos de 25 metros do destaque, lançamos o aviso!
-        if(distance < HIGHLIGHT_DISTANCE_THRESHOLD) {
+        if(distance < HIGHLIGHT_DISTANCE_THRESHOLD && !all_teams[team_id].user_reached_highlight) {
           all_teams[team_id].user_reached_highlight = true;
 
           user_reached_highlight_sound.play();
