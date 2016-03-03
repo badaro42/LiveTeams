@@ -403,9 +403,15 @@ $(document).ready(function () {
           if (isCoordsUnique(gon.past_coordinates[i]) && gon.past_coordinates[i] !== last_coords) {
             coords_arr = parsePointCoordinates(gon.past_coordinates[i]);
             center = L.latLng(coords_arr[1], coords_arr[0]);
-
             c_marker = L.marker(center).addTo(user_map);
-            popupContent = "<span>Este utilizador encontra-se neste ponto<br> com as seguintes coordenadas:</span>" +
+
+            var text = "";
+            if(i == gon.past_coordinates.length - 1)
+              text = "Este utilizador encontra-se neste ponto";
+            else
+              text = "Este utilizador esteve neste ponto";
+
+            popupContent = "<span>" + text + "<br> com as seguintes coordenadas:</span>" +
                 "<p>Latitude: <b>" + c_marker.getLatLng().lat + "</b>,<br>Longitude: <b>" +
                 c_marker.getLatLng().lng + "</b></p>";
             c_marker.bindPopup(popupContent).openPopup();
