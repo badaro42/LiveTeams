@@ -15,6 +15,7 @@ var icon_colors = [
   "#999999" //cinzento
 ];
 
+var HIGHLIGHT_DISTANCE_THRESHOLD = 25;
 var SMARTHPHONE_MAX_WIDTH = 600;
 var geo_entity_types = {
   circle: "Círculo",
@@ -140,6 +141,7 @@ function Team(id, name, loc_user_id, loc_user_name, updated_at, leader_name, lea
   this.leader_id = leader_id; // o id do lider da equipa
   this.highlight_coords_layer = highlight_coords_layer; // as coordenadas de destaque da equipa
   this.marker = marker; // o objeto que representa o marcador da equipa no mapa
+  this.user_reached_highlight; // flag que indica se o utilizador ja chegou ao highlight
 }
 
 // este objeto representa uma entrada do histórico apresentado na barra lateral
@@ -172,6 +174,8 @@ var e_type, e_radius, e_coords, coords_to_display, e_length, e_area, e_layer, e_
 var add_to_event_history = false;
 
 var noSleep;
+
+var user_reached_highlight_sound = new Audio("/assets/notification_sound.mp3"); // buffers automatically when created
 
 // cada entrada é da forma {id: feature_id, type: tipo (em portugues),
 // latlon: array com objetos L.latLng), layer: o objeto que esta no mapa}
@@ -237,6 +241,14 @@ var highlight_coords_icon = L.icon({
  * Dentro desta função estão todas as inicializações e listeners
  */
 $(document).ready(function () {
+
+  $("#play_sound").on("click", function() {
+    console.log("teste som");
+    console.log(user_reached_highlight_sound);
+
+    user_reached_highlight_sound.play();
+  });
+
   // inicialização da dropdown da barra de navegação
   $('.dropdown-button').dropdown({
         inDuration: 300,
@@ -477,6 +489,8 @@ $(document).ready(function () {
       // a ultima medição tenha sido há mais de 10 segundos
       if ((distance == -1 || distance > 10) && (time_spanned == -1 || time_spanned > 10)) {
         console.log("POSIÇÃO A MAIS DE 10METROS E HÁ MAIS DE 10SEGUNDOS!!!!!!");
+
+        searchForHighlightAroundMe(e.latlng);
 
         // atualizam-se ja estas variaveis pois o retorno do ajax pode demorar e aí a posição era
         // atualizada várias vezes ao invés de apenas uma.
@@ -1446,6 +1460,7 @@ function teamPointToLayer(feature, latlng) {
   var old_highlight_layer, old_marker, team_to_push;
   var new_hightlight_layer = null;
   var curr_action;
+  var has_user_reached_highlight;
 
   // se a equipa tiver coordenadas de destaque, criamos uma layer para as representar
   if (feature.properties.highlight_coords !== null) {
@@ -1456,7 +1471,7 @@ function teamPointToLayer(feature, latlng) {
 
   team_to_push = new Team(feature.properties.f_id, feature.properties.name, feature.properties.location_user_id,
       feature.properties.location_user_name, feature.properties.updated_at, feature.properties.leader_name,
-      feature.properties.leader_id, new_hightlight_layer, new_marker);
+      feature.properties.leader_id, new_hightlight_layer, new_marker, false);
 
   if (index == -1) { //equipa nao existe no mapa
     all_teams.push(team_to_push);
@@ -1465,9 +1480,20 @@ function teamPointToLayer(feature, latlng) {
     console.log("NOVA EQUIPA RECEBIDA!!!");
   }
   else {
+    has_user_reached_highlight = all_teams[index].user_reached_highlight;
+
     // guardamos o antigo marcador da equipa para removermos e colocarmos o novo no mapa
     old_marker = all_teams[index].marker;
     old_highlight_layer = all_teams[index].highlight_coords_layer;
+
+    // no caso das coordenadas de destaque serem iguais às anteriores, mantem a flag que ja tinha!
+    if(old_highlight_layer !== null) { // equipa ja estava destacada
+      if(new_hightlight_layer !== null) {
+        if(old_highlight_layer.getLatLng() === new_hightlight_layer.getLatLng())
+            team_to_push.user_reached_highlight = all_teams[index].user_reached_highlight;
+      }
+    }
+
     all_teams[index] = team_to_push;
 
     // removemos a layer de destaque do mapa, caso houvesse
@@ -2393,4 +2419,29 @@ function filterTeamsGeojson(feature, layer) {
     return user_teams.includes(parseInt(feature.properties.f_id));
   else // não é para mostrar nenhuma equipa
     return false;
+}
+
+// procura se alguma das suas equipas esta destacada para as imediações do ponto onde está
+function searchForHighlightAroundMe(curr_latlon) {
+  var i, team_id, curr_team, distance;
+  for(i = 0; i < user_teams.length; i++) { // apenas equipas a que o utilizador pertença
+    team_id = teamIsInMap(user_teams[i]);
+    if(team_id != -1) { // a equipa existe
+      if(all_teams[team_id].highlight_coords_layer !== null) { // e esta destacada para um local
+        distance = curr_latlon.distanceTo(all_teams[team_id].highlight_coords_layer.getLatLng());
+
+        // o utilizador esta a menos de 25 metros do destaque, lançamos o aviso!
+        if(distance < HIGHLIGHT_DISTANCE_THRESHOLD) {
+          all_teams[team_id].user_reached_highlight = true;
+
+          user_reached_highlight_sound.play();
+          noty({
+            text: "Chegou às coordenadas para onde a equipa <b>" + all_teams[team_id].t_name +
+            "</b> foi destacada!<br><br>Clique em qualquer lado para esconder esta notificação.",
+            type: 'information', layout: 'center', closeWith: ['button', 'click'], modal: true
+          });
+        }
+      }
+    }
+  }
 }
