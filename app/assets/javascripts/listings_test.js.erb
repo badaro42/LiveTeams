@@ -399,38 +399,46 @@ $(document).ready(function () {
       if (gon.curr_user_pos !== null) {
         gon.past_coordinates.push(gon.curr_user_pos);
 
+
+        var latlngs_arr = [];
         for (i = 0; i < gon.past_coordinates.length; i++) {
           if (isCoordsUnique(gon.past_coordinates[i]) && gon.past_coordinates[i] !== last_coords) {
             coords_arr = parsePointCoordinates(gon.past_coordinates[i]);
             center = L.latLng(coords_arr[1], coords_arr[0]);
-            c_marker = L.marker(center).addTo(user_map);
 
-            var text = "";
-            if(i == gon.past_coordinates.length - 1)
-              text = "Este utilizador encontra-se neste ponto";
-            else
-              text = "Este utilizador esteve neste ponto";
-
-            popupContent = "<span>" + text + "<br> com as seguintes coordenadas:</span>" +
-                "<p>Latitude: <b>" + c_marker.getLatLng().lat + "</b>,<br>Longitude: <b>" +
-                c_marker.getLatLng().lng + "</b></p>";
-            c_marker.bindPopup(popupContent).openPopup();
+            latlngs_arr.push(center);
 
             unique_coords_arr.push(gon.past_coordinates[i]);
             last_coords = gon.past_coordinates[i];
           }
         }
 
+        var polyline = L.polyline(latlngs_arr, {color: 'blue'}).addTo(user_map);
+        user_map.fitBounds(polyline.getBounds());
 
-//        coords_arr = parsePointCoordinates(gon.curr_user_pos);
-//        center = L.latLng(coords_arr[1], coords_arr[0]);
-//        user_map.panTo(center);
+
+        //TODO: ISTO ESTA COMENTADO APENAS PARA O PRINT DOS TESTES
+//        for (i = 0; i < gon.past_coordinates.length; i++) {
+//          if (isCoordsUnique(gon.past_coordinates[i]) && gon.past_coordinates[i] !== last_coords) {
+//            coords_arr = parsePointCoordinates(gon.past_coordinates[i]);
+//            center = L.latLng(coords_arr[1], coords_arr[0]);
+//            c_marker = L.marker(center).addTo(user_map);
 //
-//        c_marker = L.marker(center).addTo(user_map);
-//        popupContent = "<span>Este utilizador encontra-se neste ponto<br> com as seguintes coordenadas:</span>" +
-//            "<p>Latitude: <b>" + c_marker.getLatLng().lat + "</b>,<br>Longitude: <b>" +
-//            c_marker.getLatLng().lng + "</b></p>";
-//        c_marker.bindPopup(popupContent).openPopup();
+//            var text = "";
+//            if(i == gon.past_coordinates.length - 1)
+//              text = "Este utilizador encontra-se neste ponto";
+//            else
+//              text = "Este utilizador esteve neste ponto";
+//
+//            popupContent = "<span>" + text + "<br> com as seguintes coordenadas:</span>" +
+//                "<p>Latitude: <b>" + c_marker.getLatLng().lat + "</b>,<br>Longitude: <b>" +
+//                c_marker.getLatLng().lng + "</b></p>";
+//            c_marker.bindPopup(popupContent).openPopup();
+//
+//            unique_coords_arr.push(gon.past_coordinates[i]);
+//            last_coords = gon.past_coordinates[i];
+//          }
+//        }
       }
     }
     else if (edit_page) {
