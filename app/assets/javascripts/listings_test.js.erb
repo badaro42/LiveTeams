@@ -413,7 +413,7 @@ $(document).ready(function () {
           }
         }
 
-        var polyline = L.polyline(latlngs_arr, {color: 'red'}).addTo(user_map);
+        var polyline = L.polyline(latlngs_arr, {color: 'blue', opacity: 0.9}).addTo(user_map);
         user_map.fitBounds(polyline.getBounds());
 
 
