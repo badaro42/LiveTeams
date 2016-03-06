@@ -98,7 +98,11 @@ label {
 /* SMARTPHONES E ECRAS PEQUENOS */
 @media only screen and (max-width: 600px) {
   #geo_entity_assoc_teams {
-    margin-top: 80px;
+    margin-top: 105px !important;
+  }
+
+  #geo_entity_assoc_teams label {
+    top: 1.8rem !important;
   }
 
 
