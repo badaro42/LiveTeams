@@ -497,7 +497,7 @@ $(document).ready(function () {
       }
 
       // envia a nova posição para o servidor caso seja a primeira vez,
-      // a distancia para a posição anterior seja superior a 10 metros ou
+      // a distancia para a posição anterior seja superior a 10 metros e
       // a ultima medição tenha sido há mais de 10 segundos
       if ((distance == -1 || distance > 10) && (time_spanned == -1 || time_spanned > 10)) {
         console.log("POSIÇÃO A MAIS DE 10METROS E HÁ MAIS DE 10SEGUNDOS!!!!!!");

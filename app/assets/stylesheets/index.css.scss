@@ -97,6 +97,11 @@ label {
 /* ******************* USADO DA RODAR OS CONTROLOS DA CRIA��O DE ENTIDADES ******************* */
 /* SMARTPHONES E ECRAS PEQUENOS */
 @media only screen and (max-width: 600px) {
+  #geo_entity_assoc_teams {
+    margin-top: 80px;
+  }
+
+
   // a tooltip do botão mais à esquerda (o do marcador)
   .leaflet-draw-actions.leaflet-draw-actions-bottom {
     top: 121px !important;
