@@ -446,7 +446,7 @@ $(document).ready(function () {
   }
 
   // ativa a geolocalização apenas se o browser a suportar
-  if ("geolocation" in navigator) { /* geolocation is available */
+  if (navigator.geolocation) { /* geolocation is available */
     new L.control.locate({
       position: "topleft",
       layer: drawnItems,
@@ -472,84 +472,24 @@ $(document).ready(function () {
         popup: "A sua localização atual está dentro deste círculo com {distance} metros.",
         outsideMapBoundsMsg: "Parece que se encontra fora dos limites do mapa"
       },
+      onLocationError: geoError,
       locateOptions: {
         maxZoom: 19,
-        watch: true,
+        watch: false, //TODO: ALTERAR PARA TRUE
         enableHighAccuracy: true,
         maximumAge: 15000,
         timeout: 1000
       }
     }).addTo(map);
 
-    map.on('locationfound', function (e) {
-      var distance = -1, time_spanned = -1, curr_time, prev_time;
-      if (typeof previous_user_location !== 'undefined') {
-        distance = previous_user_location.position.distanceTo(e.latlng);
-        curr_time = new Date();
-        prev_time = previous_user_location.timestamp;
+    //TODO: ATIVAR ISTO!!!!!
+//    map.on('locationfound', geoSuccess11);
 
-        // caso a diferença seja seja, passa a 1ms para evitar divisão por zero
-        // resultado em ms, divisao por 1000 para converter para segundos
-        time_spanned = (curr_time - prev_time) == 0 ? 1 : (curr_time - prev_time) / 1000;
 
-        console.log("DIFERENÇA DO TIMESTAMP: " + time_spanned);
-        console.log("DISTANCIA PARA MEDIÇÃO ANTERIOR: " + distance);
-      }
-
-      // envia a nova posição para o servidor caso seja a primeira vez,
-      // a distancia para a posição anterior seja superior a 10 metros e
-      // a ultima medição tenha sido há mais de 10 segundos
-      if ((distance == -1 || distance > 10) && (time_spanned == -1 || time_spanned > 10)) {
-        console.log("POSIÇÃO A MAIS DE 10METROS E HÁ MAIS DE 10SEGUNDOS!!!!!!");
-
-        var prev_circle = user_centered_circle;
-        user_centered_circle = L.circle(L.latLng(e.latlng.lat, e.latlng.lng), 500, {
-          color: 'blue',
-          fillOpacity: 0.2,
-          weight: 0,
-          clickable: false
-        });
-
-        if (curr_user_saved_prefs.show_user_centered_circle) {
-          map.removeLayer(prev_circle);
-          map.addLayer(user_centered_circle);
-        }
-
-        searchForHighlightAroundMe(e.latlng);
-
-        // atualizam-se ja estas variaveis pois o retorno do ajax pode demorar e aí a posição era
-        // atualizada várias vezes ao invés de apenas uma.
-        previous_user_location = {position: e.latlng, timestamp: e.timestamp};
-
-        $.ajax({
-          type: "POST",
-          url: "/update_location",
-          data: {
-            latitude: e.latlng.lat,
-            longitude: e.latlng.lng,
-            user_id: gon.user_id
-          },
-          success: function (result) {
-            console.log(result);
-
-            var d = new Date();
-            var time = d.toLocaleTimeString();
-
-            var li = $('<li/>').addClass('collection-item');
-            var span1 = $('<span/>').text("Coordenadas: [" + e.latlng.lat + "; " + e.latlng.lng + "]");
-            var span2 = $('<span/>').text("Precisão da medição: " + e.accuracy + " metros");
-            var span3 = $('<span/>').text("Data do sistema: " + time);
-
-            li.append(span1).append('<br>').append(span2).append('<br>').append(span3);
-            $('#current_position_list').prepend(li);
-          },
-          error: function (err) {
-            console.log(err);
-          }
-        });
-      }
-    });
-
+    //TODO: REMOVER ISTO!!!!!
+    setTimeout(function () {
+      getLocationWithTimeout();
+    }, 30000);
   }
   else { /* geolocation IS NOT available */
     noty({
@@ -2474,4 +2414,138 @@ function searchForHighlightAroundMe(curr_latlon) {
       }
     }
   }
+}
+
+
+function geoSuccess(e) {
+  var distance = -1, time_spanned = -1, curr_time, prev_time;
+  if (typeof previous_user_location !== 'undefined') {
+    distance = previous_user_location.position.distanceTo(e.latlng);
+    curr_time = new Date();
+    prev_time = previous_user_location.timestamp;
+
+    // caso a diferença seja seja, passa a 1ms para evitar divisão por zero
+    // resultado em ms, divisao por 1000 para converter para segundos
+    time_spanned = (curr_time - prev_time) == 0 ? 1 : (curr_time - prev_time) / 1000;
+
+    console.log("DIFERENÇA DO TIMESTAMP: " + time_spanned);
+    console.log("DISTANCIA PARA MEDIÇÃO ANTERIOR: " + distance);
+  }
+
+  // envia a nova posição para o servidor caso seja a primeira vez,
+  // a distancia para a posição anterior seja superior a 10 metros e
+  // a ultima medição tenha sido há mais de 10 segundos
+  if ((distance == -1 || distance > 10) && (time_spanned == -1 || time_spanned > 10)) {
+    console.log("POSIÇÃO A MAIS DE 10METROS E HÁ MAIS DE 10SEGUNDOS!!!!!!");
+
+    var prev_circle = user_centered_circle;
+    user_centered_circle = L.circle(L.latLng(e.latlng.lat, e.latlng.lng), 500, {
+      color: 'blue',
+      fillOpacity: 0.2,
+      weight: 0,
+      clickable: false
+    });
+
+    if (curr_user_saved_prefs.show_user_centered_circle) {
+      map.removeLayer(prev_circle);
+      map.addLayer(user_centered_circle);
+    }
+
+    searchForHighlightAroundMe(e.latlng);
+
+    // atualizam-se ja estas variaveis pois o retorno do ajax pode demorar e aí a posição era
+    // atualizada várias vezes ao invés de apenas uma.
+    previous_user_location = {position: e.latlng, timestamp: e.timestamp};
+
+    $.ajax({
+      type: "POST",
+      url: "/update_location",
+      data: {
+        latitude: e.latlng.lat,
+        longitude: e.latlng.lng,
+        user_id: gon.user_id
+      },
+      success: function (result) {
+        console.log(result);
+
+        var d = new Date();
+        var time = d.toLocaleTimeString();
+
+        var li = $('<li/>').addClass('collection-item');
+        var span1 = $('<span/>').text("Coordenadas: [" + e.latlng.lat + "; " + e.latlng.lng + "]");
+        var span2 = $('<span/>').text("Precisão da medição: " + e.accuracy + " metros");
+        var span3 = $('<span/>').text("Data do sistema: " + time);
+
+        li.append(span1).append('<br>').append(span2).append('<br>').append(span3);
+        $('#current_position_list').prepend(li);
+      },
+      error: function (err) {
+        console.log(err);
+      }
+    });
+  }
+}
+
+
+function geoError() {
+  noty({
+    text: 'Geolocalização desativada por ordem do utilizador.\n' +
+    'A sua posição não será periodicamente atualizada.',
+    timeout: 3500, type: 'error', layout: 'bottomCenter'
+  });
+}
+
+
+
+// TODO: ************************************************************************
+// TODO: APAGAR ESTAS DUAS FUNÇÕES AQUI EM BAIXO, APENAS PARA EFEITOS DE TESTE!
+
+function getLocationWithTimeout() {
+  console.log("cena do timeout!!");
+  setTimeout(function () {
+    // Do Something Here
+    console.log("vamos obter novamente a posição!");
+    navigator.geolocation.getCurrentPosition(geoSuccessTESTE, geoError);
+
+    // Then recall the parent function to
+    // create a recursive loop.
+    getLocationWithTimeout();
+  }, 30000);
+}
+
+function geoSuccessTESTE(e) {
+  var distance = -1, time_spanned = -1, curr_time, prev_time;
+  console.log("NOVA MEDIÇÃO DA POSIÇÃO!!");
+
+  $.ajax({
+    type: "POST",
+    url: "/update_location",
+    data: {
+      latitude: e.coords.latitude,
+      longitude: e.coords.longitude,
+      user_id: gon.user_id
+    },
+    success: function (result) {
+      console.log("MEDIÇÃO ENVIADA COM SUCESSO PARA O SERVIDOR!!");
+
+      var d = new Date();
+      var time = d.toLocaleTimeString();
+
+      var li = $('<li/>').addClass('collection-item');
+      var span1 = $('<span/>').text("Coordenadas: [" + e.coords.latitude + "; " + e.coords.longitude + "]");
+      var span2 = $('<span/>').text("Precisão da medição: " + e.coords.accuracy + " metros");
+      var span3 = $('<span/>').text("Direção: " + e.coords.heading + " ??");
+      var span4 = $('<span/>').text("Velocidade: " + e.coords.speed + " ??");
+      var span5 = $('<span/>').text("Altitude (precisão): " + e.coords.altitude +
+          " metros (precisão: " + e.coords.altitudeAccuracy + " metros)");
+      var span6 = $('<span/>').text("Data do sistema: " + time);
+
+      li.append(span1).append('<br>').append(span2).append('<br>').append(span3).append('<br>')
+          .append(span4).append('<br>').append(span5).append('<br>').append(span6);
+      $('#current_position_list').prepend(li);
+    },
+    error: function (err) {
+      console.log(err);
+    }
+  });
 }
