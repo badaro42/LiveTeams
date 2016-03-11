@@ -10,6 +10,8 @@ Bundler.require(*Rails.groups)
 module TeseGestaoEmergencia
   class Application < Rails::Application
 
+    config.force_ssl = true
+
     config.middleware.use ActionDispatch::Flash
     config.api_only = false
 
