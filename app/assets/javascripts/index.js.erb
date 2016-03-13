@@ -475,7 +475,7 @@ $(document).ready(function () {
       onLocationError: geoError,
       locateOptions: {
         maxZoom: 19,
-        watch: false, //TODO: ALTERAR PARA TRUE
+        watch: true, //TODO: ALTERAR PARA TRUE
         enableHighAccuracy: true,
         maximumAge: 15000,
         timeout: 1000
@@ -483,13 +483,13 @@ $(document).ready(function () {
     }).addTo(map);
 
     //TODO: ATIVAR ISTO!!!!!
-//    map.on('locationfound', geoSuccess11);
+    map.on('locationfound', geoSuccess);
 
 
     //TODO: REMOVER ISTO!!!!!
-    setTimeout(function () {
-      getLocationWithTimeout();
-    }, 30000);
+//    setTimeout(function () {
+//      getLocationWithTimeout();
+//    }, 30000);
   }
   else { /* geolocation IS NOT available */
     noty({
@@ -2500,52 +2500,52 @@ function geoError() {
 // TODO: ************************************************************************
 // TODO: APAGAR ESTAS DUAS FUNÇÕES AQUI EM BAIXO, APENAS PARA EFEITOS DE TESTE!
 
-function getLocationWithTimeout() {
-  console.log("cena do timeout!!");
-  setTimeout(function () {
-    // Do Something Here
-    console.log("vamos obter novamente a posição!");
-    navigator.geolocation.getCurrentPosition(geoSuccessTESTE, geoError);
-
-    // Then recall the parent function to
-    // create a recursive loop.
-    getLocationWithTimeout();
-  }, 30000);
-}
-
-function geoSuccessTESTE(e) {
-  var distance = -1, time_spanned = -1, curr_time, prev_time;
-  console.log("NOVA MEDIÇÃO DA POSIÇÃO!!");
-
-  $.ajax({
-    type: "POST",
-    url: "/update_location",
-    data: {
-      latitude: e.coords.latitude,
-      longitude: e.coords.longitude,
-      user_id: gon.user_id
-    },
-    success: function (result) {
-      console.log("MEDIÇÃO ENVIADA COM SUCESSO PARA O SERVIDOR!!");
-
-      var d = new Date();
-      var time = d.toLocaleTimeString();
-
-      var li = $('<li/>').addClass('collection-item');
-      var span1 = $('<span/>').text("Coordenadas: [" + e.coords.latitude + "; " + e.coords.longitude + "]");
-      var span2 = $('<span/>').text("Precisão da medição: " + e.coords.accuracy + " metros");
-      var span3 = $('<span/>').text("Direção: " + e.coords.heading + " ??");
-      var span4 = $('<span/>').text("Velocidade: " + e.coords.speed + " ??");
-      var span5 = $('<span/>').text("Altitude (precisão): " + e.coords.altitude +
-          " metros (precisão: " + e.coords.altitudeAccuracy + " metros)");
-      var span6 = $('<span/>').text("Data do sistema: " + time);
-
-      li.append(span1).append('<br>').append(span2).append('<br>').append(span3).append('<br>')
-          .append(span4).append('<br>').append(span5).append('<br>').append(span6);
-      $('#current_position_list').prepend(li);
-    },
-    error: function (err) {
-      console.log(err);
-    }
-  });
-}
+//function getLocationWithTimeout() {
+//  console.log("cena do timeout!!");
+//  setTimeout(function () {
+//    // Do Something Here
+//    console.log("vamos obter novamente a posição!");
+//    navigator.geolocation.getCurrentPosition(geoSuccessTESTE, geoError);
+//
+//    // Then recall the parent function to
+//    // create a recursive loop.
+//    getLocationWithTimeout();
+//  }, 30000);
+//}
+//
+//function geoSuccessTESTE(e) {
+//  var distance = -1, time_spanned = -1, curr_time, prev_time;
+//  console.log("NOVA MEDIÇÃO DA POSIÇÃO!!");
+//
+//  $.ajax({
+//    type: "POST",
+//    url: "/update_location",
+//    data: {
+//      latitude: e.coords.latitude,
+//      longitude: e.coords.longitude,
+//      user_id: gon.user_id
+//    },
+//    success: function (result) {
+//      console.log("MEDIÇÃO ENVIADA COM SUCESSO PARA O SERVIDOR!!");
+//
+//      var d = new Date();
+//      var time = d.toLocaleTimeString();
+//
+//      var li = $('<li/>').addClass('collection-item');
+//      var span1 = $('<span/>').text("Coordenadas: [" + e.coords.latitude + "; " + e.coords.longitude + "]");
+//      var span2 = $('<span/>').text("Precisão da medição: " + e.coords.accuracy + " metros");
+//      var span3 = $('<span/>').text("Direção: " + e.coords.heading + " ??");
+//      var span4 = $('<span/>').text("Velocidade: " + e.coords.speed + " ??");
+//      var span5 = $('<span/>').text("Altitude (precisão): " + e.coords.altitude +
+//          " metros (precisão: " + e.coords.altitudeAccuracy + " metros)");
+//      var span6 = $('<span/>').text("Data do sistema: " + time);
+//
+//      li.append(span1).append('<br>').append(span2).append('<br>').append(span3).append('<br>')
+//          .append(span4).append('<br>').append(span5).append('<br>').append(span6);
+//      $('#current_position_list').prepend(li);
+//    },
+//    error: function (err) {
+//      console.log(err);
+//    }
+//  });
+//}
