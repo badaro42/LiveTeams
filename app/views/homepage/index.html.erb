@@ -45,7 +45,7 @@
         </li>
         <li>
           <%= link_to users_path, class: 'navbar-button', target: '', method: :get do %>
-              Membros
+              Utilizadores
           <% end %>
         </li>
         <li>
@@ -106,7 +106,7 @@
         <li>
           <%= link_to users_path, target: '', style: 'text-transform: none; padding-left: 15px; padding-right: 30px;',
                       class: 'btn-flat navbar-button', method: :get do %>
-              <i class="material-icons left">person</i>Membros
+              <i class="material-icons left">person</i>Utilizadores
           <% end %>
         </li>
 
@@ -163,37 +163,44 @@
   <div class="sidebar-tabs">
     <ul role="tablist">
       <li>
-        <a id="profile-tab-icon" href="#profile" role="tab">
-          <%= tag("img", class: 'profile_name', data: {name: current_user.first_name}) %>
-        </a>
+        <%= link_to "#profile", id: 'profile-tab-icon', class: 'tooltipped', role: "tab", data: {
+            position: 'left', delay: '0', tooltip: 'Os seus dados'} do %>
+            <%= tag("img", class: 'profile_name', data: {name: current_user.first_name}) %>
+        <% end %>
+
       </li>
       <li>
-        <a id="teams-tab-icon" href="#teams" role="tab">
-          <i class="material-icons extra-padding">group</i>
-        </a>
+        <%= link_to "#teams", id: 'teams-tab-icon', class: 'tooltipped', role: "tab", data: {
+            position: 'left', delay: '0', tooltip: 'Equipas'} do %>
+            <i class="material-icons extra-padding">group</i>
+        <% end %>
       </li>
       <li>
-        <a id="users-tab-icon" href="#users" role="tab">
-          <i class="material-icons extra-padding">person_outline</i>
-        </a>
+        <%= link_to "#users", id: 'users-tab-icon', class: 'tooltipped', role: "tab", data: {
+            position: 'left', delay: '0', tooltip: 'Utilizadores'} do %>
+            <i class="material-icons extra-padding">person_outline</i>
+        <% end %>
       </li>
       <li>
-        <a id="history-tab-icon" class="badge1" href="#history" role="tab">
-          <i class="material-icons extra-padding">history</i>
-        </a>
+        <%= link_to "#history", id: 'history-tab-icon', class: 'tooltipped badge1', role: "tab", data: {
+            position: 'left', delay: '0', tooltip: 'Histórico'} do %>
+            <i class="material-icons extra-padding">history</i>
+        <% end %>
       </li>
       <li>
-        <a id="search-tab-icon" href="#search" role="tab">
-          <i class="material-icons extra-padding">search</i>
-        </a>
+        <%= link_to "#search", id: 'search-tab-icon', class: 'tooltipped', role: "tab", data: {
+            position: 'left', delay: '0', tooltip: 'Opções de pesquisa'} do %>
+            <i class="material-icons extra-padding">search</i>
+        <% end %>
       </li>
     </ul>
 
     <ul role="tablist">
       <li>
-        <a id="about-tab-icon" href="#about_sidebar" role="tab">
-          <i class="material-icons extra-padding">settings</i>
-        </a>
+        <%= link_to "#about_sidebar", id: 'about-tab-icon', class: 'tooltipped', role: "tab", data: {
+            position: 'left', delay: '0', tooltip: 'Definições'} do %>
+            <i class="material-icons extra-padding">settings</i>
+        <% end %>
       </li>
     </ul>
   </div>
