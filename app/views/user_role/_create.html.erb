@@ -4,7 +4,7 @@
   <h5 style="font-weight: 300; padding: 0 10px 0 10px; margin-bottom: 20px;">
     <span style="font-size: 35px;font-weight: 400;">2. </span>
     Use os filtros abaixo para filtrar os utilizadores pelo nome,
-    pela equipa a que pertecem e ainda pelo perfil que possuem
+    pela equipa a que pertecem e ainda pelo perfil que possuem.
   </h5>
 
   <div id="permissions_search_div" class="col l4 m12 s12" style="margin-bottom: 20px;">
@@ -20,7 +20,7 @@
 
         <div id="create_role_partial_team_filter" class="input-field" style="margin-bottom: 60px;">
           <%= f.label "Filtrar por equipa", for: :with_team,
-                      style: "left: 0; top: -23px; font-size: 15px; font-weight: 300; color: rgba(0,0,0,0.87);"  %>
+                      style: "left: 0; top: -23px; font-size: 15px; font-weight: 300; color: rgba(0,0,0,0.87);" %>
           <%= f.select :with_team,
                        @users_create_filter.select_options[:with_team],
                        {:include_blank => '- Qualquer equipa -'}, id: "create_team_filter" %>
@@ -59,7 +59,7 @@
   <h5 style="font-weight: 300; padding: 0 10px 0 10px;">
     <span style="font-size: 35px;font-weight: 400;">3. </span>
     Selecione agora os papéis que quer atribuir aos utilizadores selecionados e defina por quanto tempo esses
-    mesmos papéis devem ser válidos. Use então o botão à direita para gravar os papéis na base de dados
+    mesmos papéis devem ser válidos. Use então o botão abaixo para gravar os papéis na base de dados.
   </h5>
 
   <div class="row" style="padding: 0 10px 0 10px;">
@@ -75,13 +75,22 @@
     </div>
   </div>
 
+  <div class="row" style="margin: 0; padding-bottom: 20px;">
+    <div class="col s12 l12 m12">
+      <a href="#!" class="btn green waves-effect waves-light btn green"
+         style="width: 100%;" onclick="submitUserRolesToDB()">
+        <i class="left material-icons">save</i>Atribuir papéis!
+      </a>
+    </div>
+  </div>
+
   <!--<div class="input-field col s12">-->
-    <!--<select multiple>-->
-      <!--<option value="" disabled selected>Choose your option</option>-->
-      <!--<option value="1">Option 1</option>-->
-      <!--<option value="2">Option 2</option>-->
-      <!--<option value="3">Option 3</option>-->
-    <!--</select>-->
-    <!--<label>Materialize Multiple Select</label>-->
+  <!--<select multiple>-->
+  <!--<option value="" disabled selected>Choose your option</option>-->
+  <!--<option value="1">Option 1</option>-->
+  <!--<option value="2">Option 2</option>-->
+  <!--<option value="3">Option 3</option>-->
+  <!--</select>-->
+  <!--<label>Materialize Multiple Select</label>-->
   <!--</div>-->
 </div>

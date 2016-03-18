@@ -39,7 +39,6 @@ class HomepageController < ApplicationController
     require 'rgeo'
     require 'rgeo-geojson'
 
-    puts "SERA QUE HA NOVA CENA!!!!????"
     ActiveRecord::Base.include_root_in_json = true
     response.headers['Content-Type'] = 'text/event-stream'
 

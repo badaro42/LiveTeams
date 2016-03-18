@@ -6,7 +6,7 @@
         <div class="fixed-action-btn" style="bottom: 25px; right: 25px;">
           <%= link_to edit_user_registration_path, :data => {:position => 'left', :delay => '0',
                                                              :tooltip => 'Editar utilizador'},
-                      class: 'btn-floating btn-large red tooltipped', method: :get do %>
+                      class: 'btn-floating btn-large blue tooltipped', method: :get do %>
               <i class="large material-icons">mode_edit</i>
           <% end %>
         </div>
@@ -14,7 +14,7 @@
         <div class="fixed-action-btn" style="bottom: 25px; right: 25px;">
           <%= link_to edit_user_path(@user), :data => {:position => 'left', :delay => '0',
                                                        :tooltip => 'Editar utilizador'},
-                      class: 'btn-floating btn-large red tooltipped', method: :get do %>
+                      class: 'btn-floating btn-large blue tooltipped', method: :get do %>
               <i class="large material-icons">mode_edit</i>
           <% end %>
         </div>
@@ -48,7 +48,7 @@
     </li>
     <li>
       <%= link_to users_path, class: 'navbar-button active', method: :get do %>
-          Membros
+          Utilizadores
       <% end %>
     </li>
 <% end %>
