@@ -2080,12 +2080,16 @@ function geocodeLocation() {
         if (result.length > 0) {
           var coords = result[0].data.geometry.location;
           console.log(coords);
-          map.setView(new L.LatLng(coords.lat, coords.lng), 16);
+          map.panTo(new L.LatLng(coords.lat, coords.lng), 16);
 
           noty({
             text: 'Geocoding efetuado com sucesso, mapa centrado em <b>' + result[0].data.formatted_address + '</b>.',
             timeout: 3500, type: 'success', layout: 'bottomCenter'
           });
+
+          // limpa o texto e fecha a sidebar
+          $("#geocode_location").val("");
+          sidebar.close();
         }
         else
           noty({
