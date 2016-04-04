@@ -24,7 +24,7 @@
                 <li>
                   <%= link_to edit_team_path(@team), :data => {:position => 'left', :delay => '0',
                                                                :tooltip => 'Editar esta equipa'},
-                              class: 'btn-floating green tooltipped', method: :get do %>
+                              class: 'btn-floating orange tooltipped', method: :get do %>
                       <i class="material-icons">edit</i>
                   <% end %>
                 </li>
@@ -32,7 +32,7 @@
             <% if can_perform_action? :create, Team %>
                 <li>
                   <%= link_to new_team_path, :data => {:position => 'left', :delay => '0', :tooltip => 'Criar nova equipa'},
-                              class: 'btn-floating orange tooltipped', method: :get do %>
+                              class: 'btn-floating green tooltipped', method: :get do %>
                       <i class="large material-icons">add</i>
                   <% end %>
                 </li>
