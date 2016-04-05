@@ -155,15 +155,18 @@
   <%= yield %>
 </div>
 
+<!-- partial com a modal com info sobre o trabalho -->
+<%= render partial: "shared/about" %>
+
 </body>
+
 
 <footer class="page-footer blue darken-2" style="margin-top: 0; padding: 0;">
   <div class="footer-copyright">
     <div class="container">
       © 2015-2016 Rafael Bizarra, FCT-UNL
-      <a class="grey-text text-lighten-4 right"
-         href="mailto:r.bizarra@campus.fct.unl.pt?Subject=[Contacto]%20LiveTeams%20Portugal"
-         target="_top">Contacte-me</a>
+      <a class="grey-text text-lighten-4 right" onclick="$('#about_modal').openModal();"
+         style="cursor: pointer;">Acerca</a>
     </div>
   </div>
 </footer>

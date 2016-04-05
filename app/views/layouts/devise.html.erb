@@ -5,7 +5,7 @@
 <head>
   <title><%= yield(:title) %></title>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 
   <%= include_gon(watch: true) %>
 
@@ -43,15 +43,20 @@
       <%= yield %>
 
       <hr class="nice-trick">
-	  
-	  <div style="padding-left: 12px; padding-right: 12px; margin-bottom: 0px; padding-bottom: 20px;">
-		<span style="font-style: italic; font-size: 14px;">*Trabalho desenvolvido no âmbito da dissertação de mestrado 
-			"LiveTeams: Gestão de Emergência online adaptativa pelo contexto".</span>
-      </div>	
-		
+
+      <div style="padding-left: 12px; padding-right: 12px; margin-bottom: 0px; padding-bottom: 20px;">
+        <span style="font-style: italic; font-size: 14px;">*Trabalho desenvolvido no âmbito da dissertação de mestrado
+          "LiveTeams: Gestão de Emergência online adaptativa pelo contexto".
+          <a onclick="$('#about_modal').openModal();" style="cursor: pointer;">Mais info.</a>
+        </span>
+      </div>
+
     </div>
   </div>
 </div>
+
+<!-- partial com a modal com info sobre o trabalho -->
+<%= render partial: "shared/about" %>
 
 </body>
 </html>

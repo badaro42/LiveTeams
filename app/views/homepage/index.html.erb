@@ -212,7 +212,7 @@
         <div class="sidebar-close"><i class="fa fa-caret-right"></i></div>
       </h1>
 
-      <div class="list_wrapper white z-depth-1">
+      <div class="list_wrapper white z-depth-1" style="padding-bottom: 10px;">
         <div class="white z-depth-1" style="margin-top: 10px; padding-top: 10px; padding-bottom: 10px;">
           <div class="row center valign-wrapper" style="margin-bottom: 0;">
             <div class="col l4 m12 s5 valign">
@@ -245,48 +245,59 @@
                             style: 'margin-left: 2px; padding-left: 10px; padding-right: 10px;' do %>
                     <i class="material-icons">edit</i>
                 <% end %>
-                <!--<a id="play_sound" style="margin-left: 2px; padding-left: 10px; padding-right: 10px;"-->
-                   <!--class="waves-effect waves-light btn white-btn">-->
-                  <!--<i class="material-icons">music_note</i>-->
-                <!--</a>-->
               </div>
             </div>
           </div>
         </div>
 
         <div class="white z-depth-1" style="margin-top: 10px; margin-bottom: 10px; padding: 10px;">
-          <h5 style="margin-bottom: 5px;">As minhas equipas</h5>
+          <h5 style="margin-bottom: 5px;">As minhas equipas (<%= current_user.teams.length %>)</h5>
 
           <div class="divider"></div>
 
           <ul class="collection" style="margin-bottom: 0; margin-top: 10px;">
-            <% current_user.teams.each do |team| %>
-                <li class="collection-item avatar" style="padding-left: 20px;">
+            <% if current_user.teams.length == 0 %>
+                <div>
+                  <p style="padding: 0 15px 0 15px;">
+                    De momento, não pertence a nenhuma equipa
+                  </p>
+                </div>
+            <% else %>
+                <% current_user.teams.each do |team| %>
+                    <li class="collection-item avatar" style="padding-left: 20px;">
                   <span class="title">
                     <%= link_to team.name, team, method: :get, target: '' %>
                   </span>
 
-                  <% status = team.leader.id == current_user.id ? "Líder da equipa" : "Membro da equipa" %>
-                  <p>
-                    <%= status %>, <%= team.users.length %> membros
-                  </p>
+                      <% status = team.leader.id == current_user.id ? "Líder da equipa" : "Membro da equipa" %>
+                      <p>
+                        <%= status %>, <%= team.users.length %> membros
+                      </p>
 
-                  <a href="#!" class="tooltipped secondary-content" onclick="centerMapOnEntity(<%= team.id %>,'Equipa');"
-                     data-tooltip="Centrar mapa nesta equipa" data-delay="0" data-position="left">
-                    <i class="material-icons">my_location</i>
-                  </a>
-                </li>
+                      <a href="#!" class="tooltipped secondary-content"
+                         onclick="centerMapOnEntity(<%= team.id %>,'Equipa');"
+                         data-tooltip="Centrar mapa nesta equipa" data-delay="0" data-position="left">
+                        <i class="material-icons">my_location</i>
+                      </a>
+                    </li>
+                <% end %>
             <% end %>
           </ul>
         </div>
 
-        <div class="white z-depth-1" style="margin-top: 10px; margin-bottom: 10px; padding: 10px;">
-          <h5 style="margin-bottom: 5px;">Medições da posição</h5>
-
-          <div class="divider"></div>
-
-          <ul id="current_position_list" class="collection" style="margin-bottom: 0; margin-top: 10px;"></ul>
+        <div style="margin-top: 20px;">
+          <a class="blue waves-effect waves-light btn blue" onclick="$('#about_modal').openModal();">
+            <i class="material-icons left">help_outline</i>Acerca do projeto
+          </a>
         </div>
+
+        <!--<div class="white z-depth-1" style="margin-top: 10px; margin-bottom: 10px; padding: 10px;">-->
+        <!--<h5 style="margin-bottom: 5px;">Medições da posição</h5>-->
+
+        <!--<div class="divider"></div>-->
+
+        <!--<ul id="current_position_list" class="collection" style="margin-bottom: 0; margin-top: 10px;"></ul>-->
+        <!--</div>-->
       </div>
     </div>
 
@@ -375,7 +386,8 @@
       <div class="list_wrapper" style="padding-right: 10px;">
         <div class="row valign-wrapper" style="margin-top: 10px; margin-bottom: 10px;">
           <div class="col l7 m7 s7" style="padding: 0;">
-            <p class="center" style="font-weight: 300; margin: 0;">A mostrar os 15 utilizadores mais ativos</p>
+            <p class="center" style="font-weight: 300; margin: 0;">A mostrar os 15 utilizadores mais
+              ativos</p>
           </div>
           <div class="col l5 m5 s5" style="padding: 0;">
             <%= link_to users_url, method: :get, target: '', style: 'width: 100%; padding: 0 10px;',
@@ -398,7 +410,8 @@
                 <p style="margin-top: 5px;">
                   <span style="line-height: 17px;"><%= user.profile %></span>
                   <br>
-                  <span style="line-height: 17px;">Este utilizador autenticou-se <%= user.sign_in_count %> vezes</span>
+                              <span style="line-height: 17px;">Este utilizador autenticou-se <%= user.sign_in_count %>
+                                vezes</span>
                 </p>
               </li>
           <% end %>
@@ -494,7 +507,8 @@
           <p style="margin-top: 5px; margin-bottom: 5px; margin-left: 20px;">
             <input type="checkbox" class="filled-in" id="checkbox_toggle_own_teams" checked="checked"
                    onchange="preTeamFilter(false)"/>
-            <label for="checkbox_toggle_own_teams">Mostrar apenas as minhas equipas e respetivos destaques</label>
+            <label for="checkbox_toggle_own_teams">Mostrar apenas as minhas equipas e respetivos
+              destaques</label>
           </p>
         </div>
       </div>
@@ -542,7 +556,8 @@
             </p>
           </div>
           <blockquote style="margin-top: 5px; font-size: 13px;">
-            Altera o nível máximo de zoom aplicado quando se centra o mapa numa entidade. Varia entre 1 e 20, em que
+            Altera o nível máximo de zoom aplicado quando se centra o mapa numa entidade. Varia entre 1 e
+            20, em que
             1 é o nível mínimo de zoom e 20 o máximo.
           </blockquote>
         </div>
@@ -666,3 +681,6 @@
        style="padding: 0 15px 0 15px;">Fechar</a>
   </div>
 </div>
+
+<!-- partial com a modal com info sobre o trabalho -->
+<%= render partial: "shared/about" %>
